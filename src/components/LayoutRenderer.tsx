@@ -9,10 +9,20 @@ const GridItem = (props: any) => {
     return <Grid {...props}>{props.children}</Grid>;
 };
 
+const Box = () => {
+    return <div style={{
+        backgroundColor: "black",
+        height: 400,
+        width: "100%"
+    }}>
+    </div>;
+};
+
 const components: any = {
     grid: MyGrid,
     grid_item: GridItem,
     text: Typography,
+    box: Box
 };
 
 const renderChild = (child: any) => {
