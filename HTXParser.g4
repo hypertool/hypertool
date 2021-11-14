@@ -18,7 +18,9 @@ shortElement
     ;
 
 longElement
-    : TAG_OPEN TAG_NAME attribute* TAG_CLOSE content TAG_OPEN TAG_SLASH TAG_NAME TAG_CLOSE
+    : TAG_OPEN TAG_NAME attribute* TAG_CLOSE
+      content
+      TAG_OPEN TAG_SLASH TAG_NAME TAG_CLOSE
     ;
 
 content
