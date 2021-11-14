@@ -2,10 +2,11 @@ import { InputStream, CommonTokenStream } from "antlr4";
 import HTXLexer from './antlr-gen/HTXLexer';
 import HTXParser from './antlr-gen/HTXParser';
 import { Visitor } from "./htx";
+import LayoutRendererer from "./components/LayoutRenderer";
 
 const compile = () => {
   try {
-    const input = `<grid>
+    const input2 = `<grid>
     <grid_item xs=12>
         <text id="hello">
             Students
@@ -46,6 +47,16 @@ const compile = () => {
     </grid_item>
 </grid>`;
 
+  const input = `
+    <grid>
+      <grid_item xs=12 lg=4>
+        <text>Hello, world!</text>
+      </grid_item>
+      <grid_item xs=12 lg=2>
+        <text>This is another text!</text>
+      </grid_item>
+    </grid>`;
+
     const chars = new InputStream(input);
     const lexer = new HTXLexer(chars);
     const tokens = new CommonTokenStream(lexer);
@@ -57,19 +68,19 @@ const compile = () => {
     const visitor = new Visitor();
     const result = visitor.visitCompilationUnit(tree);
     console.log(result);
+
+    return result;
   }
   catch (error) {
     console.log(error);
   }
 };
 
-compile();
-
 const App = () => {
+  const tree = compile();
+
   return (
-    <div>
-      Hello, world!
-    </div>
+    <LayoutRendererer layout={tree} />
   );
 }
 
