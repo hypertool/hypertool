@@ -5,16 +5,20 @@ options {
 }
 
 compilationUnit
-    : WHITE_SPACE* elements*
-    ;
-
-elements
     : misc* element misc*
     ;
 
 element
-    : TAG_OPEN TAG_NAME attribute*
-      (TAG_CLOSE (content TAG_OPEN TAG_SLASH TAG_NAME TAG_CLOSE)? | TAG_SLASH_CLOSE)
+    : shortElement
+    | longElement
+    ;
+
+shortElement
+    : TAG_OPEN TAG_NAME attribute* TAG_SLASH_CLOSE
+    ;
+
+longElement
+    : TAG_OPEN TAG_NAME attribute* TAG_CLOSE content TAG_OPEN TAG_SLASH TAG_NAME TAG_CLOSE
     ;
 
 content
@@ -22,7 +26,7 @@ content
     ;
 
 attribute
-    : TAG_NAME (TAG_EQUALS ATTRIBUTE_VALUE_VALUE)?
+    : TAG_NAME (TAG_EQUALS ATTRIBUTE_VALUE)?
     ;
 
 text
