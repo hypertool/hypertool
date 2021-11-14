@@ -2,5 +2,8 @@
   "name": "hypertool-api",
   "version": "0.1.0",
   "repository": "https://github.com/hypertool/hypertool-api",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
