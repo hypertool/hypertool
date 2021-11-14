@@ -1,45 +1,5 @@
 grammar htx;
 
-// Parser
-
-compilationUnit
-:   element+
-;
-
-element
-:   '<' IDENTIFIER attribute* '>' content '<' '/' IDENTIFIER '>'
-|   '<' IDENTIFIER attribute* '/''>'
-;
-
-content
-:   characterData | (element | expression)*
-;
-
-attribute
-:   IDENTIFIER '=' attributeValue
-;
-
-characterData
-:   ~('<'|'{')+
-;
-
-attributeValue
-:   BOOLEAN_LITERAL
-|   STRING_LITERAL
-|   DECIMAL_LITERAL
-|   NULL_LITERAL
-|   expression
-;
-
-expression
-:   '{' skippable* '}'
-;
-
-skippable
-:   ~('{'|'}')+
-|   '{' skippable* '}'
-;
-
 // Lexer
 
 NULL_LITERAL
@@ -103,4 +63,44 @@ WHITE_SPACE
 
 MULTILINE_COMMENT
 :   '/*' .*? '*/' -> channel(HIDDEN)
+;
+
+// Parser
+
+compilationUnit
+:   element+
+;
+
+element
+:   '<' IDENTIFIER attribute* '>' content? '<' '/' IDENTIFIER '>'
+|   '<' IDENTIFIER attribute* '/''>'
+;
+
+content
+:   (element | expression | characterData)+
+;
+
+attribute
+:   IDENTIFIER '=' attributeValue
+;
+
+characterData
+:   ~('<'|'{')+
+;
+
+attributeValue
+:   BOOLEAN_LITERAL
+|   STRING_LITERAL
+|   DECIMAL_LITERAL
+|   NULL_LITERAL
+|   expression
+;
+
+expression
+:   '{' skippable* '}'
+;
+
+skippable
+:   ~('{'|'}')+
+|   '{' skippable* '}'
 ;
