@@ -8,7 +8,7 @@ CDATA
     : '<![CDATA[' .*? ']]>'
     ;
 
-SEA_WS
+WHITE_SPACE
     :  (' '|'\t'|'\r'? '\n')+
     ;
 
@@ -16,11 +16,11 @@ TAG_OPEN
     : '<' -> pushMode(TAG)
     ;
 
-HTML_TEXT
+TEXT
     : ~'<'+
     ;
 
-// tag declarations
+// Tags
 
 mode TAG;
 
@@ -36,34 +36,30 @@ TAG_SLASH
     : '/'
     ;
 
-
-// lexing mode for attribute values
+// Attributes
 
 TAG_EQUALS
-    : '=' -> pushMode(ATTVALUE)
+    : '=' -> pushMode(ATTRIBUTE_VALUE)
     ;
 
 TAG_NAME
-    : TAG_NameStartChar TAG_NameChar*
+    : TAG_NAME_START_CHAR TAG_NAME_CHAR*
     ;
 
 TAG_WHITESPACE
     : [ \t\r\n] -> channel(HIDDEN)
     ;
 
-fragment
-HEXDIGIT
+fragment HEX_DIGIT
     : [a-fA-F0-9]
     ;
 
-fragment
-DIGIT
+fragment DIGIT
     : [0-9]
     ;
 
-fragment
-TAG_NameChar
-    : TAG_NameStartChar
+fragment TAG_NAME_CHAR
+    : TAG_NAME_START_CHAR
     | '-'
     | '_'
     | '.'
@@ -73,8 +69,7 @@ TAG_NameChar
     | '\u203F'..'\u2040'
     ;
 
-fragment
-TAG_NameStartChar
+fragment TAG_NAME_START_CHAR
     : [:a-zA-Z]
     | '\u2070'..'\u218F'
     | '\u2C00'..'\u2FEF'
@@ -83,36 +78,36 @@ TAG_NameStartChar
     | '\uFDF0'..'\uFFFD'
     ;
 
-// attribute values
+// Attribute values
 
-mode ATTVALUE;
+mode ATTRIBUTE_VALUE;
 
-// an attribute value may have spaces b/t the '=' and the value
-ATTVALUE_VALUE
+// An attribute value may have spaces between the '=' and the value.
+ATTRIBUTE_VALUE_VALUE
     : ' '* ATTRIBUTE -> popMode
     ;
 
 ATTRIBUTE
     : DOUBLE_QUOTE_STRING
     | SINGLE_QUOTE_STRING
-    | ATTCHARS
-    | HEXCHARS
-    | DECCHARS
+    | ATTRIBUTE_CHARACTERS
+    | HEX_CHARACTERS
+    | DECIMAL_CHARACTERS
     ;
 
-fragment ATTCHARS
-    : ATTCHAR+ ' '?
+fragment ATTRIBUTE_CHARACTERS
+    : ATTRIBUTE_CHARACTER+ ' '?
     ;
 
-fragment ATTCHAR
+fragment ATTRIBUTE_CHARACTER
     : [0-9a-zA-Z_]
     ;
 
-fragment HEXCHARS
+fragment HEX_CHARACTERS
     : '0x' [0-9a-fA-F]+
     ;
 
-fragment DECCHARS
+fragment DECIMAL_CHARACTERS
     : [0-9]+?
     ;
 

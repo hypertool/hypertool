@@ -5,32 +5,32 @@ options {
 }
 
 compilationUnit
-    : SEA_WS* htmlElements*
+    : WHITE_SPACE* elements*
     ;
 
-htmlElements
-    : htmlMisc* htmlElement htmlMisc*
+elements
+    : misc* element misc*
     ;
 
-htmlElement
-    : TAG_OPEN TAG_NAME htmlAttribute*
-      (TAG_CLOSE (htmlContent TAG_OPEN TAG_SLASH TAG_NAME TAG_CLOSE)? | TAG_SLASH_CLOSE)
+element
+    : TAG_OPEN TAG_NAME attribute*
+      (TAG_CLOSE (content TAG_OPEN TAG_SLASH TAG_NAME TAG_CLOSE)? | TAG_SLASH_CLOSE)
     ;
 
-htmlContent
-    : htmlChardata? ((htmlElement | CDATA | COMMENT) htmlChardata?)*
+content
+    : text? ((element | CDATA | COMMENT) text?)*
     ;
 
-htmlAttribute
-    : TAG_NAME (TAG_EQUALS ATTVALUE_VALUE)?
+attribute
+    : TAG_NAME (TAG_EQUALS ATTRIBUTE_VALUE_VALUE)?
     ;
 
-htmlChardata
-    : HTML_TEXT
-    | SEA_WS
+text
+    : TEXT
+    | WHITE_SPACE
     ;
 
-htmlMisc
+misc
     : COMMENT
-    | SEA_WS
+    | WHITE_SPACE
     ;
