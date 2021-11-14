@@ -9,6 +9,7 @@
     "start": "nodemon --exec \"node ./dist/start.js\""
   },
   "dependencies": {
+    "apollo-server-express": "^3.5.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
