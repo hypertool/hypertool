@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "watch": "tsc -w",
-    "build": "tsc"
+    "build": "tsc",
+    "start": "nodemon --exec \"node ./dist/start.js\""
   },
   "dependencies": {
     "cors": "^2.8.5",
