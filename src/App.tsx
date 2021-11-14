@@ -48,12 +48,19 @@ const compile = () => {
 </grid>`;
 
   const input = `
-    <grid>
-      <grid_item xs=12 lg=4>
-        <text>Hello, world!</text>
+    <grid justifyContent="space-between" direction="row">
+      <grid_item xs=12 lg=2>
+        <box />
       </grid_item>
       <grid_item xs=12 lg=2>
-        <text>This is another text!</text>
+        <box />
+      </grid_item>
+      <grid_item lg=5>
+        <button_group>
+          <button>Profile</button>
+          <button>Preferences</button>
+          <button>Logout</button>
+        </button_group>
       </grid_item>
     </grid>`;
 
