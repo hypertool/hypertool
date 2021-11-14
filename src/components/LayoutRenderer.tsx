@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, Typography, Button, ButtonGroup } from "@mui/material";
 
 const MyGrid = (props: any) => {
     return <Grid container={true} {...props}>{props.children}</Grid>;
@@ -22,7 +22,9 @@ const components: any = {
     grid: MyGrid,
     grid_item: GridItem,
     text: Typography,
-    box: Box
+    box: Box,
+    button: Button,
+    button_group: ButtonGroup
 };
 
 const renderChild = (child: any) => {
