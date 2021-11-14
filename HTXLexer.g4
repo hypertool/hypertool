@@ -39,7 +39,7 @@ TAG_SLASH
 // Attributes
 
 TAG_EQUALS
-    : '=' -> pushMode(ATTRIBUTE_VALUE)
+    : '=' -> pushMode(ATTRIBUTE_VALUE_MODE)
     ;
 
 TAG_NAME
@@ -80,10 +80,10 @@ fragment TAG_NAME_START_CHAR
 
 // Attribute values
 
-mode ATTRIBUTE_VALUE;
+mode ATTRIBUTE_VALUE_MODE;
 
 // An attribute value may have spaces between the '=' and the value.
-ATTRIBUTE_VALUE_VALUE
+ATTRIBUTE_VALUE
     : ' '* ATTRIBUTE -> popMode
     ;
 
