@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "repository": "https://github.com/hypertool/hypertool-api",
   "private": true,
+  "scripts": {
+    "watch": "tsc -w",
+    "build": "tsc"
+  },
   "dependencies": {
     "express": "^4.17.1"
   },
