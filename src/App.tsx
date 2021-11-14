@@ -5,21 +5,19 @@ import { Visitor } from "./htx";
 
 const compile = () => {
   try {
-    const input2 = `<grid>
+    const input = `<grid>
     <grid_item xs=12>
-        <Typography id="hello">
+        <text id="hello">
             Students
-    </Typography>
-  </grid_item>
+        </text>
+    </grid_item>
 
     <grid_item xs=12 md=6>
-      <table id=1 data=null />
+        <table id=1 data=null />
 
-      <!-- Never hide -->
-      <hidden when=false>
-      
-      <!-- Never hide -->
-        <grid_item xs=12 md=6>
+        <!-- Never hide -->
+        <hidden when=false>
+            <!-- Never hide -->
             <grid>
                 <grid_item xs=12>
                     <text_field
@@ -42,13 +40,11 @@ const compile = () => {
                         text="Update"
                         onClick=null
                         disabled=false />
-                  </grid_item>
-              </grid>
-          </grid_item>
-      </hidden>
-    </grid>`;
-
-    const input = `<grid id="root" direction="row" columns=12 />`;
+                </grid_item>
+            </grid>
+        </hidden>
+    </grid_item>
+</grid>`;
 
     const chars = new InputStream(input);
     const lexer = new HTXLexer(chars);
@@ -59,7 +55,8 @@ const compile = () => {
 
     
     const visitor = new Visitor();
-    visitor.visitCompilationUnit(tree);
+    const result = visitor.visitCompilationUnit(tree);
+    console.log(result);
   }
   catch (error) {
     console.log(error);
