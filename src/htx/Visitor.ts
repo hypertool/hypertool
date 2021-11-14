@@ -23,7 +23,13 @@ class Visitor {
     let currentAttributeContext = null;
     while ((currentAttributeContext = context.attribute(i)) !== null) {
       const name = currentAttributeContext.TAG_NAME().getText();
-      const value = currentAttributeContext.ATTRIBUTE_VALUE().getText();
+      let value = currentAttributeContext.ATTRIBUTE_VALUE().getText();
+
+      if (value.startsWith("\"") && value.endsWith("\"")) {
+        value = value.substr(1, value.length - 2);
+      }
+      console.log(value);
+
       attributes.push({
         name,
         value,
