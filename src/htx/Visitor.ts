@@ -22,7 +22,7 @@ class Visitor {
         const attributes: any[] = [];
         let i = 0;
         let currentAttributeContext = null;
-        while ((currentAttributeContext = context.attribute(i)) != null) {
+        while ((currentAttributeContext = context.attribute(i)) !== null) {
             const name = currentAttributeContext.TAG_NAME().getText();
             const value = currentAttributeContext.ATTRIBUTE_VALUE().getText();
             attributes.push({

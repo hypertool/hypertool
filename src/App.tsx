@@ -1,10 +1,11 @@
 import { InputStream, CommonTokenStream } from "antlr4";
 import HTXLexer from './antlr-gen/HTXLexer';
 import HTXParser from './antlr-gen/HTXParser';
+import { Visitor } from "./htx";
 
 const compile = () => {
   try {
-    const input = `<grid>
+    const input2 = `<grid>
     <grid_item xs=12>
         <Typography id="hello">
             Students
@@ -47,6 +48,8 @@ const compile = () => {
       </hidden>
     </grid>`;
 
+    const input = `<grid id="root" direction="row" columns=12 />`;
+
     const chars = new InputStream(input);
     const lexer = new HTXLexer(chars);
     const tokens = new CommonTokenStream(lexer);
@@ -54,26 +57,9 @@ const compile = () => {
     parser.buildParseTrees = true;
     const tree = parser.compilationUnit();
 
-    class Visitor {
-      visitChildren(ctx: any) {
-        if (!ctx) {
-          return;
-        }
     
-        if (ctx.children) {
-          return ctx.children.map((child: any) => {
-            if (child.children && child.children.length !== 0) {
-              return child.accept(this);
-            } else {
-              console.log(child.getText());
-              return child.getText();
-            }
-          });
-        }
-      }
-    }
-    
-    tree.accept(new Visitor() as any);
+    const visitor = new Visitor();
+    visitor.visitCompilationUnit(tree);
   }
   catch (error) {
     console.log(error);
