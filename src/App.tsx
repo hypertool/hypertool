@@ -1,10 +1,18 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { Test } from "./screens"; 
+import {
+  Routes,
+  Route
+} from "react-router-dom";
 
+import { Login, Test } from "./screens"; 
 
 const App: FunctionComponent = (): ReactElement => {
-  return <Test />;
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/test" element={<Test />} />
+    </Routes>);
 }
 
 export default App;
