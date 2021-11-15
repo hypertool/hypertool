@@ -7,6 +7,7 @@ import {
 import { styled } from "@mui/material/styles";
 
 import { Login, Test } from "./screens";
+import { WorkspaceLayout } from "./layouts";
 
 const Root = styled("div")(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -19,6 +20,7 @@ const App: FunctionComponent = (): ReactElement => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/test" element={<Test />} />
+        <Route path="/workspace" element={<WorkspaceLayout />} />
       </Routes>
     </Root>);
 }
