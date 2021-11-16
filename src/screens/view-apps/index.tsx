@@ -4,6 +4,7 @@ import { Container as MuiContainer } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import AppCard from "./AppCard";
+import AppFilter from "./AppFilter";
 
 const Root = styled("section")(({ theme }) => ({
   width: "100%",
@@ -14,7 +15,7 @@ const Container = styled(MuiContainer)(({ theme }) => ({
   width: "100%",
   display: "flex",
   flexDirection: "row",
-  alignItems: "center",
+  alignItems: "flex-start",
   justifyContent: "center",
 }));
 
@@ -47,6 +48,7 @@ const ViewApps: FunctionComponent<Props> = (): ReactElement => {
   return (
     <Root>
       <Container>
+        <AppFilter />
         <Apps>
           {apps.map((app) => (
             <AppCard id={app.id} title={app.title} />
