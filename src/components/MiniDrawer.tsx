@@ -87,12 +87,12 @@ const groups = [
     items: [
       {
         title: "Apps",
-        url: "/workspace/apps",
+        url: "/apps",
         icon: "apps",
       },
       {
         title: "New App",
-        url: "/workspace/apps/new",
+        url: "/apps/new",
         icon: "add_circle_outline",
       },
     ],
@@ -102,22 +102,22 @@ const groups = [
     items: [
       {
         title: "Resources",
-        url: "/workspace/resources",
+        url: "/resources",
         icon: "source",
       },
       {
         title: "Teams",
-        url: "/workspace/teams",
+        url: "/teams",
         icon: "people",
       },
       {
         title: "Billing",
-        url: "/workspace/billing",
+        url: "/billing",
         icon: "sell",
       },
       {
         title: "Preferences",
-        url: "/workspace/preferences",
+        url: "/preferences",
         icon: "settings",
       },
     ],
@@ -127,7 +127,7 @@ const groups = [
     items: [
       {
         title: "Feedback",
-        url: "/workspace/feedback",
+        url: "/feedback",
         icon: "rate_review",
       },
       {
