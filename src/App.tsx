@@ -1,12 +1,9 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import {
-  Routes,
-  Route
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 
-import { Login, Test } from "./screens";
+import { Login, Test, ViewApps } from "./screens";
 import { WorkspaceLayout } from "./layouts";
 
 const Root = styled("div")(({ theme }) => ({
@@ -20,9 +17,12 @@ const App: FunctionComponent = (): ReactElement => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/test" element={<Test />} />
-        <Route path="/workspace" element={<WorkspaceLayout />} />
+        <Route path="/" element={<WorkspaceLayout />}>
+          <Route path="/apps" element={<ViewApps />} />
+        </Route>
       </Routes>
-    </Root>);
-}
+    </Root>
+  );
+};
 
 export default App;

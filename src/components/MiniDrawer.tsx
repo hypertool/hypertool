@@ -12,9 +12,12 @@ import {
   IconButton,
   Icon,
   useMediaQuery,
+  Tooltip,
 } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+
+import Wrap from "./Wrap";
 
 const drawerWidth = 240;
 
@@ -162,12 +165,14 @@ const MiniDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
         <Fragment key={group.title}>
           <List>
             {group.items.map((item) => (
-              <ListItem key={item.title} button={true}>
-                <ListItemIcon>
-                  <Icon>{item.icon}</Icon>
-                </ListItemIcon>
-                <ListItemText primary={item.title} />
-              </ListItem>
+              <Wrap when={!open} wrapper={Tooltip} title={item.title}>
+                <ListItem key={item.title} button={true}>
+                  <ListItemIcon>
+                    <Icon>{item.icon}</Icon>
+                  </ListItemIcon>
+                  <ListItemText primary={item.title} />
+                </ListItem>
+              </Wrap>
             ))}
           </List>
           {index + 1 < groups.length && <Divider />}
