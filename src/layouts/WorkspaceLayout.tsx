@@ -1,7 +1,6 @@
 import type { FunctionComponent, ReactElement } from "react";
 
 import { useState } from "react";
-import {  } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { MiniDrawer, PrimaryAppBar } from "../components";
