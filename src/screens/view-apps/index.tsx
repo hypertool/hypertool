@@ -1,15 +1,24 @@
 import type { FunctionComponent, ReactElement } from "react";
 
+import { Container as MuiContainer } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import AppCard from "./AppCard";
 
 const Root = styled("section")(({ theme }) => ({
   width: "100%",
-  padding: theme.spacing(2)
+  padding: theme.spacing(2),
 }));
 
-const AppsContainer = styled("div")(({ theme }) => ({
+const Container = styled(MuiContainer)(({ theme }) => ({
+  width: "100%",
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const Apps = styled("div")(({ theme }) => ({
   width: "100%",
   display: "flex",
   flexDirection: "column",
@@ -37,11 +46,13 @@ const apps = [
 const ViewApps: FunctionComponent<Props> = (): ReactElement => {
   return (
     <Root>
-      <AppsContainer>
-      {apps.map((app) => (
-        <AppCard id={app.id} title={app.title} />
-      ))}
-      </AppsContainer>
+      <Container>
+        <Apps>
+          {apps.map((app) => (
+            <AppCard id={app.id} title={app.title} />
+          ))}
+        </Apps>
+      </Container>
     </Root>
   );
 };
