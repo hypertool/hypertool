@@ -17,7 +17,7 @@ import AppOptionsMenu from "./AppOptionsMenu";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   width: "100%",
-  marginTop: theme.spacing(2),
+  marginBottom: theme.spacing(2),
 }));
 
 const CardHeader = styled("div")(({ theme }) => ({
