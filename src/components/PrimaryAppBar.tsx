@@ -1,5 +1,5 @@
 import type { FunctionComponent, ReactElement } from "react";
-import type { AppBarProps } from "@mui/material";
+import type { AppBarProps, IconButtonProps } from "@mui/material";
 
 import { AppBar, Toolbar, IconButton, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -15,23 +15,36 @@ const drawerWidth = 240;
 const MuiAppBar = styled(AppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })<PrimaryAppBarProps>(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
+
+  [theme.breakpoints.up("lg")]: {
+    zIndex: theme.zIndex.drawer + 1,
+
+    ...(open && {
+      marginLeft: drawerWidth,
+      width: `calc(100% - ${drawerWidth}px)`,
+      transition: theme.transitions.create(["width", "margin"], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
     }),
-  }),
+  },
+}));
+
+interface MenuButtonProps extends IconButtonProps {
+  open?: boolean;
+}
+
+const MenuButton = styled(IconButton)<MenuButtonProps>(({ theme, open }) => ({
+  marginRight: theme.spacing(2),
+  ...(open && { display: "none" })
 }));
 
 const ToolName = styled(Typography)(({ theme }) => ({
-    fontSize: 18,
+  fontSize: 18,
 }));
 
 interface Props {
@@ -46,15 +59,15 @@ const PrimaryAppBar: FunctionComponent<Props> = (
   return (
     <MuiAppBar open={open}>
       <Toolbar>
-        <IconButton
+        <MenuButton
           onClick={onDrawerOpen}
           size="small"
           edge="start"
           color="inherit"
-          sx={{ mr: 2, ...(open && { display: "none" }) }}
+          open={open}
         >
           <MenuIcon />
-        </IconButton>
+        </MenuButton>
         <ToolName variant="h6" sx={{ flexGrow: 1 }}>
           hypertool
         </ToolName>
