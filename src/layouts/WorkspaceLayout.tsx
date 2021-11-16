@@ -14,6 +14,10 @@ const Root = styled("div")(({ theme }) => ({
   flexDirection: "row",
 }));
 
+const Main = styled("main")(({ theme }) => ({
+  marginTop: theme.spacing(8),
+}));
+
 const WorkspaceLayout: FunctionComponent = (): ReactElement => {
   const [open, setOpen] = useState(false);
 
@@ -29,9 +33,9 @@ const WorkspaceLayout: FunctionComponent = (): ReactElement => {
     <Root>
       <PrimaryAppBar open={open} onDrawerOpen={handleDrawerOpen} />
       <MiniDrawer open={open} onDrawerClose={handleDrawerClose} />
-      <main>
+      <Main>
         <Outlet />
-      </main>
+      </Main>
     </Root>
   );
 };
