@@ -1,6 +1,14 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { Container as MuiContainer } from "@mui/material";
+import { useState, useCallback } from "react";
+import {
+  Container as MuiContainer,
+  Hidden,
+  FormControl as MuiFormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import AppCard from "./AppCard";
@@ -11,12 +19,20 @@ const Root = styled("section")(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
+const FormControl = styled(MuiFormControl)(({ theme }) => ({
+  marginBottom: theme.spacing(2)
+}));
+
 const Container = styled(MuiContainer)(({ theme }) => ({
   width: "100%",
   display: "flex",
-  flexDirection: "row",
+  flexDirection: "column",
   alignItems: "flex-start",
   justifyContent: "center",
+
+  [theme.breakpoints.up("lg")]: {
+    flexDirection: "row",
+  },
 }));
 
 const Apps = styled("div")(({ theme }) => ({
@@ -44,11 +60,60 @@ const apps = [
   },
 ];
 
+const filters = [
+  {
+    title: "All",
+    url: "/apps",
+    icon: "list",
+  },
+  {
+    title: "Recent",
+    url: "/apps/recent",
+    icon: "history",
+  },
+  {
+    title: "Starred",
+    url: "/apps/starred",
+    icon: "star",
+  },
+  {
+    title: "Trash",
+    url: "/apps/trash",
+    icon: "delete",
+  },
+];
+
 const ViewApps: FunctionComponent<Props> = (): ReactElement => {
+  const [filter, setFilter] = useState<string>(filters[0].url);
+
+  const handleFilterChange = useCallback((event) => {
+    setFilter(event.target.value);
+  }, []);
+
+  const renderFilter = () => (
+    <FormControl fullWidth={true}>
+      <InputLabel id="filter-label">Filter</InputLabel>
+      <Select
+        labelId="filter-label"
+        id="filter"
+        value={filter}
+        label="Filter"
+        onChange={handleFilterChange}
+      >
+        {filters.map((filter) => (
+          <MenuItem value={filter.url}>{filter.title}</MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+
   return (
     <Root>
       <Container>
-        <AppFilter />
+        <Hidden lgDown={true}>
+          <AppFilter />
+        </Hidden>
+        <Hidden lgUp={true}>{renderFilter()}</Hidden>
         <Apps>
           {apps.map((app) => (
             <AppCard id={app.id} title={app.title} />
