@@ -1,7 +1,15 @@
 import type { FunctionComponent, ReactElement } from "react";
 
 import { styled } from "@mui/material/styles";
-import { AppBar, Toolbar, Button, Icon, Typography, TextField } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Icon,
+  Typography,
+  TextField,
+  InputAdornment,
+} from "@mui/material";
 
 const Root = styled("section")(({ theme }) => ({
   width: "100%",
@@ -24,8 +32,8 @@ const ActionContainer = styled("div")(({ theme }) => ({
 }));
 
 const Search = styled(TextField)(({ theme }) => ({
-  width: 256,
-  marginRight: theme.spacing(2)
+  width: 264,
+  marginRight: theme.spacing(2),
 })) as any;
 
 const ActionIcon = styled(Icon)(({ theme }) => ({
@@ -43,6 +51,13 @@ const ResourceLibrary: FunctionComponent = (): ReactElement => {
               label=""
               placeholder="Search"
               size="small"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Icon fontSize="small">search</Icon>
+                  </InputAdornment>
+                ),
+              }}
             />
             <Button size="small">
               <ActionIcon fontSize="small">add_circle</ActionIcon>
