@@ -1,23 +1,14 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { Fragment } from "react";
+import { Fragment, useCallback } from "react";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
-import {
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  IconButton,
-  Icon,
-  useMediaQuery,
-  Tooltip,
-} from "@mui/material";
+import { List, Divider, IconButton, useMediaQuery } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { useNavigate } from "react-router";
 
-import Wrap from "./Wrap";
+import MiniDrawerItem from "./MiniDrawerItem";
 
 const drawerWidth = 240;
 
@@ -87,12 +78,12 @@ const groups = [
     items: [
       {
         title: "Apps",
-        url: "/workspace/apps",
+        url: "/apps",
         icon: "apps",
       },
       {
         title: "New App",
-        url: "/workspace/apps/new",
+        url: "/apps/new",
         icon: "add_circle_outline",
       },
     ],
@@ -102,22 +93,22 @@ const groups = [
     items: [
       {
         title: "Resources",
-        url: "/workspace/resources",
+        url: "/resources",
         icon: "source",
       },
       {
         title: "Teams",
-        url: "/workspace/teams",
+        url: "/teams",
         icon: "people",
       },
       {
         title: "Billing",
-        url: "/workspace/billing",
+        url: "/billing",
         icon: "sell",
       },
       {
         title: "Preferences",
-        url: "/workspace/preferences",
+        url: "/preferences",
         icon: "settings",
       },
     ],
@@ -127,7 +118,7 @@ const groups = [
     items: [
       {
         title: "Feedback",
-        url: "/workspace/feedback",
+        url: "/feedback",
         icon: "rate_review",
       },
       {
@@ -143,6 +134,14 @@ const MiniDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
   const { open, onDrawerClose } = props;
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("lg"));
+  const navigate = useNavigate();
+
+  const handleOpenURL = useCallback(
+    (url: string) => {
+      navigate(url);
+    },
+    [navigate]
+  );
 
   return (
     <Drawer
@@ -165,14 +164,13 @@ const MiniDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
         <Fragment key={group.title}>
           <List>
             {group.items.map((item) => (
-              <Wrap when={!open} wrapper={Tooltip} title={item.title}>
-                <ListItem key={item.title} button={true}>
-                  <ListItemIcon>
-                    <Icon>{item.icon}</Icon>
-                  </ListItemIcon>
-                  <ListItemText primary={item.title} />
-                </ListItem>
-              </Wrap>
+              <MiniDrawerItem
+                open={open}
+                title={item.title}
+                url={item.url}
+                icon={item.icon}
+                onClick={handleOpenURL}
+              />
             ))}
           </List>
           {index + 1 < groups.length && <Divider />}
