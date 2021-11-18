@@ -1,7 +1,16 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { styled } from "@mui/material/styles";
+
+const Root = styled("div")(({ theme }) => ({
+  width: "100%",
+  height: `calc(100vh - 216px)`,
+  [theme.breakpoints.up("lg")]: {
+    height: `calc(100vh - 272px)`,
+  }
+}));
 
 const columns: GridColDef[] = [
-  { field: "name", headerName: "Name", width: 400 },
+  { field: "name", headerName: "Name", width: 256 },
   { field: "type", headerName: "Type", width: 200 },
   { field: "createdAt", headerName: "Created At", width: 200 },
 ];
@@ -21,7 +30,7 @@ const rows = [
 
 export default function DataTable() {
   return (
-    <div style={{ height: `calc(100vh - 300px)`, width: "100%" }}>
+    <Root>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -29,6 +38,6 @@ export default function DataTable() {
         rowsPerPageOptions={[10]}
         checkboxSelection={true}
       />
-    </div>
+    </Root>
   );
 }
