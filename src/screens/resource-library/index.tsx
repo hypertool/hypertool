@@ -9,7 +9,10 @@ import {
   Typography,
   TextField,
   InputAdornment,
+  Container,
 } from "@mui/material";
+
+import ResourcesTable from "../new-app/ResourcesTable";
 
 const Root = styled("section")(({ theme }) => ({
   width: "100%",
@@ -40,6 +43,10 @@ const ActionIcon = styled(Icon)(({ theme }) => ({
   marginRight: theme.spacing(1),
 }));
 
+const TableContainer = styled(Container)(({ theme }) => ({
+  marginTop: theme.spacing(4),
+}));
+
 const ResourceLibrary: FunctionComponent = (): ReactElement => {
   return (
     <Root>
@@ -66,6 +73,9 @@ const ResourceLibrary: FunctionComponent = (): ReactElement => {
           </ActionContainer>
         </WorkspaceToolbar>
       </AppBar>
+      <TableContainer>
+        <ResourcesTable selectable={false} />
+      </TableContainer>
     </Root>
   );
 };
