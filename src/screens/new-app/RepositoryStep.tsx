@@ -17,10 +17,7 @@ const Root = styled("section")(({ theme }) => ({
   flexDirection: "column",
   alignItems: "flex-start",
   justifyContent: "flex-start",
-  paddingTop: theme.spacing(4),
   paddingBottom: theme.spacing(4),
-
-  height: `calc(100vh - 300px)`,
   width: "100%",
 }));
 
