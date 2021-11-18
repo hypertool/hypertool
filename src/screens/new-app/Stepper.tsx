@@ -17,6 +17,7 @@ import {
 import { styled } from "@mui/material/styles";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import CheckCircle from "@mui/icons-material/CheckCircle";
 
 import AboutStep from "./AboutStep";
 import ResourcesStep from "./ResourcesStep";
@@ -45,6 +46,10 @@ const LeftActionContainer = styled("div")(({ theme }) => ({
 
 const StepperAction = styled(Button)(({ theme }) => ({
   width: 120,
+}));
+
+const CreateAction = styled(Button)(({ theme }) => ({
+  width: 144,
 }));
 
 interface StepStructure {
@@ -221,6 +226,11 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                     variant="contained"
                     size="small"
                   >
+                    {theme.direction === "rtl" ? (
+                      <KeyboardArrowRight />
+                    ) : (
+                      <KeyboardArrowLeft />
+                    )}
                     Back
                   </StepperAction>
                 )}
@@ -236,13 +246,30 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                   </StepperAction>
                 )}
               </LeftActionContainer>
-              <StepperAction
-                onClick={handleNext}
-                variant="contained"
-                size="small"
-              >
-                {activeStep === steps.length - 1 ? "Create App" : "Next"}
-              </StepperAction>
+              {activeStep < steps.length - 1 && (
+                <StepperAction
+                  onClick={handleNext}
+                  variant="contained"
+                  size="small"
+                >
+                  Next
+                  {theme.direction === "rtl" ? (
+                    <KeyboardArrowLeft />
+                  ) : (
+                    <KeyboardArrowRight />
+                  )}
+                </StepperAction>
+              )}
+              {activeStep + 1 === steps.length && (
+                <CreateAction
+                  onClick={handleNext}
+                  variant="contained"
+                  size="small"
+                >
+                  Create App
+                  <CheckCircle fontSize="small" sx={{ ml: 1 }} />
+                </CreateAction>
+              )}
             </ActionContainer>
           </Hidden>
           <Hidden lgUp={true}>
