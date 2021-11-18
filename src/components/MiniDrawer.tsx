@@ -92,9 +92,9 @@ const groups = [
     title: "Administrator",
     items: [
       {
-        title: "Resources",
-        url: "/resources",
-        icon: "source",
+        title: "Resource Library",
+        url: "/resource-library",
+        icon: "category",
       },
       {
         title: "Teams",

@@ -15,7 +15,7 @@ const Root = styled("div")(({ theme }) => ({
 }));
 
 const Main = styled("main")(({ theme }) => ({
-  marginTop: theme.spacing(7),
+  marginTop: theme.spacing(8),
   width: "100%",
 }));
 

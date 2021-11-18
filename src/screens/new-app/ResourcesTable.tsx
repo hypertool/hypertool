@@ -1,3 +1,5 @@
+import type { FunctionComponent, ReactElement } from "react";
+
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 
@@ -6,7 +8,7 @@ const Root = styled("div")(({ theme }) => ({
   height: `calc(100vh - 216px)`,
   [theme.breakpoints.up("lg")]: {
     height: `calc(100vh - 272px)`,
-  }
+  },
 }));
 
 const columns: GridColDef[] = [
@@ -28,7 +30,14 @@ const rows = [
   { id: 10, name: "vindb", type: "rest_api", createdAt: "9-8-2021" },
 ];
 
-export default function DataTable() {
+interface Props {
+  selectable: boolean;
+}
+
+const ResourcesTable: FunctionComponent<Props> = (
+  props: Props
+): ReactElement => {
+  const { selectable } = props;
   return (
     <Root>
       <DataGrid
@@ -36,8 +45,14 @@ export default function DataTable() {
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10]}
-        checkboxSelection={true}
+        checkboxSelection={selectable}
       />
     </Root>
   );
-}
+};
+
+ResourcesTable.defaultProps = {
+  selectable: false,
+};
+
+export default ResourcesTable;
