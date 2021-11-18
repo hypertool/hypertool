@@ -1,13 +1,32 @@
 import type { FunctionComponent, ReactElement } from "react";
 
 import { useState } from "react";
-import { Stepper, Step, StepLabel, Button, Typography } from "@mui/material";
+import {
+  Stepper,
+  MobileStepper,
+  Step,
+  StepLabel,
+  Button,
+  Typography,
+  Hidden,
+  Paper,
+  Container,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 
 import AboutStep from "./AboutStep";
 import ResourcesStep from "./ResourcesStep";
 import RepositoryStep from "./RepositoryStep";
 import StepperComplete from "./StepperComplete";
+import Wrap from "../../components/Wrap";
+
+const StepContainer = styled("div")(({ theme }) => ({
+  height: "calc(100vh - 200px)",
+}));
 
 const ActionContainer = styled("div")(({ theme }) => ({
   display: "flex",
@@ -22,6 +41,10 @@ const LeftActionContainer = styled("div")(({ theme }) => ({
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "flex-start",
+}));
+
+const StepperAction = styled(Button)(({ theme }) => ({
+  width: 120,
 }));
 
 interface StepStructure {
@@ -93,8 +116,15 @@ const defaultSteps: Steps = [
 const NewAppStepper: FunctionComponent = (): ReactElement => {
   const [activeStep, setActiveStep] = useState(0);
   const [stepTuple, setStepTuple] = useState<Steps>(defaultSteps);
+  const theme = useTheme();
+  const smallerThanLg = useMediaQuery(theme.breakpoints.down("lg"));
 
   const handleNext = () => {
+    if (activeStep + 1 === steps.length) {
+      // setComplete(true);
+      return;
+    }
+
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setStepTuple((oldStepTuple) => {
       const newStepTuple = JSON.parse(JSON.stringify(stepTuple));
@@ -145,41 +175,130 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
 
   return (
     <div>
-      <Stepper activeStep={activeStep}>{renderStepperItems()}</Stepper>
-      {complete && <StepperComplete />}
-      {Component && <Component />}
+      <Hidden lgDown={true}>
+        <Stepper activeStep={activeStep}>{renderStepperItems()}</Stepper>
+      </Hidden>
+      <Hidden lgUp={true}>
+        <Paper
+          square={true}
+          elevation={2}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            height: 50,
+            p: 2,
+            backgroundColor: "#000000",
+          }}
+        >
+          <Typography>{steps[activeStep].title}</Typography>
+        </Paper>
+      </Hidden>
+
+      <Wrap
+        when={smallerThanLg}
+        wrapper={Container}
+        style={{ height: "calc(100vh - 156px)" }}
+      >
+        <Wrap when={!smallerThanLg} wrapper={StepContainer}>
+          <>
+            {complete && <StepperComplete />}
+            {Component && <Component />}
+          </>
+        </Wrap>
+      </Wrap>
 
       {!complete && (
-        <ActionContainer>
-          <LeftActionContainer>
-            {activeStep > 0 && (
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
+        <>
+          <Hidden lgDown={true}>
+            <ActionContainer>
+              <LeftActionContainer>
+                {activeStep > 0 && (
+                  <StepperAction
+                    color="inherit"
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mr: 1 }}
+                    variant="contained"
+                    size="small"
+                  >
+                    Back
+                  </StepperAction>
+                )}
+                {steps[activeStep].optional && (
+                  <StepperAction
+                    color="inherit"
+                    onClick={handleSkip}
+                    variant="contained"
+                    size="small"
+                    sx={{ mr: 1 }}
+                  >
+                    Skip
+                  </StepperAction>
+                )}
+              </LeftActionContainer>
+              <StepperAction
+                onClick={handleNext}
                 variant="contained"
                 size="small"
               >
-                Back
-              </Button>
-            )}
-            {steps[activeStep].optional && (
-              <Button
-                color="inherit"
-                onClick={handleSkip}
-                variant="contained"
-                size="small"
-                sx={{ mr: 1 }}
-              >
-                Skip
-              </Button>
-            )}
-          </LeftActionContainer>
-          <Button onClick={handleNext} variant="contained" size="small">
-            {activeStep === steps.length - 1 ? "Create App" : "Next"}
-          </Button>
-        </ActionContainer>
+                {activeStep === steps.length - 1 ? "Create App" : "Next"}
+              </StepperAction>
+            </ActionContainer>
+          </Hidden>
+          <Hidden lgUp={true}>
+            <Paper
+              square
+              elevation={1}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                height: 50,
+                bgcolor: "background.default",
+                padding: 0,
+              }}
+            >
+              <MobileStepper
+                variant="text"
+                steps={steps.length}
+                position="static"
+                activeStep={activeStep}
+                sx={{
+                  width: "100%",
+                  backgroundColor: theme.palette.background.paper,
+                  // marginTop: theme.spacing(11)
+                }}
+                nextButton={
+                  <Button
+                    size="small"
+                    onClick={handleNext}
+                    disabled={activeStep === steps.length - 1}
+                  >
+                    Next
+                    {theme.direction === "rtl" ? (
+                      <KeyboardArrowLeft />
+                    ) : (
+                      <KeyboardArrowRight />
+                    )}
+                  </Button>
+                }
+                backButton={
+                  <Button
+                    size="small"
+                    onClick={handleBack}
+                    disabled={activeStep === 0}
+                  >
+                    {theme.direction === "rtl" ? (
+                      <KeyboardArrowRight />
+                    ) : (
+                      <KeyboardArrowLeft />
+                    )}
+                    Back
+                  </Button>
+                }
+              />
+            </Paper>
+          </Hidden>
+        </>
       )}
     </div>
   );
