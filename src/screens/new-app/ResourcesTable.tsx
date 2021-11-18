@@ -30,7 +30,14 @@ const rows = [
   { id: 10, name: "vindb", type: "rest_api", createdAt: "9-8-2021" },
 ];
 
-const ResourcesTable: FunctionComponent = (): ReactElement => {
+interface Props {
+  selectable: boolean;
+}
+
+const ResourcesTable: FunctionComponent<Props> = (
+  props: Props
+): ReactElement => {
+  const { selectable } = props;
   return (
     <Root>
       <DataGrid
@@ -38,10 +45,14 @@ const ResourcesTable: FunctionComponent = (): ReactElement => {
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10]}
-        checkboxSelection={true}
+        checkboxSelection={selectable}
       />
     </Root>
   );
+};
+
+ResourcesTable.defaultProps = {
+  selectable: false,
 };
 
 export default ResourcesTable;

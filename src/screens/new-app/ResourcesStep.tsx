@@ -16,7 +16,7 @@ const Root = styled("section")(({ theme }) => ({
 const ResourcesStep: FunctionComponent = (): ReactElement => {
   return (
     <Root>
-      <ResourcesTable />
+      <ResourcesTable selectable={true} />
     </Root>
   );
 };
