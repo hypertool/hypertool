@@ -1,3 +1,5 @@
+import type { FunctionComponent, ReactElement } from "react";
+
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 
@@ -6,7 +8,7 @@ const Root = styled("div")(({ theme }) => ({
   height: `calc(100vh - 216px)`,
   [theme.breakpoints.up("lg")]: {
     height: `calc(100vh - 272px)`,
-  }
+  },
 }));
 
 const columns: GridColDef[] = [
@@ -28,7 +30,7 @@ const rows = [
   { id: 10, name: "vindb", type: "rest_api", createdAt: "9-8-2021" },
 ];
 
-export default function DataTable() {
+const ResourcesTable: FunctionComponent = (): ReactElement => {
   return (
     <Root>
       <DataGrid
@@ -40,4 +42,6 @@ export default function DataTable() {
       />
     </Root>
   );
-}
+};
+
+export default ResourcesTable;
