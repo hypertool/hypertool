@@ -1,6 +1,6 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   Stepper,
   MobileStepper,
@@ -86,7 +86,7 @@ const CreateAction = styled(Button)(({ theme }) => ({
 interface StepStructure {
   title: string;
   optional: boolean;
-  component: FunctionComponent;
+  component: FunctionComponent<any>;
 }
 
 const steps: StepStructure[] = [
@@ -130,6 +130,7 @@ const defaultSteps: Steps = [
 const NewResourceStepper: FunctionComponent = (): ReactElement => {
   const [activeStep, setActiveStep] = useState(0);
   const [stepTuple, setStepTuple] = useState<Steps>(defaultSteps);
+  const [resourceType, setResourceType] = useState<ResourceType | null>(null);
   const theme = useTheme();
 
   const handleNext = () => {
@@ -165,6 +166,13 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
     });
   };
 
+  const handleResourceTypeChange = useCallback(
+    (newResourceType: ResourceType) => {
+      setResourceType(newResourceType);
+    },
+    []
+  );
+
   const renderStepperItem = (step: StepStructure, index: number) => {
     return (
       <Step key={step.title} completed={stepTuple[index].completed}>
@@ -181,7 +189,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
 
   const renderStepperItems = () => steps.map(renderStepperItem);
 
-  const Component: FunctionComponent | null =
+  const Component: FunctionComponent<{ [key: string]: any }> | null =
     activeStep < steps.length ? steps[activeStep].component : null;
 
   const complete = activeStep === steps.length;
@@ -219,7 +227,17 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
         </Hidden>
 
         <StepContainer>
-          <>{Component && <Component />}</>
+          <>
+            {Component && (
+              <Component
+                {...{
+                  onChange:
+                    activeStep === 0 ? handleResourceTypeChange : undefined,
+                  activeType: activeStep === 0 ? resourceType : undefined,
+                }}
+              />
+            )}
+          </>
         </StepContainer>
 
         {!complete && (

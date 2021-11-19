@@ -3,7 +3,7 @@ import type { FunctionComponent, ReactElement } from "react";
 import { Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import type { Resource } from "../../types";
+import type { Resource, ResourceType } from "../../types";
 
 import ResourceItem from "./ResourceItem";
 
@@ -20,7 +20,7 @@ const Root = styled("section")(({ theme }) => ({
 const Category = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  marginBottom: theme.spacing(2)
+  marginBottom: theme.spacing(2),
 }));
 
 const CategoryContent = styled("div")(({ theme }) => ({
@@ -260,13 +260,25 @@ const categories: CategoryModel[] = [
   },
 ];
 
-const SelectStep: FunctionComponent = (): ReactElement => {
+interface Props {
+  onChange: (type: ResourceType) => void;
+  activeType: ResourceType;
+}
+
+const SelectStep: FunctionComponent<Props> = (props: Props): ReactElement => {
+  const { onChange, activeType } = props;
+
   const renderCategory = (category: CategoryModel) => (
     <Category>
       <CategoryTitle variant="h2">{category.title}</CategoryTitle>
       <CategoryContent>
         {category.resources.map((resource) => (
-          <ResourceItem key={resource.title} {...resource} selected={false} />
+          <ResourceItem
+            key={resource.title}
+            {...resource}
+            onClick={onChange}
+            selected={activeType === resource.type}
+          />
         ))}
       </CategoryContent>
     </Category>
