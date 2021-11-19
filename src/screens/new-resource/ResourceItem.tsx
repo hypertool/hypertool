@@ -1,7 +1,7 @@
 import type { FunctionComponent, ReactElement } from "react";
 
 import { useCallback } from "react";
-import { ButtonBase, Typography } from "@mui/material";
+import { ButtonBase, Typography, useTheme } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import type { ResourceType } from "../../types";
@@ -30,14 +30,20 @@ interface Props {
 }
 
 const ResourceItem: FunctionComponent<Props> = (props: Props): ReactElement => {
-  const { title, type, onClick } = props;
+  const { title, type, onClick, selected } = props;
+  const theme = useTheme();
 
   const handleClick = useCallback(() => {
     onClick(type);
   }, [onClick, type]);
 
   return (
-    <Root onClick={handleClick}>
+    <Root
+      onClick={handleClick}
+      style={{
+        backgroundColor: selected ? theme.palette.primary.main : undefined,
+      }}
+    >
       <Title>{title}</Title>
     </Root>
   );
