@@ -10,10 +10,8 @@ import {
   Typography,
   Hidden,
   Paper,
-  Container,
   useTheme,
   Divider,
-  useMediaQuery,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
@@ -24,7 +22,6 @@ import type { ResourceType } from "../../types";
 
 import ConfigureStep from "./ConfigureStep";
 import SelectStep from "./SelectStep";
-import Wrap from "../../components/Wrap";
 
 const Root = styled("div")(({ theme }) => ({
   display: "flex",
@@ -32,6 +29,7 @@ const Root = styled("div")(({ theme }) => ({
   alignItems: "flex-start",
   justifyContent: "flex-start",
   width: "100%",
+  padding: theme.spacing(4),
 }));
 
 const Left = styled("div")(({ theme }) => ({
@@ -53,11 +51,13 @@ const Help = styled(Typography)(({ theme }) => ({
   fontSize: 14,
   color: theme.palette.getContrastText(theme.palette.background.default),
   lineHeight: 1.5,
-  marginTop: theme.spacing(1)
+  marginTop: theme.spacing(1),
 })) as any;
 
 const StepContainer = styled("div")(({ theme }) => ({
-  height: "calc(100vh - 200px)",
+  height: "calc(100vh - 232px)",
+  width: "100%",
+  padding: theme.spacing(1),
 }));
 
 const ActionContainer = styled("div")(({ theme }) => ({
@@ -124,14 +124,13 @@ const defaultSteps: Steps = [
   {
     skipped: false,
     completed: false,
-  }
+  },
 ];
 
 const NewResourceStepper: FunctionComponent = (): ReactElement => {
   const [activeStep, setActiveStep] = useState(0);
   const [stepTuple, setStepTuple] = useState<Steps>(defaultSteps);
   const theme = useTheme();
-  const smallerThanLg = useMediaQuery(theme.breakpoints.down("lg"));
 
   const handleNext = () => {
     if (activeStep + 1 === steps.length) {
@@ -219,15 +218,9 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
           </Paper>
         </Hidden>
 
-        <Wrap
-          when={smallerThanLg}
-          wrapper={Container}
-          style={{ height: "calc(100vh - 156px)", maxWidth: 1200 }}
-        >
-          <Wrap when={!smallerThanLg} wrapper={StepContainer}>
-            <>{Component && <Component />}</>
-          </Wrap>
-        </Wrap>
+        <StepContainer>
+          <>{Component && <Component />}</>
+        </StepContainer>
 
         {!complete && (
           <>
