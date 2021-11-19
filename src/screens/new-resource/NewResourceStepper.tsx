@@ -20,6 +20,8 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 
+import type { ResourceType } from "../../types";
+
 import ConfigureStep from "./ConfigureStep";
 import SelectStep from "./SelectStep";
 import Wrap from "../../components/Wrap";
@@ -99,8 +101,6 @@ const steps: StepStructure[] = [
     component: ConfigureStep,
   },
 ];
-
-type ResourceType = "mysql" | "postgres" | "mongodb" | "rest_api" | "graphql";
 
 interface SelectStepData {
   type: ResourceType | undefined;
