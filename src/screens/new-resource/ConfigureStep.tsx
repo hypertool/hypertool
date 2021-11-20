@@ -6,6 +6,7 @@ import { ResourceType } from "../../types";
 import MySQLForm from "./MySQLForm";
 import PostgresForm from "./PostgresForm";
 import MongoDBForm from "./MongoDBForm";
+import BigQueryForm from "./BigQueryForm";
 
 const Root = styled("section")(({ theme }) => ({
   display: "flex",
@@ -29,6 +30,7 @@ const ConfigureStep: FunctionComponent<Props> = (
     {activeType === "postgres" && <PostgresForm />}
     {activeType === "mysql" && <MySQLForm />}
     {activeType === "mongodb" && <MongoDBForm />}
+    {activeType === "bigquery" && <BigQueryForm />}
   </Root>;
 };
 
