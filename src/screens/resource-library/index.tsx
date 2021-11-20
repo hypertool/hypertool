@@ -1,5 +1,6 @@
 import type { FunctionComponent, ReactElement } from "react";
 
+import { useCallback } from "react";
 import { styled } from "@mui/material/styles";
 import {
   AppBar,
@@ -11,6 +12,7 @@ import {
   InputAdornment,
   Container,
 } from "@mui/material";
+import { useNavigate } from "react-router";
 
 import ResourcesTable from "../new-app/ResourcesTable";
 
@@ -48,6 +50,12 @@ const TableContainer = styled(Container)(({ theme }) => ({
 }));
 
 const ResourceLibrary: FunctionComponent = (): ReactElement => {
+  const navigate = useNavigate();
+
+  const handleCreateNew = useCallback(() => {
+    navigate("/resources/new");
+  }, []);
+
   return (
     <Root>
       <AppBar position="static" elevation={1}>
@@ -66,7 +74,7 @@ const ResourceLibrary: FunctionComponent = (): ReactElement => {
                 ),
               }}
             />
-            <Button size="small">
+            <Button size="small" onClick={handleCreateNew}>
               <ActionIcon fontSize="small">add_circle</ActionIcon>
               Create New
             </Button>
