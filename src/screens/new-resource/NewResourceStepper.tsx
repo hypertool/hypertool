@@ -233,7 +233,10 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                 {...{
                   onChange:
                     activeStep === 0 ? handleResourceTypeChange : undefined,
-                  activeType: activeStep === 0 ? resourceType : undefined,
+                  activeType:
+                    activeStep === 0 || activeStep === 1
+                      ? resourceType
+                      : undefined,
                 }}
               />
             )}
