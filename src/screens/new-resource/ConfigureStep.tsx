@@ -2,6 +2,9 @@ import type { FunctionComponent, ReactElement } from "react";
 
 import { styled } from "@mui/material/styles";
 
+import { ResourceType } from "../../types";
+import MySQLForm from "./MySQLForm";
+
 const Root = styled("section")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -12,12 +15,17 @@ const Root = styled("section")(({ theme }) => ({
   width: "100%",
 }));
 
-const ConfigureStep: FunctionComponent = (): ReactElement => {
-  return (
-    <Root>
-      Select Step
-    </Root>
-  );
+interface Props {
+  activeType: ResourceType;
+}
+
+const ConfigureStep: FunctionComponent<Props> = (
+  props: Props
+): ReactElement => {
+  const { activeType } = props;
+  return <Root>
+    {activeType === "mysql" && <MySQLForm />}
+  </Root>;
 };
 
 export default ConfigureStep;
