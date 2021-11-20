@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 
 import { ResourceType } from "../../types";
 import MySQLForm from "./MySQLForm";
+import PostgresForm from "./PostgresForm";
 
 const Root = styled("section")(({ theme }) => ({
   display: "flex",
@@ -24,6 +25,7 @@ const ConfigureStep: FunctionComponent<Props> = (
 ): ReactElement => {
   const { activeType } = props;
   return <Root>
+    {activeType === "postgres" && <PostgresForm />}
     {activeType === "mysql" && <MySQLForm />}
   </Root>;
 };
