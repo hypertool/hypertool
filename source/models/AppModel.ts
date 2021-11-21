@@ -11,8 +11,22 @@ const appSchema = new Schema({
     required: true,
   },
   members: {
-    type: [Schema.Types.ObjectId],
-    ref: "Member",
+    type: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Member",
+      },
+    ],
+    required: true,
+  },
+  resources: {
+    type: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Resource",
+      },
+    ],
+    default: [],
   },
   creator: {
     type: Schema.Types.ObjectId,
