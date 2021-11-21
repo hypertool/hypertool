@@ -82,3 +82,13 @@ export interface ExternalResource {
     | ExternalBigQueryConfiguration;
   status: string;
 }
+
+export interface ResourcePage {
+  totalRecords: number;
+  totalPages: number;
+  previousPage: number;
+  nextPage: number;
+  hasPreviousPage: number;
+  hasNextPage: number;
+  records: ExternalResource;
+}
