@@ -52,6 +52,42 @@ const filterSchema = joi.object({
     .default(constants.paginateMinLimit),
 });
 
+const updateSchema = joi.object({
+  name: joi.string().min(1).max(256).allow(""),
+  description: joi.string().min(0).max(512).allow(""),
+  type: joi
+    .string()
+    .valid(...constants.resourceTypes)
+    .required(),
+  mysql: joi.object({
+    host: joi.string().required(),
+    port: joi.number().integer().required(),
+    databaseName: joi.string().required(),
+    databaseUserName: joi.string().required(),
+    databasePassword: joi.string().required(),
+    connectUsingSSL: joi.boolean().default(false),
+  }),
+  postgres: joi.object({
+    host: joi.string().required(),
+    port: joi.number().integer().required(),
+    databaseName: joi.string().required(),
+    databaseUserName: joi.string().required(),
+    databasePassword: joi.string().required(),
+    connectUsingSSL: joi.boolean().default(false),
+  }),
+  mongodb: joi.object({
+    host: joi.string().required(),
+    port: joi.number().integer().required(),
+    databaseName: joi.string().required(),
+    databaseUserName: joi.string().required(),
+    databasePassword: joi.string().required(),
+    connectUsingSSL: joi.boolean().default(false),
+  }),
+  bigquery: joi.object({
+    key: joi.any(),
+  }),
+});
+
 const toExternal = (resource: Resource): ExternalResource => {
   const { name, description, type, configuration, status } = resource;
   let sanitizedConfiguration = null;
@@ -188,4 +224,42 @@ const getById = async (
   return toExternal(resource);
 };
 
-export { create, list, listByIds, getById };
+const update = async (
+  context,
+  resourceId: string,
+  attributes
+): Promise<ExternalResource> => {
+  if (!constants.identifierPattern.test(resourceId)) {
+    throw new BadRequestError("The specified resource identifier is invalid.");
+  }
+
+  const { error, value } = updateSchema.validate(attributes, {
+    stripUnknown: true,
+  });
+  if (error) {
+    throw new BadRequestError(error.message);
+  }
+
+  // TODO: Update filters
+  const resource = await ResourceModel.findOneAndUpdate(
+    {
+      _id: resourceId,
+      status: { $ne: "deleted" },
+    },
+    value,
+    {
+      new: true,
+      lean: true,
+    }
+  ).exec();
+
+  if (!resource) {
+    throw new NotFoundError(
+      "A resource with the specified identifier does not exist."
+    );
+  }
+
+  return toExternal(resource);
+};
+
+export { create, list, listByIds, getById, update };
