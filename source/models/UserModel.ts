@@ -49,7 +49,7 @@ const userSchema = new Schema(
       default: false,
       required: true,
     },
-    roles: {
+    permissions: {
       type: [String],
       default: [],
     },
