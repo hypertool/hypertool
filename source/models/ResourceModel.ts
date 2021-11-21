@@ -30,6 +30,33 @@ const mysqlSchema = new Schema({
   },
 });
 
+const postgresSchema = new Schema({
+  host: {
+    type: String,
+    required: true,
+  },
+  port: {
+    type: Number,
+    required: true,
+  },
+  databaseName: {
+    type: String,
+    required: true,
+  },
+  databaseUserName: {
+    type: String,
+    required: true,
+  },
+  databasePassword: {
+    type: String,
+    required: true,
+  },
+  connectUsingSSL: {
+    type: Boolean,
+    required: true,
+  },
+});
+
 const resourceSchema = new Schema({
   name: {
     type: String,
@@ -56,6 +83,9 @@ const resourceSchema = new Schema({
   },
   mysql: {
     type: mysqlSchema,
+  },
+  postgres: {
+    type: postgresSchema,
   },
 });
 
