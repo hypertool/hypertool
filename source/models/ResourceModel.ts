@@ -1,7 +1,96 @@
-import { Schema, Model, model } from "mongoose";
+import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
+import { Resource } from "../types";
 import { resourceTypes, resourceStatuses } from "../utils/constants";
+
+const mysqlSchema = new Schema({
+  host: {
+    type: String,
+    required: true,
+  },
+  port: {
+    type: Number,
+    required: true,
+  },
+  databaseName: {
+    type: String,
+    required: true,
+  },
+  databaseUserName: {
+    type: String,
+    required: true,
+  },
+  databasePassword: {
+    type: String,
+    required: true,
+  },
+  connectUsingSSL: {
+    type: Boolean,
+    required: true,
+  },
+});
+
+const postgresSchema = new Schema({
+  host: {
+    type: String,
+    required: true,
+  },
+  port: {
+    type: Number,
+    required: true,
+  },
+  databaseName: {
+    type: String,
+    required: true,
+  },
+  databaseUserName: {
+    type: String,
+    required: true,
+  },
+  databasePassword: {
+    type: String,
+    required: true,
+  },
+  connectUsingSSL: {
+    type: Boolean,
+    required: true,
+  },
+});
+
+const mongodbSchema = new Schema({
+  host: {
+    type: String,
+    required: true,
+  },
+  port: {
+    type: Number,
+    required: true,
+  },
+  databaseName: {
+    type: String,
+    required: true,
+  },
+  databaseUserName: {
+    type: String,
+    required: true,
+  },
+  databasePassword: {
+    type: String,
+    required: true,
+  },
+  connectUsingSSL: {
+    type: Boolean,
+    required: true,
+  },
+});
+
+const bigquerySchema = new Schema({
+  key: {
+    type: Object,
+    required: true,
+  },
+});
 
 const resourceSchema = new Schema({
   name: {
@@ -17,6 +106,11 @@ const resourceSchema = new Schema({
     maxlength: 512,
     default: "",
   },
+  creator: {
+    type: Schema.Types.ObjectId,
+    ref: "Member",
+    required: true,
+  },
   type: {
     type: String,
     enum: resourceTypes,
@@ -27,8 +121,20 @@ const resourceSchema = new Schema({
     enum: resourceStatuses,
     default: "active",
   },
+  mysql: {
+    type: mysqlSchema,
+  },
+  postgres: {
+    type: postgresSchema,
+  },
+  mongodb: {
+    type: mongodbSchema,
+  },
+  bigquery: {
+    type: bigquerySchema,
+  },
 });
 
 resourceSchema.plugin(paginate);
 
-export default model("Resource", resourceSchema);
+export default model<Resource>("Resource", resourceSchema);

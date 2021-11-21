@@ -13,8 +13,9 @@
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "graphql": "^16.0.1",
+    "graphql": "^15.0.0",
     "iso-language-codes": "^1.1.0",
+    "joi": "^17.4.2",
     "mongoose": "^6.0.12",
     "mongoose-paginate-v2": "^1.4.2",
     "morgan": "^1.10.0"
