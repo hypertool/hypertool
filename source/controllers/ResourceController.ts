@@ -2,7 +2,7 @@ import joi from "joi";
 
 import type { Resource, ExternalResource, ResourcePage } from "../types";
 
-import { constants, BadRequestError } from "../utils";
+import { constants, BadRequestError, NotFoundError } from "../utils";
 import { ResourceModel } from "../models";
 
 const createSchema = joi.object({
@@ -163,4 +163,29 @@ const listByIds = async (
   return resourceIds.map((key) => toExternal(object[key]));
 };
 
-export { create, list, listByIds };
+const getById = async (
+  context,
+  resourceId: string
+): Promise<ExternalResource> => {
+  if (!constants.identifierPattern.test(resourceId)) {
+    throw new BadRequestError("The specified resource identifier is invalid.");
+  }
+
+  // TODO: Update filters
+  const filters = {
+    _id: resourceId,
+    status: { $ne: "deleted" },
+  };
+  const resource = await ResourceModel.findOne(filters as any).exec();
+
+  /* We return a 404 error, if we did not find the resource. */
+  if (!resource) {
+    throw new NotFoundError(
+      "Cannot find a resource with the specified identifier."
+    );
+  }
+
+  return toExternal(resource);
+};
+
+export { create, list, listByIds, getById };
