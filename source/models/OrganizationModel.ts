@@ -19,11 +19,23 @@ const organizationSchema = new Schema(
       default: "",
     },
     members: {
-      type: [{
-        type: Schema.Types.ObjectId,
-        ref: "Member",
-      }],
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Member",
+        },
+      ],
       required: true,
+    },
+    apps: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "App",
+        },
+      ],
+      required: true,
+      default: [],
     },
     status: {
       type: String,
