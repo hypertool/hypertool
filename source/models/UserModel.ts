@@ -18,11 +18,11 @@ const userSchema = new Schema(
       required: true,
       trim: true,
     },
-    about: {
+    description: {
       type: String,
       minlength: 0,
       maxlength: 512,
-      default: null,
+      default: "",
     },
     gender: {
       type: String,
