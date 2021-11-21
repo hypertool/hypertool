@@ -42,6 +42,16 @@ const createSchema = joi.object({
   }),
 });
 
+const filterSchema = joi.object({
+  page: joi.number().integer().default(0),
+  limit: joi
+      .number()
+      .integer()
+      .min(constants.paginateMinLimit)
+      .max(constants.paginateMaxLimit)
+      .default(constants.paginateMinLimit),
+});
+
 interface ExternalMySQLConfiguration {
   host: string;
   port: number;
