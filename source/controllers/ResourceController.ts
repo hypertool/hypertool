@@ -1,6 +1,6 @@
 import joi from "joi";
 
-import type { Resource, ExternalResource } from "../types";
+import type { Resource, ExternalResource, ResourcePage } from "../types";
 
 import { constants, BadRequestError } from "../utils";
 import { ResourceModel } from "../models";
@@ -45,11 +45,11 @@ const createSchema = joi.object({
 const filterSchema = joi.object({
   page: joi.number().integer().default(0),
   limit: joi
-      .number()
-      .integer()
-      .min(constants.paginateMinLimit)
-      .max(constants.paginateMaxLimit)
-      .default(constants.paginateMinLimit),
+    .number()
+    .integer()
+    .min(constants.paginateMinLimit)
+    .max(constants.paginateMaxLimit)
+    .default(constants.paginateMinLimit),
 });
 
 const toExternal = (resource: Resource): ExternalResource => {
@@ -110,4 +110,40 @@ const create = async (context, attributes): Promise<ExternalResource> => {
   return toExternal(newResource);
 };
 
-export { create };
+const list = async (context, parameters): Promise<ResourcePage> => {
+  const { error, value } = filterSchema.validate(parameters);
+  if (error) {
+    throw new BadRequestError(error.message);
+  }
+
+  // TODO: Update filters
+  const filters = {
+    status: {
+      $ne: "deleted",
+    },
+  };
+  const { page, limit } = value;
+
+  const resources = await (ResourceModel as any).paginate(filters, {
+    limit,
+    page: page + 1,
+    lean: true,
+    leanWithId: true,
+    pagination: true,
+    sort: {
+      updatedAt: -1,
+    },
+  });
+
+  return {
+    totalRecords: resources.totalDocs,
+    totalPages: resources.totalPages,
+    previousPage: resources.prevPage ? resources.prevPage - 1 : -1,
+    nextPage: resources.nextPage ? resources.nextPage - 1 : -1,
+    hasPreviousPage: resources.hasPrevPage,
+    hasNextPage: resources.hasNextPage,
+    records: resources.docs.map(toExternal),
+  };
+};
+
+export { create, list };
