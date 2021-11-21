@@ -3,6 +3,33 @@ import paginate from "mongoose-paginate-v2";
 
 import { resourceTypes, resourceStatuses } from "../utils/constants";
 
+const mysqlSchema = new Schema({
+  host: {
+    type: String,
+    required: true,
+  },
+  port: {
+    type: Number,
+    required: true,
+  },
+  databaseName: {
+    type: String,
+    required: true,
+  },
+  databaseUserName: {
+    type: String,
+    required: true,
+  },
+  databasePassword: {
+    type: String,
+    required: true,
+  },
+  connectUsingSSL: {
+    type: Boolean,
+    required: true,
+  },
+});
+
 const resourceSchema = new Schema({
   name: {
     type: String,
@@ -26,6 +53,9 @@ const resourceSchema = new Schema({
     type: String,
     enum: resourceStatuses,
     default: "active",
+  },
+  mysql: {
+    type: mysqlSchema,
   },
 });
 
