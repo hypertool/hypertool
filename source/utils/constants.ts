@@ -286,6 +286,8 @@ const memberStatuses = tuple(
 
 const appStatuses = tuple("private", "public", "deleted", "archived", "banned");
 
+const resourceStatuses = tuple("enabled", "disabled", "deleted", "banned");
+
 export {
   paginateMaxLimit,
   paginateMinLimit,
@@ -297,4 +299,5 @@ export {
   organizationStatuses,
   memberStatuses,
   appStatuses,
+  resourceStatuses,
 };
