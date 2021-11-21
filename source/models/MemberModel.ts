@@ -9,11 +9,6 @@ const memberSchema = new Schema({
     ref: "User",
     required: true,
   },
-  roles: {
-    type: [String],
-    required: true,
-    default: [],
-  },
   permissions: {
     type: [String],
     required: true,
