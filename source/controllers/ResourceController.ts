@@ -146,4 +146,21 @@ const list = async (context, parameters): Promise<ResourcePage> => {
   };
 };
 
-export { create, list };
+const listByIds = async (
+  context,
+  resourceIds: string[]
+): Promise<ExternalResource[]> => {
+  const unorderedResources = await ResourceModel.find({
+    _id: { $in: resourceIds },
+    status: { $ne: "deleted" },
+  }).exec();
+  const object = {};
+  // eslint-disable-next-line no-restricted-syntax
+  for (const resource of unorderedResources) {
+    object[resource._id] = resource;
+  }
+  // eslint-disable-next-line security/detect-object-injection
+  return resourceIds.map((key) => toExternal(object[key]));
+};
+
+export { create, list, listByIds };
