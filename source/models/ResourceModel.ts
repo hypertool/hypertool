@@ -57,6 +57,33 @@ const postgresSchema = new Schema({
   },
 });
 
+const mongodbSchema = new Schema({
+  host: {
+    type: String,
+    required: true,
+  },
+  port: {
+    type: Number,
+    required: true,
+  },
+  databaseName: {
+    type: String,
+    required: true,
+  },
+  databaseUserName: {
+    type: String,
+    required: true,
+  },
+  databasePassword: {
+    type: String,
+    required: true,
+  },
+  connectUsingSSL: {
+    type: Boolean,
+    required: true,
+  },
+});
+
 const resourceSchema = new Schema({
   name: {
     type: String,
@@ -86,6 +113,9 @@ const resourceSchema = new Schema({
   },
   postgres: {
     type: postgresSchema,
+  },
+  mongodb: {
+    type: mongodbSchema,
   },
 });
 
