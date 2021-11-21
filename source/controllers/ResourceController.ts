@@ -1,6 +1,6 @@
 import joi from "joi";
 
-import type { Resource } from "../types";
+import type { Resource, ExternalResource } from "../types";
 
 import { constants, BadRequestError } from "../utils";
 import { ResourceModel } from "../models";
@@ -51,46 +51,6 @@ const filterSchema = joi.object({
       .max(constants.paginateMaxLimit)
       .default(constants.paginateMinLimit),
 });
-
-interface ExternalMySQLConfiguration {
-  host: string;
-  port: number;
-  databaseName: string;
-  databaseUserName: string;
-  connectUsingSSL: boolean;
-}
-
-interface ExternalPostgresConfiguration {
-  host: string;
-  port: number;
-  databaseName: string;
-  databaseUserName: string;
-  connectUsingSSL: boolean;
-}
-
-interface ExternalMongoDBConfiguration {
-  host: string;
-  port: number;
-  databaseName: string;
-  databaseUserName: string;
-  connectUsingSSL: boolean;
-}
-
-interface ExternalBigQueryConfiguration {
-  [key: string]: any;
-}
-
-interface ExternalResource {
-  name: string;
-  description: string;
-  type: string;
-  configuration:
-    | ExternalMySQLConfiguration
-    | ExternalPostgresConfiguration
-    | ExternalMongoDBConfiguration
-    | ExternalBigQueryConfiguration;
-  status: string;
-}
 
 const toExternal = (resource: Resource): ExternalResource => {
   const { name, description, type, configuration, status } = resource;
