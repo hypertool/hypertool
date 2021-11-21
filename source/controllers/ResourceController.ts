@@ -139,7 +139,7 @@ const create = async (context, attributes): Promise<ExternalResource> => {
   // TODO: Check if value.name is unique across the organization and matches the identifier regex.
   const newResource = new ResourceModel({
     ...value,
-    status: "private",
+    status: "enabled",
   });
   await newResource.save();
 
