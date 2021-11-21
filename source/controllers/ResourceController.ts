@@ -262,4 +262,36 @@ const update = async (
   return toExternal(resource);
 };
 
-export { create, list, listByIds, getById, update };
+const enable = async (
+  context,
+  resourceId: string
+): Promise<ExternalResource> => {
+  if (!constants.identifierPattern.test(resourceId)) {
+    throw new BadRequestError("The specified resource identifier is invalid.");
+  }
+
+  // TODO: Update filters
+  const resource = await ResourceModel.findOneAndUpdate(
+    {
+      _id: resourceId,
+      status: { $ne: "deleted" },
+    },
+    {
+      status: "enabled",
+    },
+    {
+      new: true,
+      lean: true,
+    }
+  );
+
+  if (!resource) {
+    throw new NotFoundError(
+      "A resource with the specified identifier does not exist."
+    );
+  }
+
+  return toExternal(resource);
+};
+
+export { create, list, listByIds, getById, update, enable };
