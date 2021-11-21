@@ -1,6 +1,7 @@
-import { Schema, Model, model } from "mongoose";
+import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
+import { Resource } from "../types";
 import { resourceTypes, resourceStatuses } from "../utils/constants";
 
 const mysqlSchema = new Schema({
@@ -136,4 +137,4 @@ const resourceSchema = new Schema({
 
 resourceSchema.plugin(paginate);
 
-export default model("Resource", resourceSchema);
+export default model<Resource>("Resource", resourceSchema);
