@@ -266,6 +266,8 @@ const identifierPattern = /^[a-z0-9]{24}$/;
 
 const userStatuses = tuple("active", "deleted", "banned");
 
+const organizationStatuses = tuple("active", "deleted", "banned");
+
 export {
   paginateMaxLimit,
   paginateMinLimit,
@@ -274,4 +276,5 @@ export {
   countryCodes,
   identifierPattern,
   userStatuses,
+  organizationStatuses,
 };
