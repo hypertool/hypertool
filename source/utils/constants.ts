@@ -288,6 +288,53 @@ const appStatuses = tuple("private", "public", "deleted", "archived", "banned");
 
 const resourceStatuses = tuple("enabled", "disabled", "deleted", "banned");
 
+const resourceTypes = tuple(
+  // Databases
+  "mysql",
+  "postgres",
+  "microsoft_sql",
+  "mongodb",
+  "cassandra",
+  "cosmosdb",
+  "amazon_redshift",
+  "amazon_athena",
+  "bigquery",
+  "elasticsearch",
+  "couchdb",
+  "rethinkdb",
+  "snowflake",
+  "denodo",
+  "redis",
+  "dynamodb",
+
+  // APIs
+  "rest_api",
+  "graphql",
+  "firebase",
+  "stripe",
+  "twilio",
+  "github",
+  "google_sheets",
+  "salesforce",
+  "sendgrid",
+  "amazon_s3",
+  "google_cloud_storage",
+  "datadog",
+  "lambda",
+  "openapi",
+  "smtp",
+  "slack",
+  "asana",
+  "jira",
+  "close",
+  "bigid",
+  "basecamp",
+  "onesignal",
+  "front",
+  "google_maps",
+  "circleci"
+);
+
 export {
   paginateMaxLimit,
   paginateMinLimit,
@@ -300,4 +347,5 @@ export {
   memberStatuses,
   appStatuses,
   resourceStatuses,
+  resourceTypes,
 };
