@@ -84,6 +84,13 @@ const mongodbSchema = new Schema({
   },
 });
 
+const bigquerySchema = new Schema({
+  key: {
+    type: Object,
+    required: true,
+  },
+});
+
 const resourceSchema = new Schema({
   name: {
     type: String,
@@ -116,6 +123,9 @@ const resourceSchema = new Schema({
   },
   mongodb: {
     type: mongodbSchema,
+  },
+  bigquery: {
+    type: bigquerySchema,
   },
 });
 
