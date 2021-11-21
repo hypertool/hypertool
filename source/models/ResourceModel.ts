@@ -105,6 +105,11 @@ const resourceSchema = new Schema({
     maxlength: 512,
     default: "",
   },
+  creator: {
+    type: Schema.Types.ObjectId,
+    ref: "Member",
+    required: true,
+  },
   type: {
     type: String,
     enum: resourceTypes,
