@@ -326,4 +326,41 @@ const disable = async (
   return toExternal(resource);
 };
 
-export { create, list, listByIds, getById, update, enable, disable };
+/**
+ * Before a resource is deleted, all the apps using it should stop using it.
+ * TODO: If there are any apps using the app, the request should fail with appropriate
+ * explanation.
+ */
+const remove = async (
+  context,
+  resourceId: string
+): Promise<{ success: boolean }> => {
+  if (!constants.identifierPattern.test(resourceId)) {
+    throw new BadRequestError("The specified resource identifier is invalid.");
+  }
+
+  // TODO: Update filters
+  const resource = await ResourceModel.findOneAndUpdate(
+    {
+      _id: resourceId,
+      status: { $ne: "deleted" },
+    },
+    {
+      status: "deleted",
+    },
+    {
+      new: true,
+      lean: true,
+    }
+  );
+
+  if (!resource) {
+    throw new NotFoundError(
+      "A resource with the specified identifier does not exist."
+    );
+  }
+
+  return { success: true };
+};
+
+export { create, list, listByIds, getById, update, enable, disable, remove };
