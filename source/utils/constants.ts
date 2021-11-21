@@ -268,6 +268,22 @@ const userStatuses = tuple("active", "deleted", "banned");
 
 const organizationStatuses = tuple("active", "deleted", "banned");
 
+/**
+ * invited   - Sent an invitation to join the organization.
+ * cancelled - Sent an invitation, but later cancelled it.
+ * accepted  - The invitation sent was accepted.
+ *             This is the status that most members will have for the most part.
+ * removed   - Removed from the organization.
+ * banned    - Banned from the organization.
+ */
+const memberStatuses = tuple(
+  "invited",
+  "cancelled",
+  "accepted",
+  "removed",
+  "banned"
+);
+
 export {
   paginateMaxLimit,
   paginateMinLimit,
@@ -277,4 +293,5 @@ export {
   identifierPattern,
   userStatuses,
   organizationStatuses,
+  memberStatuses,
 };
