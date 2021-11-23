@@ -77,7 +77,6 @@ const userSchema = new Schema(
           ref: "Group",
         },
       ],
-      default: ["default"],
     },
   },
   {
