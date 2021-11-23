@@ -5,6 +5,7 @@ import {
   countryCodes,
   userStatuses,
   genders,
+  memberStatuses,
 } from "../utils/constants";
 
 export interface MySQLConfiguration {
@@ -112,6 +113,12 @@ export interface User {
   permissions: string[];
   birthday: Date;
   status: typeof userStatuses[number];
+}
+
+export interface Member {
+  user: User;
+  permissions: string[];
+  status: typeof memberStatuses[number];
 }
 
 export interface ExternalApp {
