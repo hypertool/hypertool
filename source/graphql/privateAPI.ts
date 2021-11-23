@@ -1,6 +1,12 @@
 import { ApolloServer, gql } from "apollo-server-express";
 
-const typeDefs = gql``;
+import { resourceTypes } from "../utils/constants";
+
+const typeDefs = gql`
+    enum ResourceType {
+        ${resourceTypes.join("\n")}
+    }
+`;
 
 const resolvers = {
 };
