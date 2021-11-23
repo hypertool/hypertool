@@ -239,4 +239,36 @@ const unpublish = async (context, appId: string): Promise<ExternalApp> => {
   return toExternal(app);
 };
 
-export { create, list, listByIds, getById, update, publish, unpublish };
+const remove = async (
+  context,
+  appId: string
+): Promise<{ success: boolean }> => {
+  if (!constants.identifierPattern.test(appId)) {
+    throw new BadRequestError("The specified app identifier is invalid.");
+  }
+
+  // TODO: Update filters
+  const app = await AppModel.findOneAndUpdate(
+    {
+      _id: appId,
+      status: { $ne: "deleted" },
+    },
+    {
+      status: "deleted",
+    },
+    {
+      new: true,
+      lean: true,
+    }
+  );
+
+  if (!app) {
+    throw new NotFoundError(
+      "An app with the specified identifier does not exist."
+    );
+  }
+
+  return { success: true };
+};
+
+export { create, list, listByIds, getById, update, publish, unpublish, remove };
