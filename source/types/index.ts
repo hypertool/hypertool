@@ -1,4 +1,4 @@
-import { resourceTypes, resourceStatuses } from "../utils/constants";
+import { resourceTypes, resourceStatuses, appStatuses } from "../utils/constants";
 
 export interface MySQLConfiguration {
   host: string;
@@ -91,4 +91,13 @@ export interface ResourcePage {
   hasPreviousPage: number;
   hasNextPage: number;
   records: ExternalResource;
+}
+
+export interface ExternalApp {
+  name: string;
+  description: string;
+  members: string[];
+  resources: string[];
+  creator: string;
+  status: typeof appStatuses[number];
 }
