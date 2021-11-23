@@ -1,4 +1,11 @@
-import { resourceTypes, resourceStatuses, appStatuses } from "../utils/constants";
+import {
+  resourceTypes,
+  resourceStatuses,
+  appStatuses,
+  countryCodes,
+  userStatuses,
+  genders,
+} from "../utils/constants";
 
 export interface MySQLConfiguration {
   host: string;
@@ -91,6 +98,20 @@ export interface ResourcePage {
   hasPreviousPage: number;
   hasNextPage: number;
   records: ExternalResource;
+}
+
+export interface User {
+  firstName: string;
+  lastName: string;
+  description: string;
+  gender: typeof genders[number];
+  countryCode: typeof countryCodes[number];
+  pictureURL: string;
+  emailAddress: string;
+  emailVerified: boolean;
+  permissions: string[];
+  birthday: Date;
+  status: typeof userStatuses[number];
 }
 
 export interface ExternalApp {
