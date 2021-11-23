@@ -13,6 +13,13 @@ const createSchema = joi.object({
   creator: joi.string().regex(constants.identifierPattern),
 });
 
+const updateSchema = joi.object({
+  name: joi.string().min(1).max(128).allow(""),
+  description: joi.string().min(0).max(512).allow(""),
+  members: joi.array().items(joi.string().regex(constants.identifierPattern)),
+  resources: joi.array().items(joi.string().regex(constants.identifierPattern)),
+});
+
 const filterSchema = joi.object({
   page: joi.number().integer().default(0),
   limit: joi
