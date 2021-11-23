@@ -93,15 +93,17 @@ export interface ExternalResource {
   status: string;
 }
 
-export interface ResourcePage {
+export interface ExternalListPage<T> {
   totalRecords: number;
   totalPages: number;
   previousPage: number;
   nextPage: number;
   hasPreviousPage: number;
   hasNextPage: number;
-  records: ExternalResource[];
+  records: T[];
 }
+
+export type ResourcePage = ExternalListPage<ExternalResource>;
 
 export interface User {
   id: string;
