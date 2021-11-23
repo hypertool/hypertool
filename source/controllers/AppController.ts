@@ -1,6 +1,6 @@
 import joi from "joi";
 
-import type { App, ExternalApp, Member } from "../types";
+import type { App, ExternalApp, Member, AppPage } from "../types";
 
 import { constants, BadRequestError } from "../utils";
 import { AppModel } from "../models";
@@ -65,4 +65,40 @@ const create = async (context, attributes): Promise<ExternalApp> => {
   return toExternal(newApp);
 };
 
-export { create };
+const list = async (context, parameters): Promise<AppPage> => {
+  const { error, value } = filterSchema.validate(parameters);
+  if (error) {
+    throw new BadRequestError(error.message);
+  }
+
+  // TODO: Update filters
+  const filters = {
+    status: {
+      $ne: "deleted",
+    },
+  };
+  const { page, limit } = value;
+
+  const apps = await (AppModel as any).paginate(filters, {
+    limit,
+    page: page + 1,
+    lean: true,
+    leanWithId: true,
+    pagination: true,
+    sort: {
+      updatedAt: -1,
+    },
+  });
+
+  return {
+    totalRecords: apps.totalDocs,
+    totalPages: apps.totalPages,
+    previousPage: apps.prevPage ? apps.prevPage - 1 : -1,
+    nextPage: apps.nextPage ? apps.nextPage - 1 : -1,
+    hasPreviousPage: apps.hasPrevPage,
+    hasNextPage: apps.hasNextPage,
+    records: apps.docs.map(toExternal),
+  };
+};
+
+export { create, list };
