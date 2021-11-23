@@ -28,6 +28,21 @@ const typeDefs = gql`
     enum UserStatus {
         ${userStatuses.join("\n")}
     }
+
+    type User {
+        id: ID!
+        firstName: String!
+        lastName: String!
+        description: String!
+        gender: Gender
+        countryCode: Country
+        pictureURL: String
+        emailAddress: String!
+        emailVerified: Boolean!
+        permissions: [String!]!
+        birthday: String
+        status: UserStatus!
+    }
 `;
 
 const resolvers = {};
