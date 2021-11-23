@@ -275,6 +275,8 @@ const userRoles = tuple("owner", "developer", "viewer");
 
 const organizationStatuses = tuple("active", "deleted", "banned");
 
+const groupTypes = tuple("default", "custom");
+
 const appStatuses = tuple("private", "public", "deleted", "archived", "banned");
 
 const resourceStatuses = tuple("enabled", "disabled", "deleted", "banned");
@@ -339,4 +341,5 @@ export {
   appStatuses,
   resourceStatuses,
   resourceTypes,
+  groupTypes
 };

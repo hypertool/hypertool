@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
 import { Group } from "../types";
+import { groupTypes } from "../utils/constants";
 
 
 const groupSchema = new Schema(
@@ -18,6 +19,10 @@ const groupSchema = new Schema(
       minlength: 0,
       maxlength: 512,
       default: "",
+    },
+    type: {
+      type: String,
+      enum: groupTypes,
     },
     users: {
       type: [
