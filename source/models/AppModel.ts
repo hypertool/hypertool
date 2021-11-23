@@ -24,6 +24,7 @@ const appSchema = new Schema({
         ref: "Group",
       },
     ],
+    required: true,
   },
   resources: {
     type: [
