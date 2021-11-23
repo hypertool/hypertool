@@ -5,6 +5,7 @@ import {
   appStatuses,
   countryCodes,
   userStatuses,
+  userRoles,
   genders,
 } from "../utils/constants";
 
@@ -116,6 +117,8 @@ export interface User {
   emailAddress: string;
   emailVerified: boolean;
   permissions: string[];
+  groups: string[] | Group[];
+  role: typeof userRoles[number];
   birthday: Date;
   status: typeof userStatuses[number];
 }
