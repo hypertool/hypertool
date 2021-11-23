@@ -336,7 +336,6 @@ export {
   userStatuses,
   userRoles,
   organizationStatuses,
-  memberStatuses,
   appStatuses,
   resourceStatuses,
   resourceTypes,

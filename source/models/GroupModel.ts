@@ -1,7 +1,11 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-const groupSchema = new Schema({
+import { Group } from "../types";
+
+
+const groupSchema = new Schema(
+  {
     name: {
       type: String,
       minlength: 1,
@@ -23,7 +27,6 @@ const groupSchema = new Schema({
         },
       ],
       required: true,
-      default: [],
     },
     apps: {
       type: [
@@ -33,10 +36,13 @@ const groupSchema = new Schema({
         },
       ],
       required: true,
-      default: [],
     },
-});
+  },
+  {
+    timestamps: true,
+  }
+);
 
 groupSchema.plugin(paginate);
 
-export default model("Group", groupSchema);
+export default model<Group>("Group", groupSchema);
