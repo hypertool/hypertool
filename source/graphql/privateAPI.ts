@@ -5,6 +5,7 @@ import {
   resourceStatuses,
   genders,
   countryCodes,
+  userStatuses,
 } from "../utils/constants";
 
 const typeDefs = gql`
@@ -22,6 +23,10 @@ const typeDefs = gql`
 
     enum Country {
         ${countryCodes.join("\n")}
+    }
+
+    enum UserStatus {
+        ${userStatuses.join("\n")}
     }
 `;
 
