@@ -112,6 +112,7 @@ export interface User {
   firstName: string;
   lastName: string;
   description: string;
+  organization: string | Organization;
   gender: typeof genders[number];
   countryCode: typeof countryCodes[number];
   pictureURL: string;
