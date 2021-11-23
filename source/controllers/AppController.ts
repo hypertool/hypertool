@@ -13,6 +13,16 @@ const createSchema = joi.object({
   creator: joi.string().regex(constants.identifierPattern),
 });
 
+const filterSchema = joi.object({
+  page: joi.number().integer().default(0),
+  limit: joi
+    .number()
+    .integer()
+    .min(constants.paginateMinLimit)
+    .max(constants.paginateMaxLimit)
+    .default(constants.paginateMinLimit),
+});
+
 const toExternal = (app: App): ExternalApp => {
   const { name, description, members, resources, creator, status } = app;
 
