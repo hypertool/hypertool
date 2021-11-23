@@ -1,10 +1,11 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import type { Organization } from "../types";
-import { organizationStatuses } from "../utils/constants";
+import type { Group } from "../types";
+import { groupTypes } from "../utils/constants";
 
-const organizationSchema = new Schema(
+
+const groupSchema = new Schema(
   {
     name: {
       type: String,
@@ -19,6 +20,10 @@ const organizationSchema = new Schema(
       maxlength: 512,
       default: "",
     },
+    type: {
+      type: String,
+      enum: groupTypes,
+    },
     users: {
       type: [
         {
@@ -28,10 +33,14 @@ const organizationSchema = new Schema(
       ],
       required: true,
     },
-    status: {
-      type: String,
-      enum: organizationStatuses,
-      default: "active",
+    apps: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "App",
+        },
+      ],
+      required: true,
     },
   },
   {
@@ -39,9 +48,6 @@ const organizationSchema = new Schema(
   }
 );
 
-organizationSchema.index({
-  name: "text",
-});
-organizationSchema.plugin(paginate);
+groupSchema.plugin(paginate);
 
-export default model<Organization>("Organization", organizationSchema);
+export default model<Group>("Group", groupSchema);

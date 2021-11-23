@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
+import type { App } from "../types";
 import { appStatuses } from "../utils/constants";
 
 const appSchema = new Schema({
@@ -16,11 +17,11 @@ const appSchema = new Schema({
     maxlength: 512,
     default: "",
   },
-  members: {
+  groups: {
     type: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Member",
+        ref: "Group",
       },
     ],
     required: true,
@@ -36,7 +37,7 @@ const appSchema = new Schema({
   },
   creator: {
     type: Schema.Types.ObjectId,
-    ref: "Member",
+    ref: "User",
   },
   status: {
     type: String,
@@ -47,4 +48,4 @@ const appSchema = new Schema({
 
 appSchema.plugin(paginate);
 
-export default model("App", appSchema);
+export default model<App>("App", appSchema);

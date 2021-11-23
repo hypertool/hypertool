@@ -1,11 +1,13 @@
 import {
   resourceTypes,
   resourceStatuses,
+  organizationStatuses,
   appStatuses,
   countryCodes,
   userStatuses,
+  userRoles,
+  groupTypes,
   genders,
-  memberStatuses,
 } from "../utils/constants";
 
 export interface MySQLConfiguration {
@@ -110,30 +112,43 @@ export interface User {
   firstName: string;
   lastName: string;
   description: string;
+  organization: string | Organization;
   gender: typeof genders[number];
   countryCode: typeof countryCodes[number];
   pictureURL: string;
   emailAddress: string;
   emailVerified: boolean;
   permissions: string[];
+  groups: string[] | Group[];
+  role: typeof userRoles[number];
   birthday: Date;
   status: typeof userStatuses[number];
 }
 
-export interface Member {
-  id: string;
-  user: User;
-  permissions: string[];
-  status: typeof memberStatuses[number];
+export interface Organization {
+  id: string,
+  name: string,
+  description: string,
+  users: string[] | User[];
+  status: typeof organizationStatuses[number];
+}
+
+export interface Group {
+  id: string,
+  name: string,
+  type: typeof groupTypes[number];
+  description: string,
+  users: string[] | User[];
+  apps: string[] | App[];
 }
 
 export interface App {
   id: string;
   name: string;
   description: string;
-  members: string[] | Member[];
+  groups: string[] | Group[];
   resources: string[] | Resource[];
-  creator: string[] | Member;
+  creator: string[] | User;
   status: typeof appStatuses[number];
 }
 

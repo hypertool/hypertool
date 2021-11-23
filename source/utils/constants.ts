@@ -264,25 +264,18 @@ const countryCodes = tuple(
 
 const identifierPattern = /^[a-z0-9]{24}$/;
 
-const userStatuses = tuple("active", "deleted", "banned");
+const userStatuses = tuple(
+  "invited",
+  "cancelled",
+  "activated",
+  "removed",
+);
+
+const userRoles = tuple("owner", "developer", "viewer");
 
 const organizationStatuses = tuple("active", "deleted", "banned");
 
-/**
- * invited   - Sent an invitation to join the organization.
- * cancelled - Sent an invitation, but later cancelled it.
- * accepted  - The invitation sent was accepted.
- *             This is the status that most members will have for the most part.
- * removed   - Removed from the organization.
- * banned    - Banned from the organization.
- */
-const memberStatuses = tuple(
-  "invited",
-  "cancelled",
-  "accepted",
-  "removed",
-  "banned"
-);
+const groupTypes = tuple("default", "custom");
 
 const appStatuses = tuple("private", "public", "deleted", "archived", "banned");
 
@@ -343,9 +336,10 @@ export {
   countryCodes,
   identifierPattern,
   userStatuses,
+  userRoles,
   organizationStatuses,
-  memberStatuses,
   appStatuses,
   resourceStatuses,
   resourceTypes,
+  groupTypes
 };

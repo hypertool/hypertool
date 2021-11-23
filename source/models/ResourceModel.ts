@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import { Resource } from "../types";
+import type { Resource } from "../types";
 import { resourceTypes, resourceStatuses } from "../utils/constants";
 
 const mysqlSchema = new Schema({
@@ -108,7 +108,7 @@ const resourceSchema = new Schema({
   },
   creator: {
     type: Schema.Types.ObjectId,
-    ref: "Member",
+    ref: "User",
     required: true,
   },
   type: {
@@ -119,7 +119,7 @@ const resourceSchema = new Schema({
   status: {
     type: String,
     enum: resourceStatuses,
-    default: "active",
+    default: "enabled",
   },
   mysql: {
     type: mysqlSchema,
