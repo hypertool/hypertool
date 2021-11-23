@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import { App } from "../types";
+import type { App } from "../types";
 import { appStatuses } from "../utils/constants";
 
 const appSchema = new Schema({

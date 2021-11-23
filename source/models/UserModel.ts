@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import { User } from "../types";
+import type { User } from "../types";
 import { genders, countryCodes, userStatuses, userRoles } from "../utils/constants";
 
 const userSchema = new Schema(

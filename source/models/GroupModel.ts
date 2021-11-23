@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import { Group } from "../types";
+import type { Group } from "../types";
 import { groupTypes } from "../utils/constants";
 
 
