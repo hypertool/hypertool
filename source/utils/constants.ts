@@ -259,7 +259,7 @@ const countryCodes = tuple(
   "YEM", // Yemen
   "ZMB", // Zambia
   "ZWE", // Zimbabwe
-  "ALA" // Åland Islands"
+  "ALA", // Åland Islands
 );
 
 const identifierPattern = /^[a-z0-9]{24}$/;

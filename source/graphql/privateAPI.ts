@@ -1,6 +1,6 @@
 import { ApolloServer, gql } from "apollo-server-express";
 
-import { resourceTypes, resourceStatuses } from "../utils/constants";
+import { resourceTypes, resourceStatuses, genders } from "../utils/constants";
 
 const typeDefs = gql`
     enum ResourceType {
@@ -9,6 +9,10 @@ const typeDefs = gql`
 
     enum ResourceStatus {
         ${resourceStatuses.join("\n")}
+    }
+ 
+    enum Gender {
+      ${genders.join("\n")}
     }
 `;
 
