@@ -119,6 +119,14 @@ export interface User {
   status: typeof userStatuses[number];
 }
 
+export interface Group {
+  id: string,
+  name: string,
+  description: string,
+  users: string[] | User[];
+  apps: string[] | App[];
+}
+
 export interface App {
   id: string;
   name: string;

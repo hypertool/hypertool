@@ -65,10 +65,10 @@ const userSchema = new Schema(
       enum: userStatuses,
       default: "active",
     },
-    roles: {
+    role: {
       type: String,
       enum: userRoles,
-      default: "owner",
+      required: true,
     },
     groups: {
       type: [
