@@ -121,6 +121,15 @@ export interface Member {
   status: typeof memberStatuses[number];
 }
 
+export interface App {
+  name: string;
+  description: string;
+  members: string[] | Member[];
+  resources: string[] | Resource[];
+  creator: string[] | Member;
+  status: typeof appStatuses[number];
+}
+
 export interface ExternalApp {
   name: string;
   description: string;
