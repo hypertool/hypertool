@@ -62,7 +62,7 @@ const create = async (context, attributes): Promise<ExternalApp> => {
     throw new BadRequestError(error.message);
   }
 
-  // TODO: Check if value.members, value.resources, and value.creator is correct.
+  // TODO: Check if value.members, value.resources, and value.creator are correct.
   const newApp = new AppModel({
     ...value,
     status: "private",
@@ -142,4 +142,43 @@ const getById = async (context, appId: string): Promise<ExternalApp> => {
   return toExternal(app);
 };
 
-export { create, list, listByIds, getById };
+const update = async (
+  context,
+  appId: string,
+  attributes
+): Promise<ExternalApp> => {
+  if (!constants.identifierPattern.test(appId)) {
+    throw new BadRequestError("The specified app identifier is invalid.");
+  }
+
+  const { error, value } = updateSchema.validate(attributes, {
+    stripUnknown: true,
+  });
+  if (error) {
+    throw new BadRequestError(error.message);
+  }
+
+  // TODO: Update filters
+  // TODO: Check if value.members and value.resources are correct.
+  const app = await AppModel.findOneAndUpdate(
+    {
+      _id: appId,
+      status: { $ne: "deleted" },
+    },
+    value,
+    {
+      new: true,
+      lean: true,
+    }
+  ).exec();
+
+  if (!app) {
+    throw new NotFoundError(
+      "An app with the specified identifier does not exist."
+    );
+  }
+
+  return toExternal(app);
+};
+
+export { create, list, listByIds, getById, update };
