@@ -145,3 +145,5 @@ export interface ExternalApp {
   creator: string;
   status: typeof appStatuses[number];
 }
+
+export type AppPage = ExternalListPage<ExternalApp>;
