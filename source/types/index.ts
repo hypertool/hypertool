@@ -1,6 +1,7 @@
 import {
   resourceTypes,
   resourceStatuses,
+  organizationStatuses,
   appStatuses,
   countryCodes,
   userStatuses,
@@ -117,6 +118,14 @@ export interface User {
   permissions: string[];
   birthday: Date;
   status: typeof userStatuses[number];
+}
+
+export interface Organization {
+  id: string,
+  name: string,
+  description: string,
+  users: string[] | User[];
+  status: typeof organizationStatuses[number];
 }
 
 export interface Group {

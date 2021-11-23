@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
+import { Organization } from "../types";
 import { organizationStatuses } from "../utils/constants";
 
 const organizationSchema = new Schema(
@@ -43,4 +44,4 @@ organizationSchema.index({
 });
 organizationSchema.plugin(paginate);
 
-export default model("Organization", organizationSchema);
+export default model<Organization>("Organization", organizationSchema);
