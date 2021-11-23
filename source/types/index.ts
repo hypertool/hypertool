@@ -140,6 +140,7 @@ export interface App {
   id: string;
   name: string;
   description: string;
+  groups: string[] | Group[];
   resources: string[] | Resource[];
   creator: string[] | User;
   status: typeof appStatuses[number];
