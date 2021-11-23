@@ -10,6 +10,12 @@ const appSchema = new Schema({
     maxlength: 128,
     required: true,
   },
+  description: {
+    type: String,
+    minlength: 0,
+    maxlength: 512,
+    default: "",
+  },
   members: {
     type: [
       {
