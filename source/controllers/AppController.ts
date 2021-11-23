@@ -101,4 +101,18 @@ const list = async (context, parameters): Promise<AppPage> => {
   };
 };
 
-export { create, list };
+const listByIds = async (context, appIds: string[]): Promise<ExternalApp[]> => {
+  const unorderedApps = await AppModel.find({
+    _id: { $in: appIds },
+    status: { $ne: "deleted" },
+  }).exec();
+  const object = {};
+  // eslint-disable-next-line no-restricted-syntax
+  for (const app of unorderedApps) {
+    object[app._id] = app;
+  }
+  // eslint-disable-next-line security/detect-object-injection
+  return appIds.map((key) => toExternal(object[key]));
+};
+
+export { create, list, listByIds };
