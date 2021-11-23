@@ -266,6 +266,8 @@ const identifierPattern = /^[a-z0-9]{24}$/;
 
 const userStatuses = tuple("active", "deleted", "banned");
 
+const userRoles = tuple("owner", "developer", "viewer");
+
 const organizationStatuses = tuple("active", "deleted", "banned");
 
 /**
@@ -343,6 +345,7 @@ export {
   countryCodes,
   identifierPattern,
   userStatuses,
+  userRoles,
   organizationStatuses,
   memberStatuses,
   appStatuses,

@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
 import { User } from "../types";
-import { genders, countryCodes, userStatuses } from "../utils/constants";
+import { genders, countryCodes, userStatuses, userRoles } from "../utils/constants";
 
 const userSchema = new Schema(
   {
@@ -24,6 +24,12 @@ const userSchema = new Schema(
       minlength: 0,
       maxlength: 512,
       default: "",
+    },
+    organization: {
+      type: {
+          type: Schema.Types.ObjectId,
+          ref: "Organization",
+        },
     },
     gender: {
       type: String,
@@ -50,10 +56,6 @@ const userSchema = new Schema(
       default: false,
       required: true,
     },
-    permissions: {
-      type: [String],
-      default: [],
-    },
     birthday: {
       type: Date,
       default: null,
@@ -62,6 +64,20 @@ const userSchema = new Schema(
       type: String,
       enum: userStatuses,
       default: "active",
+    },
+    roles: {
+      type: String,
+      enum: userRoles,
+      default: "owner",
+    },
+    groups: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Group",
+        },
+      ],
+      default: ["default"],
     },
   },
   {

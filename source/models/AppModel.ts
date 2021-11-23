@@ -16,14 +16,13 @@ const appSchema = new Schema({
     maxlength: 512,
     default: "",
   },
-  members: {
+  groups: {
     type: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Member",
+        ref: "Group",
       },
     ],
-    required: true,
   },
   resources: {
     type: [
