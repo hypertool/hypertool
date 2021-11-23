@@ -89,7 +89,7 @@ const updateSchema = joi.object({
 });
 
 const toExternal = (resource: Resource): ExternalResource => {
-  const { name, description, type, configuration, status } = resource;
+  const { id, name, description, type, configuration, status } = resource;
   let sanitizedConfiguration = null;
   switch (type) {
     case "mysql":
@@ -118,6 +118,7 @@ const toExternal = (resource: Resource): ExternalResource => {
   }
 
   return {
+    id,
     name,
     description,
     type,
