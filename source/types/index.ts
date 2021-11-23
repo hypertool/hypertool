@@ -40,6 +40,7 @@ export interface BigQueryConfiguration {
 }
 
 export interface Resource {
+  id: string;
   name: string;
   description: string;
   type: typeof resourceTypes[number];
@@ -80,6 +81,7 @@ export interface ExternalBigQueryConfiguration {
 }
 
 export interface ExternalResource {
+  id: string;
   name: string;
   description: string;
   type: string;
@@ -98,10 +100,11 @@ export interface ResourcePage {
   nextPage: number;
   hasPreviousPage: number;
   hasNextPage: number;
-  records: ExternalResource;
+  records: ExternalResource[];
 }
 
 export interface User {
+  id: string;
   firstName: string;
   lastName: string;
   description: string;
@@ -116,12 +119,14 @@ export interface User {
 }
 
 export interface Member {
+  id: string;
   user: User;
   permissions: string[];
   status: typeof memberStatuses[number];
 }
 
 export interface App {
+  id: string;
   name: string;
   description: string;
   members: string[] | Member[];
