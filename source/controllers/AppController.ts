@@ -1,9 +1,9 @@
 import joi from "joi";
 
-import type { Member } from "../types";
+import type { App, ExternalApp, Member } from "../types";
 
-import { constants } from "../utils";
-import { App, ExternalApp } from "../types";
+import { constants, BadRequestError } from "../utils";
+import { AppModel } from "../models";
 
 const createSchema = joi.object({
   name: joi.string().min(1).max(128).allow(""),
@@ -35,3 +35,24 @@ const toExternal = (app: App): ExternalApp => {
     status,
   };
 };
+
+const create = async (context, attributes): Promise<ExternalApp> => {
+  const { error, value } = createSchema.validate(attributes, {
+    stripUnknown: true,
+  });
+
+  if (error) {
+    throw new BadRequestError(error.message);
+  }
+
+  // TODO: Check if value.members, value.resources, and value.creator is correct.
+  const newApp = new AppModel({
+    ...value,
+    status: "private",
+  });
+  await newApp.save();
+
+  return toExternal(newApp);
+};
+
+export { create };
