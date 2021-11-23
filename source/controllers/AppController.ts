@@ -2,7 +2,7 @@ import joi from "joi";
 
 import type { App, ExternalApp, Member, AppPage } from "../types";
 
-import { constants, BadRequestError } from "../utils";
+import { constants, BadRequestError, NotFoundError } from "../utils";
 import { AppModel } from "../models";
 
 const createSchema = joi.object({
@@ -115,4 +115,24 @@ const listByIds = async (context, appIds: string[]): Promise<ExternalApp[]> => {
   return appIds.map((key) => toExternal(object[key]));
 };
 
-export { create, list, listByIds };
+const getById = async (context, appId: string): Promise<ExternalApp> => {
+  if (!constants.identifierPattern.test(appId)) {
+    throw new BadRequestError("The specified app identifier is invalid.");
+  }
+
+  // TODO: Update filters
+  const filters = {
+    _id: appId,
+    status: { $ne: "deleted" },
+  };
+  const app = await AppModel.findOne(filters as any).exec();
+
+  /* We return a 404 error, if we did not find the app. */
+  if (!app) {
+    throw new NotFoundError("Cannot find a app with the specified identifier.");
+  }
+
+  return toExternal(app);
+};
+
+export { create, list, listByIds, getById };
