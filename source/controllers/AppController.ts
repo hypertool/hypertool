@@ -181,10 +181,7 @@ const update = async (
   return toExternal(app);
 };
 
-const publish = async (
-  context,
-  appId: string
-): Promise<ExternalApp> => {
+const publish = async (context, appId: string): Promise<ExternalApp> => {
   if (!constants.identifierPattern.test(appId)) {
     throw new BadRequestError("The specified app identifier is invalid.");
   }
@@ -213,4 +210,33 @@ const publish = async (
   return toExternal(app);
 };
 
-export { create, list, listByIds, getById, update, publish };
+const unpublish = async (context, appId: string): Promise<ExternalApp> => {
+  if (!constants.identifierPattern.test(appId)) {
+    throw new BadRequestError("The specified app identifier is invalid.");
+  }
+
+  // TODO: Update filters
+  const app = await AppModel.findOneAndUpdate(
+    {
+      _id: appId,
+      status: { $ne: "deleted" },
+    },
+    {
+      status: "private",
+    },
+    {
+      new: true,
+      lean: true,
+    }
+  );
+
+  if (!app) {
+    throw new NotFoundError(
+      "An app with the specified identifier does not exist."
+    );
+  }
+
+  return toExternal(app);
+};
+
+export { create, list, listByIds, getById, update, publish, unpublish };
