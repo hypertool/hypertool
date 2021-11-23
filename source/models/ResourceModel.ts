@@ -119,7 +119,7 @@ const resourceSchema = new Schema({
   status: {
     type: String,
     enum: resourceStatuses,
-    default: "active",
+    default: "enabled",
   },
   mysql: {
     type: mysqlSchema,
