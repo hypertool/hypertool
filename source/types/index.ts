@@ -6,6 +6,7 @@ import {
   countryCodes,
   userStatuses,
   userRoles,
+  groupTypes,
   genders,
 } from "../utils/constants";
 
@@ -134,6 +135,7 @@ export interface Organization {
 export interface Group {
   id: string,
   name: string,
+  type: typeof groupTypes[number];
   description: string,
   users: string[] | User[];
   apps: string[] | App[];
