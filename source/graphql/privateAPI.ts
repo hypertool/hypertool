@@ -42,6 +42,10 @@ const typeDefs = gql`
         emailVerified: Boolean!
         birthday: String
         status: UserStatus!
+        role: UserRole!
+        # Group points to User directly, making each other mutually recursive.
+        # Therefore, we flatten the data structure here.
+        groups: [ID!]!
     }
 
     enum OrganizationStatus {
