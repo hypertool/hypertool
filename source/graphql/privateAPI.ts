@@ -29,7 +29,11 @@ const typeDefs = gql`
     enum UserStatus {
         ${userStatuses.join("\n")}
     }
-
+  
+    enum OrganizationStatus {
+        ${organizationStatuses.join("\n")}
+    }
+  
     type User {
         id: ID!
         firstName: String!
