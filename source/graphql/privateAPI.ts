@@ -86,6 +86,10 @@ const typeDefs = gql`
         databasePassword: String!
         connectUsingSSL: Boolean!
     }
+
+    type BigQueryConfiguration {
+        key: String!
+    }
 `;
 
 const resolvers = {};
