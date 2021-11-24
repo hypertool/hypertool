@@ -55,6 +55,16 @@ const typeDefs = gql`
         updatedAt: Date!
     }
 
+    type UserPage {
+        totalRecords: Integer!
+        totalPages: Integer!
+        previousPage: Integer!
+        nextPage: Integer!
+        hasPreviousPage: Integer!
+        hasNextPage: Integer!
+        records: [User!]!
+    }
+
     enum OrganizationStatus {
         ${organizationStatuses.join("\n")}
     }
