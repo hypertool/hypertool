@@ -1,4 +1,5 @@
 import { ApolloServer, gql } from "apollo-server-express";
+import { GraphQLScalarType } from "graphql";
 
 import {
   resourceTypes,
@@ -13,6 +14,8 @@ import {
 } from "../utils/constants";
 
 const typeDefs = gql`
+    scalar Date
+
     enum Gender {
         ${genders.join("\n")}
     }
@@ -48,6 +51,8 @@ const typeDefs = gql`
         # Group points to User directly, making each other mutually recursive.
         # Therefore, we flatten the data structure here.
         groups: [ID!]!
+        createdAt: Date!
+        updatedAt: Date!
     }
 
     enum OrganizationStatus {
@@ -60,6 +65,8 @@ const typeDefs = gql`
         description: String!
         users: [User!]!
         status: OrganizationStatus!
+        createdAt: Date!
+        updatedAt: Date!
     }
 
     enum ResourceType {
@@ -109,6 +116,8 @@ const typeDefs = gql`
         postgres: PostgresConfiguration
         mongodb: MongoDBConfiguration
         bigquery: BigQueryConfiguration
+        createdAt: Date!
+        updatedAt: Date!
     }
 
     enum AppStatus {
@@ -129,6 +138,8 @@ const typeDefs = gql`
         # in User, we can use an aggregate type here.
         creator: User!
         status: AppStatus!
+        createdAt: Date!
+        updatedAt: Date!
     }
 
     enum GroupType {
@@ -136,16 +147,28 @@ const typeDefs = gql`
     }
 
     type Group {
-      id: ID!
-      name: String!
-      description: String!
-      type: GroupType!
-      users: [User!]!
-      apps: [App!]!
+        id: ID!
+        name: String!
+        description: String!
+        type: GroupType!
+        users: [User!]!
+        apps: [App!]!
+        createdAt: Date!
+        updatedAt: Date!
     }
 `;
 
-const resolvers = {};
+const resolvers = {
+  Date: new GraphQLScalarType({
+    name: "Date",
+    parseValue(value: string) {
+      return new Date(value);
+    },
+    serialize(value: Date) {
+      return value.toISOString();
+    },
+  }),
+};
 
 const attachRoutes = async (app: any) => {
   const server = new ApolloServer({
