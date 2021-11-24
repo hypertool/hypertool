@@ -95,7 +95,7 @@ const bigquerySchema = new Schema({
 const resourceSchema = new Schema({
   name: {
     type: String,
-    minlength: 1,
+    minlength: 0,
     maxlength: 256,
     required: true,
     trim: true,

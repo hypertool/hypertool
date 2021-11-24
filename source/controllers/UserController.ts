@@ -1,279 +1,368 @@
-const joi = require("joi");
-const mongoose = require("mongoose");
-const { subMonths, startOfDay, endOfDay } = require("date-fns");
+import joi from "joi";
 
-import type { User } from "../types";
+import type { Resource, ExternalResource, ResourcePage } from "../types";
 
 import { constants, BadRequestError, NotFoundError } from "../utils";
-import { UserModel } from "../models";
+import { ResourceModel } from "../models";
 
-const {
-    languageCodes,
-    paginateMaxLimit,
-    identifierPattern,
-    genders,
-    countryCodes,
-} = require("../util/constants");
-
-const toExternal = (user) => {
-    const {
-        id,
-        firstName,
-        lastName,
-        userName,
-        gender,
-        countryCode,
-        pictureURL,
-        emailAddress,
-        emailVerified,
-        roles,
-        birthday,
-        interests,
-        contentLanguageCodes,
-        displayLanguageCode,
-        about,
-        createdAt,
-        updatedAt,
-    } = user;
-
-    return {
-        id,
-        firstName,
-        lastName,
-        userName,
-        gender,
-        countryCode,
-        pictureURL,
-        emailAddress,
-        emailVerified,
-        roles,
-        birthday,
-        interests,
-        contentLanguageCodes,
-        displayLanguageCode,
-        about,
-        createdAt: createdAt.toISOString(),
-        updatedAt: updatedAt.toISOString(),
-    };
-};
-
-// TODO: Test null values
-/* NOTE: The following schema is used by `PATCH /users/:id` endpoint. Default values will cause
- * existing values to be replaced when persisting to the database. Do not specify default values
- * in the schema unless you know what you are doing.
- */
-const updateSchema = joi.object({
-    firstName: joi.string().trim(),
-    lastName: joi.string().trim(),
-    gender: joi.string().valid(...genders),
-    countryCode: joi.string().valid(...countryCodes),
-    birthday: joi.date(),
-    contentLanguageCodes: joi
-        .array()
-        .items(joi.string().valid(...languageCodes)),
-    displayLanguageCode: joi.string().valid(...languageCodes),
-    about: joi.string().min(0).max(512).trim(),
+const createSchema = joi.object({
+  firstName: joi.string().min(1).max(256),
+  lastName: joi.string().min(0).max(256),
+  description: joi.string().min(0).max(512).allow(""),
+  creator: joi.string().regex(constants.identifierPattern).required(),
+  type: joi
+    .string()
+    .valid(...constants.resourceTypes)
+    .required(),
+  mysql: joi.object({
+    host: joi.string().required(),
+    port: joi.number().integer().required(),
+    databaseName: joi.string().required(),
+    databaseUserName: joi.string().required(),
+    databasePassword: joi.string().required(),
+    connectUsingSSL: joi.boolean().default(false),
+  }),
+  postgres: joi.object({
+    host: joi.string().required(),
+    port: joi.number().integer().required(),
+    databaseName: joi.string().required(),
+    databaseUserName: joi.string().required(),
+    databasePassword: joi.string().required(),
+    connectUsingSSL: joi.boolean().default(false),
+  }),
+  mongodb: joi.object({
+    host: joi.string().required(),
+    port: joi.number().integer().required(),
+    databaseName: joi.string().required(),
+    databaseUserName: joi.string().required(),
+    databasePassword: joi.string().required(),
+    connectUsingSSL: joi.boolean().default(false),
+  }),
+  bigquery: joi.object({
+    key: joi.any(),
+  }),
 });
 
 const filterSchema = joi.object({
-    page: joi.number().integer().default(0),
-    limit: joi.number().integer().min(10).max(paginateMaxLimit).default(20),
-    dateRange: joi
-        .string()
-        .valid(
-            "all_time",
-            "last_3_months",
-            "last_6_months",
-            "last_9_months",
-            "last_12_months",
-            "last_15_months",
-            "last_18_months",
-            "custom"
-        )
-        .default("all_time"),
-    startDate: joi
-        .date()
-        .when("date_range", { is: "custom", then: joi.required() }),
-    endDate: joi
-        .date()
-        .when("date_range", { is: "custom", then: joi.required() }),
-    search: joi.string().trim().allow(null).empty("").default(null),
+  page: joi.number().integer().default(0),
+  limit: joi
+    .number()
+    .integer()
+    .min(constants.paginateMinLimit)
+    .max(constants.paginateMaxLimit)
+    .default(constants.paginateMinLimit),
 });
 
-// TODO: Should we implement a transaction here?
-const create = async (context, payload) => {
-    const { firstName, lastName, pictureURL, emailVerified, emailAddress } =
-        payload;
+const updateSchema = joi.object({
+  name: joi.string().min(1).max(256).allow(""),
+  description: joi.string().min(0).max(512).allow(""),
+  type: joi
+    .string()
+    .valid(...constants.resourceTypes)
+    .required(),
+  mysql: joi.object({
+    host: joi.string().required(),
+    port: joi.number().integer().required(),
+    databaseName: joi.string().required(),
+    databaseUserName: joi.string().required(),
+    databasePassword: joi.string().required(),
+    connectUsingSSL: joi.boolean().default(false),
+  }),
+  postgres: joi.object({
+    host: joi.string().required(),
+    port: joi.number().integer().required(),
+    databaseName: joi.string().required(),
+    databaseUserName: joi.string().required(),
+    databasePassword: joi.string().required(),
+    connectUsingSSL: joi.boolean().default(false),
+  }),
+  mongodb: joi.object({
+    host: joi.string().required(),
+    port: joi.number().integer().required(),
+    databaseName: joi.string().required(),
+    databaseUserName: joi.string().required(),
+    databasePassword: joi.string().required(),
+    connectUsingSSL: joi.boolean().default(false),
+  }),
+  bigquery: joi.object({
+    key: joi.any(),
+  }),
+});
 
-    let user = await UserModel.findOne({
-        emailAddress,
-    }).exec();
-
-    if (!user) {
-        const _id = new mongoose.Types.ObjectId();
-        /* Looks like this is the first time the user is accessing the service. Therefore,
-         * we need to create a profile with default values for the user.
-         */
-        user = new UserModel({
-            _id,
-            firstName,
-            lastName,
-            userName: _id,
-            gender: undefined,
-            countryCode: undefined,
-            pictureURL,
-            emailAddress,
-            emailVerified,
-            roles: ["regular"],
-            birthday: null,
-            interests: [],
-            contentLanguageCodes: ["en"],
-            displayLanguageCode: "en",
-            status: "active",
-            about: "",
-        });
-        await user.save();
+const toExternal = (resource: Resource): ExternalResource => {
+  const { id, name, description, type, configuration, status } = resource;
+  let sanitizedConfiguration = null;
+  switch (type) {
+    case "mysql":
+    case "postgres":
+    case "mongodb": {
+      const { host, port, databaseName, databaseUserName, connectUsingSSL } =
+        configuration;
+      sanitizedConfiguration = {
+        host,
+        port,
+        databaseName,
+        databaseUserName,
+        connectUsingSSL,
+      };
+      break;
     }
 
-    if (!user.emailVerified && emailVerified) {
-        /* If the email address has been verified since the last session,
-         * update it.
-         */
-        user.emailVerified = true;
-        await user.save();
+    case "bigquery": {
+      sanitizedConfiguration = configuration;
+      break;
     }
-    return toExternal(user);
+
+    default: {
+      throw new Error(`Unknown resource type "${type}"`);
+    }
+  }
+
+  return {
+    id,
+    name,
+    description,
+    type,
+    configuration: sanitizedConfiguration,
+    status,
+  };
 };
 
-const getById = async (context, userId) => {
-    if (!identifierPattern.test(userId)) {
-        throw new BadRequestError("The specified user identifier is invalid.");
-    }
+const create = async (context, attributes): Promise<ExternalResource> => {
+  const { error, value } = createSchema.validate(attributes, {
+    stripUnknown: true,
+  });
 
-    const filters = { _id: userId };
-    const user = await UserModel.findOne(filters).exec();
+  if (error) {
+    throw new BadRequestError(error.message);
+  }
 
-    /* We return a 404 error:
-     * 1. If we did not find the user.
-     * 2. Or, we found the user, but it is deleted.
-     */
-    if (!user || user === "deleted") {
-        throw new NotFoundError(
-            "Cannot find a user with the specified identifier."
-        );
-    }
+  // TODO: Check if value.creator is correct.
+  // TODO: Check if value.name is unique across the organization and matches the identifier regex.
+  const newResource = new ResourceModel({
+    ...value,
+    status: "enabled",
+  });
+  await newResource.save();
 
-    return toExternal(user);
+  return toExternal(newResource);
 };
 
-const update = async (context, userId, attributes) => {
-    if (!identifierPattern.test(userId)) {
-        throw new BadRequestError("The specified user identifier is invalid.");
-    }
+const list = async (context, parameters): Promise<ResourcePage> => {
+  const { error, value } = filterSchema.validate(parameters);
+  if (error) {
+    throw new BadRequestError(error.message);
+  }
 
-    const { error, value } = updateSchema.validate(attributes, {
-        stripUnknown: true,
-    });
-    if (error) {
-        throw new BadRequestError(error.message);
-    }
+  // TODO: Update filters
+  const filters = {
+    status: {
+      $ne: "deleted",
+    },
+  };
+  const { page, limit } = value;
 
-    /* The specified ID should be equal to the current user, meaning the user is trying to
-     * modify their own account.
-     */
-    if (!userId.equals(context.user._id.toString())) {
-        throw new NotFoundError("The specified user identifier is invalid.");
-    }
+  const resources = await (ResourceModel as any).paginate(filters, {
+    limit,
+    page: page + 1,
+    lean: true,
+    leanWithId: true,
+    pagination: true,
+    sort: {
+      updatedAt: -1,
+    },
+  });
 
-    const updatedUser = await UserModel.findOneAndUpdate({ _id: userId }, value)
-        .lean()
-        .exec();
-
-    /* As of this writing, we check if the specified ID belongs to the current user.
-     * Therefore, `updatedUser` will never be null. However, in the future when we implement
-     * administrative permissions to update user data, we need to check if the specified
-     * ID exists or not. I pre-writing the logic for it now.
-     */
-    if (!updatedUser) {
-        throw new NotFoundError("The specified user identifier is invalid.");
-    }
-
-    return toExternal(updatedUser);
+  return {
+    totalRecords: resources.totalDocs,
+    totalPages: resources.totalPages,
+    previousPage: resources.prevPage ? resources.prevPage - 1 : -1,
+    nextPage: resources.nextPage ? resources.nextPage - 1 : -1,
+    hasPreviousPage: resources.hasPrevPage,
+    hasNextPage: resources.hasNextPage,
+    records: resources.docs.map(toExternal),
+  };
 };
 
-const list = async (context, parameters) => {
-    const { error, value } = filterSchema.validate(parameters, {
-        stripUnknown: true,
-    });
-    if (error) {
-        throw new BadRequestError(error.message);
-    }
-
-    let { startDate, endDate } = value;
-    const { dateRange } = value;
-    if (dateRange !== "custom" && dateRange !== "all_time") {
-        const months = {
-            last_3_months: 3,
-            last_6_months: 6,
-            last_9_months: 9,
-            last_12_months: 12,
-            last_15_months: 15,
-            last_18_months: 18,
-        };
-        /* eslint-disable-next-line security/detect-object-injection */
-        const amount = months[dateRange];
-        startDate = subMonths(new Date(), amount);
-        endDate = new Date();
-    }
-
-    const filters = {
-        // userName: { $exists: true }
-    };
-    if (dateRange !== "all_time") {
-        filters.createdAt = {
-            $gte: startOfDay(startDate),
-            $lte: endOfDay(endDate),
-        };
-    }
-
-    if (value.search) {
-        /* eslint-disable-next-line security/detect-non-literal-regexp */
-        const regex = new RegExp(escapeRegex(value.search), "i");
-        filters.$or = [
-            { firstName: regex },
-            { lastName: regex },
-            // Email address should match exactly, for privacy reasons.
-            { emailAddress: value.search },
-        ];
-    }
-
-    const users = await UserModel.paginate(filters, {
-        limit: value.limit,
-        page: value.page + 1,
-        lean: true,
-        leanWithId: true,
-        pagination: true,
-        sort: {
-            createdAt: -1,
-        },
-    });
-
-    return {
-        totalRecords: users.totalDocs,
-        page: value.page,
-        limit: users.limit,
-        totalPages: users.totalPages,
-        previousPage: users.prevPage ? users.prevPage - 1 : null,
-        nextPage: users.nextPage ? users.nextPage - 1 : null,
-        hasPreviousPage: users.hasPrevPage,
-        hasNextPage: users.hasNextPage,
-        records: users.docs.map(toExternal),
-    };
+const listByIds = async (
+  context,
+  resourceIds: string[]
+): Promise<ExternalResource[]> => {
+  const unorderedResources = await ResourceModel.find({
+    _id: { $in: resourceIds },
+    status: { $ne: "deleted" },
+  }).exec();
+  const object = {};
+  // eslint-disable-next-line no-restricted-syntax
+  for (const resource of unorderedResources) {
+    object[resource._id] = resource;
+  }
+  // eslint-disable-next-line security/detect-object-injection
+  return resourceIds.map((key) => toExternal(object[key]));
 };
 
-module.exports = {
-    create,
-    getById,
-    update,
-    list,
+const getById = async (
+  context,
+  resourceId: string
+): Promise<ExternalResource> => {
+  if (!constants.identifierPattern.test(resourceId)) {
+    throw new BadRequestError("The specified resource identifier is invalid.");
+  }
+
+  // TODO: Update filters
+  const filters = {
+    _id: resourceId,
+    status: { $ne: "deleted" },
+  };
+  const resource = await ResourceModel.findOne(filters as any).exec();
+
+  /* We return a 404 error, if we did not find the resource. */
+  if (!resource) {
+    throw new NotFoundError(
+      "Cannot find a resource with the specified identifier."
+    );
+  }
+
+  return toExternal(resource);
 };
+
+const update = async (
+  context,
+  resourceId: string,
+  attributes
+): Promise<ExternalResource> => {
+  if (!constants.identifierPattern.test(resourceId)) {
+    throw new BadRequestError("The specified resource identifier is invalid.");
+  }
+
+  const { error, value } = updateSchema.validate(attributes, {
+    stripUnknown: true,
+  });
+  if (error) {
+    throw new BadRequestError(error.message);
+  }
+
+  // TODO: Update filters
+  const resource = await ResourceModel.findOneAndUpdate(
+    {
+      _id: resourceId,
+      status: { $ne: "deleted" },
+    },
+    value,
+    {
+      new: true,
+      lean: true,
+    }
+  ).exec();
+
+  if (!resource) {
+    throw new NotFoundError(
+      "A resource with the specified identifier does not exist."
+    );
+  }
+
+  return toExternal(resource);
+};
+
+const enable = async (
+  context,
+  resourceId: string
+): Promise<ExternalResource> => {
+  if (!constants.identifierPattern.test(resourceId)) {
+    throw new BadRequestError("The specified resource identifier is invalid.");
+  }
+
+  // TODO: Update filters
+  const resource = await ResourceModel.findOneAndUpdate(
+    {
+      _id: resourceId,
+      status: { $ne: "deleted" },
+    },
+    {
+      status: "enabled",
+    },
+    {
+      new: true,
+      lean: true,
+    }
+  );
+
+  if (!resource) {
+    throw new NotFoundError(
+      "A resource with the specified identifier does not exist."
+    );
+  }
+
+  return toExternal(resource);
+};
+
+const disable = async (
+  context,
+  resourceId: string
+): Promise<ExternalResource> => {
+  if (!constants.identifierPattern.test(resourceId)) {
+    throw new BadRequestError("The specified resource identifier is invalid.");
+  }
+
+  // TODO: Update filters
+  const resource = await ResourceModel.findOneAndUpdate(
+    {
+      _id: resourceId,
+      status: { $ne: "deleted" },
+    },
+    {
+      status: "disabled",
+    },
+    {
+      new: true,
+      lean: true,
+    }
+  );
+
+  if (!resource) {
+    throw new NotFoundError(
+      "A resource with the specified identifier does not exist."
+    );
+  }
+
+  return toExternal(resource);
+};
+
+/**
+ * Before a resource is deleted, all the apps using it should stop using it.
+ * TODO: If there are any apps using the app, the request should fail with appropriate
+ * explanation.
+ */
+const remove = async (
+  context,
+  resourceId: string
+): Promise<{ success: boolean }> => {
+  if (!constants.identifierPattern.test(resourceId)) {
+    throw new BadRequestError("The specified resource identifier is invalid.");
+  }
+
+  // TODO: Update filters
+  const resource = await ResourceModel.findOneAndUpdate(
+    {
+      _id: resourceId,
+      status: { $ne: "deleted" },
+    },
+    {
+      status: "deleted",
+    },
+    {
+      new: true,
+      lean: true,
+    }
+  );
+
+  if (!resource) {
+    throw new NotFoundError(
+      "A resource with the specified identifier does not exist."
+    );
+  }
+
+  return { success: true };
+};
+
+export { create, list, listByIds, getById, update, enable, disable, remove };
