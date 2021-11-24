@@ -158,6 +158,7 @@ export interface ExternalApp {
   name: string;
   description: string;
   resources: string[];
+  groups: string[];
   creator: string;
   status: typeof appStatuses[number];
 }

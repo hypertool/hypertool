@@ -31,16 +31,22 @@ const filterSchema = joi.object({
 });
 
 const toExternal = (app: App): ExternalApp => {
-  const { name, description, resources, creator, status } = app;
+  const { name, description, groups, resources, creator, status } = app;
 
   return {
     name,
     description,
+    groups:
+      groups.length > 0
+        ? typeof groups[0] === "string"
+          ? groups
+          : groups.map((group) => group.id)
+        : [],
     resources:
       resources.length > 0
         ? typeof resources[0] === "string"
           ? resources
-          : resources.map((member) => member.id)
+          : resources.map((resource) => resource.id)
         : [],
     creator: typeof creator === "string" ? creator : (creator as User).id,
     status,
