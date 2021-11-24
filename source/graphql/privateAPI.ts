@@ -68,6 +68,15 @@ const typeDefs = gql`
         databasePassword: String!
         connectUsingSSL: Boolean!
     }
+
+    type PostgresConfiguration {
+        host: String!
+        post: Integer!
+        databaseName: String!
+        databaseUserName: String!
+        databasePassword: String!
+        connectUsingSSL: Boolean!
+    }
 `;
 
 const resolvers = {};
