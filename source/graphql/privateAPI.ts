@@ -75,7 +75,6 @@ const typeDefs = gql`
         post: Integer!
         databaseName: String!
         databaseUserName: String!
-        databasePassword: String!
         connectUsingSSL: Boolean!
     }
 
@@ -84,7 +83,6 @@ const typeDefs = gql`
         post: Integer!
         databaseName: String!
         databaseUserName: String!
-        databasePassword: String!
         connectUsingSSL: Boolean!
     }
 
@@ -93,7 +91,6 @@ const typeDefs = gql`
         post: Integer!
         databaseName: String!
         databaseUserName: String!
-        databasePassword: String!
         connectUsingSSL: Boolean!
     }
 
