@@ -10,14 +10,6 @@ import {
 } from "../utils/constants";
 
 const typeDefs = gql`
-    enum ResourceType {
-        ${resourceTypes.join("\n")}
-    }
-
-    enum ResourceStatus {
-        ${resourceStatuses.join("\n")}
-    }
-
     enum Gender {
         ${genders.join("\n")}
     }
@@ -58,6 +50,23 @@ const typeDefs = gql`
         description: String!
         users: [User!]!
         status: OrganizationStatus!
+    }
+
+    enum ResourceType {
+        ${resourceTypes.join("\n")}
+    }
+
+    enum ResourceStatus {
+        ${resourceStatuses.join("\n")}
+    }
+
+    type MySQLConfiguration {
+        host: String!
+        post: Integer!
+        databaseName: String!
+        databaseUserName: String!
+        databasePassword: String!
+        connectUsingSSL: Boolean!
     }
 `;
 
