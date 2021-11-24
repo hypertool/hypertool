@@ -142,6 +142,16 @@ const typeDefs = gql`
         updatedAt: Date!
     }
 
+    type AppPage {
+        totalRecords: Integer!
+        totalPages: Integer!
+        previousPage: Integer!
+        nextPage: Integer!
+        hasPreviousPage: Integer!
+        hasNextPage: Integer!
+        records: [App!]!
+    }
+
     enum GroupType {
         ${groupTypes.join("\n")}
     }
