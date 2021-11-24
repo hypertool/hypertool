@@ -1,6 +1,6 @@
 import joi from "joi";
 
-import type { App, ExternalApp, User, AppPage } from "../types";
+import type { App, ExternalApp, AppPage, User } from "../types";
 
 import { constants, BadRequestError, NotFoundError } from "../utils";
 import { AppModel } from "../models";
@@ -8,6 +8,7 @@ import { AppModel } from "../models";
 const createSchema = joi.object({
   name: joi.string().min(1).max(128).allow(""),
   description: joi.string().min(0).max(512).allow(""),
+  groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
   resources: joi.array().items(joi.string().regex(constants.identifierPattern)),
   creator: joi.string().regex(constants.identifierPattern),
 });
@@ -15,6 +16,7 @@ const createSchema = joi.object({
 const updateSchema = joi.object({
   name: joi.string().min(1).max(128).allow(""),
   description: joi.string().min(0).max(512).allow(""),
+  groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
   resources: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
