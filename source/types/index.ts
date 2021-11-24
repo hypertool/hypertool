@@ -8,6 +8,7 @@ import {
   userRoles,
   groupTypes,
   genders,
+  groupStatuses,
 } from "../utils/constants";
 
 export interface MySQLConfiguration {
@@ -126,20 +127,21 @@ export interface User {
 }
 
 export interface Organization {
-  id: string,
-  name: string,
-  description: string,
+  id: string;
+  name: string;
+  description: string;
   users: string[] | User[];
   status: typeof organizationStatuses[number];
 }
 
 export interface Group {
-  id: string,
-  name: string,
+  id: string;
+  name: string;
   type: typeof groupTypes[number];
-  description: string,
+  description: string;
   users: string[] | User[];
   apps: string[] | App[];
+  status: typeof groupStatuses[number];
 }
 
 export interface App {
