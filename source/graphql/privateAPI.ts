@@ -120,6 +120,16 @@ const typeDefs = gql`
         updatedAt: Date!
     }
 
+    type ResourcePage {
+        totalRecords: Integer!
+        totalPages: Integer!
+        previousPage: Integer!
+        nextPage: Integer!
+        hasPreviousPage: Integer!
+        hasNextPage: Integer!
+        records: [Resource!]!
+    }
+
     enum AppStatus {
         ${appStatuses.join("\n")}
     }
