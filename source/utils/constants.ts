@@ -259,17 +259,12 @@ const countryCodes = tuple(
   "YEM", // Yemen
   "ZMB", // Zambia
   "ZWE", // Zimbabwe
-  "ALA", // Åland Islands
+  "ALA" // Åland Islands
 );
 
 const identifierPattern = /^[a-z0-9]{24}$/;
 
-const userStatuses = tuple(
-  "invited",
-  "cancelled",
-  "activated",
-  "removed",
-);
+const userStatuses = tuple("invited", "cancelled", "activated", "removed");
 
 const userRoles = tuple("owner", "developer", "viewer");
 
@@ -328,6 +323,8 @@ const resourceTypes = tuple(
   "circleci"
 );
 
+const groupStatuses = tuple("enabled", "disabled", "deleted", "banned");
+
 export {
   paginateMaxLimit,
   paginateMinLimit,
@@ -341,5 +338,6 @@ export {
   appStatuses,
   resourceStatuses,
   resourceTypes,
-  groupTypes
+  groupTypes,
+  groupStatuses,
 };
