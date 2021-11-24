@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
 import type { Group } from "../types";
-import { groupTypes } from "../utils/constants";
+import { groupStatuses, groupTypes } from "../utils/constants";
 
 const groupSchema = new Schema(
   {
@@ -40,6 +40,11 @@ const groupSchema = new Schema(
         },
       ],
       required: true,
+    },
+    status: {
+      type: String,
+      enum: groupStatuses,
+      default: "enabled",
     },
   },
   {
