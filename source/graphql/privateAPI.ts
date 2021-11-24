@@ -137,6 +137,15 @@ const typeDefs = gql`
     enum GroupType {
         ${groupTypes.join("\n")}
     }
+
+    type Group {
+      id: ID!
+      name: String!
+      description: String!
+      type: GroupType!
+      users: [User!]!
+      apps: [App!]!
+    }
 `;
 
 const resolvers = {};
