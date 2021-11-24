@@ -69,6 +69,16 @@ const typeDefs = gql`
         updatedAt: Date!
     }
 
+    type OrganizationPage {
+        totalRecords: Integer!
+        totalPages: Integer!
+        previousPage: Integer!
+        nextPage: Integer!
+        hasPreviousPage: Integer!
+        hasNextPage: Integer!
+        records: [Organization!]!
+    }
+
     enum ResourceType {
         ${resourceTypes.join("\n")}
     }
