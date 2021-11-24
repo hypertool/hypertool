@@ -9,6 +9,7 @@ import {
   organizationStatuses,
   userRoles,
   groupTypes,
+  appStatuses,
 } from "../utils/constants";
 
 const typeDefs = gql`
@@ -111,6 +112,10 @@ const typeDefs = gql`
         postgres: PostgresConfiguration
         mongodb: MongoDBConfiguration
         bigquery: BigQueryConfiguration
+    }
+
+    enum AppStatus {
+      ${appStatuses.join("\n")}
     }
 
     enum GroupType {
