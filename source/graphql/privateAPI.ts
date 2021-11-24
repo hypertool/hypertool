@@ -115,7 +115,23 @@ const typeDefs = gql`
     }
 
     enum AppStatus {
-      ${appStatuses.join("\n")}
+        ${appStatuses.join("\n")}
+    }
+
+    type App {
+        id: ID!
+        name: String!
+        description: String!
+        # Group points to App directly, making each other mutually recursive.
+        # Therefore, we flatten the data structure here.
+        groups: [ID!]!
+        # Resource points to App directly, making each other mutually recursive.
+        # Therefore, we flatten the data structure here.
+        resources: [ID!]!
+        # User points to App indirectly via groups attribute. Since groups is flattened
+        # in User, we can use an aggregate type here.
+        creator: User!
+        status: AppStatus!
     }
 
     enum GroupType {

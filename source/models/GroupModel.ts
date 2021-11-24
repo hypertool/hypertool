@@ -4,7 +4,6 @@ import paginate from "mongoose-paginate-v2";
 import type { Group } from "../types";
 import { groupTypes } from "../utils/constants";
 
-
 const groupSchema = new Schema(
   {
     name: {
