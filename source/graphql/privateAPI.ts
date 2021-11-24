@@ -35,7 +35,6 @@ const typeDefs = gql`
         pictureURL: String
         emailAddress: String!
         emailVerified: Boolean!
-        permissions: [String!]!
         birthday: String
         status: UserStatus!
     }
