@@ -90,6 +90,19 @@ const typeDefs = gql`
     type BigQueryConfiguration {
         key: String!
     }
+
+    type Resource {
+        id: ID!
+        name: String!
+        description: String!
+        creator: User!
+        type: ResourceType!
+        status: ResourceStatus!
+        mysql: MySQLConfiguration
+        postgres: PostgresConfiguration
+        mongodb: MongoDBConfiguration
+        bigquery: BigQueryConfiguration
+    }
 `;
 
 const resolvers = {};
