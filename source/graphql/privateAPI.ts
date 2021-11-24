@@ -166,6 +166,16 @@ const typeDefs = gql`
         createdAt: Date!
         updatedAt: Date!
     }
+
+    type GroupPage {
+        totalRecords: Integer!
+        totalPages: Integer!
+        previousPage: Integer!
+        nextPage: Integer!
+        hasPreviousPage: Integer!
+        hasNextPage: Integer!
+        records: [Group!]!
+    }
 `;
 
 const resolvers = {
