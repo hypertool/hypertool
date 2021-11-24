@@ -206,6 +206,23 @@ const typeDefs = gql`
         hasNextPage: Integer!
         records: [Group!]!
     }
+
+    type Query {
+        getOrganizations(page: Int, limit: Int): OrganizationPage!
+        getOrganizationById(organizationId: ID!): Organization!
+
+        getUsers(page: Int, limit: Int): UserPage!
+        getUserById(userId: ID!): User!
+
+        getGroups(page: Int, limit: Int): GroupPage!
+        getGroupById(groupId: ID!): Group!
+
+        getApps(page: Int, limit: Int): AppPage!
+        getAppById(appId: ID!): App!
+
+        getResources(page: Int, limit: Int): ResourcePage!
+        getResourceById(resourceId: ID!): Resource!
+    }
 `;
 
 const resolvers = {
