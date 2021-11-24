@@ -6,6 +6,7 @@ import {
   genders,
   countryCodes,
   userStatuses,
+  organizationStatuses,
 } from "../utils/constants";
 
 const typeDefs = gql`
@@ -34,6 +35,9 @@ const typeDefs = gql`
         firstName: String!
         lastName: String!
         description: String!
+        # Organization points to User directly, making each other mutually recursive.
+        # Therefore, we flatten the data structure here.
+        organization: ID!
         gender: Gender
         countryCode: Country
         pictureURL: String
