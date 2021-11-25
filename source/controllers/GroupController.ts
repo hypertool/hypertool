@@ -1,6 +1,6 @@
 import joi from "joi";
 
-import type { Group, GroupPage } from "../types";
+import type { Group, GroupPage, ExternalGroup } from "../types";
 
 import { constants, BadRequestError, NotFoundError } from "../utils";
 import { GroupModel } from "../models";
@@ -9,6 +9,7 @@ const createSchema = joi.object({
     name: joi.string().min(1).max(256),
     description: joi.string().min(0).max(512).allow(""),
     type: joi.string().valid(...constants.groupTypes).required(),
+    status: joi.string().valid(...constants.groupStatuses).required(),
     users: joi.array().items(joi.string().regex(constants.identifierPattern)),
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
@@ -27,34 +28,35 @@ const updateSchema = joi.object({
     name: joi.string().min(1).max(256),
     description: joi.string().min(0).max(512).allow(""),
     type: joi.string().valid(...constants.groupTypes).required(),
+    status: joi.string().valid(...constants.groupStatuses).required(),
     users: joi.array().items(joi.string().regex(constants.identifierPattern)),
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
 const toExternal = (group: Group): ExternalGroup => {
-    const { name, description, groups, resources, creator, status } = group;
+    const { name, description, type, users, apps, status } = group;
   
     return {
       name,
       description,
-      groups:
-        groups.length > 0
-          ? typeof groups[0] === "string"
-            ? groups
-            : groups.map((group) => group.id)
+      type,
+      users:
+        users.length > 0
+          ? typeof users[0] === "string"
+            ? users
+            : users.map((user) => user.id)
           : [],
-      resources:
-        resources.length > 0
-          ? typeof resources[0] === "string"
-            ? resources
-            : resources.map((resource) => resource.id)
+      apps:
+        apps.length > 0
+          ? typeof apps[0] === "string"
+            ? apps
+            : apps.map((app) => app.id)
           : [],
-      creator: typeof creator === "string" ? creator : (creator as User).id,
       status,
     };
   };
 
-const create = async (context, attributes): Promise<Group> => {
+const create = async (context, attributes): Promise<ExternalGroup> => {
   const { error, value } = createSchema.validate(attributes, {
     stripUnknown: true,
   });
@@ -71,7 +73,7 @@ const create = async (context, attributes): Promise<Group> => {
   });
   await newGroup.save();
 
-  return newGroup;
+  return toExternal(newGroup);
 };
 
 const list = async (context, parameters): Promise<GroupPage> => {
@@ -80,15 +82,13 @@ const list = async (context, parameters): Promise<GroupPage> => {
     throw new BadRequestError(error.message);
   }
 
-  // TODO: Update filters
   const filters = {
     status: {
       $ne: "deleted",
     },
-  };
-  const { page, limit } = value;
+  };  const { page, limit } = value;
 
-  const users = await (GroupModel as any).paginate(filters, {
+  const groups = await (GroupModel as any).paginate(filters, {
     limit,
     page: page + 1,
     lean: true,
@@ -100,28 +100,27 @@ const list = async (context, parameters): Promise<GroupPage> => {
   });
 
   return {
-    totalRecords: users.totalDocs,
-    totalPages: users.totalPages,
-    previousPage: users.prevPage ? users.prevPage - 1 : -1,
-    nextPage: users.nextPage ? users.nextPage - 1 : -1,
-    hasPreviousPage: users.hasPrevPage,
-    hasNextPage: users.hasNextPage,
-    records: users.docs,
+    totalRecords: groups.totalDocs,
+    totalPages: groups.totalPages,
+    previousPage: groups.prevPage ? groups.prevPage - 1 : -1,
+    nextPage: groups.nextPage ? groups.nextPage - 1 : -1,
+    hasPreviousPage: groups.hasPrevPage,
+    hasNextPage: groups.hasNextPage,
+    records: groups.docs.map(toExternal),
   };
 };
 
 const getById = async (
   context,
-  userId: string
-): Promise<Group> => {
-  if (!constants.identifierPattern.test(userId)) {
+  groupId: string
+): Promise<ExternalGroup> => {
+  if (!constants.identifierPattern.test(groupId)) {
     throw new BadRequestError("The specified group identifier is invalid.");
   }
 
   // TODO: Update filters
   const filters = {
-    _id: userId,
-    status: { $ne: "deleted" },
+    _id: groupId,
   };
   const group = await GroupModel.findOne(filters as any).exec();
 
@@ -132,15 +131,15 @@ const getById = async (
     );
   }
 
-  return group;
+  return toExternal(group);
 };
 
 const update = async (
   context,
-  userId: string,
+  groupId: string,
   attributes
-): Promise<Group> => {
-  if (!constants.identifierPattern.test(userId)) {
+): Promise<ExternalGroup> => {
+  if (!constants.identifierPattern.test(groupId)) {
     throw new BadRequestError("The specified group identifier is invalid.");
   }
 
@@ -154,8 +153,7 @@ const update = async (
   // TODO: Update filters
   const group = await GroupModel.findOneAndUpdate(
     {
-      _id: userId,
-      status: { $ne: "removed" },
+      _id: groupId,
     },
     value,
     {
@@ -170,25 +168,25 @@ const update = async (
     );
   }
 
-  return group;
+  return toExternal(group);
 };
 
 const remove = async (
   context,
-  userId: string
+  groupId: string
 ): Promise<{ success: boolean }> => {
-  if (!constants.identifierPattern.test(userId)) {
+  if (!constants.identifierPattern.test(groupId)) {
     throw new BadRequestError("The specified group identifier is invalid.");
   }
 
   // TODO: Update filters
   const group = await GroupModel.findOneAndUpdate(
     {
-      _id: userId,
-      status: { $ne: "removed" },
+      _id: groupId,
+      status: { $ne: "deleted" },
     },
     {
-      status: "removed",
+      status: "deleted",
     },
     {
       new: true,

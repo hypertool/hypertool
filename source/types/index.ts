@@ -7,6 +7,7 @@ import {
   userStatuses,
   userRoles,
   groupTypes,
+  groupStatuses,
   genders,
   groupStatuses,
 } from "../utils/constants";
@@ -174,7 +175,8 @@ export interface ExternalGroup {
   type: typeof groupTypes[number];
   description: string,
   users: string[] | User[];
-  apps: string[] | App[];  
+  apps: string[] | App[];
+  status: typeof groupStatuses[number];  
 }
 
 export type GroupPage = ExternalListPage<ExternalGroup>;

@@ -272,6 +272,8 @@ const organizationStatuses = tuple("active", "deleted", "banned");
 
 const groupTypes = tuple("default", "custom");
 
+const groupStatuses = tuple("active", "deleted");
+
 const appStatuses = tuple("private", "public", "deleted", "archived", "banned");
 
 const resourceStatuses = tuple("enabled", "disabled", "deleted", "banned");
