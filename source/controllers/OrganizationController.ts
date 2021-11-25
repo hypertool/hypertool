@@ -63,6 +63,30 @@ const create = async (context, attributes): Promise<ExternalOrganization> => {
   return toExternal(newOrganization);
 };
 
+const getById = async (
+  context,
+  organizationId: string
+): Promise<ExternalOrganization> => {
+  if (!constants.identifierPattern.test(organizationId)) {
+    throw new BadRequestError("The specified organization identifier is invalid.");
+  }
+
+  // TODO: Update filters
+  const filters = {
+    _id: organizationId,
+  };
+  const group = await OrganizationModel.findOne(filters as any).exec();
+
+  /* We return a 404 error, if we did not find the group. */
+  if (!group) {
+    throw new NotFoundError(
+      "Cannot find a group with the specified identifier."
+    );
+  }
+
+  return toExternal(group);
+};
+
 const update = async (
   context,
   organizationId: string,
@@ -135,4 +159,4 @@ const remove = async (
 };
 
 
-export { create, update, remove };
+export { create, update, remove, getById };
