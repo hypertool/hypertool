@@ -9,7 +9,7 @@ const createSchema = joi.object({
   name: joi.string().min(0).max(256).allow(""),
   description: joi.string().min(0).max(512).allow(""),
   status: joi.string().valid(...constants.organizationStatuses).required(),
-  user: joi.array().items(joi.string().regex(constants.identifierPattern)),
+  users: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
 const filterSchema = joi.object({
@@ -26,7 +26,7 @@ const updateSchema = joi.object({
     name: joi.string().min(0).max(256).allow(""),
     description: joi.string().min(0).max(512).allow(""),
     status: joi.string().valid(...constants.organizationStatuses).required(),
-    user: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    users: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
 const create = async (context, attributes): Promise<Organization> => {

@@ -1,23 +1,16 @@
 import joi from "joi";
 
-import type { User, UserPage } from "../types";
+import type { Group, GroupPage } from "../types";
 
 import { constants, BadRequestError, NotFoundError } from "../utils";
-import { UserModel } from "../models";
+import { GroupModel } from "../models";
 
 const createSchema = joi.object({
-  firstName: joi.string().min(1).max(256).required(),
-  lastName: joi.string().max(256).allow("").required(),
-  description: joi.string().min(0).max(512).allow("").required(),
-  gender: joi.string().valid(...constants.genders).required(),
-  countryCode: joi.string().valid(...constants.countryCodes).required(),
-  pictureURL: joi.string().allow(""),
-  emailAddress: joi.string().max(256).required(),
-  emailVerified: joi.string().allow(""),
-  birthday: joi.date().allow(null),
-  status: joi.string().valid(...constants.userStatuses),
-  role: joi.string().valid(...constants.userRoles),
-  groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    name: joi.string().min(1).max(256),
+    description: joi.string().min(0).max(512).allow(""),
+    type: joi.string().valid(...constants.groupTypes).required(),
+    users: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
 const filterSchema = joi.object({
@@ -31,21 +24,14 @@ const filterSchema = joi.object({
 });
 
 const updateSchema = joi.object({
-    firstName: joi.string().min(1).max(256).required(),
-    lastName: joi.string().max(256).allow("").required(),
-    description: joi.string().min(0).max(512).allow("").required(),
-    gender: joi.string().valid(...constants.genders).required(),
-    countryCode: joi.string().valid(...constants.countryCodes).required(),
-    pictureURL: joi.string().allow(""),
-    emailAddress: joi.string().max(256).required(),
-    emailVerified: joi.string().allow(""),
-    birthday: joi.date().allow(null),
-    status: joi.string().valid(...constants.userStatuses),
-    role: joi.string().valid(...constants.userRoles),
-    groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    name: joi.string().min(1).max(256),
+    description: joi.string().min(0).max(512).allow(""),
+    type: joi.string().valid(...constants.groupTypes).required(),
+    users: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const create = async (context, attributes): Promise<User> => {
+const create = async (context, attributes): Promise<Group> => {
   const { error, value } = createSchema.validate(attributes, {
     stripUnknown: true,
   });
@@ -56,16 +42,16 @@ const create = async (context, attributes): Promise<User> => {
 
   // TODO: Check if value.creator is correct.
   // TODO: Check if value.name is unique across the organization and matches the identifier regex.
-  const newUser = new UserModel({
+  const newGroup = new GroupModel({
     ...value,
     status: "active",
   });
-  await newUser.save();
+  await newGroup.save();
 
-  return newUser;
+  return newGroup;
 };
 
-const list = async (context, parameters): Promise<UserPage> => {
+const list = async (context, parameters): Promise<GroupPage> => {
   const { error, value } = filterSchema.validate(parameters);
   if (error) {
     throw new BadRequestError(error.message);
@@ -79,7 +65,7 @@ const list = async (context, parameters): Promise<UserPage> => {
   };
   const { page, limit } = value;
 
-  const users = await (UserModel as any).paginate(filters, {
+  const users = await (GroupModel as any).paginate(filters, {
     limit,
     page: page + 1,
     lean: true,
@@ -104,9 +90,9 @@ const list = async (context, parameters): Promise<UserPage> => {
 const getById = async (
   context,
   userId: string
-): Promise<User> => {
+): Promise<Group> => {
   if (!constants.identifierPattern.test(userId)) {
-    throw new BadRequestError("The specified user identifier is invalid.");
+    throw new BadRequestError("The specified group identifier is invalid.");
   }
 
   // TODO: Update filters
@@ -114,25 +100,25 @@ const getById = async (
     _id: userId,
     status: { $ne: "deleted" },
   };
-  const user = await UserModel.findOne(filters as any).exec();
+  const group = await GroupModel.findOne(filters as any).exec();
 
-  /* We return a 404 error, if we did not find the user. */
-  if (!user) {
+  /* We return a 404 error, if we did not find the group. */
+  if (!group) {
     throw new NotFoundError(
-      "Cannot find a user with the specified identifier."
+      "Cannot find a group with the specified identifier."
     );
   }
 
-  return user;
+  return group;
 };
 
 const update = async (
   context,
   userId: string,
   attributes
-): Promise<User> => {
+): Promise<Group> => {
   if (!constants.identifierPattern.test(userId)) {
-    throw new BadRequestError("The specified user identifier is invalid.");
+    throw new BadRequestError("The specified group identifier is invalid.");
   }
 
   const { error, value } = updateSchema.validate(attributes, {
@@ -143,7 +129,7 @@ const update = async (
   }
 
   // TODO: Update filters
-  const user = await UserModel.findOneAndUpdate(
+  const group = await GroupModel.findOneAndUpdate(
     {
       _id: userId,
       status: { $ne: "removed" },
@@ -155,89 +141,25 @@ const update = async (
     }
   ).exec();
 
-  if (!user) {
+  if (!group) {
     throw new NotFoundError(
-      "A user with the specified identifier does not exist."
+      "A group with the specified identifier does not exist."
     );
   }
 
-  return user;
+  return group;
 };
-
-const activate = async (
-  context,
-  userId: string
-): Promise<User> => {
-  if (!constants.identifierPattern.test(userId)) {
-    throw new BadRequestError("The specified user identifier is invalid.");
-  }
-
-  // TODO: Update filters
-  const user = await UserModel.findOneAndUpdate(
-    {
-      _id: userId,
-      status: { $ne: "removed" },
-    },
-    {
-      status: "activated",
-    },
-    {
-      new: true,
-      lean: true,
-    }
-  );
-
-  if (!user) {
-    throw new NotFoundError(
-      "A user with the specified identifier does not exist."
-    );
-  }
-
-  return user;
-};
-
-const invite = async (
-    context,
-    userId: string
-  ): Promise<User> => {
-    if (!constants.identifierPattern.test(userId)) {
-      throw new BadRequestError("The specified user identifier is invalid.");
-    }
-  
-    // TODO: Update filters
-    const user = await UserModel.findOneAndUpdate(
-      {
-        _id: userId,
-        status: { $ne: "removed" },
-      },
-      {
-        status: "invited",
-      },
-      {
-        new: true,
-        lean: true,
-      }
-    );
-  
-    if (!user) {
-      throw new NotFoundError(
-        "A user with the specified identifier does not exist."
-      );
-    }
-  
-    return user;
-  };
 
 const remove = async (
   context,
   userId: string
 ): Promise<{ success: boolean }> => {
   if (!constants.identifierPattern.test(userId)) {
-    throw new BadRequestError("The specified user identifier is invalid.");
+    throw new BadRequestError("The specified group identifier is invalid.");
   }
 
   // TODO: Update filters
-  const user = await UserModel.findOneAndUpdate(
+  const group = await GroupModel.findOneAndUpdate(
     {
       _id: userId,
       status: { $ne: "removed" },
@@ -251,17 +173,13 @@ const remove = async (
     }
   );
 
-  if (!user) {
+  if (!group) {
     throw new NotFoundError(
-      "A user with the specified identifier does not exist."
+      "A group with the specified identifier does not exist."
     );
   }
 
   return { success: true };
 };
 
-// changeRole (userId, role) -> Make user Owner/Editor/Viewer
-// addToGroup (userId, groupId)
-// removeFromGroup (userId, groupId)
-
-export { create, list, getById, update, activate, invite, remove };
+export { create, list, getById, update, remove };

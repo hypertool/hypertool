@@ -109,6 +109,8 @@ export interface ExternalListPage<T> {
 export type ResourcePage = ExternalListPage<ExternalResource>;
 
 export type UserPage = ExternalListPage<User>;
+
+export type GroupPage = ExternalListPage<Group>;
 export interface User {
   id: string;
   firstName: string;
