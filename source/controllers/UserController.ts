@@ -1,6 +1,6 @@
 import joi from "joi";
 
-import type { User, UserPage } from "../types";
+import type { User, UserPage, ExternalUser } from "../types";
 
 import { constants, BadRequestError, NotFoundError } from "../utils";
 import { UserModel } from "../models";
@@ -9,6 +9,7 @@ const createSchema = joi.object({
   firstName: joi.string().min(1).max(256).required(),
   lastName: joi.string().max(256).allow("").required(),
   description: joi.string().min(0).max(512).allow("").required(),
+  organization: joi.string().regex(constants.identifierPattern),
   gender: joi.string().valid(...constants.genders).required(),
   countryCode: joi.string().valid(...constants.countryCodes).required(),
   pictureURL: joi.string().allow(""),
@@ -34,6 +35,7 @@ const updateSchema = joi.object({
     firstName: joi.string().min(1).max(256).required(),
     lastName: joi.string().max(256).allow("").required(),
     description: joi.string().min(0).max(512).allow("").required(),
+    organization: joi.string().regex(constants.identifierPattern),
     gender: joi.string().valid(...constants.genders).required(),
     countryCode: joi.string().valid(...constants.countryCodes).required(),
     pictureURL: joi.string().allow(""),
@@ -45,7 +47,45 @@ const updateSchema = joi.object({
     groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const create = async (context, attributes): Promise<User> => {
+const toExternal = (user: User): ExternalUser => {
+  const { 
+    firstName, 
+    lastName, 
+    description,
+    organization, 
+    gender, 
+    countryCode, 
+    pictureURL, 
+    emailAddress, 
+    emailVerified, 
+    birthday, 
+    status, 
+    role, 
+    groups } = user;
+
+  return {
+    firstName, 
+    lastName, 
+    description, 
+    organization,
+    gender, 
+    countryCode, 
+    pictureURL, 
+    emailAddress, 
+    emailVerified, 
+    birthday, 
+    status, 
+    role,
+    groups:
+      groups.length > 0
+        ? typeof groups[0] === "string"
+          ? groups
+          : groups.map((group) => group.id)
+        : [],
+  };
+};
+
+const create = async (context, attributes): Promise<ExternalUser> => {
   const { error, value } = createSchema.validate(attributes, {
     stripUnknown: true,
   });
@@ -62,7 +102,7 @@ const create = async (context, attributes): Promise<User> => {
   });
   await newUser.save();
 
-  return newUser;
+  return toExternal(newUser);
 };
 
 const list = async (context, parameters): Promise<UserPage> => {
@@ -97,14 +137,14 @@ const list = async (context, parameters): Promise<UserPage> => {
     nextPage: users.nextPage ? users.nextPage - 1 : -1,
     hasPreviousPage: users.hasPrevPage,
     hasNextPage: users.hasNextPage,
-    records: users.docs,
+    records: users.docs.map(toExternal),
   };
 };
 
 const getById = async (
   context,
   userId: string
-): Promise<User> => {
+): Promise<ExternalUser> => {
   if (!constants.identifierPattern.test(userId)) {
     throw new BadRequestError("The specified user identifier is invalid.");
   }
@@ -123,14 +163,14 @@ const getById = async (
     );
   }
 
-  return user;
+  return toExternal(user);
 };
 
 const update = async (
   context,
   userId: string,
   attributes
-): Promise<User> => {
+): Promise<ExternalUser> => {
   if (!constants.identifierPattern.test(userId)) {
     throw new BadRequestError("The specified user identifier is invalid.");
   }
@@ -161,13 +201,13 @@ const update = async (
     );
   }
 
-  return user;
+  return toExternal(user);
 };
 
 const activate = async (
   context,
   userId: string
-): Promise<User> => {
+): Promise<ExternalUser> => {
   if (!constants.identifierPattern.test(userId)) {
     throw new BadRequestError("The specified user identifier is invalid.");
   }
@@ -193,13 +233,13 @@ const activate = async (
     );
   }
 
-  return user;
+  return toExternal(user);
 };
 
 const invite = async (
     context,
     userId: string
-  ): Promise<User> => {
+  ): Promise<ExternalUser> => {
     if (!constants.identifierPattern.test(userId)) {
       throw new BadRequestError("The specified user identifier is invalid.");
     }
@@ -225,7 +265,7 @@ const invite = async (
       );
     }
   
-    return user;
+    return toExternal(user);
   };
 
 const remove = async (

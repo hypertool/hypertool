@@ -120,7 +120,6 @@ export interface User {
   pictureURL: string;
   emailAddress: string;
   emailVerified: boolean;
-  permissions: string[];
   groups: string[] | Group[];
   role: typeof userRoles[number];
   birthday: Date;
@@ -136,7 +135,6 @@ export interface ExternalUser {
   pictureURL: string;
   emailAddress: string;
   emailVerified: boolean;
-  permissions: string[];
   groups: string[] | Group[];
   role: typeof userRoles[number];
   birthday: Date;
