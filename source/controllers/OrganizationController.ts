@@ -1,6 +1,6 @@
 import joi from "joi";
 
-import type { Organization } from "../types";
+import type { Organization, ExternalOrganization } from "../types";
 
 import { constants, BadRequestError, NotFoundError } from "../utils";
 import { OrganizationModel } from "../models";
@@ -29,7 +29,23 @@ const updateSchema = joi.object({
     users: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const create = async (context, attributes): Promise<Organization> => {
+const toExternal = (organization: Organization): ExternalOrganization => {
+  const { name, description, users, status } = organization;
+
+  return {
+    name,
+    description,
+    users:
+      users.length > 0
+        ? typeof users[0] === "string"
+          ? users
+          : users.map((user) => user.id)
+        : [],
+    status,
+  };
+};
+
+const create = async (context, attributes): Promise<ExternalOrganization> => {
   const { error, value } = createSchema.validate(attributes, {
     stripUnknown: true,
   });
@@ -38,22 +54,20 @@ const create = async (context, attributes): Promise<Organization> => {
     throw new BadRequestError(error.message);
   }
 
-  // TODO: Check if value.creator is correct.
-  // TODO: Check if value.name is unique across the organization and matches the identifier regex.
   const newOrganization = new OrganizationModel({
     ...value,
     status: "active",
   });
   await newOrganization.save();
 
-  return newOrganization;
+  return toExternal(newOrganization);
 };
 
 const update = async (
   context,
   organizationId: string,
   attributes
-): Promise<Organization> => {
+): Promise<ExternalOrganization> => {
   if (!constants.identifierPattern.test(organizationId)) {
     throw new BadRequestError("The specified organization identifier is invalid.");
   }
@@ -84,7 +98,7 @@ const update = async (
     );
   }
 
-  return organization;
+  return toExternal(organization);
 };
 
 
