@@ -10,13 +10,12 @@ const createSchema = joi.object({
   lastName: joi.string().max(256).allow("").required(),
   description: joi.string().min(0).max(512).allow("").required(),
   organization: joi.string().regex(constants.identifierPattern),
-  gender: joi.string().valid(...constants.genders).required(),
-  countryCode: joi.string().valid(...constants.countryCodes).required(),
+  gender: joi.string().valid(...constants.genders),
+  countryCode: joi.string().valid(...constants.countryCodes),
   pictureURL: joi.string().allow(""),
   emailAddress: joi.string().max(256).required(),
   emailVerified: joi.string().allow(""),
   birthday: joi.date().allow(null),
-  status: joi.string().valid(...constants.userStatuses),
   role: joi.string().valid(...constants.userRoles),
   groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
@@ -32,49 +31,49 @@ const filterSchema = joi.object({
 });
 
 const updateSchema = joi.object({
-    firstName: joi.string().min(1).max(256).required(),
-    lastName: joi.string().max(256).allow("").required(),
-    description: joi.string().min(0).max(512).allow("").required(),
-    organization: joi.string().regex(constants.identifierPattern),
-    gender: joi.string().valid(...constants.genders).required(),
-    countryCode: joi.string().valid(...constants.countryCodes).required(),
-    pictureURL: joi.string().allow(""),
-    emailAddress: joi.string().max(256).required(),
-    emailVerified: joi.string().allow(""),
-    birthday: joi.date().allow(null),
-    status: joi.string().valid(...constants.userStatuses),
-    role: joi.string().valid(...constants.userRoles),
-    groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
+  firstName: joi.string().min(1).max(256),
+  lastName: joi.string().max(256).allow(""),
+  description: joi.string().min(0).max(512).allow(""),
+  organization: joi.string().regex(constants.identifierPattern),
+  gender: joi.string().valid(...constants.genders),
+  countryCode: joi.string().valid(...constants.countryCodes),
+  pictureURL: joi.string().allow(""),
+  emailAddress: joi.string().max(256),
+  emailVerified: joi.string().allow(""),
+  birthday: joi.date().allow(null),
+  role: joi.string().valid(...constants.userRoles),
+  groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
 const toExternal = (user: User): ExternalUser => {
-  const { 
-    firstName, 
-    lastName, 
+  const {
+    firstName,
+    lastName,
     description,
-    organization, 
-    gender, 
-    countryCode, 
-    pictureURL, 
-    emailAddress, 
-    emailVerified, 
-    birthday, 
-    status, 
-    role, 
-    groups } = user;
+    organization,
+    gender,
+    countryCode,
+    pictureURL,
+    emailAddress,
+    emailVerified,
+    birthday,
+    status,
+    role,
+    groups
+  } = user;
 
   return {
-    firstName, 
-    lastName, 
-    description, 
+    firstName,
+    lastName,
+    description,
     organization,
-    gender, 
-    countryCode, 
-    pictureURL, 
-    emailAddress, 
-    emailVerified, 
-    birthday, 
-    status, 
+    gender,
+    countryCode,
+    pictureURL,
+    emailAddress,
+    emailVerified,
+    birthday,
+    status,
     role,
     groups:
       groups.length > 0
@@ -94,11 +93,9 @@ const create = async (context, attributes): Promise<ExternalUser> => {
     throw new BadRequestError(error.message);
   }
 
-  // TODO: Check if value.creator is correct.
-  // TODO: Check if value.name is unique across the organization and matches the identifier regex.
   const newUser = new UserModel({
     ...value,
-    status: "active",
+    status: "activated",
   });
   await newUser.save();
 
@@ -114,7 +111,7 @@ const list = async (context, parameters): Promise<UserPage> => {
   // TODO: Update filters
   const filters = {
     status: {
-      $ne: "deleted",
+      $ne: "cancelled",
     },
   };
   const { page, limit } = value;
@@ -141,6 +138,23 @@ const list = async (context, parameters): Promise<UserPage> => {
   };
 };
 
+const listByIds = async (
+  context,
+  userIds: string[]
+): Promise<ExternalUser[]> => {
+  const unorderedUsers = await UserModel.find({
+    _id: { $in: userIds },
+    status: { $ne: "cancelled" },
+  }).exec();
+  const object = {};
+  // eslint-disable-next-line no-restricted-syntax
+  for (const user of unorderedUsers) {
+    object[user._id] = user;
+  }
+  // eslint-disable-next-line security/detect-object-injection
+  return userIds.map((key) => toExternal(object[key]));
+};
+
 const getById = async (
   context,
   userId: string
@@ -152,7 +166,7 @@ const getById = async (
   // TODO: Update filters
   const filters = {
     _id: userId,
-    status: { $ne: "deleted" },
+    status: { $ne: "cancelled" },
   };
   const user = await UserModel.findOne(filters as any).exec();
 
@@ -204,70 +218,6 @@ const update = async (
   return toExternal(user);
 };
 
-const activate = async (
-  context,
-  userId: string
-): Promise<ExternalUser> => {
-  if (!constants.identifierPattern.test(userId)) {
-    throw new BadRequestError("The specified user identifier is invalid.");
-  }
-
-  // TODO: Update filters
-  const user = await UserModel.findOneAndUpdate(
-    {
-      _id: userId,
-      status: { $ne: "removed" },
-    },
-    {
-      status: "activated",
-    },
-    {
-      new: true,
-      lean: true,
-    }
-  );
-
-  if (!user) {
-    throw new NotFoundError(
-      "A user with the specified identifier does not exist."
-    );
-  }
-
-  return toExternal(user);
-};
-
-const invite = async (
-    context,
-    userId: string
-  ): Promise<ExternalUser> => {
-    if (!constants.identifierPattern.test(userId)) {
-      throw new BadRequestError("The specified user identifier is invalid.");
-    }
-  
-    // TODO: Update filters
-    const user = await UserModel.findOneAndUpdate(
-      {
-        _id: userId,
-        status: { $ne: "removed" },
-      },
-      {
-        status: "invited",
-      },
-      {
-        new: true,
-        lean: true,
-      }
-    );
-  
-    if (!user) {
-      throw new NotFoundError(
-        "A user with the specified identifier does not exist."
-      );
-    }
-  
-    return toExternal(user);
-  };
-
 const remove = async (
   context,
   userId: string
@@ -304,4 +254,4 @@ const remove = async (
 // addToGroup (userId, groupId)
 // removeFromGroup (userId, groupId)
 
-export { create, list, getById, update, activate, invite, remove };
+export { create, list, listByIds, getById, update, remove };
