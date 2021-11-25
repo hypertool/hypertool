@@ -8,7 +8,7 @@ import { UserModel } from "../models";
 const createSchema = joi.object({
   firstName: joi.string().min(1).max(256).required(),
   lastName: joi.string().max(256).allow("").required(),
-  description: joi.string().min(0).max(512).allow("").required(),
+  description: joi.string().max(512).allow("").required(),
   organization: joi.string().regex(constants.identifierPattern),
   gender: joi.string().valid(...constants.genders),
   countryCode: joi.string().valid(...constants.countryCodes),
@@ -33,7 +33,7 @@ const filterSchema = joi.object({
 const updateSchema = joi.object({
   firstName: joi.string().min(1).max(256),
   lastName: joi.string().max(256).allow(""),
-  description: joi.string().min(0).max(512).allow(""),
+  description: joi.string().max(512).allow(""),
   organization: joi.string().regex(constants.identifierPattern),
   gender: joi.string().valid(...constants.genders),
   countryCode: joi.string().valid(...constants.countryCodes),

@@ -129,7 +129,7 @@ const getById = async (
   /* We return a 404 error, if we did not find the group. */
   if (!group) {
     throw new NotFoundError(
-      "Cannot find a group with the specified identifier."
+      "Cannot find an organization with the specified identifier."
     );
   }
 
