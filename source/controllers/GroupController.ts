@@ -8,8 +8,6 @@ import { GroupModel } from "../models";
 const createSchema = joi.object({
     name: joi.string().min(1).max(256),
     description: joi.string().min(0).max(512).allow(""),
-    type: joi.string().valid(...constants.groupTypes).required(),
-    status: joi.string().valid(...constants.groupStatuses).required(),
     users: joi.array().items(joi.string().regex(constants.identifierPattern)),
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
@@ -27,8 +25,6 @@ const filterSchema = joi.object({
 const updateSchema = joi.object({
     name: joi.string().min(1).max(256),
     description: joi.string().min(0).max(512).allow(""),
-    type: joi.string().valid(...constants.groupTypes).required(),
-    status: joi.string().valid(...constants.groupStatuses).required(),
     users: joi.array().items(joi.string().regex(constants.identifierPattern)),
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
@@ -52,7 +48,7 @@ const toExternal = (group: Group): ExternalGroup => {
             ? apps
             : apps.map((app) => app.id)
           : [],
-      status,
+      status
     };
   };
 
@@ -65,11 +61,9 @@ const create = async (context, attributes): Promise<ExternalGroup> => {
     throw new BadRequestError(error.message);
   }
 
-  // TODO: Check if value.creator is correct.
-  // TODO: Check if value.name is unique across the organization and matches the identifier regex.
   const newGroup = new GroupModel({
     ...value,
-    status: "active",
+    status: "enabled",
   });
   await newGroup.save();
 
@@ -108,6 +102,23 @@ const list = async (context, parameters): Promise<GroupPage> => {
     hasNextPage: groups.hasNextPage,
     records: groups.docs.map(toExternal),
   };
+};
+
+const listByIds = async (
+  context,
+  groupIds: string[]
+): Promise<ExternalGroup[]> => {
+  const unorderedGroups = await GroupModel.find({
+    _id: { $in: groupIds },
+    status: { $ne: "deleted" },
+  }).exec();
+  const object = {};
+  // eslint-disable-next-line no-restricted-syntax
+  for (const group of unorderedGroups) {
+    object[group._id] = group;
+  }
+  // eslint-disable-next-line security/detect-object-injection
+  return groupIds.map((key) => toExternal(object[key]));
 };
 
 const getById = async (
@@ -203,4 +214,4 @@ const remove = async (
   return { success: true };
 };
 
-export { create, list, getById, update, remove };
+export { create, list, listByIds, getById, update, remove };

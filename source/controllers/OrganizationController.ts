@@ -1,6 +1,6 @@
 import joi from "joi";
 
-import type { Organization, ExternalOrganization } from "../types";
+import type { Organization, ExternalOrganization, OrganizationPage } from "../types";
 
 import { constants, BadRequestError, NotFoundError } from "../utils";
 import { OrganizationModel } from "../models";
@@ -8,7 +8,6 @@ import { OrganizationModel } from "../models";
 const createSchema = joi.object({
   name: joi.string().min(0).max(256).allow(""),
   description: joi.string().min(0).max(512).allow(""),
-  status: joi.string().valid(...constants.organizationStatuses).required(),
   users: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
@@ -25,7 +24,6 @@ const filterSchema = joi.object({
 const updateSchema = joi.object({
     name: joi.string().min(0).max(256).allow(""),
     description: joi.string().min(0).max(512).allow(""),
-    status: joi.string().valid(...constants.organizationStatuses).required(),
     users: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
@@ -61,6 +59,57 @@ const create = async (context, attributes): Promise<ExternalOrganization> => {
   await newOrganization.save();
 
   return toExternal(newOrganization);
+};
+
+const list = async (context, parameters): Promise<OrganizationPage> => {
+  const { error, value } = filterSchema.validate(parameters);
+  if (error) {
+    throw new BadRequestError(error.message);
+  }
+
+  const filters = {
+    status: {
+      $ne: "deleted",
+    },
+  };  const { page, limit } = value;
+
+  const organizations = await (OrganizationModel as any).paginate(filters, {
+    limit,
+    page: page + 1,
+    lean: true,
+    leanWithId: true,
+    pagination: true,
+    sort: {
+      updatedAt: -1,
+    },
+  });
+
+  return {
+    totalRecords: organizations.totalDocs,
+    totalPages: organizations.totalPages,
+    previousPage: organizations.prevPage ? organizations.prevPage - 1 : -1,
+    nextPage: organizations.nextPage ? organizations.nextPage - 1 : -1,
+    hasPreviousPage: organizations.hasPrevPage,
+    hasNextPage: organizations.hasNextPage,
+    records: organizations.docs.map(toExternal),
+  };
+};
+
+const listByIds = async (
+  context,
+  organizationIds: string[]
+): Promise<ExternalOrganization[]> => {
+  const unorderedOrganizations = await OrganizationModel.find({
+    _id: { $in: organizationIds },
+    status: { $ne: "deleted" },
+  }).exec();
+  const object = {};
+  // eslint-disable-next-line no-restricted-syntax
+  for (const organization of unorderedOrganizations) {
+    object[organization._id] = organization;
+  }
+  // eslint-disable-next-line security/detect-object-injection
+  return organizationIds.map((key) => toExternal(object[key]));
 };
 
 const getById = async (
@@ -118,7 +167,7 @@ const update = async (
 
   if (!organization) {
     throw new NotFoundError(
-      "A organization with the specified identifier does not exist."
+      "An organization with the specified identifier does not exist."
     );
   }
 
@@ -151,7 +200,7 @@ const remove = async (
 
   if (!organization) {
     throw new NotFoundError(
-      "A organization with the specified identifier does not exist."
+      "An organization with the specified identifier does not exist."
     );
   }
 
@@ -159,4 +208,4 @@ const remove = async (
 };
 
 
-export { create, update, remove, getById };
+export { create, list, listByIds, getById, update, remove };

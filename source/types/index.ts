@@ -9,7 +9,6 @@ import {
   groupTypes,
   groupStatuses,
   genders,
-  groupStatuses,
 } from "../utils/constants";
 
 export interface MySQLConfiguration {
@@ -129,7 +128,7 @@ export interface ExternalUser {
   firstName: string;
   lastName: string;
   description: string;
-  organization: string | Organization;
+  organization: string;
   gender: typeof genders[number];
   countryCode: typeof countryCodes[number];
   pictureURL: string;
@@ -154,9 +153,11 @@ export interface Organization {
 export interface ExternalOrganization {
   name: string,
   description: string,
-  users: string[] | User[];
+  users: string[];
   status: typeof organizationStatuses[number];
 }
+
+export type OrganizationPage = ExternalListPage<ExternalOrganization>;
 
 export interface Group {
   id: string;
@@ -172,8 +173,8 @@ export interface ExternalGroup {
   name: string,
   type: typeof groupTypes[number];
   description: string,
-  users: string[] | User[];
-  apps: string[] | App[];
+  users: string[];
+  apps: string[];
   status: typeof groupStatuses[number];  
 }
 
