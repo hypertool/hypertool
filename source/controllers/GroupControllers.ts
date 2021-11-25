@@ -7,7 +7,7 @@ import { GroupModel } from "../models";
 
 const createSchema = joi.object({
     name: joi.string().max(256).allow(""),
-    description: joi.string().min(0).max(512).allow(""),
+    description: joi.string().max(512).allow(""),
     users: joi.array().items(joi.string().regex(constants.identifierPattern)),
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
@@ -24,7 +24,7 @@ const filterSchema = joi.object({
 
 const updateSchema = joi.object({
     name: joi.string().max(256).allow(""),
-    description: joi.string().min(0).max(512).allow(""),
+    description: joi.string().max(512).allow(""),
     users: joi.array().items(joi.string().regex(constants.identifierPattern)),
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
