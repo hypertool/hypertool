@@ -13,7 +13,7 @@ const createSchema = joi.object({
     .string()
     .valid(...constants.resourceTypes)
     .required(),
-  status: joi.string().regex(constants.resourceStatuses).required(),
+  status: joi.string().valid(...constants.resourceStatuses).required(),
   mysql: joi.object({
     host: joi.string().required(),
     port: joi.number().integer().required(),
@@ -60,6 +60,7 @@ const updateSchema = joi.object({
     .string()
     .valid(...constants.resourceTypes)
     .required(),
+  status: joi.string().valid(...constants.resourceStatuses).required(),
   mysql: joi.object({
     host: joi.string().required(),
     port: joi.number().integer().required(),
