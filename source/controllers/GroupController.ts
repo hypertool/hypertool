@@ -31,6 +31,29 @@ const updateSchema = joi.object({
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
+const toExternal = (group: Group): ExternalGroup => {
+    const { name, description, groups, resources, creator, status } = group;
+  
+    return {
+      name,
+      description,
+      groups:
+        groups.length > 0
+          ? typeof groups[0] === "string"
+            ? groups
+            : groups.map((group) => group.id)
+          : [],
+      resources:
+        resources.length > 0
+          ? typeof resources[0] === "string"
+            ? resources
+            : resources.map((resource) => resource.id)
+          : [],
+      creator: typeof creator === "string" ? creator : (creator as User).id,
+      status,
+    };
+  };
+
 const create = async (context, attributes): Promise<Group> => {
   const { error, value } = createSchema.validate(attributes, {
     stripUnknown: true,

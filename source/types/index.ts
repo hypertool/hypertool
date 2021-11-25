@@ -108,9 +108,6 @@ export interface ExternalListPage<T> {
 
 export type ResourcePage = ExternalListPage<ExternalResource>;
 
-export type UserPage = ExternalListPage<User>;
-
-export type GroupPage = ExternalListPage<Group>;
 export interface User {
   id: string;
   firstName: string;
@@ -128,11 +125,36 @@ export interface User {
   birthday: Date;
   status: typeof userStatuses[number];
 }
+export interface ExternalUser {
+  firstName: string;
+  lastName: string;
+  description: string;
+  organization: string | Organization;
+  gender: typeof genders[number];
+  countryCode: typeof countryCodes[number];
+  pictureURL: string;
+  emailAddress: string;
+  emailVerified: boolean;
+  permissions: string[];
+  groups: string[] | Group[];
+  role: typeof userRoles[number];
+  birthday: Date;
+  status: typeof userStatuses[number];
+}
+
+export type UserPage = ExternalListPage<ExternalUser>;
 
 export interface Organization {
   id: string;
   name: string;
   description: string;
+  users: string[] | User[];
+  status: typeof organizationStatuses[number];
+}
+
+export interface ExternalOrganization {
+  name: string,
+  description: string,
   users: string[] | User[];
   status: typeof organizationStatuses[number];
 }
@@ -146,6 +168,16 @@ export interface Group {
   apps: string[] | App[];
   status: typeof groupStatuses[number];
 }
+
+export interface ExternalGroup {
+  name: string,
+  type: typeof groupTypes[number];
+  description: string,
+  users: string[] | User[];
+  apps: string[] | App[];  
+}
+
+export type GroupPage = ExternalListPage<ExternalGroup>;
 
 export interface App {
   id: string;
