@@ -6,8 +6,8 @@ import { constants, BadRequestError, NotFoundError } from "../utils";
 import { ResourceModel } from "../models";
 
 const createSchema = joi.object({
-  name: joi.string().min(1).max(256).allow(""),
-  description: joi.string().min(0).max(512).allow(""),
+  name: joi.string().max(256).allow(""),
+  description: joi.string().max(512).allow(""),
   creator: joi.string().regex(constants.identifierPattern).required(),
   type: joi
     .string()
@@ -54,7 +54,7 @@ const filterSchema = joi.object({
 
 const updateSchema = joi.object({
   name: joi.string().min(1).max(256).allow(""),
-  description: joi.string().min(0).max(512).allow(""),
+  description: joi.string().max(512).allow(""),
   type: joi
     .string()
     .valid(...constants.resourceTypes)

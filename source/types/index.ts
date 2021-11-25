@@ -7,8 +7,8 @@ import {
   userStatuses,
   userRoles,
   groupTypes,
-  genders,
   groupStatuses,
+  genders,
 } from "../utils/constants";
 
 export interface MySQLConfiguration {
@@ -113,18 +113,34 @@ export interface User {
   firstName: string;
   lastName: string;
   description: string;
-  organization: string | Organization;
+  organization: string;
   gender: typeof genders[number];
   countryCode: typeof countryCodes[number];
   pictureURL: string;
   emailAddress: string;
   emailVerified: boolean;
-  permissions: string[];
   groups: string[] | Group[];
   role: typeof userRoles[number];
   birthday: Date;
   status: typeof userStatuses[number];
 }
+export interface ExternalUser {
+  firstName: string;
+  lastName: string;
+  description: string;
+  organization: string;
+  gender: typeof genders[number];
+  countryCode: typeof countryCodes[number];
+  pictureURL: string;
+  emailAddress: string;
+  emailVerified: boolean;
+  groups: string[] | Group[];
+  role: typeof userRoles[number];
+  birthday: Date;
+  status: typeof userStatuses[number];
+}
+
+export type UserPage = ExternalListPage<ExternalUser>;
 
 export interface Organization {
   id: string;
@@ -133,6 +149,15 @@ export interface Organization {
   users: string[] | User[];
   status: typeof organizationStatuses[number];
 }
+
+export interface ExternalOrganization {
+  name: string,
+  description: string,
+  users: string[];
+  status: typeof organizationStatuses[number];
+}
+
+export type OrganizationPage = ExternalListPage<ExternalOrganization>;
 
 export interface Group {
   id: string;
@@ -143,6 +168,17 @@ export interface Group {
   apps: string[] | App[];
   status: typeof groupStatuses[number];
 }
+
+export interface ExternalGroup {
+  name: string,
+  type: typeof groupTypes[number];
+  description: string,
+  users: string[];
+  apps: string[];
+  status: typeof groupStatuses[number];  
+}
+
+export type GroupPage = ExternalListPage<ExternalGroup>;
 
 export interface App {
   id: string;
@@ -157,8 +193,8 @@ export interface App {
 export interface ExternalApp {
   name: string;
   description: string;
-  members: string[];
   resources: string[];
+  groups: string[];
   creator: string;
   status: typeof appStatuses[number];
 }

@@ -1,2 +1,5 @@
-export * as resources from "./ResourceController";
-export * as apps from "./AppController";
+export * as resources from "./ResourceControllers";
+export * as apps from "./AppControllers";
+export * as users from './UserControllers';
+export * as organizations from './OrganizationControllers';
+export * as groups from './GroupControllers';
