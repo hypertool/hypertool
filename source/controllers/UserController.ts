@@ -1,9 +1,9 @@
 import joi from "joi";
 
-import type { Resource, ExternalResource, ResourcePage } from "../types";
+import type { User } from "../types";
 
 import { constants, BadRequestError, NotFoundError } from "../utils";
-import { ResourceModel } from "../models";
+import { UserModel } from "../models";
 
 const createSchema = joi.object({
   firstName: joi.string().min(1).max(256).required(),
@@ -45,46 +45,7 @@ const updateSchema = joi.object({
     groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const toExternal = (resource: Resource): ExternalResource => {
-  const { id, name, description, type, configuration, status } = resource;
-  let sanitizedConfiguration = null;
-  switch (type) {
-    case "mysql":
-    case "postgres":
-    case "mongodb": {
-      const { host, port, databaseName, databaseUserName, connectUsingSSL } =
-        configuration;
-      sanitizedConfiguration = {
-        host,
-        port,
-        databaseName,
-        databaseUserName,
-        connectUsingSSL,
-      };
-      break;
-    }
-
-    case "bigquery": {
-      sanitizedConfiguration = configuration;
-      break;
-    }
-
-    default: {
-      throw new Error(`Unknown resource type "${type}"`);
-    }
-  }
-
-  return {
-    id,
-    name,
-    description,
-    type,
-    configuration: sanitizedConfiguration,
-    status,
-  };
-};
-
-const create = async (context, attributes): Promise<ExternalResource> => {
+const create = async (context, attributes): Promise<User> => {
   const { error, value } = createSchema.validate(attributes, {
     stripUnknown: true,
   });
@@ -95,16 +56,16 @@ const create = async (context, attributes): Promise<ExternalResource> => {
 
   // TODO: Check if value.creator is correct.
   // TODO: Check if value.name is unique across the organization and matches the identifier regex.
-  const newResource = new ResourceModel({
+  const newUser = new UserModel({
     ...value,
-    status: "enabled",
+    status: "active",
   });
-  await newResource.save();
+  await newUser.save();
 
-  return toExternal(newResource);
+  return newUser;
 };
 
-const list = async (context, parameters): Promise<ResourcePage> => {
+const list = async (context, parameters): Promise<UserPage> => {
   const { error, value } = filterSchema.validate(parameters);
   if (error) {
     throw new BadRequestError(error.message);
@@ -118,7 +79,7 @@ const list = async (context, parameters): Promise<ResourcePage> => {
   };
   const { page, limit } = value;
 
-  const resources = await (ResourceModel as any).paginate(filters, {
+  const users = await (UserModel as any).paginate(filters, {
     limit,
     page: page + 1,
     lean: true,
@@ -130,21 +91,21 @@ const list = async (context, parameters): Promise<ResourcePage> => {
   });
 
   return {
-    totalRecords: resources.totalDocs,
-    totalPages: resources.totalPages,
-    previousPage: resources.prevPage ? resources.prevPage - 1 : -1,
-    nextPage: resources.nextPage ? resources.nextPage - 1 : -1,
-    hasPreviousPage: resources.hasPrevPage,
-    hasNextPage: resources.hasNextPage,
-    records: resources.docs.map(toExternal),
+    totalRecords: users.totalDocs,
+    totalPages: users.totalPages,
+    previousPage: users.prevPage ? users.prevPage - 1 : -1,
+    nextPage: users.nextPage ? users.nextPage - 1 : -1,
+    hasPreviousPage: users.hasPrevPage,
+    hasNextPage: users.hasNextPage,
+    records: users.docs,
   };
 };
 
 const listByIds = async (
   context,
   resourceIds: string[]
-): Promise<ExternalResource[]> => {
-  const unorderedResources = await ResourceModel.find({
+): Promise<User[]> => {
+  const unorderedResources = await UserModel.find({
     _id: { $in: resourceIds },
     status: { $ne: "deleted" },
   }).exec();
@@ -160,7 +121,7 @@ const listByIds = async (
 const getById = async (
   context,
   resourceId: string
-): Promise<ExternalResource> => {
+): Promise<User> => {
   if (!constants.identifierPattern.test(resourceId)) {
     throw new BadRequestError("The specified resource identifier is invalid.");
   }
@@ -170,7 +131,7 @@ const getById = async (
     _id: resourceId,
     status: { $ne: "deleted" },
   };
-  const resource = await ResourceModel.findOne(filters as any).exec();
+  const resource = await UserModel.findOne(filters as any).exec();
 
   /* We return a 404 error, if we did not find the resource. */
   if (!resource) {
@@ -179,14 +140,14 @@ const getById = async (
     );
   }
 
-  return toExternal(resource);
+  return resource;
 };
 
 const update = async (
   context,
   resourceId: string,
   attributes
-): Promise<ExternalResource> => {
+): Promise<User> => {
   if (!constants.identifierPattern.test(resourceId)) {
     throw new BadRequestError("The specified resource identifier is invalid.");
   }
@@ -199,7 +160,7 @@ const update = async (
   }
 
   // TODO: Update filters
-  const resource = await ResourceModel.findOneAndUpdate(
+  const resource = await UserModel.findOneAndUpdate(
     {
       _id: resourceId,
       status: { $ne: "deleted" },
@@ -217,19 +178,19 @@ const update = async (
     );
   }
 
-  return toExternal(resource);
+  return resource;
 };
 
 const enable = async (
   context,
   resourceId: string
-): Promise<ExternalResource> => {
+): Promise<User> => {
   if (!constants.identifierPattern.test(resourceId)) {
     throw new BadRequestError("The specified resource identifier is invalid.");
   }
 
   // TODO: Update filters
-  const resource = await ResourceModel.findOneAndUpdate(
+  const resource = await UserModel.findOneAndUpdate(
     {
       _id: resourceId,
       status: { $ne: "deleted" },
@@ -249,19 +210,19 @@ const enable = async (
     );
   }
 
-  return toExternal(resource);
+  return resource;
 };
 
 const disable = async (
   context,
   resourceId: string
-): Promise<ExternalResource> => {
+): Promise<User> => {
   if (!constants.identifierPattern.test(resourceId)) {
     throw new BadRequestError("The specified resource identifier is invalid.");
   }
 
   // TODO: Update filters
-  const resource = await ResourceModel.findOneAndUpdate(
+  const resource = await UserModel.findOneAndUpdate(
     {
       _id: resourceId,
       status: { $ne: "deleted" },
@@ -281,7 +242,7 @@ const disable = async (
     );
   }
 
-  return toExternal(resource);
+  return resource;
 };
 
 /**
@@ -298,7 +259,7 @@ const remove = async (
   }
 
   // TODO: Update filters
-  const resource = await ResourceModel.findOneAndUpdate(
+  const resource = await UserModel.findOneAndUpdate(
     {
       _id: resourceId,
       status: { $ne: "deleted" },
