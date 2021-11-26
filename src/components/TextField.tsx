@@ -11,11 +11,13 @@ const TextFieldHelp = styled(Typography)(({ theme }) => ({
   paddingBottom: 0,
 }));
 
-const TextField = (props: {
+interface Props {
   name: string;
   help: string;
   [key: string]: any;
-}) => {
+}
+
+const TextField = (props: Props) => {
   const { name, help, ...otherProps } = props;
   const formik = useFormikContext();
 
