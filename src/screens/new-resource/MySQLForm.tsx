@@ -14,27 +14,27 @@ const ResourceNameTextField = styled(TextField)(({ theme }) => ({
 
 const HostTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(3),
 })) as any;
 
 const PortTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(3),
 })) as any;
 
 const DatabaseNameTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(3),
 })) as any;
 
 const DatabaseUserNameTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(3),
 })) as any;
 
 const DatabasePasswordTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(3),
 })) as any;
 
 const TextFieldHelp = styled(Typography)(({ theme }) => ({
@@ -48,7 +48,7 @@ const TextFieldHelp = styled(Typography)(({ theme }) => ({
 
 const SSLLabel = styled(FormControlLabel)(({ theme }) => ({
   color: theme.palette.getContrastText(theme.palette.background.default),
-  marginTop: theme.spacing(1),
+  marginTop: theme.spacing(2),
 }));
 
 const MySQLForm: FunctionComponent = (): ReactElement => {
@@ -64,7 +64,7 @@ const MySQLForm: FunctionComponent = (): ReactElement => {
         helperText={
           <TextFieldHelp variant="caption">
             The resource name will help you identify the resource across
-            Hypertool, including HTX and JavaScript code.
+            Hypertool, including code.
           </TextFieldHelp>
         }
       />
