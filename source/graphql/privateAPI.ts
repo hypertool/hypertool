@@ -198,6 +198,7 @@ const typeDefs = gql`
         type: GroupType!
         users: [User!]!
         apps: [App!]!
+        status: GroupStatus!
         createdAt: Date!
         updatedAt: Date!
     }
