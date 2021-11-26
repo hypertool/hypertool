@@ -7,6 +7,7 @@ import {
   Checkbox,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Formik } from "formik";
 
 const ResourceNameTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
@@ -51,10 +52,23 @@ const SSLLabel = styled(FormControlLabel)(({ theme }) => ({
   marginTop: theme.spacing(1),
 }));
 
+const initialValues = {
+  resourceName: "",
+  host: "",
+  port: "",
+  databaseName: "",
+  databaseUserName: "",
+  databasePassword: "",
+  connectUsingSSL: false,
+};
+
 const PostgresForm: FunctionComponent = (): ReactElement => {
+  const handleSubmit = () => {};
+
   return (
-    <>
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       <ResourceNameTextField
+        name="resourceName"
         required={true}
         id="resourceName"
         label="Resource Name"
@@ -70,6 +84,7 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
       />
 
       <HostTextField
+        name="host"
         required={true}
         id="host"
         label="Host"
@@ -79,6 +94,7 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
       />
 
       <PortTextField
+        name="port"
         required={true}
         id="port"
         label="Port"
@@ -88,6 +104,7 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
       />
 
       <DatabaseNameTextField
+        name="databaseName"
         required={true}
         id="databaseName"
         label="Database Name"
@@ -97,6 +114,7 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
       />
 
       <DatabaseUserNameTextField
+        name="databaseUserName"
         required={true}
         id="databaseUserName"
         label="User Name"
@@ -106,6 +124,7 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
       />
 
       <DatabasePasswordTextField
+        name="databasePassword"
         required={true}
         id="databasePassword"
         label="Password"
@@ -116,10 +135,10 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
       />
 
       <SSLLabel
-        control={<Checkbox defaultChecked={false} />}
+        control={<Checkbox name="connectUsingSSL" defaultChecked={false} />}
         label="Connect using SSL"
       />
-    </>
+    </Formik>
   );
 };
 
