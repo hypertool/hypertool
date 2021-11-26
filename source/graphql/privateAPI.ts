@@ -1,5 +1,6 @@
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
+import { organizations, users, groups, apps, resources } from "../controllers";
 
 import {
   resourceTypes,
@@ -241,6 +242,37 @@ const resolvers = {
       return value.toISOString();
     },
   }),
+  Query: {
+    getOrganizations: async (parent, values, context) =>
+      organizations.list(context.request, values),
+
+    getOrganizationById: async (parent, values, context) =>
+      organizations.getById(context.request, values.organizationId),
+
+    getUsers: async (parent, values, context) =>
+      users.list(context.request, values),
+
+    getUserById: async (parent, values, context) =>
+      users.getById(context.request, values.userId),
+
+    getGroups: async (parent, values, context) =>
+      groups.list(context.request, values),
+
+    getGroupById: async (parent, values, context) =>
+      groups.getById(context.request, values.groupId),
+
+    getApps: async (parent, values, context) =>
+      apps.list(context.request, values),
+
+    getAppById: async (parent, values, context) =>
+      apps.getById(context.request, values.appId),
+
+    getResources: async (parent, values, context) =>
+      resources.list(context.request, values),
+
+    getResourceById: async (parent, values, context) =>
+      resources.getById(context.request, values.resourceId),
+  },
 };
 
 const attachRoutes = async (app: any) => {
