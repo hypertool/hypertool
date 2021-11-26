@@ -45,7 +45,7 @@ const typeDefs = gql`
         pictureURL: String
         emailAddress: String!
         emailVerified: Boolean!
-        birthday: String
+        birthday: Date
         status: UserStatus!
         role: UserRole!
         # Group points to User directly, making each other mutually recursive.

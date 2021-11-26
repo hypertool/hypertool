@@ -2,7 +2,12 @@ import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
 import type { User } from "../types";
-import { genders, countryCodes, userStatuses, userRoles } from "../utils/constants";
+import {
+  genders,
+  countryCodes,
+  userStatuses,
+  userRoles,
+} from "../utils/constants";
 
 const userSchema = new Schema(
   {
@@ -28,9 +33,9 @@ const userSchema = new Schema(
     },
     organization: {
       type: {
-          type: Schema.Types.ObjectId,
-          ref: "Organization",
-        },
+        type: Schema.Types.ObjectId,
+        ref: "Organization",
+      },
     },
     gender: {
       type: String,
