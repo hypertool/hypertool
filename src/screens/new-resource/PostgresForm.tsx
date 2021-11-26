@@ -1,14 +1,15 @@
 import type { FunctionComponent, ReactElement } from "react";
 
 import {
-  TextField as MuiTextField,
   Typography,
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Formik, useFormikContext } from "formik";
+import { Formik } from "formik";
 import * as yup from "yup";
+
+import { TextField } from "../../components";
 
 const TextFieldHelp = styled(Typography)(({ theme }) => ({
   display: "flex",
@@ -18,33 +19,6 @@ const TextFieldHelp = styled(Typography)(({ theme }) => ({
   marginBottom: 0,
   paddingBottom: 0,
 }));
-
-const TextField = (props: {
-  name: string;
-  help: string;
-  [key: string]: any;
-}) => {
-  const { name, help, ...otherProps } = props;
-  const formik = useFormikContext();
-
-  const error = (formik.touched as any)[name] && (formik.errors as any)[name];
-
-  return (
-    <MuiTextField
-      name={name}
-      helperText={
-        <>
-          {error && <TextFieldHelp variant="caption">{error}</TextFieldHelp>}
-          {!error && help}
-        </>
-      }
-      onBlur={formik.handleBlur}
-      onChange={formik.handleChange}
-      error={Boolean(error)}
-      {...otherProps}
-    />
-  );
-};
 
 const ResourceNameTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
