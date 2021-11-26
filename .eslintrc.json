@@ -1,0 +1,39 @@
+{
+    "env": {
+        "node": true,
+        "browser": true,
+        "commonjs": true,
+        "es2020": true
+    },
+    "globals": {
+        "assert": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:node/recommended",
+        "plugin:security/recommended",
+        "airbnb-base",
+        "prettier",
+        "plugin:mocha/recommended"
+    ],
+    "plugins": ["security", "prettier", "mocha"],
+    "parserOptions": {
+        "ecmaVersion": 11
+    },
+    "rules": {
+        "no-underscore-dangle": "off",
+        "no-console": "off",
+        "mocha/no-mocha-arrows": "off",
+        "node/no-unpublished-require": "error"
+    },
+    "overrides": [
+        {
+            "files": "test/**/*.js",
+            "rules": {
+                "node/no-unpublished-require": "off",
+                "func-names": "off",
+                "prefer-arrow-callback": "off"
+            }
+        }
+    ]
+}
