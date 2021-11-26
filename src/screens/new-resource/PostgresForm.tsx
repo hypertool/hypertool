@@ -80,7 +80,17 @@ const SSLLabel = styled(FormControlLabel)(({ theme }) => ({
   marginTop: theme.spacing(1),
 }));
 
-const initialValues = {
+interface FormValues {
+  resourceName: string;
+  host: string;
+  port: string;
+  databaseName: string;
+  databaseUserName: string;
+  databasePassword: string;
+  connectUsingSSL: boolean;
+}
+
+const initialValues: FormValues = {
   resourceName: "",
   host: "",
   port: "",
@@ -112,7 +122,7 @@ const validationSchema = yup.object({
 });
 
 const PostgresForm: FunctionComponent = (): ReactElement => {
-  const handleSubmit = () => {};
+  const handleSubmit = (values: FormValues) => {};
 
   return (
     <Formik
