@@ -99,6 +99,34 @@ const typeDefs = gql`
         ${resourceStatuses.join("\n")}
     }
 
+    input MySQLConfigurationInput {
+        host: String!
+        post: Integer!
+        databaseName: String!
+        databaseUserName: String!
+        connectUsingSSL: Boolean!    
+    }
+
+    input PostgresConfigurationInput {
+        host: String!
+        post: Integer!
+        databaseName: String!
+        databaseUserName: String!
+        connectUsingSSL: Boolean!    
+    }
+
+    input MongoDBConfigurationInput {
+        host: String!
+        post: Integer!
+        databaseName: String!
+        databaseUserName: String!
+        connectUsingSSL: Boolean!    
+    }
+
+    input BigQueryConfigurationInput {
+        key: String!
+    }
+
     type MySQLConfiguration {
         host: String!
         post: Integer!
@@ -212,6 +240,107 @@ const typeDefs = gql`
         hasPreviousPage: Integer!
         hasNextPage: Integer!
         records: [Group!]!
+    }
+
+    type RemoveResult {
+        success: Boolean!
+    }
+
+    type Mutation {
+        createOrganization(
+            name: String
+            description: String
+            users: [ID!]
+        ): Organization!
+
+        updateOrganization(
+            name: String
+            description: String
+            users: [ID!]
+        ): Organization!
+
+        deleteOrganization(organizationId: ID!): RemoveResult!
+
+        createUser(
+            firstName: String!
+            lastName: String!
+            description: String
+            organization: ID
+            gender: Gender
+            countryCode: Country
+            pictureURL: String
+            emailAddress: String!
+            birthday: Date,
+            role: UserRole,
+            groups: [ID!]
+        ): User!
+
+        updateUser(
+            firstName: String,
+            lastName: String,
+            description: String,
+            gender: Gender,
+            countryCode: Country,
+            pictureURL: String,
+            birthday: Date,
+            role: UserRole,
+            groups: [ID!]
+        ): User!
+
+        deleteUser(userId: ID!): RemoveResult!
+
+        createGroup(
+            name: String
+            description: String
+            users: [ID!]
+            apps: [ID!]
+        ): Group!
+
+        updateGroup(
+            name: String
+            description: String
+            users: [ID!]
+            apps: [ID!]
+        ): Group!
+
+        deleteGroup(groupId: ID!): RemoveResult!
+
+        createApp(
+            name: String
+            description: String
+            groups: [ID!]
+            resources: [ID!]
+        ): App!
+
+        updateApp(
+            name: String
+            description: String
+            groups: [ID!]
+            resources: [ID!]
+        ): App!
+
+        deleteApp(appId: ID!): RemoveResult!
+
+        createResource(
+            name: String!
+            description: String
+            type: ResourceType!
+            mysql: MySQLConfigurationInput
+            postgres: PostgresConfigurationInput
+            mongodb: MongoDBConfigurationInput
+            bigquery: BigQueryConfigurationInput
+        ): Resource!
+
+        updateResource(
+            name: String
+            description: String
+            mysql: MySQLConfigurationInput
+            postgres: PostgresConfigurationInput
+            mongodb: MongoDBConfigurationInput
+            bigquery: BigQueryConfigurationInput
+        ): Resource!
+
+        deleteResource(resourceId: ID!): RemoveResult!
     }
 
     type Query {
