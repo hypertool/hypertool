@@ -97,7 +97,6 @@ const resourceSchema = new Schema({
     type: String,
     minlength: 0,
     maxlength: 256,
-    required: true,
     trim: true,
   },
   description: {

@@ -1,5 +1,6 @@
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
+import { organizations, users, groups, apps, resources } from "../controllers";
 
 import {
   resourceTypes,
@@ -11,6 +12,7 @@ import {
   userRoles,
   groupTypes,
   appStatuses,
+  groupStatuses,
 } from "../utils/constants";
 
 const typeDefs = gql`
@@ -45,7 +47,7 @@ const typeDefs = gql`
         pictureURL: String
         emailAddress: String!
         emailVerified: Boolean!
-        birthday: String
+        birthday: Date
         status: UserStatus!
         role: UserRole!
         # Group points to User directly, making each other mutually recursive.
@@ -53,6 +55,16 @@ const typeDefs = gql`
         groups: [ID!]!
         createdAt: Date!
         updatedAt: Date!
+    }
+
+    type UserPage {
+        totalRecords: Integer!
+        totalPages: Integer!
+        previousPage: Integer!
+        nextPage: Integer!
+        hasPreviousPage: Integer!
+        hasNextPage: Integer!
+        records: [User!]!
     }
 
     enum OrganizationStatus {
@@ -69,12 +81,50 @@ const typeDefs = gql`
         updatedAt: Date!
     }
 
+    type OrganizationPage {
+        totalRecords: Integer!
+        totalPages: Integer!
+        previousPage: Integer!
+        nextPage: Integer!
+        hasPreviousPage: Integer!
+        hasNextPage: Integer!
+        records: [Organization!]!
+    }
+
     enum ResourceType {
         ${resourceTypes.join("\n")}
     }
 
     enum ResourceStatus {
         ${resourceStatuses.join("\n")}
+    }
+
+    input MySQLConfigurationInput {
+        host: String!
+        post: Integer!
+        databaseName: String!
+        databaseUserName: String!
+        connectUsingSSL: Boolean!    
+    }
+
+    input PostgresConfigurationInput {
+        host: String!
+        post: Integer!
+        databaseName: String!
+        databaseUserName: String!
+        connectUsingSSL: Boolean!    
+    }
+
+    input MongoDBConfigurationInput {
+        host: String!
+        post: Integer!
+        databaseName: String!
+        databaseUserName: String!
+        connectUsingSSL: Boolean!    
+    }
+
+    input BigQueryConfigurationInput {
+        key: String!
     }
 
     type MySQLConfiguration {
@@ -120,6 +170,16 @@ const typeDefs = gql`
         updatedAt: Date!
     }
 
+    type ResourcePage {
+        totalRecords: Integer!
+        totalPages: Integer!
+        previousPage: Integer!
+        nextPage: Integer!
+        hasPreviousPage: Integer!
+        hasNextPage: Integer!
+        records: [Resource!]!
+    }
+
     enum AppStatus {
         ${appStatuses.join("\n")}
     }
@@ -142,8 +202,22 @@ const typeDefs = gql`
         updatedAt: Date!
     }
 
+    type AppPage {
+        totalRecords: Integer!
+        totalPages: Integer!
+        previousPage: Integer!
+        nextPage: Integer!
+        hasPreviousPage: Integer!
+        hasNextPage: Integer!
+        records: [App!]!
+    }
+
     enum GroupType {
         ${groupTypes.join("\n")}
+    }
+
+    enum GroupStatus {
+        ${groupStatuses.join("\n")}
     }
 
     type Group {
@@ -153,8 +227,137 @@ const typeDefs = gql`
         type: GroupType!
         users: [User!]!
         apps: [App!]!
+        status: GroupStatus!
         createdAt: Date!
         updatedAt: Date!
+    }
+
+    type GroupPage {
+        totalRecords: Integer!
+        totalPages: Integer!
+        previousPage: Integer!
+        nextPage: Integer!
+        hasPreviousPage: Integer!
+        hasNextPage: Integer!
+        records: [Group!]!
+    }
+
+    type RemoveResult {
+        success: Boolean!
+    }
+
+    type Mutation {
+        createOrganization(
+            name: String
+            description: String
+            users: [ID!]
+        ): Organization!
+
+        updateOrganization(
+            name: String
+            description: String
+            users: [ID!]
+        ): Organization!
+
+        deleteOrganization(organizationId: ID!): RemoveResult!
+
+        createUser(
+            firstName: String!
+            lastName: String!
+            description: String
+            organization: ID
+            gender: Gender
+            countryCode: Country
+            pictureURL: String
+            emailAddress: String!
+            birthday: Date,
+            role: UserRole,
+            groups: [ID!]
+        ): User!
+
+        updateUser(
+            firstName: String,
+            lastName: String,
+            description: String,
+            gender: Gender,
+            countryCode: Country,
+            pictureURL: String,
+            birthday: Date,
+            role: UserRole,
+            groups: [ID!]
+        ): User!
+
+        deleteUser(userId: ID!): RemoveResult!
+
+        createGroup(
+            name: String
+            description: String
+            users: [ID!]
+            apps: [ID!]
+        ): Group!
+
+        updateGroup(
+            name: String
+            description: String
+            users: [ID!]
+            apps: [ID!]
+        ): Group!
+
+        deleteGroup(groupId: ID!): RemoveResult!
+
+        createApp(
+            name: String
+            description: String
+            groups: [ID!]
+            resources: [ID!]
+        ): App!
+
+        updateApp(
+            name: String
+            description: String
+            groups: [ID!]
+            resources: [ID!]
+        ): App!
+
+        deleteApp(appId: ID!): RemoveResult!
+
+        createResource(
+            name: String!
+            description: String
+            type: ResourceType!
+            mysql: MySQLConfigurationInput
+            postgres: PostgresConfigurationInput
+            mongodb: MongoDBConfigurationInput
+            bigquery: BigQueryConfigurationInput
+        ): Resource!
+
+        updateResource(
+            name: String
+            description: String
+            mysql: MySQLConfigurationInput
+            postgres: PostgresConfigurationInput
+            mongodb: MongoDBConfigurationInput
+            bigquery: BigQueryConfigurationInput
+        ): Resource!
+
+        deleteResource(resourceId: ID!): RemoveResult!
+    }
+
+    type Query {
+        getOrganizations(page: Int, limit: Int): OrganizationPage!
+        getOrganizationById(organizationId: ID!): Organization!
+
+        getUsers(page: Int, limit: Int): UserPage!
+        getUserById(userId: ID!): User!
+
+        getGroups(page: Int, limit: Int): GroupPage!
+        getGroupById(groupId: ID!): Group!
+
+        getApps(page: Int, limit: Int): AppPage!
+        getAppById(appId: ID!): App!
+
+        getResources(page: Int, limit: Int): ResourcePage!
+        getResourceById(resourceId: ID!): Resource!
     }
 `;
 
@@ -168,6 +371,37 @@ const resolvers = {
       return value.toISOString();
     },
   }),
+  Query: {
+    getOrganizations: async (parent, values, context) =>
+      organizations.list(context.request, values),
+
+    getOrganizationById: async (parent, values, context) =>
+      organizations.getById(context.request, values.organizationId),
+
+    getUsers: async (parent, values, context) =>
+      users.list(context.request, values),
+
+    getUserById: async (parent, values, context) =>
+      users.getById(context.request, values.userId),
+
+    getGroups: async (parent, values, context) =>
+      groups.list(context.request, values),
+
+    getGroupById: async (parent, values, context) =>
+      groups.getById(context.request, values.groupId),
+
+    getApps: async (parent, values, context) =>
+      apps.list(context.request, values),
+
+    getAppById: async (parent, values, context) =>
+      apps.getById(context.request, values.appId),
+
+    getResources: async (parent, values, context) =>
+      resources.list(context.request, values),
+
+    getResourceById: async (parent, values, context) =>
+      resources.getById(context.request, values.resourceId),
+  },
 };
 
 const attachRoutes = async (app: any) => {

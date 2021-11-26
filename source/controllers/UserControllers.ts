@@ -8,13 +8,12 @@ import { UserModel } from "../models";
 const createSchema = joi.object({
   firstName: joi.string().min(1).max(256).required(),
   lastName: joi.string().min(1).max(256).required(),
-  description: joi.string().max(512).allow("").required(),
+  description: joi.string().max(512).allow(""),
   organization: joi.string().regex(constants.identifierPattern),
   gender: joi.string().valid(...constants.genders),
   countryCode: joi.string().valid(...constants.countryCodes),
   pictureURL: joi.string().allow(""),
   emailAddress: joi.string().max(256).required(),
-  emailVerified: joi.string().allow(""),
   birthday: joi.date().allow(null),
   role: joi.string().valid(...constants.userRoles),
   groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
@@ -30,16 +29,15 @@ const filterSchema = joi.object({
     .default(constants.paginateMinLimit),
 });
 
+// TODO: Changing email address and organization should have their own controllers.
+
 const updateSchema = joi.object({
   firstName: joi.string().min(1).max(256),
   lastName: joi.string().min(1).max(256),
   description: joi.string().max(512).allow(""),
-  organization: joi.string().regex(constants.identifierPattern),
   gender: joi.string().valid(...constants.genders),
   countryCode: joi.string().valid(...constants.countryCodes),
   pictureURL: joi.string().allow(""),
-  emailAddress: joi.string().max(256),
-  emailVerified: joi.string().allow(""),
   birthday: joi.date().allow(null),
   role: joi.string().valid(...constants.userRoles),
   groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
@@ -59,7 +57,7 @@ const toExternal = (user: User): ExternalUser => {
     birthday,
     status,
     role,
-    groups
+    groups,
   } = user;
 
   return {
@@ -155,10 +153,7 @@ const listByIds = async (
   return userIds.map((key) => toExternal(object[key]));
 };
 
-const getById = async (
-  context,
-  userId: string
-): Promise<ExternalUser> => {
+const getById = async (context, userId: string): Promise<ExternalUser> => {
   if (!constants.identifierPattern.test(userId)) {
     throw new BadRequestError("The specified user identifier is invalid.");
   }
