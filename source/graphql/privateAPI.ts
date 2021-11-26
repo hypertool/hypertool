@@ -11,6 +11,7 @@ import {
   userRoles,
   groupTypes,
   appStatuses,
+  groupStatuses,
 } from "../utils/constants";
 
 const typeDefs = gql`
@@ -184,6 +185,10 @@ const typeDefs = gql`
 
     enum GroupType {
         ${groupTypes.join("\n")}
+    }
+
+    enum GroupStatus {
+        ${groupStatuses.join("\n")}
     }
 
     type Group {
