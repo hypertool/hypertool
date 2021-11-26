@@ -56,11 +56,7 @@ typings/
 
 # dotenv environment variables file
 .env
-
-# next.js build output
-.next
-
-.github
+.env.*
 
 # Typescript build output
 dist

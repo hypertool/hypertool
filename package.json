@@ -1,46 +1,43 @@
 {
-  "name": "hypertool-api",
-  "version": "0.1.0",
-  "repository": "https://github.com/hypertool/hypertool-api",
-  "private": true,
-  "scripts": {
-    "watch": "tsc -w",
-    "build": "tsc",
-    "start": "nodemon --exec \"node ./dist/start.js\""
-  },
-  "dependencies": {
-    "apollo-server-express": "^3.5.0",
-    "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
-          "express": "^4.17.1",
-    "graphql": "^15.0.0",
-    "iso-language-codes": "^1.1.0",
-    "joi": "^17.4.2",
-    "mongoose": "^6.0.12",
-    "mongoose-paginate-v2": "^1.4.2",
-    "morgan": "^1.10.0"
-  },
-  "devDependencies": {
-    "@types/node": "^16.11.7",
-    "eslint": "^8.3.0",
-    "husky": "^7.0.4",
-    "lint-staged": "^12.1.2",
-    "nodemon": "^2.0.15",
-    "prettier": "^2.5.0",
-    "typescript": "^4.4.4"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
+    "name": "hypertool-api",
+    "version": "0.1.0",
+    "repository": "https://github.com/hypertool/hypertool-api",
+    "private": true,
+    "scripts": {
+        "watch": "tsc -w",
+        "build": "tsc",
+        "start": "nodemon --exec \"node ./dist/start.js\"",
+        "prepare": "husky install",
+        "pre-commit": "lint-staged"
+    },
+    "dependencies": {
+        "apollo-server-express": "^3.5.0",
+        "cors": "^2.8.5",
+        "dotenv": "^10.0.0",
+        "express": "^4.17.1",
+        "graphql": "^15.0.0",
+        "iso-language-codes": "^1.1.0",
+        "joi": "^17.4.2",
+        "mongoose": "^6.0.12",
+        "mongoose-paginate-v2": "^1.4.2",
+        "morgan": "^1.10.0"
+    },
+    "devDependencies": {
+        "@types/node": "^16.11.7",
+        "eslint": "^8.3.0",
+        "lint-staged": "^12.1.2",
+        "nodemon": "^2.0.15",
+        "prettier": "^2.5.0",
+        "typescript": "^4.4.4",
+        "husky": "^7.0.0"
+    },
+    "lint-staged": {
+        "*.ts": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "*.json": [
+            "prettier --write"
+        ]
     }
-  },
-  "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.json": [
-      "prettier --write"
-    ]
-  }
 }

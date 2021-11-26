@@ -1,7 +1,6 @@
 {
     "env": {
         "node": true,
-        "browser": true,
         "commonjs": true,
         "es2020": true
     },
@@ -28,7 +27,7 @@
     },
     "overrides": [
         {
-            "files": "test/**/*.js",
+            "files": "test/**/*.ts",
             "rules": {
                 "node/no-unpublished-require": "off",
                 "func-names": "off",
