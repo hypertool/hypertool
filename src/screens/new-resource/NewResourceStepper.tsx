@@ -17,6 +17,8 @@ import { styled } from "@mui/material/styles";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import CheckCircle from "@mui/icons-material/CheckCircle";
+import { Formik } from "formik";
+import * as yup from "yup";
 
 import type { ResourceType } from "../../types";
 
@@ -127,11 +129,66 @@ const defaultSteps: Steps = [
   },
 ];
 
+interface PostgresFormValues {
+  resourceName: string;
+  host: string;
+  port: string;
+  databaseName: string;
+  databaseUserName: string;
+  databasePassword: string;
+  connectUsingSSL: boolean;
+}
+
+interface InitialValues {
+  postgres: PostgresFormValues;
+}
+
+const initialValues: InitialValues = {
+  postgres: {
+    resourceName: "",
+    host: "",
+    port: "",
+    databaseName: "",
+    databaseUserName: "",
+    databasePassword: "",
+    connectUsingSSL: false,
+  },
+};
+
+const validationSchemas: { [key: string]: any } = {
+  postgres: yup.object({
+    resourceName: yup
+      .string()
+      .max(256, "Resource name should 256 characters or less")
+      .required("Resource name is required"),
+    host: yup.string().required("Host is required"),
+    port: yup
+      .number()
+      .typeError("Port number should be an integer")
+      .integer("Port number should be an integer")
+      .required("Port number is required"),
+    databaseName: yup.string().required("Please specify a valid database name"),
+    databaseUserName: yup
+      .string()
+      .required("Please specify a valid database user name"),
+    databasePassword: yup
+      .string()
+      .required("Please specify a valid database password"),
+    connectUsingSSL: yup.boolean().default(false),
+  }),
+};
+
 const NewResourceStepper: FunctionComponent = (): ReactElement => {
   const [activeStep, setActiveStep] = useState(0);
   const [stepTuple, setStepTuple] = useState<Steps>(defaultSteps);
-  const [resourceType, setResourceType] = useState<ResourceType | null>(null);
+  const [resourceType, setResourceType] = useState<ResourceType | undefined>(
+    undefined
+  );
   const theme = useTheme();
+
+  const handleSubmit = useCallback((values: any) => {
+    console.log(values);
+  }, []);
 
   const handleNext = () => {
     if (activeStep + 1 === steps.length) {
@@ -189,10 +246,9 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
 
   const renderStepperItems = () => steps.map(renderStepperItem);
 
-  const Component: FunctionComponent<{ [key: string]: any }> | null =
-    activeStep < steps.length ? steps[activeStep].component : null;
-
-  const complete = activeStep === steps.length;
+  if (activeStep === steps.length) {
+    return <span>complete</span>;
+  }
 
   return (
     <Root>
@@ -226,110 +282,75 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
           </Paper>
         </Hidden>
 
-        <StepContainer>
-          <>
-            {Component && (
-              <Component
-                {...{
-                  onChange:
-                    activeStep === 0 ? handleResourceTypeChange : undefined,
-                  activeType:
-                    activeStep === 0 || activeStep === 1
-                      ? resourceType
-                      : undefined,
-                }}
-              />
-            )}
-          </>
-        </StepContainer>
+        <Formik
+          initialValues={
+            activeStep > 0
+              ? (initialValues as any)[resourceType as ResourceType]
+              : {}
+          }
+          onSubmit={handleSubmit}
+          validationSchema={
+            activeStep > 0
+              ? validationSchemas[resourceType as ResourceType]
+              : undefined
+          }
+        >
+          {(formik) => (
+            <>
+              <StepContainer>
+                {activeStep === 0 && (
+                  <SelectStep
+                    onChange={handleResourceTypeChange}
+                    activeType={resourceType}
+                  />
+                )}
 
-        {!complete && (
-          <>
-            <Hidden lgDown={true}>
-              <ActionContainer>
-                <LeftActionContainer>
-                  {activeStep > 0 && (
-                    <StepperAction
-                      color="inherit"
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      sx={{ mr: 1 }}
-                      variant="contained"
-                      size="small"
-                    >
-                      {theme.direction === "rtl" ? (
-                        <KeyboardArrowRight />
-                      ) : (
-                        <KeyboardArrowLeft />
-                      )}
-                      Back
-                    </StepperAction>
-                  )}
-                  {steps[activeStep].optional && (
-                    <StepperAction
-                      color="inherit"
-                      onClick={handleSkip}
-                      variant="contained"
-                      size="small"
-                      sx={{ mr: 1 }}
-                    >
-                      Skip
-                    </StepperAction>
-                  )}
-                </LeftActionContainer>
-                {activeStep < steps.length - 1 && (
-                  <StepperAction
-                    onClick={handleNext}
-                    variant="contained"
-                    size="small"
-                  >
-                    Next
-                    {theme.direction === "rtl" ? (
-                      <KeyboardArrowLeft />
-                    ) : (
-                      <KeyboardArrowRight />
+                {resourceType && activeStep === 1 && (
+                  <ConfigureStep activeType={resourceType} />
+                )}
+              </StepContainer>
+
+              <Hidden lgDown={true}>
+                <ActionContainer>
+                  <LeftActionContainer>
+                    {activeStep > 0 && (
+                      <StepperAction
+                        color="inherit"
+                        disabled={activeStep === 0}
+                        onClick={handleBack}
+                        sx={{ mr: 1 }}
+                        variant="contained"
+                        size="small"
+                      >
+                        {theme.direction === "rtl" ? (
+                          <KeyboardArrowRight />
+                        ) : (
+                          <KeyboardArrowLeft />
+                        )}
+                        Back
+                      </StepperAction>
                     )}
-                  </StepperAction>
-                )}
-                {activeStep + 1 === steps.length && (
-                  <CreateAction
-                    onClick={handleNext}
-                    variant="contained"
-                    size="small"
-                  >
-                    Create Resource
-                    <CheckCircle fontSize="small" sx={{ ml: 1 }} />
-                  </CreateAction>
-                )}
-              </ActionContainer>
-            </Hidden>
-            <Hidden lgUp={true}>
-              <Paper
-                square
-                elevation={1}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  height: 50,
-                  bgcolor: "background.default",
-                  padding: 0,
-                }}
-              >
-                <MobileStepper
-                  variant="text"
-                  steps={steps.length}
-                  position="static"
-                  activeStep={activeStep}
-                  sx={{
-                    width: "100%",
-                    backgroundColor: theme.palette.background.paper,
-                    // marginTop: theme.spacing(11)
-                  }}
-                  nextButton={
-                    <Button
-                      size="small"
+                    {steps[activeStep].optional && (
+                      <StepperAction
+                        color="inherit"
+                        onClick={handleSkip}
+                        variant="contained"
+                        size="small"
+                        sx={{ mr: 1 }}
+                      >
+                        Skip
+                      </StepperAction>
+                    )}
+                  </LeftActionContainer>
+                  {activeStep < steps.length - 1 && (
+                    <StepperAction
                       onClick={handleNext}
-                      disabled={activeStep === steps.length - 1}
+                      variant="contained"
+                      size="small"
+                      disabled={
+                        (activeStep === 0 && !resourceType) ||
+                        (activeStep === 1 && (!formik.dirty || !formik.isValid))
+                      }
                     >
                       Next
                       {theme.direction === "rtl" ? (
@@ -337,27 +358,80 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                       ) : (
                         <KeyboardArrowRight />
                       )}
-                    </Button>
-                  }
-                  backButton={
-                    <Button
+                    </StepperAction>
+                  )}
+                  {activeStep + 1 === steps.length && (
+                    <CreateAction
+                      onClick={() => formik.submitForm()}
+                      variant="contained"
                       size="small"
-                      onClick={handleBack}
-                      disabled={activeStep === 0}
+                      disabled={
+                        (activeStep === 0 && !resourceType) ||
+                        (activeStep === 1 && (!formik.dirty || !formik.isValid))
+                      }
                     >
-                      {theme.direction === "rtl" ? (
-                        <KeyboardArrowRight />
-                      ) : (
-                        <KeyboardArrowLeft />
-                      )}
-                      Back
-                    </Button>
-                  }
-                />
-              </Paper>
-            </Hidden>
-          </>
-        )}
+                      Create Resource
+                      <CheckCircle fontSize="small" sx={{ ml: 1 }} />
+                    </CreateAction>
+                  )}
+                </ActionContainer>
+              </Hidden>
+              <Hidden lgUp={true}>
+                <Paper
+                  square
+                  elevation={1}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: 50,
+                    bgcolor: "background.default",
+                    padding: 0,
+                  }}
+                >
+                  <MobileStepper
+                    variant="text"
+                    steps={steps.length}
+                    position="static"
+                    activeStep={activeStep}
+                    sx={{
+                      width: "100%",
+                      backgroundColor: theme.palette.background.paper,
+                      // marginTop: theme.spacing(11)
+                    }}
+                    nextButton={
+                      <Button
+                        size="small"
+                        onClick={handleNext}
+                        disabled={activeStep === steps.length - 1}
+                      >
+                        Next
+                        {theme.direction === "rtl" ? (
+                          <KeyboardArrowLeft />
+                        ) : (
+                          <KeyboardArrowRight />
+                        )}
+                      </Button>
+                    }
+                    backButton={
+                      <Button
+                        size="small"
+                        onClick={handleBack}
+                        disabled={activeStep === 0}
+                      >
+                        {theme.direction === "rtl" ? (
+                          <KeyboardArrowRight />
+                        ) : (
+                          <KeyboardArrowLeft />
+                        )}
+                        Back
+                      </Button>
+                    }
+                  />
+                </Paper>
+              </Hidden>
+            </>
+          )}
+        </Formik>
       </Right>
     </Root>
   );
