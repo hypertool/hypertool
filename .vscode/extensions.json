@@ -2,7 +2,8 @@
     "recommendations": [
         "dbaeumer.vscode-eslint",
         "eamodio.gitlens",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "mhutchie.git-graph"
     ],
     "unwantedRecommendations": []
 }
