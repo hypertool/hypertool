@@ -1,6 +1,6 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   Stepper,
   MobileStepper,
@@ -22,6 +22,7 @@ import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { gql, useMutation } from "@apollo/client";
+import { useNavigate } from "react-router";
 
 import type { ResourceType } from "../../types";
 
@@ -313,6 +314,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
       data: newResource,
     },
   ] = useMutation(CREATE_RESOURCE);
+  const navigate = useNavigate();
 
   const handleSubmit = useCallback(
     (values: any) => {
@@ -342,6 +344,12 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
     },
     [createResource, resourceType]
   );
+
+  useEffect(() => {
+    if (newResource) {
+      navigate(`/resources/${newResource.createResource.id}/edit`);
+    }
+  }, [navigate, newResource]);
 
   const handleNext = () => {
     if (activeStep + 1 === steps.length) {
