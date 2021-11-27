@@ -12,6 +12,7 @@ import {
   Paper,
   useTheme,
   Divider,
+  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
@@ -497,11 +498,18 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                       size="small"
                       disabled={
                         (activeStep === 0 && !resourceType) ||
-                        (activeStep === 1 && (!formik.dirty || !formik.isValid))
+                        (activeStep === 1 &&
+                          (!formik.dirty || !formik.isValid)) ||
+                        creatingResource
                       }
                     >
                       Create Resource
-                      <CheckCircle fontSize="small" sx={{ ml: 1 }} />
+                      {!creatingResource && (
+                        <CheckCircle fontSize="small" sx={{ ml: 1 }} />
+                      )}
+                      {creatingResource && (
+                        <CircularProgress size="14px" sx={{ ml: 1 }} />
+                      )}
                     </CreateAction>
                   )}
                 </ActionContainer>
