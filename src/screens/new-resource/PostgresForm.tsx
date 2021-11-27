@@ -2,7 +2,6 @@ import type { FunctionComponent, ReactElement } from "react";
 
 import { Typography, FormControlLabel, Checkbox } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Form } from "formik";
 
 import { TextField } from "../../components";
 
@@ -51,7 +50,7 @@ const SSLLabel = styled(FormControlLabel)(({ theme }) => ({
 
 const PostgresForm: FunctionComponent = (): ReactElement => {
   return (
-    <Form>
+    <>
       <ResourceNameTextField
         name="resourceName"
         required={true}
@@ -123,7 +122,7 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
         control={<Checkbox name="connectUsingSSL" defaultChecked={false} />}
         label="Connect using SSL"
       />
-    </Form>
+    </>
   );
 };
 

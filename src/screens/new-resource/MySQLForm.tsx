@@ -1,6 +1,5 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { Form } from "formik";
 import { Typography, FormControlLabel, Checkbox } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -51,7 +50,7 @@ const SSLLabel = styled(FormControlLabel)(({ theme }) => ({
 
 const MySQLForm: FunctionComponent = (): ReactElement => {
   return (
-    <Form>
+    <>
       <ResourceNameTextField
         name="resourceName"
         required={true}
@@ -123,7 +122,7 @@ const MySQLForm: FunctionComponent = (): ReactElement => {
         control={<Checkbox name="connectUsingSSL" defaultChecked={false} />}
         label="Connect using SSL"
       />
-    </Form>
+    </>
   );
 };
 
