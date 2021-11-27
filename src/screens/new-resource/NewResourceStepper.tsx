@@ -217,13 +217,9 @@ const validationSchemas: { [key: string]: any } = {
       .typeError("Port number should be an integer")
       .integer("Port number should be an integer")
       .required("Port number is required"),
-    databaseName: yup.string().required("Please specify a valid database name"),
-    databaseUserName: yup
-      .string()
-      .required("Please specify a valid database user name"),
-    databasePassword: yup
-      .string()
-      .required("Please specify a valid database password"),
+    databaseName: yup.string().required("Database name is required"),
+    databaseUserName: yup.string().required("Database user name is required"),
+    databasePassword: yup.string().required("Database password is required"),
     connectUsingSSL: yup.boolean().default(false),
   }),
   mysql: yup.object({
@@ -237,13 +233,9 @@ const validationSchemas: { [key: string]: any } = {
       .typeError("Port number should be an integer")
       .integer("Port number should be an integer")
       .required("Port number is required"),
-    databaseName: yup.string().required("Please specify a valid database name"),
-    databaseUserName: yup
-      .string()
-      .required("Please specify a valid database user name"),
-    databasePassword: yup
-      .string()
-      .required("Please specify a valid database password"),
+    databaseName: yup.string().required("Database name is required"),
+    databaseUserName: yup.string().required("Database user name is required"),
+    databasePassword: yup.string().required("Database password is required"),
     connectUsingSSL: yup.boolean().default(false),
   }),
   mongodb: yup.object({
@@ -257,13 +249,9 @@ const validationSchemas: { [key: string]: any } = {
       .typeError("Port number should be an integer")
       .integer("Port number should be an integer")
       .required("Port number is required"),
-    databaseName: yup.string().required("Please specify a valid database name"),
-    databaseUserName: yup
-      .string()
-      .required("Please specify a valid database user name"),
-    databasePassword: yup
-      .string()
-      .required("Please specify a valid database password"),
+    databaseName: yup.string().required("Database name is required"),
+    databaseUserName: yup.string().required("Database user name is required"),
+    databasePassword: yup.string().required("Database password is required"),
     connectUsingSSL: yup.boolean().default(false),
   }),
   bigquery: yup.object({
