@@ -89,14 +89,14 @@ const updateSchema = joi.object({
 });
 
 const toExternal = (resource: Resource): ExternalResource => {
-  const { id, name, description, type, configuration, status } = resource;
+  const { id, name, description, type, status } = resource;
   let sanitizedConfiguration = null;
   switch (type) {
     case "mysql":
     case "postgres":
     case "mongodb": {
       const { host, port, databaseName, databaseUserName, connectUsingSSL } =
-        configuration;
+        resource[type];
       sanitizedConfiguration = {
         host,
         port,
@@ -108,7 +108,7 @@ const toExternal = (resource: Resource): ExternalResource => {
     }
 
     case "bigquery": {
-      sanitizedConfiguration = configuration;
+      sanitizedConfiguration = resource[type];
       break;
     }
 
