@@ -5,6 +5,7 @@ import type { Resource, ExternalResource, ResourcePage } from "../types";
 import { constants, BadRequestError, NotFoundError } from "../utils";
 import { ResourceModel } from "../models";
 
+// TODO: Add limits to database configurations!
 const createSchema = joi.object({
   name: joi.string().max(256).allow(""),
   description: joi.string().max(512).allow(""),

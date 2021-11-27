@@ -58,12 +58,12 @@ const typeDefs = gql`
     }
 
     type UserPage {
-        totalRecords: Integer!
-        totalPages: Integer!
-        previousPage: Integer!
-        nextPage: Integer!
-        hasPreviousPage: Integer!
-        hasNextPage: Integer!
+        totalRecords: Int!
+        totalPages: Int!
+        previousPage: Int!
+        nextPage: Int!
+        hasPreviousPage: Int!
+        hasNextPage: Int!
         records: [User!]!
     }
 
@@ -82,12 +82,12 @@ const typeDefs = gql`
     }
 
     type OrganizationPage {
-        totalRecords: Integer!
-        totalPages: Integer!
-        previousPage: Integer!
-        nextPage: Integer!
-        hasPreviousPage: Integer!
-        hasNextPage: Integer!
+        totalRecords: Int!
+        totalPages: Int!
+        previousPage: Int!
+        nextPage: Int!
+        hasPreviousPage: Int!
+        hasNextPage: Int!
         records: [Organization!]!
     }
 
@@ -101,7 +101,7 @@ const typeDefs = gql`
 
     input MySQLConfigurationInput {
         host: String!
-        post: Integer!
+        post: Int!
         databaseName: String!
         databaseUserName: String!
         connectUsingSSL: Boolean!    
@@ -109,7 +109,7 @@ const typeDefs = gql`
 
     input PostgresConfigurationInput {
         host: String!
-        post: Integer!
+        post: Int!
         databaseName: String!
         databaseUserName: String!
         connectUsingSSL: Boolean!    
@@ -117,7 +117,7 @@ const typeDefs = gql`
 
     input MongoDBConfigurationInput {
         host: String!
-        post: Integer!
+        post: Int!
         databaseName: String!
         databaseUserName: String!
         connectUsingSSL: Boolean!    
@@ -129,7 +129,7 @@ const typeDefs = gql`
 
     type MySQLConfiguration {
         host: String!
-        post: Integer!
+        post: Int!
         databaseName: String!
         databaseUserName: String!
         connectUsingSSL: Boolean!
@@ -137,7 +137,7 @@ const typeDefs = gql`
 
     type PostgresConfiguration {
         host: String!
-        post: Integer!
+        post: Int!
         databaseName: String!
         databaseUserName: String!
         connectUsingSSL: Boolean!
@@ -145,7 +145,7 @@ const typeDefs = gql`
 
     type MongoDBConfiguration {
         host: String!
-        post: Integer!
+        post: Int!
         databaseName: String!
         databaseUserName: String!
         connectUsingSSL: Boolean!
@@ -171,12 +171,12 @@ const typeDefs = gql`
     }
 
     type ResourcePage {
-        totalRecords: Integer!
-        totalPages: Integer!
-        previousPage: Integer!
-        nextPage: Integer!
-        hasPreviousPage: Integer!
-        hasNextPage: Integer!
+        totalRecords: Int!
+        totalPages: Int!
+        previousPage: Int!
+        nextPage: Int!
+        hasPreviousPage: Int!
+        hasNextPage: Int!
         records: [Resource!]!
     }
 
@@ -203,12 +203,12 @@ const typeDefs = gql`
     }
 
     type AppPage {
-        totalRecords: Integer!
-        totalPages: Integer!
-        previousPage: Integer!
-        nextPage: Integer!
-        hasPreviousPage: Integer!
-        hasNextPage: Integer!
+        totalRecords: Int!
+        totalPages: Int!
+        previousPage: Int!
+        nextPage: Int!
+        hasPreviousPage: Int!
+        hasNextPage: Int!
         records: [App!]!
     }
 
@@ -233,12 +233,12 @@ const typeDefs = gql`
     }
 
     type GroupPage {
-        totalRecords: Integer!
-        totalPages: Integer!
-        previousPage: Integer!
-        nextPage: Integer!
-        hasPreviousPage: Integer!
-        hasNextPage: Integer!
+        totalRecords: Int!
+        totalPages: Int!
+        previousPage: Int!
+        nextPage: Int!
+        hasPreviousPage: Int!
+        hasNextPage: Int!
         records: [Group!]!
     }
 
