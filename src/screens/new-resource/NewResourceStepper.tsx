@@ -18,6 +18,7 @@ import { styled } from "@mui/material/styles";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import CheckCircle from "@mui/icons-material/CheckCircle";
+import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { gql, useMutation } from "@apollo/client";
@@ -504,7 +505,10 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                       }
                     >
                       Create Resource
-                      {!creatingResource && (
+                      {!creatingResource && !newResource && (
+                        <CheckCircleOutline fontSize="small" sx={{ ml: 1 }} />
+                      )}
+                      {!creatingResource && newResource && (
                         <CheckCircle fontSize="small" sx={{ ml: 1 }} />
                       )}
                       {creatingResource && (
