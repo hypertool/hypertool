@@ -149,9 +149,20 @@ interface MySQLFormValues {
   connectUsingSSL: boolean;
 }
 
+interface MongoDBFormValues {
+  resourceName: string;
+  host: string;
+  port: string;
+  databaseName: string;
+  databaseUserName: string;
+  databasePassword: string;
+  connectUsingSSL: boolean;
+}
+
 interface InitialValues {
   postgres: PostgresFormValues;
   mysql: MySQLFormValues;
+  mongodb: MongoDBFormValues;
 }
 
 const initialValues: InitialValues = {
@@ -173,13 +184,22 @@ const initialValues: InitialValues = {
     databasePassword: "",
     connectUsingSSL: false,
   },
+  mongodb: {
+    resourceName: "",
+    host: "",
+    port: "",
+    databaseName: "",
+    databaseUserName: "",
+    databasePassword: "",
+    connectUsingSSL: false,
+  },
 };
 
 const validationSchemas: { [key: string]: any } = {
   postgres: yup.object({
     resourceName: yup
       .string()
-      .max(256, "Resource name should 256 characters or less")
+      .max(256, "Resource name should be 256 characters or less")
       .required("Resource name is required"),
     host: yup.string().required("Host is required"),
     port: yup
@@ -199,7 +219,27 @@ const validationSchemas: { [key: string]: any } = {
   mysql: yup.object({
     resourceName: yup
       .string()
-      .max(256, "Resource name should 256 characters or less")
+      .max(256, "Resource name should be 256 characters or less")
+      .required("Resource name is required"),
+    host: yup.string().required("Host is required"),
+    port: yup
+      .number()
+      .typeError("Port number should be an integer")
+      .integer("Port number should be an integer")
+      .required("Port number is required"),
+    databaseName: yup.string().required("Please specify a valid database name"),
+    databaseUserName: yup
+      .string()
+      .required("Please specify a valid database user name"),
+    databasePassword: yup
+      .string()
+      .required("Please specify a valid database password"),
+    connectUsingSSL: yup.boolean().default(false),
+  }),
+  mongodb: yup.object({
+    resourceName: yup
+      .string()
+      .max(256, "Resource name should be 256 characters or less")
       .required("Resource name is required"),
     host: yup.string().required("Host is required"),
     port: yup
