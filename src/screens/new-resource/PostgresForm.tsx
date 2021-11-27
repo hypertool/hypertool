@@ -1,9 +1,9 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { Typography, FormControlLabel, Checkbox } from "@mui/material";
+import { Typography, FormControlLabel } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { TextField } from "../../components";
+import { TextField, Checkbox } from "../../components";
 
 const TextFieldHelp = styled(Typography)(({ theme }) => ({
   display: "flex",
@@ -16,6 +16,11 @@ const TextFieldHelp = styled(Typography)(({ theme }) => ({
 
 const ResourceNameTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
+})) as any;
+
+const DescriptionTextField = styled(TextField)(({ theme }) => ({
+  maxWidth: 400,
+  marginTop: theme.spacing(3),
 })) as any;
 
 const HostTextField = styled(TextField)(({ theme }) => ({
@@ -67,6 +72,18 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
         }
       />
 
+      <DescriptionTextField
+        name="description"
+        required={true}
+        id="description"
+        label="Description"
+        size="small"
+        variant="outlined"
+        fullWidth={true}
+        multiline={true}
+        rows={2}
+      />
+
       <HostTextField
         name="host"
         required={true}
@@ -85,6 +102,7 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
         size="small"
         variant="outlined"
         fullWidth={true}
+        type="number"
       />
 
       <DatabaseNameTextField
