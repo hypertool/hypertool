@@ -374,6 +374,52 @@ const resolvers = {
       return value.toISOString();
     },
   }),
+  Mutation: {
+    createOrganization: async (parent, values, context) =>
+        organizations.create(context.request, values),
+
+    updateOrganization: async (parent, values, context) =>
+        organizations.update(context.request, values.organizationId, values),
+
+    deleteOrganization: async (parent, values, context) =>
+        organizations.remove(context.request, context.organizationId),
+    
+    createUser: async (parent, values, context) =>
+        users.create(context.request, values),
+
+    updateUser: async (parent, values, context) =>
+        users.update(context.request, values.userId, values),
+
+    deleteUser: async (parent, values, context) =>
+        users.remove(context.request, context.userId),
+
+    createGroup: async (parent, values, context) =>
+        groups.create(context.request, values),
+
+    updateGroup: async (parent, values, context) =>
+        groups.update(context.request, values.groupId, values),
+
+    deleteGroup: async (parent, values, context) =>
+        groups.remove(context.request, context.groupId),
+
+    createApp: async (parent, values, context) =>
+        apps.create(context.request, values),
+
+    updateApp: async (parent, values, context) =>
+        apps.update(context.request, values.appId, values),
+
+    deleteApp: async (parent, values, context) =>
+        apps.remove(context.request, context.appId),
+
+    createResource: async (parent, values, context) =>
+        resources.create(context.request, values),
+
+    updateResource: async (parent, values, context) =>
+        resources.update(context.request, values.resourceId, values),
+
+    deleteResource: async (parent, values, context) =>
+        resources.remove(context.request, context.resourceId),
+  },
   Query: {
     getOrganizations: async (parent, values, context) =>
       organizations.list(context.request, values),
