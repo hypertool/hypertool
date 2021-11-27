@@ -323,6 +323,8 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
       ) {
         configuration.connectUsingSSL =
           configuration.connectUsingSSL.length > 0;
+      } else {
+        configuration.connectUsingSSL = Boolean(configuration.connectUsingSSL);
       }
 
       createResource({
