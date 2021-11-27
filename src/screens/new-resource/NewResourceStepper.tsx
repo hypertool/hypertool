@@ -159,10 +159,16 @@ interface MongoDBFormValues {
   connectUsingSSL: boolean;
 }
 
+interface BigQueryFormValues {
+  resourceName: string;
+  serviceAccountKey: string;
+}
+
 interface InitialValues {
   postgres: PostgresFormValues;
   mysql: MySQLFormValues;
   mongodb: MongoDBFormValues;
+  bigquery: BigQueryFormValues;
 }
 
 const initialValues: InitialValues = {
@@ -192,6 +198,10 @@ const initialValues: InitialValues = {
     databaseUserName: "",
     databasePassword: "",
     connectUsingSSL: false,
+  },
+  bigquery: {
+    resourceName: "",
+    serviceAccountKey: "",
   },
 };
 
@@ -255,6 +265,13 @@ const validationSchemas: { [key: string]: any } = {
       .string()
       .required("Please specify a valid database password"),
     connectUsingSSL: yup.boolean().default(false),
+  }),
+  bigquery: yup.object({
+    resourceName: yup
+      .string()
+      .max(256, "Resource name should be 256 characters or less")
+      .required("Resource name is required"),
+    serviceAccountKey: yup.string().required("Service account key is required"),
   }),
 };
 
