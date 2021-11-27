@@ -108,7 +108,8 @@ const resourceSchema = new Schema({
   creator: {
     type: Schema.Types.ObjectId,
     ref: "User",
-    required: true,
+    /* TODO: Make the `creator` attribute mandatory once authentication is implemented. */
+    // required: true,
   },
   type: {
     type: String,
