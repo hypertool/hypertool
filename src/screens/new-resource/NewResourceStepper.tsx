@@ -108,31 +108,6 @@ const steps: StepStructure[] = [
   },
 ];
 
-interface SelectStepData {
-  type: ResourceType | undefined;
-  skipped: false;
-  completed: boolean;
-}
-
-interface ConfigureStepData {
-  skipped: false;
-  completed: boolean;
-}
-
-type Steps = [SelectStepData, ConfigureStepData];
-
-const defaultSteps: Steps = [
-  {
-    type: undefined,
-    skipped: false,
-    completed: false,
-  },
-  {
-    skipped: false,
-    completed: false,
-  },
-];
-
 interface PostgresFormValues {
   resourceName: string;
   host: string;
