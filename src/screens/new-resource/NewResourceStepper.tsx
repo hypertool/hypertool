@@ -364,7 +364,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
   const isStepComplete = (step: number) => {
     switch (step) {
       case 0:
-        return !Boolean(resourceType);
+        return Boolean(resourceType);
 
       case 1:
         return Boolean(newResource);
