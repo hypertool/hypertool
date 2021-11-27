@@ -74,7 +74,6 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
 
       <DescriptionTextField
         name="description"
-        required={true}
         id="description"
         label="Description"
         size="small"

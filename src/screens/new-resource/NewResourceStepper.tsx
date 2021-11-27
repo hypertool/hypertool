@@ -212,6 +212,9 @@ const validationSchemas: { [key: string]: any } = {
       .string()
       .max(256, "Resource name should be 256 characters or less")
       .required("Resource name is required"),
+    description: yup
+      .string()
+      .max(512, "Description should be 512 characters or less"),
     host: yup.string().required("Host is required"),
     port: yup
       .number()
@@ -270,7 +273,7 @@ const validationSchemas: { [key: string]: any } = {
 const CREATE_RESOURCE = gql`
   mutation CreateResource(
     $name: String!
-    $description: String!
+    $description: String
     $type: ResourceType!
     $mysql: MySQLConfigurationInput
     $postgres: PostgresConfigurationInput
@@ -296,7 +299,6 @@ const CREATE_RESOURCE = gql`
 
 const NewResourceStepper: FunctionComponent = (): ReactElement => {
   const [activeStep, setActiveStep] = useState(0);
-  const [stepTuple, setStepTuple] = useState<Steps>(defaultSteps);
   const [resourceType, setResourceType] = useState<ResourceType | undefined>(
     undefined
   );
@@ -341,35 +343,14 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
 
   const handleNext = () => {
     if (activeStep + 1 === steps.length) {
-      // setComplete(true);
       return;
     }
 
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setStepTuple((oldStepTuple) => {
-      const newStepTuple = JSON.parse(JSON.stringify(stepTuple));
-      newStepTuple[activeStep].completed = true;
-      return newStepTuple;
-    });
+    setActiveStep((previousActiveStep) => previousActiveStep + 1);
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleSkip = () => {
-    if (!steps[activeStep].optional) {
-      /* You probably want to guard against something like this,
-       * it should never occur unless someone's actively trying to break something.
-       */
-      throw new Error("You can't skip a step that isn't optional.");
-    }
-
-    setStepTuple((oldStepTuple) => {
-      const newStepTuple = JSON.parse(JSON.stringify(stepTuple));
-      newStepTuple[activeStep].skipped = true;
-      return newStepTuple;
-    });
   };
 
   const handleResourceTypeChange = useCallback(
@@ -379,9 +360,22 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
     []
   );
 
+  const isStepComplete = (step: number) => {
+    switch (step) {
+      case 0:
+        return !Boolean(resourceType);
+
+      case 1:
+        return Boolean(newResource);
+
+      default:
+        throw new Error("Invalid step number");
+    }
+  };
+
   const renderStepperItem = (step: StepStructure, index: number) => {
     return (
-      <Step key={step.title} completed={stepTuple[index].completed}>
+      <Step key={step.title} completed={isStepComplete(index)}>
         <StepLabel
           optional={
             step.optional && <Typography variant="caption">Optional</Typography>
@@ -394,10 +388,6 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
   };
 
   const renderStepperItems = () => steps.map(renderStepperItem);
-
-  if (activeStep === steps.length) {
-    return <span>complete</span>;
-  }
 
   return (
     <Root>
@@ -479,18 +469,8 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                         Back
                       </StepperAction>
                     )}
-                    {steps[activeStep].optional && (
-                      <StepperAction
-                        color="inherit"
-                        onClick={handleSkip}
-                        variant="contained"
-                        size="small"
-                        sx={{ mr: 1 }}
-                      >
-                        Skip
-                      </StepperAction>
-                    )}
                   </LeftActionContainer>
+
                   {activeStep < steps.length - 1 && (
                     <StepperAction
                       onClick={handleNext}
@@ -509,6 +489,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                       )}
                     </StepperAction>
                   )}
+
                   {activeStep + 1 === steps.length && (
                     <CreateAction
                       onClick={() => formik.submitForm()}
@@ -525,6 +506,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                   )}
                 </ActionContainer>
               </Hidden>
+
               <Hidden lgUp={true}>
                 <Paper
                   square
