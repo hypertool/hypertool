@@ -101,7 +101,7 @@ const typeDefs = gql`
 
     input MySQLConfigurationInput {
         host: String!
-        post: Int!
+        port: Int!
         databaseName: String!
         databaseUserName: String!
         connectUsingSSL: Boolean!    
@@ -109,7 +109,7 @@ const typeDefs = gql`
 
     input PostgresConfigurationInput {
         host: String!
-        post: Int!
+        port: Int!
         databaseName: String!
         databaseUserName: String!
         connectUsingSSL: Boolean!    
@@ -117,7 +117,7 @@ const typeDefs = gql`
 
     input MongoDBConfigurationInput {
         host: String!
-        post: Int!
+        port: Int!
         databaseName: String!
         databaseUserName: String!
         connectUsingSSL: Boolean!    
@@ -129,7 +129,7 @@ const typeDefs = gql`
 
     type MySQLConfiguration {
         host: String!
-        post: Int!
+        port: Int!
         databaseName: String!
         databaseUserName: String!
         connectUsingSSL: Boolean!
@@ -137,7 +137,7 @@ const typeDefs = gql`
 
     type PostgresConfiguration {
         host: String!
-        post: Int!
+        port: Int!
         databaseName: String!
         databaseUserName: String!
         connectUsingSSL: Boolean!
@@ -145,7 +145,7 @@ const typeDefs = gql`
 
     type MongoDBConfiguration {
         host: String!
-        post: Int!
+        port: Int!
         databaseName: String!
         databaseUserName: String!
         connectUsingSSL: Boolean!
