@@ -104,7 +104,8 @@ const typeDefs = gql`
         port: Int!
         databaseName: String!
         databaseUserName: String!
-        connectUsingSSL: Boolean!    
+        databasePassword: String!
+        connectUsingSSL: Boolean!
     }
 
     input PostgresConfigurationInput {
@@ -112,7 +113,8 @@ const typeDefs = gql`
         port: Int!
         databaseName: String!
         databaseUserName: String!
-        connectUsingSSL: Boolean!    
+        databasePassword: String!
+        connectUsingSSL: Boolean!
     }
 
     input MongoDBConfigurationInput {
@@ -120,7 +122,8 @@ const typeDefs = gql`
         port: Int!
         databaseName: String!
         databaseUserName: String!
-        connectUsingSSL: Boolean!    
+        databasePassword: String!
+        connectUsingSSL: Boolean!
     }
 
     input BigQueryConfigurationInput {
