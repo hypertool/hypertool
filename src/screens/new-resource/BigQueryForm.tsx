@@ -22,7 +22,7 @@ const TextFieldHelp = styled(Typography)(({ theme }) => ({
 
 const KeyTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 600,
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(3),
 })) as any;
 
 const BigQueryForm: FunctionComponent = (): ReactElement => {
