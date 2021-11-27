@@ -1,12 +1,10 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import {
-  TextField,
-  Typography,
-  FormControlLabel,
-  Checkbox,
-} from "@mui/material";
+import { Form } from "formik";
+import { Typography, FormControlLabel, Checkbox } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import { TextField } from "../../components";
 
 const ResourceNameTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
@@ -53,8 +51,9 @@ const SSLLabel = styled(FormControlLabel)(({ theme }) => ({
 
 const MySQLForm: FunctionComponent = (): ReactElement => {
   return (
-    <>
+    <Form>
       <ResourceNameTextField
+        name="resourceName"
         required={true}
         id="resourceName"
         label="Resource Name"
@@ -70,6 +69,7 @@ const MySQLForm: FunctionComponent = (): ReactElement => {
       />
 
       <HostTextField
+        name="host"
         required={true}
         id="host"
         label="Host"
@@ -79,6 +79,7 @@ const MySQLForm: FunctionComponent = (): ReactElement => {
       />
 
       <PortTextField
+        name="port"
         required={true}
         id="port"
         label="Port"
@@ -88,6 +89,7 @@ const MySQLForm: FunctionComponent = (): ReactElement => {
       />
 
       <DatabaseNameTextField
+        name="databaseName"
         required={true}
         id="databaseName"
         label="Database Name"
@@ -97,6 +99,7 @@ const MySQLForm: FunctionComponent = (): ReactElement => {
       />
 
       <DatabaseUserNameTextField
+        name="databaseUserName"
         required={true}
         id="databaseUserName"
         label="User Name"
@@ -106,6 +109,7 @@ const MySQLForm: FunctionComponent = (): ReactElement => {
       />
 
       <DatabasePasswordTextField
+        name="databasePassword"
         required={true}
         id="databasePassword"
         label="Password"
@@ -116,10 +120,10 @@ const MySQLForm: FunctionComponent = (): ReactElement => {
       />
 
       <SSLLabel
-        control={<Checkbox defaultChecked={false} />}
+        control={<Checkbox name="connectUsingSSL" defaultChecked={false} />}
         label="Connect using SSL"
       />
-    </>
+    </Form>
   );
 };
 
