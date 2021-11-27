@@ -19,6 +19,7 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import { Formik } from "formik";
 import * as yup from "yup";
+import { gql, useMutation } from "@apollo/client";
 
 import type { ResourceType } from "../../types";
 
@@ -220,7 +221,10 @@ const validationSchemas: { [key: string]: any } = {
     databaseName: yup.string().required("Database name is required"),
     databaseUserName: yup.string().required("Database user name is required"),
     databasePassword: yup.string().required("Database password is required"),
-    connectUsingSSL: yup.boolean().default(false),
+    /* NOTE: Since checkboxes are maintained as arrays by Formik, we cannot really specify
+     * a validator for a boolean value.
+     */
+    // connectUsingSSL: yup.boolean().default(false),
   }),
   mysql: yup.object({
     resourceName: yup
@@ -263,6 +267,33 @@ const validationSchemas: { [key: string]: any } = {
   }),
 };
 
+const CREATE_RESOURCE = gql`
+  mutation CreateResource(
+    $name: String!
+    $description: String!
+    $type: ResourceType!
+    $mysql: MySQLConfigurationInput
+    $postgres: PostgresConfigurationInput
+    $mongodb: MongoDBConfigurationInput
+    $bigquery: BigQueryConfigurationInput
+  ) {
+    createResource(
+      name: $name
+      description: $description
+      type: $type
+      mysql: $mysql
+      postgres: $postgres
+      mongodb: $mongodb
+      bigquery: $bigquery
+    ) {
+      id
+      name
+      description
+      type
+    }
+  }
+`;
+
 const NewResourceStepper: FunctionComponent = (): ReactElement => {
   const [activeStep, setActiveStep] = useState(0);
   const [stepTuple, setStepTuple] = useState<Steps>(defaultSteps);
@@ -270,10 +301,41 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
     undefined
   );
   const theme = useTheme();
+  const [
+    createResource,
+    {
+      loading: creatingResource,
+      error: createResourceError,
+      data: newResource,
+    },
+  ] = useMutation(CREATE_RESOURCE);
 
-  const handleSubmit = useCallback((values: any) => {
-    console.log(values);
-  }, []);
+  const handleSubmit = useCallback(
+    (values: any) => {
+      if (!resourceType) {
+        throw new Error("Resource type should be defined.");
+      }
+
+      const { resourceName: name, description, ...configuration } = values;
+      if (
+        configuration.hasOwnProperty("connectUsingSSL") &&
+        configuration.connectUsingSSL?.constructor === Array
+      ) {
+        configuration.connectUsingSSL =
+          configuration.connectUsingSSL.length > 0;
+      }
+
+      createResource({
+        variables: {
+          name,
+          description,
+          type: resourceType,
+          [resourceType as string]: configuration,
+        },
+      });
+    },
+    [createResource, resourceType]
+  );
 
   const handleNext = () => {
     if (activeStep + 1 === steps.length) {
