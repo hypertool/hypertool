@@ -1,3 +1,5 @@
+export const tuple = <T extends string[]>(...values: T) => values;
+
 export type ResourceType =
   // Database
   | "mysql"
