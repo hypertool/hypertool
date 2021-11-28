@@ -29,6 +29,10 @@ export interface MongoDBConfiguration {
   connectUsingSSL: boolean;
 }
 
+export interface BigQueryConfiguration {
+  [key: string]: any;
+}
+
 export interface Resource {
   type: ResourceType;
   title: string;
