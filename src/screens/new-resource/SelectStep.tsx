@@ -3,7 +3,7 @@ import type { FunctionComponent, ReactElement } from "react";
 import { Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import type { Resource, ResourceType } from "../../types";
+import type { ResourceType } from "../../types";
 
 import ResourceItem from "./ResourceItem";
 
@@ -36,6 +36,12 @@ const CategoryTitle = styled(Typography)(({ theme }) => ({
   fontSize: 14,
   color: theme.palette.getContrastText(theme.palette.background.default),
 }));
+
+interface Resource {
+  type: ResourceType;
+  title: string;
+  imageURL: string;
+}
 
 interface CategoryModel {
   title: string;
