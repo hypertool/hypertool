@@ -10,6 +10,7 @@ import {
   NewApp,
   ResourceLibrary,
   NewResource,
+  EditResource,
 } from "./screens";
 import { WorkspaceLayout } from "./layouts";
 
@@ -29,6 +30,10 @@ const App: FunctionComponent = (): ReactElement => {
           <Route path="/apps/new" element={<NewApp />} />
           <Route path="/resources" element={<ResourceLibrary />} />
           <Route path="/resources/new" element={<NewResource />} />
+          <Route
+            path="/resources/:resourceId/edit"
+            element={<EditResource />}
+          />
         </Route>
       </Routes>
     </Root>
