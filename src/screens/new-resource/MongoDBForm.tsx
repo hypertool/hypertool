@@ -1,12 +1,9 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import {
-  TextField,
-  Typography,
-  FormControlLabel,
-  Checkbox,
-} from "@mui/material";
+import { Typography, FormControlLabel, Checkbox } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import { TextField } from "../../components";
 
 const ResourceNameTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
@@ -14,27 +11,27 @@ const ResourceNameTextField = styled(TextField)(({ theme }) => ({
 
 const HostTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(3),
 })) as any;
 
 const PortTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(3),
 })) as any;
 
 const DatabaseNameTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(3),
 })) as any;
 
 const DatabaseUserNameTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(3),
 })) as any;
 
 const DatabasePasswordTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(3),
 })) as any;
 
 const TextFieldHelp = styled(Typography)(({ theme }) => ({
@@ -48,15 +45,16 @@ const TextFieldHelp = styled(Typography)(({ theme }) => ({
 
 const SSLLabel = styled(FormControlLabel)(({ theme }) => ({
   color: theme.palette.getContrastText(theme.palette.background.default),
-  marginTop: theme.spacing(1),
+  marginTop: theme.spacing(2),
 }));
 
 const MongoDBForm: FunctionComponent = (): ReactElement => {
   return (
     <>
       <ResourceNameTextField
-        required={true}
+        name="resourceName"
         id="resourceName"
+        required={true}
         label="Resource Name"
         size="small"
         variant="outlined"
@@ -70,8 +68,9 @@ const MongoDBForm: FunctionComponent = (): ReactElement => {
       />
 
       <HostTextField
-        required={true}
         id="host"
+        name="host"
+        required={true}
         label="Host"
         size="small"
         variant="outlined"
@@ -79,8 +78,9 @@ const MongoDBForm: FunctionComponent = (): ReactElement => {
       />
 
       <PortTextField
-        required={true}
         id="port"
+        name="port"
+        required={true}
         label="Port"
         size="small"
         variant="outlined"
@@ -88,8 +88,9 @@ const MongoDBForm: FunctionComponent = (): ReactElement => {
       />
 
       <DatabaseNameTextField
-        required={true}
         id="databaseName"
+        name="databaseName"
+        required={true}
         label="Database Name"
         size="small"
         variant="outlined"
@@ -97,8 +98,9 @@ const MongoDBForm: FunctionComponent = (): ReactElement => {
       />
 
       <DatabaseUserNameTextField
-        required={true}
         id="databaseUserName"
+        name="databaseUserName"
+        required={true}
         label="User Name"
         size="small"
         variant="outlined"
@@ -106,8 +108,9 @@ const MongoDBForm: FunctionComponent = (): ReactElement => {
       />
 
       <DatabasePasswordTextField
-        required={true}
         id="databasePassword"
+        name="databasePassword"
+        required={true}
         label="Password"
         size="small"
         variant="outlined"
@@ -116,7 +119,7 @@ const MongoDBForm: FunctionComponent = (): ReactElement => {
       />
 
       <SSLLabel
-        control={<Checkbox defaultChecked={false} />}
+        control={<Checkbox name="connectUsingSSL" defaultChecked={false} />}
         label="Connect using SSL"
       />
     </>

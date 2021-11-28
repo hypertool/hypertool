@@ -1,41 +1,9 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import {
-  TextField,
-  Typography,
-  FormControlLabel,
-  Checkbox,
-} from "@mui/material";
+import { Typography, FormControlLabel } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-const ResourceNameTextField = styled(TextField)(({ theme }) => ({
-  maxWidth: 400,
-})) as any;
-
-const HostTextField = styled(TextField)(({ theme }) => ({
-  maxWidth: 400,
-  marginTop: theme.spacing(2),
-})) as any;
-
-const PortTextField = styled(TextField)(({ theme }) => ({
-  maxWidth: 400,
-  marginTop: theme.spacing(2),
-})) as any;
-
-const DatabaseNameTextField = styled(TextField)(({ theme }) => ({
-  maxWidth: 400,
-  marginTop: theme.spacing(2),
-})) as any;
-
-const DatabaseUserNameTextField = styled(TextField)(({ theme }) => ({
-  maxWidth: 400,
-  marginTop: theme.spacing(2),
-})) as any;
-
-const DatabasePasswordTextField = styled(TextField)(({ theme }) => ({
-  maxWidth: 400,
-  marginTop: theme.spacing(2),
-})) as any;
+import { TextField, Checkbox } from "../../components";
 
 const TextFieldHelp = styled(Typography)(({ theme }) => ({
   display: "flex",
@@ -46,22 +14,57 @@ const TextFieldHelp = styled(Typography)(({ theme }) => ({
   paddingBottom: 0,
 }));
 
+const ResourceNameTextField = styled(TextField)(({ theme }) => ({
+  maxWidth: 400,
+})) as any;
+
+const DescriptionTextField = styled(TextField)(({ theme }) => ({
+  maxWidth: 400,
+  marginTop: theme.spacing(3),
+})) as any;
+
+const HostTextField = styled(TextField)(({ theme }) => ({
+  maxWidth: 400,
+  marginTop: theme.spacing(3),
+})) as any;
+
+const PortTextField = styled(TextField)(({ theme }) => ({
+  maxWidth: 400,
+  marginTop: theme.spacing(3),
+})) as any;
+
+const DatabaseNameTextField = styled(TextField)(({ theme }) => ({
+  maxWidth: 400,
+  marginTop: theme.spacing(3),
+})) as any;
+
+const DatabaseUserNameTextField = styled(TextField)(({ theme }) => ({
+  maxWidth: 400,
+  marginTop: theme.spacing(3),
+})) as any;
+
+const DatabasePasswordTextField = styled(TextField)(({ theme }) => ({
+  maxWidth: 400,
+  marginTop: theme.spacing(3),
+})) as any;
+
 const SSLLabel = styled(FormControlLabel)(({ theme }) => ({
   color: theme.palette.getContrastText(theme.palette.background.default),
-  marginTop: theme.spacing(1),
+  marginTop: theme.spacing(2),
 }));
 
 const PostgresForm: FunctionComponent = (): ReactElement => {
   return (
     <>
       <ResourceNameTextField
+        name="resourceName"
         required={true}
         id="resourceName"
         label="Resource Name"
         size="small"
         variant="outlined"
         fullWidth={true}
-        helperText={
+        help={
           <TextFieldHelp variant="caption">
             The resource name will help you identify the resource across
             Hypertool, including HTX and JavaScript code.
@@ -69,7 +72,19 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
         }
       />
 
+      <DescriptionTextField
+        name="description"
+        id="description"
+        label="Description"
+        size="small"
+        variant="outlined"
+        fullWidth={true}
+        multiline={true}
+        rows={2}
+      />
+
       <HostTextField
+        name="host"
         required={true}
         id="host"
         label="Host"
@@ -79,15 +94,18 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
       />
 
       <PortTextField
+        name="port"
         required={true}
         id="port"
         label="Port"
         size="small"
         variant="outlined"
         fullWidth={true}
+        type="number"
       />
 
       <DatabaseNameTextField
+        name="databaseName"
         required={true}
         id="databaseName"
         label="Database Name"
@@ -97,6 +115,7 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
       />
 
       <DatabaseUserNameTextField
+        name="databaseUserName"
         required={true}
         id="databaseUserName"
         label="User Name"
@@ -106,6 +125,7 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
       />
 
       <DatabasePasswordTextField
+        name="databasePassword"
         required={true}
         id="databasePassword"
         label="Password"
@@ -116,7 +136,7 @@ const PostgresForm: FunctionComponent = (): ReactElement => {
       />
 
       <SSLLabel
-        control={<Checkbox defaultChecked={false} />}
+        control={<Checkbox name="connectUsingSSL" defaultChecked={false} />}
         label="Connect using SSL"
       />
     </>

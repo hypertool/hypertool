@@ -10,11 +10,10 @@ import {
   Typography,
   TextField,
   InputAdornment,
-  Container,
 } from "@mui/material";
 import { useNavigate } from "react-router";
 
-import ResourcesTable from "../new-app/ResourcesTable";
+import ResourcesTable from "./ResourcesTable";
 
 const Root = styled("section")(({ theme }) => ({
   width: "100%",
@@ -45,8 +44,9 @@ const ActionIcon = styled(Icon)(({ theme }) => ({
   marginRight: theme.spacing(1),
 }));
 
-const TableContainer = styled(Container)(({ theme }) => ({
-  marginTop: theme.spacing(4),
+const TableContainer = styled("div")(({ theme }) => ({
+  padding: theme.spacing(4),
+
 }));
 
 const ResourceLibrary: FunctionComponent = (): ReactElement => {

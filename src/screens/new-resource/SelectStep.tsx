@@ -262,7 +262,7 @@ const categories: CategoryModel[] = [
 
 interface Props {
   onChange: (type: ResourceType) => void;
-  activeType: ResourceType;
+  activeType: ResourceType | undefined;
 }
 
 const SelectStep: FunctionComponent<Props> = (props: Props): ReactElement => {

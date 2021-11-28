@@ -1,10 +1,11 @@
 import type { FunctionComponent, ReactElement } from "react";
 
 import {
-  TextField,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import { TextField } from "../../components";
 
 const ResourceNameTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 400,
@@ -21,20 +22,21 @@ const TextFieldHelp = styled(Typography)(({ theme }) => ({
 
 const KeyTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 600,
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(3),
 })) as any;
 
 const BigQueryForm: FunctionComponent = (): ReactElement => {
   return (
     <>
       <ResourceNameTextField
-        required={true}
         id="resourceName"
+        name="resourceName"
+        required={true}
         label="Resource Name"
         size="small"
         variant="outlined"
         fullWidth={true}
-        helperText={
+        help={
           <TextFieldHelp variant="caption">
             The resource name will help you identify the resource across
             Hypertool, including HTX and JavaScript code.
@@ -43,8 +45,9 @@ const BigQueryForm: FunctionComponent = (): ReactElement => {
       />
 
       <KeyTextField
-        required={true}
         id="serviceAccountKey"
+        name="serviceAccountKey"
+        required={true}
         label="Service Account Key"
         size="small"
         variant="outlined"
