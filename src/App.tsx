@@ -27,7 +27,7 @@ const App: FunctionComponent = (): ReactElement => {
         <Route path="/" element={<WorkspaceLayout />}>
           <Route path="/apps" element={<ViewApps />} />
           <Route path="/apps/new" element={<NewApp />} />
-          <Route path="/resource-library" element={<ResourceLibrary />} />
+          <Route path="/resources" element={<ResourceLibrary />} />
           <Route path="/resources/new" element={<NewResource />} />
         </Route>
       </Routes>

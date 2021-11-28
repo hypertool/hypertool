@@ -93,7 +93,7 @@ const groups = [
     items: [
       {
         title: "Resource Library",
-        url: "/resource-library",
+        url: "/resources",
         icon: "category",
       },
       {
