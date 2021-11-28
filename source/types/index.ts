@@ -53,6 +53,8 @@ export interface Resource {
     | MongoDBConfiguration
     | BigQueryConfiguration;
   status: typeof resourceStatuses[number];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ExternalMySQLConfiguration {
@@ -94,6 +96,8 @@ export interface ExternalResource {
     | ExternalMongoDBConfiguration
     | ExternalBigQueryConfiguration;
   status: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ExternalListPage<T> {
@@ -123,6 +127,8 @@ export interface User {
   role: typeof userRoles[number];
   birthday: Date;
   status: typeof userStatuses[number];
+  createdAt: Date;
+  updatedAt: Date;
 }
 export interface ExternalUser {
   firstName: string;
@@ -148,6 +154,8 @@ export interface Organization {
   description: string;
   users: string[] | User[];
   status: typeof organizationStatuses[number];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ExternalOrganization {
@@ -167,6 +175,8 @@ export interface Group {
   users: string[] | User[];
   apps: string[] | App[];
   status: typeof groupStatuses[number];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ExternalGroup {
@@ -188,6 +198,8 @@ export interface App {
   resources: string[] | Resource[];
   creator: string[] | User;
   status: typeof appStatuses[number];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ExternalApp {
