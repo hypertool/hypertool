@@ -1,13 +1,14 @@
-import { resourceTypes } from "../utils/constants";
+import { resourceStatuses, resourceTypes } from "../utils/constants";
 
 export type ResourceType = typeof resourceTypes[number];
+
+export type ResourceStatus = typeof resourceStatuses[number];
 
 export interface MySQLConfiguration {
   host: string;
   port: number;
   databaseName: string;
   databaseUserName: string;
-  databasePassword: string;
   connectUsingSSL: boolean;
 }
 
@@ -16,7 +17,6 @@ export interface PostgresConfiguration {
   port: number;
   databaseName: string;
   databaseUserName: string;
-  databasePassword: string;
   connectUsingSSL: boolean;
 }
 
@@ -25,7 +25,6 @@ export interface MongoDBConfiguration {
   port: number;
   databaseName: string;
   databaseUserName: string;
-  databasePassword: string;
   connectUsingSSL: boolean;
 }
 
@@ -34,7 +33,14 @@ export interface BigQueryConfiguration {
 }
 
 export interface Resource {
+  id: string;
+  name: string;
+  description: string;
   type: ResourceType;
-  title: string;
-  imageURL: string;
+  configuration:
+    | MySQLConfiguration
+    | PostgresConfiguration
+    | MongoDBConfiguration
+    | BigQueryConfiguration;
+  status: ResourceStatus;
 }
