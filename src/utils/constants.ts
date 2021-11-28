@@ -46,3 +46,10 @@ export const resourceTypes = tuple(
   "google_maps",
   "circleci"
 );
+
+export const resourceStatuses = tuple(
+  "enabled",
+  "disabled",
+  "deleted",
+  "banned"
+);
