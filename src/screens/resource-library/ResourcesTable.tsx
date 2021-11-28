@@ -3,6 +3,8 @@ import type { FunctionComponent, ReactElement } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 
+import type { Resource } from "../../types";
+
 const Root = styled("div")(({ theme }) => ({
   width: "100%",
   height: `calc(100vh - 216px)`,
@@ -104,16 +106,17 @@ const rows = [
 
 interface Props {
   selectable: boolean;
+  resources: Resource[];
 }
 
 const ResourcesTable: FunctionComponent<Props> = (
   props: Props
 ): ReactElement => {
-  const { selectable } = props;
+  const { selectable, resources } = props;
   return (
     <Root>
       <DataGrid
-        rows={rows}
+        rows={resources}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10]}

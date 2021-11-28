@@ -1,52 +1,46 @@
-export type ResourceType =
-  // Database
-  | "mysql"
-  | "postgres"
-  | "microsoft_sql"
-  | "mongodb"
-  | "cassandra"
-  | "cosmosdb"
-  | "amazon_redshift"
-  | "amazon_athena"
-  | "bigquery"
-  | "elasticsearch"
-  | "couchdb"
-  | "rethinkdb"
-  | "snowflake"
-  | "denodo"
-  | "redis"
-  | "dynamodb"
-  
-  // APIs
-  | "rest_api"
-  | "graphql"
-  | "firebase"
-  | "stripe"
-  | "twilio"
-  | "github"
-  | "google_sheets"
-  | "salesforce"
-  | "sendgrid"
-  | "amazon_s3"
-  | "google_cloud_storage"
-  | "datadog"
-  | "lambda"
-  | "openapi"
-  | "smtp"
-  | "slack"
-  | "asana"
-  | "jira"
-  | "close"
-  | "bigid"
-  | "basecamp"
-  | "onesignal"
-  | "front"
-  | "google_maps"
-  | "circleci"
-  ;
+import { resourceStatuses, resourceTypes } from "../utils/constants";
+
+export type ResourceType = typeof resourceTypes[number];
+
+export type ResourceStatus = typeof resourceStatuses[number];
+
+export interface MySQLConfiguration {
+  host: string;
+  port: number;
+  databaseName: string;
+  databaseUserName: string;
+  connectUsingSSL: boolean;
+}
+
+export interface PostgresConfiguration {
+  host: string;
+  port: number;
+  databaseName: string;
+  databaseUserName: string;
+  connectUsingSSL: boolean;
+}
+
+export interface MongoDBConfiguration {
+  host: string;
+  port: number;
+  databaseName: string;
+  databaseUserName: string;
+  connectUsingSSL: boolean;
+}
+
+export interface BigQueryConfiguration {
+  [key: string]: any;
+}
 
 export interface Resource {
+  id: string;
+  name: string;
+  description: string;
   type: ResourceType;
-  title: string;
-  imageURL: string;
+  configuration:
+    | MySQLConfiguration
+    | PostgresConfiguration
+    | MongoDBConfiguration
+    | BigQueryConfiguration;
+  status: ResourceStatus;
 }
