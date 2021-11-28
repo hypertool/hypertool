@@ -69,7 +69,34 @@ const EditResource: FunctionComponent = (): ReactElement => {
         <WorkspaceToolbar>
           <Title>Resource Library</Title>
           <ActionContainer>
-            <Button size="small" onClick={handleCreateNew}>
+            <Button
+              size="small"
+              onClick={handleCreateNew}
+              color="inherit"
+              sx={{ mr: 2 }}
+            >
+              <ActionIcon fontSize="small">cancel</ActionIcon>
+              Disable
+            </Button>
+            <Button
+              size="small"
+              color="inherit"
+              onClick={handleCreateNew}
+              sx={{ mr: 2 }}
+            >
+              <ActionIcon fontSize="small">delete</ActionIcon>
+              Delete
+            </Button>
+            <Button
+              size="small"
+              onClick={handleCreateNew}
+              color="inherit"
+              sx={{ mr: 2 }}
+            >
+              <ActionIcon fontSize="small">refresh</ActionIcon>
+              Refresh
+            </Button>
+            <Button size="small" onClick={handleCreateNew} color="inherit">
               <ActionIcon fontSize="small">save</ActionIcon>
               Save
             </Button>
@@ -80,7 +107,8 @@ const EditResource: FunctionComponent = (): ReactElement => {
         <Left>
           <Help component="p" variant="caption">
             Resources let you connect to your database or API. Once you add a
-            resource here, you can choose which app has access to which resource.
+            resource here, you can choose which app has access to which
+            resource.
           </Help>
         </Left>
 
