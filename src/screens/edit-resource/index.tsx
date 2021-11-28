@@ -1,15 +1,34 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { Typography, Divider, Container } from "@mui/material";
+import {
+  Typography,
+  Divider,
+  Container,
+  AppBar,
+  Toolbar,
+  Button,
+  Icon,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-const Root = styled(Container)(({ theme }) => ({
+const Title = styled(Typography)(({ theme }) => ({}));
+
+const WorkspaceToolbar = styled(Toolbar)(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
-  alignItems: "flex-start",
-  justifyContent: "flex-start",
+  justifyContent: "space-between",
+  alignItems: "center",
+}));
+
+const ActionContainer = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "flex-end",
+}));
+
+const Root = styled("div")(({ theme }) => ({
   width: "100%",
-  padding: theme.spacing(4),
 }));
 
 const Left = styled("div")(({ theme }) => ({
@@ -21,12 +40,6 @@ const Right = styled("div")(({ theme }) => ({
   width: "100%",
 }));
 
-const Title = styled(Typography)(({ theme }) => ({
-  fontSize: 20,
-  fontWeight: 500,
-  color: theme.palette.getContrastText(theme.palette.background.default),
-}));
-
 const Help = styled(Typography)(({ theme }) => ({
   fontSize: 14,
   color: theme.palette.getContrastText(theme.palette.background.default),
@@ -34,20 +47,47 @@ const Help = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
 })) as any;
 
+const ActionIcon = styled(Icon)(({ theme }) => ({
+  marginRight: theme.spacing(1),
+}));
+
+const Content = styled(Container)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "flex-start",
+  justifyContent: "flex-start",
+  width: "100%",
+  padding: theme.spacing(4),
+}));
+
 const EditResource: FunctionComponent = (): ReactElement => {
+  const handleCreateNew = () => {};
+
   return (
     <Root>
-      <Left>
-        <Title variant="h1">Edit resource</Title>
-        <Help component="p" variant="caption">
-          Resources let you connect to your database or API. Once you add a
-          resource here, you can choose which app has access to which resource.
-        </Help>
-      </Left>
+      <AppBar position="static" elevation={1}>
+        <WorkspaceToolbar>
+          <Title>Resource Library</Title>
+          <ActionContainer>
+            <Button size="small" onClick={handleCreateNew}>
+              <ActionIcon fontSize="small">save</ActionIcon>
+              Save
+            </Button>
+          </ActionContainer>
+        </WorkspaceToolbar>
+      </AppBar>
+      <Content>
+        <Left>
+          <Help component="p" variant="caption">
+            Resources let you connect to your database or API. Once you add a
+            resource here, you can choose which app has access to which resource.
+          </Help>
+        </Left>
 
-      <Divider orientation="vertical" flexItem={true} sx={{ mr: 4 }} />
+        <Divider orientation="vertical" flexItem={true} sx={{ mr: 4 }} />
 
-      <Right></Right>
+        <Right></Right>
+      </Content>
     </Root>
   );
 };
