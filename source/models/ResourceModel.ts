@@ -133,6 +133,8 @@ const resourceSchema = new Schema({
   bigquery: {
     type: bigquerySchema,
   },
+}, {
+  timestamps: true
 });
 
 resourceSchema.plugin(paginate);

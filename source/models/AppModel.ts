@@ -44,7 +44,7 @@ const appSchema = new Schema({
     enum: appStatuses,
     default: "private",
   },
-});
+}, { timestamps: true });
 
 appSchema.plugin(paginate);
 
