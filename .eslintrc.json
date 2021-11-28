@@ -1,38 +1,22 @@
 {
-    "env": {
-        "node": true,
-        "commonjs": true,
-        "es2020": true
-    },
-    "globals": {
-        "assert": true
-    },
+    "root": true,
     "extends": [
         "eslint:recommended",
-        "plugin:node/recommended",
-        "plugin:security/recommended",
-        "airbnb-base",
-        "prettier",
-        "plugin:mocha/recommended"
+        "plugin:@typescript-eslint/recommended"
     ],
-    "plugins": ["security", "prettier", "mocha"],
-    "parserOptions": {
-        "ecmaVersion": 11
-    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": { "project": ["./tsconfig.json"] },
+    "plugins": [
+        "@typescript-eslint"
+    ],
     "rules": {
-        "no-underscore-dangle": "off",
-        "no-console": "off",
-        "mocha/no-mocha-arrows": "off",
-        "node/no-unpublished-require": "error"
-    },
-    "overrides": [
-        {
-            "files": "test/**/*.ts",
-            "rules": {
-                "node/no-unpublished-require": "off",
-                "func-names": "off",
-                "prefer-arrow-callback": "off"
+        "@typescript-eslint/strict-boolean-expressions": [
+            2,
+            {
+                "allowString" : false,
+                "allowNumber" : false
             }
-        }
-    ]
+        ]
+    },
+    "ignorePatterns": ["src/**/*.test.ts", "src/frontend/generated/*"]
 }
