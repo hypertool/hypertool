@@ -11,6 +11,15 @@ export interface MySQLConfiguration {
   connectUsingSSL: boolean;
 }
 
+export interface PostgresConfiguration {
+  host: string;
+  port: number;
+  databaseName: string;
+  databaseUserName: string;
+  databasePassword: string;
+  connectUsingSSL: boolean;
+}
+
 export interface Resource {
   type: ResourceType;
   title: string;
