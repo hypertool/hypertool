@@ -12,6 +12,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { useNavigate } from "react-router";
+import { gql, useQuery } from "@apollo/client";
 
 import ResourcesTable from "./ResourcesTable";
 
@@ -46,15 +47,37 @@ const ActionIcon = styled(Icon)(({ theme }) => ({
 
 const TableContainer = styled("div")(({ theme }) => ({
   padding: theme.spacing(4),
-
 }));
+
+const GET_RESOURCES = gql`
+  query GetResources($page: Int, $limit: Int) {
+    getResources(page: $page, limit: $limit) {
+      totalPages
+      records {
+        id
+        name
+        type
+        status
+        createdAt
+      }
+    }
+  }
+`;
 
 const ResourceLibrary: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
+  const { loading, error, data, refetch } = useQuery(GET_RESOURCES, {
+    variables: {
+      page: 0,
+      limit: 20,
+    },
+  });
 
   const handleCreateNew = useCallback(() => {
     navigate("/resources/new");
-  }, []);
+  }, [navigate]);
+
+  const { records = [], totalPages = 0 } = data?.getResources || {};
 
   return (
     <Root>
@@ -82,7 +105,7 @@ const ResourceLibrary: FunctionComponent = (): ReactElement => {
         </WorkspaceToolbar>
       </AppBar>
       <TableContainer>
-        <ResourcesTable selectable={false} />
+        <ResourcesTable selectable={false} resources={records} />
       </TableContainer>
     </Root>
   );
