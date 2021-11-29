@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Formik } from "formik";
+import { useParams } from "react-router";
+import { gql, useQuery } from "@apollo/client";
 
 import PostgresForm from "../new-resource/PostgresForm";
 
@@ -65,7 +67,26 @@ const Content = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
 }));
 
+const GET_RESOURCE = gql`
+  query GetResource($resourceId: ID!) {
+    getResourceById(resourceId: $resourceId) {
+      id
+      name
+      type
+      status
+      createdAt
+    }
+  }
+`;
+
 const EditResource: FunctionComponent = (): ReactElement => {
+  const { resourceId } = useParams();
+  const { loading, error, data, refetch } = useQuery(GET_RESOURCE, {
+    variables: {
+      resourceId,
+    },
+  });
+
   const handleCreateNew = () => {};
 
   const handleSubmit = () => {};
