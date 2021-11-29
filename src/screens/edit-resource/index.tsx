@@ -15,7 +15,10 @@ import { Formik } from "formik";
 import { useParams } from "react-router";
 import { gql, useQuery } from "@apollo/client";
 
+import MySQLForm from "../new-resource/MySQLForm";
 import PostgresForm from "../new-resource/PostgresForm";
+import MongoDBForm from "../new-resource/MongoDBForm";
+import BigQueryForm from "../new-resource/BigQueryForm";
 
 const Title = styled(Typography)(({ theme }) => ({}));
 
@@ -83,12 +86,48 @@ const GET_RESOURCE = gql`
     getResourceById(resourceId: $resourceId) {
       id
       name
+      description
       type
       status
       createdAt
+      mysql {
+        host
+        port
+        databaseName
+        databaseUserName
+        connectUsingSSL
+      }
+      postgres {
+        host
+        port
+        databaseName
+        databaseUserName
+        connectUsingSSL
+      }
+      mongodb {
+        host
+        port
+        databaseName
+        databaseUserName
+        connectUsingSSL
+      }
+      bigquery {
+        key
+      }
     }
   }
 `;
+
+interface ResourceFormByType {
+  [key: string]: FunctionComponent;
+}
+
+const resourceFormByType: ResourceFormByType = {
+  mysql: MySQLForm,
+  postgres: PostgresForm,
+  mongodb: MongoDBForm,
+  bigquery: BigQueryForm,
+};
 
 const EditResource: FunctionComponent = (): ReactElement => {
   const { resourceId } = useParams();
@@ -113,11 +152,24 @@ const EditResource: FunctionComponent = (): ReactElement => {
     </ProgressContainer>
   );
 
-  const renderForms = () => (
-    <Formik initialValues={{}} onSubmit={handleSubmit}>
-      <PostgresForm />
-    </Formik>
-  );
+  const renderForms = () => {
+    const { name, description, type, ...others } = data.getResourceById;
+    const Form = resourceFormByType[type];
+
+    return (
+      <Formik
+        initialValues={{
+          resourceName: name,
+          description,
+          /* Since the form expects flat data, spread the configuration. */
+          ...others[type]
+        }}
+        onSubmit={handleSubmit}
+      >
+        <Form />
+      </Formik>
+    );
+  };
 
   return (
     <Root>
