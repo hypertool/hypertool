@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactElement } from "react";
+import { FunctionComponent, ReactElement, useCallback } from "react";
 
 import {
   Typography,
@@ -96,9 +96,14 @@ const EditResource: FunctionComponent = (): ReactElement => {
     variables: {
       resourceId,
     },
+    notifyOnNetworkStatusChange: true,
   });
 
   const handleCreateNew = () => {};
+
+  const handleRefresh = useCallback(() => {
+    refetch();
+  }, [refetch]);
 
   const handleSubmit = () => {};
 
@@ -142,7 +147,7 @@ const EditResource: FunctionComponent = (): ReactElement => {
             </Button>
             <Button
               size="small"
-              onClick={handleCreateNew}
+              onClick={handleRefresh}
               color="inherit"
               sx={{ mr: 2 }}
               disabled={loading}
