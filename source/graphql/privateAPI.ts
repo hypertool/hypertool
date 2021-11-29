@@ -3,16 +3,16 @@ import { GraphQLScalarType } from "graphql";
 import { organizations, users, groups, apps, resources } from "../controllers";
 
 import {
-  resourceTypes,
-  resourceStatuses,
-  genders,
-  countryCodes,
-  userStatuses,
-  organizationStatuses,
-  userRoles,
-  groupTypes,
-  appStatuses,
-  groupStatuses,
+    resourceTypes,
+    resourceStatuses,
+    genders,
+    countryCodes,
+    userStatuses,
+    organizationStatuses,
+    userRoles,
+    groupTypes,
+    appStatuses,
+    groupStatuses,
 } from "../utils/constants";
 
 const typeDefs = gql`
@@ -135,6 +135,7 @@ const typeDefs = gql`
         port: Int!
         databaseName: String!
         databaseUserName: String!
+        databasePassword: String!
         connectUsingSSL: Boolean!
     }
 
@@ -143,6 +144,7 @@ const typeDefs = gql`
         port: Int!
         databaseName: String!
         databaseUserName: String!
+        databasePassword: String!
         connectUsingSSL: Boolean!
     }
 
@@ -151,6 +153,7 @@ const typeDefs = gql`
         port: Int!
         databaseName: String!
         databaseUserName: String!
+        databasePassword: String!
         connectUsingSSL: Boolean!
     }
 
@@ -335,6 +338,7 @@ const typeDefs = gql`
         ): Resource!
 
         updateResource(
+            resourceId: ID!
             name: String
             description: String
             mysql: MySQLConfigurationInput
@@ -365,107 +369,111 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
-  Date: new GraphQLScalarType({
-    name: "Date",
-    parseValue(value: string) {
-      return new Date(value);
+    Date: new GraphQLScalarType({
+        name: "Date",
+        parseValue(value: string) {
+            return new Date(value);
+        },
+        serialize(value: Date) {
+            return value.toISOString();
+        },
+    }),
+    Mutation: {
+        createOrganization: async (parent, values, context) =>
+            organizations.create(context.request, values),
+
+        updateOrganization: async (parent, values, context) =>
+            organizations.update(
+                context.request,
+                values.organizationId,
+                values
+            ),
+
+        deleteOrganization: async (parent, values, context) =>
+            organizations.remove(context.request, context.organizationId),
+
+        createUser: async (parent, values, context) =>
+            users.create(context.request, values),
+
+        updateUser: async (parent, values, context) =>
+            users.update(context.request, values.userId, values),
+
+        deleteUser: async (parent, values, context) =>
+            users.remove(context.request, context.userId),
+
+        createGroup: async (parent, values, context) =>
+            groups.create(context.request, values),
+
+        updateGroup: async (parent, values, context) =>
+            groups.update(context.request, values.groupId, values),
+
+        deleteGroup: async (parent, values, context) =>
+            groups.remove(context.request, context.groupId),
+
+        createApp: async (parent, values, context) =>
+            apps.create(context.request, values),
+
+        updateApp: async (parent, values, context) =>
+            apps.update(context.request, values.appId, values),
+
+        deleteApp: async (parent, values, context) =>
+            apps.remove(context.request, context.appId),
+
+        createResource: async (parent, values, context) =>
+            resources.create(context.request, values),
+
+        updateResource: async (parent, values, context) =>
+            resources.update(context.request, values.resourceId, values),
+
+        deleteResource: async (parent, values, context) =>
+            resources.remove(context.request, context.resourceId),
     },
-    serialize(value: Date) {
-      return value.toISOString();
+    Query: {
+        getOrganizations: async (parent, values, context) =>
+            organizations.list(context.request, values),
+
+        getOrganizationById: async (parent, values, context) =>
+            organizations.getById(context.request, values.organizationId),
+
+        getUsers: async (parent, values, context) =>
+            users.list(context.request, values),
+
+        getUserById: async (parent, values, context) =>
+            users.getById(context.request, values.userId),
+
+        getGroups: async (parent, values, context) =>
+            groups.list(context.request, values),
+
+        getGroupById: async (parent, values, context) =>
+            groups.getById(context.request, values.groupId),
+
+        getApps: async (parent, values, context) =>
+            apps.list(context.request, values),
+
+        getAppById: async (parent, values, context) =>
+            apps.getById(context.request, values.appId),
+
+        getResources: async (parent, values, context) =>
+            resources.list(context.request, values),
+
+        getResourceById: async (parent, values, context) =>
+            resources.getById(context.request, values.resourceId),
     },
-  }),
-  Mutation: {
-    createOrganization: async (parent, values, context) =>
-        organizations.create(context.request, values),
-
-    updateOrganization: async (parent, values, context) =>
-        organizations.update(context.request, values.organizationId, values),
-
-    deleteOrganization: async (parent, values, context) =>
-        organizations.remove(context.request, context.organizationId),
-    
-    createUser: async (parent, values, context) =>
-        users.create(context.request, values),
-
-    updateUser: async (parent, values, context) =>
-        users.update(context.request, values.userId, values),
-
-    deleteUser: async (parent, values, context) =>
-        users.remove(context.request, context.userId),
-
-    createGroup: async (parent, values, context) =>
-        groups.create(context.request, values),
-
-    updateGroup: async (parent, values, context) =>
-        groups.update(context.request, values.groupId, values),
-
-    deleteGroup: async (parent, values, context) =>
-        groups.remove(context.request, context.groupId),
-
-    createApp: async (parent, values, context) =>
-        apps.create(context.request, values),
-
-    updateApp: async (parent, values, context) =>
-        apps.update(context.request, values.appId, values),
-
-    deleteApp: async (parent, values, context) =>
-        apps.remove(context.request, context.appId),
-
-    createResource: async (parent, values, context) =>
-        resources.create(context.request, values),
-
-    updateResource: async (parent, values, context) =>
-        resources.update(context.request, values.resourceId, values),
-
-    deleteResource: async (parent, values, context) =>
-        resources.remove(context.request, context.resourceId),
-  },
-  Query: {
-    getOrganizations: async (parent, values, context) =>
-      organizations.list(context.request, values),
-
-    getOrganizationById: async (parent, values, context) =>
-      organizations.getById(context.request, values.organizationId),
-
-    getUsers: async (parent, values, context) =>
-      users.list(context.request, values),
-
-    getUserById: async (parent, values, context) =>
-      users.getById(context.request, values.userId),
-
-    getGroups: async (parent, values, context) =>
-      groups.list(context.request, values),
-
-    getGroupById: async (parent, values, context) =>
-      groups.getById(context.request, values.groupId),
-
-    getApps: async (parent, values, context) =>
-      apps.list(context.request, values),
-
-    getAppById: async (parent, values, context) =>
-      apps.getById(context.request, values.appId),
-
-    getResources: async (parent, values, context) =>
-      resources.list(context.request, values),
-
-    getResourceById: async (parent, values, context) =>
-      resources.getById(context.request, values.resourceId),
-  },
 };
 
 const attachRoutes = async (app: any) => {
-  const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-    context: (context) => ({
-      request: context.req,
-    }),
-  });
-  await server.start();
-  server.applyMiddleware({
-    app,
-    path: "/graphql/v1/private",
-  });
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        context: (context) => ({
+            request: context.req,
+        }),
+    });
+    await server.start();
+    server.applyMiddleware({
+        app,
+        path: "/graphql/v1/private",
+    });
 };
 
 export { attachRoutes };
