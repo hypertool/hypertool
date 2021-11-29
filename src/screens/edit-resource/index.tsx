@@ -8,6 +8,7 @@ import {
   Toolbar,
   Button,
   Icon,
+  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Formik } from "formik";
@@ -32,6 +33,15 @@ const ActionContainer = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
+const ProgressContainer = styled("div")(({ theme }) => ({
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  minHeight: "calc(100vh - 192px)",
+  justifyContent: "center",
+  alignItems: "center",
+}));
+
 const Root = styled("div")(({ theme }) => ({
   width: "100%",
 }));
@@ -45,6 +55,7 @@ const Right = styled("div")(({ theme }) => ({
   width: "100%",
   display: "flex",
   flexDirection: "column",
+  minHeight: "calc(100vh - 192px)",
 }));
 
 const Help = styled(Typography)(({ theme }) => ({
@@ -91,6 +102,18 @@ const EditResource: FunctionComponent = (): ReactElement => {
 
   const handleSubmit = () => {};
 
+  const renderProgress = () => (
+    <ProgressContainer>
+      <CircularProgress size="28px" />
+    </ProgressContainer>
+  );
+
+  const renderForms = () => (
+    <Formik initialValues={{}} onSubmit={handleSubmit}>
+      <PostgresForm />
+    </Formik>
+  );
+
   return (
     <Root>
       <AppBar position="static" elevation={1}>
@@ -131,23 +154,22 @@ const EditResource: FunctionComponent = (): ReactElement => {
           </ActionContainer>
         </WorkspaceToolbar>
       </AppBar>
-      <Content>
-        <Left>
-          <Help component="p" variant="caption">
-            Resources let you connect to your database or API. Once you add a
-            resource here, you can choose which app has access to which
-            resource.
-          </Help>
-        </Left>
+      {loading && renderProgress()}
+      {!loading && (
+        <Content>
+          <Left>
+            <Help component="p" variant="caption">
+              Resources let you connect to your database or API. Once you add a
+              resource here, you can choose which app has access to which
+              resource.
+            </Help>
+          </Left>
 
-        <Divider orientation="vertical" flexItem={true} sx={{ mr: 4 }} />
+          <Divider orientation="vertical" flexItem={true} sx={{ mr: 4 }} />
 
-        <Right>
-          <Formik initialValues={{}} onSubmit={handleSubmit}>
-            <PostgresForm />
-          </Formik>
-        </Right>
-      </Content>
+          <Right>{renderForms()}</Right>
+        </Content>
+      )}
     </Root>
   );
 };
