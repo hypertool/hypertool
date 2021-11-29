@@ -11,7 +11,7 @@ const typeDefs = gql`
 
 const resolvers = {
     Users: {
-        creator: async (parent, values, context) =>
+        login: async (parent, values, context) =>
             users.loginWithGoogle(context.request, parent.creator),
     },
 };

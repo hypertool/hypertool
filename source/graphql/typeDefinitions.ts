@@ -1,35 +1,43 @@
 const { constants } = require("../utils");
 
 const typeDefinitions = `
-    enum UserStatus {
-        ${constants.userStatuses.join("\n")}
-    }
-
     enum Gender {
         ${constants.genders.join("\n")}
-    }
-
-    enum Language {
-        ${constants.languageCodes.join("\n")}
     }
 
     enum Country {
         ${constants.countryCodes.join("\n")}
     }
 
+    enum UserStatus {
+        ${constants.userStatuses.join("\n")}
+    }
+
+    enum UserRole {
+        ${constants.userRoles.join("\n")}
+    }
+
     type User {
         id: ID!
         firstName: String!
         lastName: String!
-        about: String
+        description: String!
+        # Organization points to User directly, making each other mutually recursive.
+        # Therefore, we flatten the data structure here.
+        organization: ID!
         gender: Gender
-        countryCode: Country!
+        countryCode: Country
         pictureURL: String
         emailAddress: String!
         emailVerified: Boolean!
-        roles: [String!]!
-        birthday: String
+        birthday: Date
         status: UserStatus!
+        role: UserRole!
+        # Group points to User directly, making each other mutually recursive.
+        # Therefore, we flatten the data structure here.
+        groups: [ID!]!
+        createdAt: Date!
+        updatedAt: Date!
     }
 `;
 
