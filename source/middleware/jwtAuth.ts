@@ -1,6 +1,6 @@
-import { UserModel } from "../models";
-import { constants } from "../utils";
-import jwt from "jsonwebtoken";
+const { UserModel } = require("../models");
+const { constants } = require("../utils");
+const jwt = require("jsonwebtoken");
 
 const jwtAuth = async (request, response, next) => {
     const { authorization } = request.headers;

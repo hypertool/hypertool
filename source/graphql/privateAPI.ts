@@ -2,6 +2,8 @@ import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
 import { organizations, users, groups, apps, resources } from "../controllers";
 
+const jwtAuth = require('../middleware/jwtAuth');
+
 import {
     resourceTypes,
     resourceStatuses,
@@ -462,18 +464,19 @@ const resolvers = {
 };
 
 const attachRoutes = async (app: any) => {
-    const server = new ApolloServer({
-        typeDefs,
-        resolvers,
-        context: (context) => ({
-            request: context.req,
-        }),
-    });
-    await server.start();
-    server.applyMiddleware({
-        app,
-        path: "/graphql/v1/private",
-    });
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: (context) => ({
+      request: context.req,
+    }),
+  });
+  await server.start();
+  app.use("/graphql/v1/private", jwtAuth);
+  server.applyMiddleware({
+    app,
+    path: "/graphql/v1/private",
+  });
 };
 
 export { attachRoutes };
