@@ -13,7 +13,7 @@ import {
 import { styled } from "@mui/material/styles";
 import { Formik } from "formik";
 import { useParams } from "react-router";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
 
 import MySQLForm from "../new-resource/MySQLForm";
 import PostgresForm from "../new-resource/PostgresForm";
@@ -95,6 +95,7 @@ const GET_RESOURCE = gql`
         port
         databaseName
         databaseUserName
+        databasePassword
         connectUsingSSL
       }
       postgres {
@@ -102,6 +103,7 @@ const GET_RESOURCE = gql`
         port
         databaseName
         databaseUserName
+        databasePassword
         connectUsingSSL
       }
       mongodb {
@@ -109,11 +111,36 @@ const GET_RESOURCE = gql`
         port
         databaseName
         databaseUserName
+        databasePassword
         connectUsingSSL
       }
       bigquery {
         key
       }
+    }
+  }
+`;
+
+const UPDATE_RESOURCE = gql`
+  mutation UpdateResource(
+    $resourceId: ID!
+    $name: String!
+    $description: String
+    $mysql: MySQLConfigurationInput
+    $postgres: PostgresConfigurationInput
+    $mongodb: MongoDBConfigurationInput
+    $bigquery: BigQueryConfigurationInput
+  ) {
+    updateResource(
+      resourceId: $resourceId
+      name: $name
+      description: $description
+      mysql: $mysql
+      postgres: $postgres
+      mongodb: $mongodb
+      bigquery: $bigquery
+    ) {
+      id
     }
   }
 `;
@@ -137,6 +164,14 @@ const EditResource: FunctionComponent = (): ReactElement => {
     },
     notifyOnNetworkStatusChange: true,
   });
+  const [updateResource, { loading: updating, error: updateResourceError }] =
+    useMutation(UPDATE_RESOURCE);
+  const {
+    name = "<unavailable>",
+    description = "<unavailable>",
+    type = "<unavailable>",
+    ...others
+  } = data?.getResourceById ?? {};
 
   const handleCreateNew = () => {};
 
@@ -144,7 +179,21 @@ const EditResource: FunctionComponent = (): ReactElement => {
     refetch();
   }, [refetch]);
 
-  const handleSubmit = () => {};
+  const handleSubmit = useCallback(
+    (values: any) => {
+      const { resourceName: name, description, ...configuration } = values;
+      const { __typename, ...sanitizedConfiguration } = configuration;
+      updateResource({
+        variables: {
+          resourceId,
+          name,
+          description,
+          [type as string]: sanitizedConfiguration,
+        },
+      });
+    },
+    [resourceId, type, updateResource]
+  );
 
   const renderProgress = () => (
     <ProgressContainer>
@@ -153,89 +202,91 @@ const EditResource: FunctionComponent = (): ReactElement => {
   );
 
   const renderForms = () => {
-    const { name, description, type, ...others } = data.getResourceById;
     const Form = resourceFormByType[type];
 
-    return (
-      <Formik
-        initialValues={{
-          resourceName: name,
-          description,
-          /* Since the form expects flat data, spread the configuration. */
-          ...others[type]
-        }}
-        onSubmit={handleSubmit}
-      >
-        <Form />
-      </Formik>
-    );
+    return <Form />;
   };
 
+  if (loading) {
+    return renderProgress();
+  }
+
   return (
-    <Root>
-      <AppBar position="static" elevation={1}>
-        <WorkspaceToolbar>
-          <Title>Edit Resource</Title>
-          <ActionContainer>
-            <Button
-              size="small"
-              onClick={handleCreateNew}
-              color="inherit"
-              sx={{ mr: 2 }}
-              disabled={loading}
-            >
-              <ActionIcon fontSize="small">cancel</ActionIcon>
-              Disable
-            </Button>
-            <Button
-              size="small"
-              color="inherit"
-              onClick={handleCreateNew}
-              sx={{ mr: 2 }}
-              disabled={loading}
-            >
-              <ActionIcon fontSize="small">delete</ActionIcon>
-              Delete
-            </Button>
-            <Button
-              size="small"
-              onClick={handleRefresh}
-              color="inherit"
-              sx={{ mr: 2 }}
-              disabled={loading}
-            >
-              <ActionIcon fontSize="small">refresh</ActionIcon>
-              Refresh
-            </Button>
-            <Button
-              size="small"
-              onClick={handleCreateNew}
-              color="inherit"
-              disabled={loading}
-            >
-              <ActionIcon fontSize="small">save</ActionIcon>
-              Save
-            </Button>
-          </ActionContainer>
-        </WorkspaceToolbar>
-      </AppBar>
-      {loading && renderProgress()}
-      {!loading && (
-        <Content>
-          <Left>
-            <Help component="p" variant="caption">
-              Resources let you connect to your database or API. Once you add a
-              resource here, you can choose which app has access to which
-              resource.
-            </Help>
-          </Left>
+    <Formik
+      initialValues={{
+        resourceName: name,
+        description,
+        /* Since the form expects flat data, spread the configuration. */
+        ...others[type],
+      }}
+      onSubmit={handleSubmit}
+    >
+      {(formik) => (
+        <Root>
+          <AppBar position="static" elevation={1}>
+            <WorkspaceToolbar>
+              <Title>Edit Resource</Title>
+              <ActionContainer>
+                <Button
+                  size="small"
+                  onClick={handleCreateNew}
+                  color="inherit"
+                  sx={{ mr: 2 }}
+                  disabled={loading}
+                >
+                  <ActionIcon fontSize="small">cancel</ActionIcon>
+                  Disable
+                </Button>
+                <Button
+                  size="small"
+                  color="inherit"
+                  onClick={handleCreateNew}
+                  sx={{ mr: 2 }}
+                  disabled={loading}
+                >
+                  <ActionIcon fontSize="small">delete</ActionIcon>
+                  Delete
+                </Button>
+                <Button
+                  size="small"
+                  onClick={handleRefresh}
+                  color="inherit"
+                  sx={{ mr: 2 }}
+                  disabled={loading}
+                >
+                  <ActionIcon fontSize="small">refresh</ActionIcon>
+                  Refresh
+                </Button>
+                <Button
+                  size="small"
+                  onClick={() => formik.submitForm()}
+                  color="inherit"
+                  disabled={loading}
+                >
+                  <ActionIcon fontSize="small">save</ActionIcon>
+                  Save
+                </Button>
+              </ActionContainer>
+            </WorkspaceToolbar>
+          </AppBar>
+          {!loading && (
+            <Content>
+              <Left>
+                <Help component="p" variant="caption">
+                  Resources let you connect to your database or API. Once you
+                  add a resource here, you can choose which app has access to
+                  which resource.
+                </Help>
+              </Left>
 
-          <Divider orientation="vertical" flexItem={true} sx={{ mr: 4 }} />
+              <Divider orientation="vertical" flexItem={true} sx={{ mr: 4 }} />
 
-          <Right>{renderForms()}</Right>
-        </Content>
+              <Right>{renderForms()}</Right>
+            </Content>
+          )}
+        </Root>
       )}
-    </Root>
+    </Formik>
   );
 };
 
