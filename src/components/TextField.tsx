@@ -36,6 +36,7 @@ const TextField = (props: Props) => {
       onChange={formik.handleChange}
       error={Boolean(error)}
       {...otherProps}
+      value={(formik.values as any)[name]}
     />
   );
 };
