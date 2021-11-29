@@ -15,6 +15,7 @@
         "cors": "^2.8.5",
         "dotenv": "^10.0.0",
         "express": "^4.17.1",
+        "google-auth-library": "^7.10.2",
         "graphql": "^15.0.0",
         "iso-language-codes": "^1.1.0",
         "joi": "^17.4.2",
