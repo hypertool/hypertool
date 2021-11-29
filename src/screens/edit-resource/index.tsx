@@ -10,6 +10,9 @@ import {
   Icon,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Formik } from "formik";
+
+import PostgresForm from "../new-resource/PostgresForm";
 
 const Title = styled(Typography)(({ theme }) => ({}));
 
@@ -38,6 +41,8 @@ const Left = styled("div")(({ theme }) => ({
 
 const Right = styled("div")(({ theme }) => ({
   width: "100%",
+  display: "flex",
+  flexDirection: "column",
 }));
 
 const Help = styled(Typography)(({ theme }) => ({
@@ -63,11 +68,13 @@ const Content = styled(Container)(({ theme }) => ({
 const EditResource: FunctionComponent = (): ReactElement => {
   const handleCreateNew = () => {};
 
+  const handleSubmit = () => {};
+
   return (
     <Root>
       <AppBar position="static" elevation={1}>
         <WorkspaceToolbar>
-          <Title>Resource Library</Title>
+          <Title>Edit Resource</Title>
           <ActionContainer>
             <Button
               size="small"
@@ -114,7 +121,11 @@ const EditResource: FunctionComponent = (): ReactElement => {
 
         <Divider orientation="vertical" flexItem={true} sx={{ mr: 4 }} />
 
-        <Right></Right>
+        <Right>
+          <Formik initialValues={{}} onSubmit={handleSubmit}>
+            <PostgresForm />
+          </Formik>
+        </Right>
       </Content>
     </Root>
   );
