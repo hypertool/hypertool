@@ -251,8 +251,4 @@ const remove = async (
     return { success: true };
 };
 
-// changeRole (userId, role) -> Make user Owner/Editor/Viewer
-// addToGroup (userId, groupId)
-// removeFromGroup (userId, groupId)
-
 export { create, list, listByIds, getById, update, remove };

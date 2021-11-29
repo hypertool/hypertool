@@ -21,7 +21,9 @@
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^6.0.12",
         "mongoose-paginate-v2": "^1.4.2",
-        "morgan": "^1.10.0"
+        "morgan": "^1.10.0",
+        "passport": "^0.5.0",
+        "passport-google-token": "^0.1.2"
     },
     "devDependencies": {
         "@types/node": "^16.11.7",

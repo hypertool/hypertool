@@ -1,40 +1,28 @@
-const httpStatus = require("../utils/constants");
+import { UserModel } from "../models";
+import { constants } from "../utils";
+import jwt from "jsonwebtoken";
 
-const jwtAuth = (request, response, next) => {
-
+const jwtAuth = async (request, response, next) => {
     const { authorization } = request.headers;
-
     if (!authorization) {
-        response.status(httpStatus.FORBIDDEN).json({
+        response.status(constants.httpStatuses.FORBIDDEN).json({
             message: "Please provide an authorization token.",
         });
         return;
     }
 
     const token = authorization.split(" ")[1];
-    // verifyToken(token)
-    //     .then((payload) => {
-    //         const {
-    //             given_name: firstName,
-    //             family_name: lastName,
-    //             picture: pictureURL,
-    //             email_verified: emailVerified,
-    //             email: emailAddress,
-    //         } = payload;
-    //         request.payload = {
-    //             firstName,
-    //             lastName,
-    //             pictureURL,
-    //             emailVerified,
-    //             emailAddress,
-    //         };
-    //         next();
-    //     })
-    //     .catch(() => {
-    //         response.status(httpStatus.FORBIDDEN).json({
-    //             message: "The specified authorization token is invalid.",
-    //         });
-    //     });
+
+    try {
+        const { emailAddress } = jwt.verify(token, process.env.TOKEN_KEY);
+        const user = await UserModel.findOne({
+            emailAddress,
+        }).exec();
+        request.user = user;
+      } catch (err) {
+        return response.status(401).send("Invalid Token");
+    }
+    return next();
 };
 
 module.exports = jwtAuth;
