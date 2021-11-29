@@ -125,6 +125,7 @@ const EditResource: FunctionComponent = (): ReactElement => {
               onClick={handleCreateNew}
               color="inherit"
               sx={{ mr: 2 }}
+              disabled={loading}
             >
               <ActionIcon fontSize="small">cancel</ActionIcon>
               Disable
@@ -134,6 +135,7 @@ const EditResource: FunctionComponent = (): ReactElement => {
               color="inherit"
               onClick={handleCreateNew}
               sx={{ mr: 2 }}
+              disabled={loading}
             >
               <ActionIcon fontSize="small">delete</ActionIcon>
               Delete
@@ -143,11 +145,17 @@ const EditResource: FunctionComponent = (): ReactElement => {
               onClick={handleCreateNew}
               color="inherit"
               sx={{ mr: 2 }}
+              disabled={loading}
             >
               <ActionIcon fontSize="small">refresh</ActionIcon>
               Refresh
             </Button>
-            <Button size="small" onClick={handleCreateNew} color="inherit">
+            <Button
+              size="small"
+              onClick={handleCreateNew}
+              color="inherit"
+              disabled={loading}
+            >
               <ActionIcon fontSize="small">save</ActionIcon>
               Save
             </Button>
