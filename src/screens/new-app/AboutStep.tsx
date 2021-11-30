@@ -1,13 +1,8 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { SelectChangeEvent, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 
-import { useState, useCallback } from "react";
 import {
   TextField,
-  Select,
-  FormControl,
-  InputLabel,
-  MenuItem,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -38,19 +33,19 @@ const DescriptionTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 600,
 })) as any;
 
-const FolderFormControl = styled(FormControl)(({ theme }) => ({
-  marginTop: theme.spacing(3),
-  maxWidth: 400,
-}));
+// const FolderFormControl = styled(FormControl)(({ theme }) => ({
+//   marginTop: theme.spacing(3),
+//   maxWidth: 400,
+// }));
 
-const dummyFolders = ["eCommerce", "content", "human-resource", "tech"];
+// const dummyFolders = ["eCommerce", "content", "human-resource", "tech"];
 
 const AboutStep: FunctionComponent = (): ReactElement => {
-  const [folder, setFolder] = useState("root");
+  // const [folder, setFolder] = useState("root");
 
-  const handleFolderChange = useCallback((event: SelectChangeEvent) => {
-    setFolder(event.target.value);
-  }, []);
+  // const handleFolderChange = useCallback((event: SelectChangeEvent) => {
+  //   setFolder(event.target.value);
+  // }, []);
 
   return (
     <Root>
@@ -113,7 +108,7 @@ const AboutStep: FunctionComponent = (): ReactElement => {
             </Typography>
           }
         />
-        <FolderFormControl fullWidth={true}>
+        {/* <FolderFormControl fullWidth={true}>
           <InputLabel id="folder-label">Folder</InputLabel>
           <Select
             labelId="folder-label"
@@ -129,7 +124,7 @@ const AboutStep: FunctionComponent = (): ReactElement => {
               <MenuItem value={folder}>{folder}</MenuItem>
             ))}
           </Select>
-        </FolderFormControl>
+        </FolderFormControl> */}
       </Form>
     </Root>
   );
