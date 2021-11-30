@@ -2,6 +2,7 @@ import type { FunctionComponent, ReactElement } from "react";
 
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
+import { gql, useQuery } from "@apollo/client";
 
 const Root = styled("div")(({ theme }) => ({
   width: "100%",
@@ -14,7 +15,6 @@ const Root = styled("div")(({ theme }) => ({
 const columns: GridColDef[] = [
   { field: "name", headerName: "Name", width: 256 },
   { field: "type", headerName: "Type", width: 200 },
-  { field: "createdAt", headerName: "Created At", width: 200 },
 ];
 
 const rows = [
@@ -34,10 +34,30 @@ interface Props {
   selectable: boolean;
 }
 
+const GET_RESOURCES = gql`
+  query GetResources($page: Int, $limit: Int) {
+    getResources(page: $page, limit: $limit) {
+      totalPages
+      records {
+        id
+        name
+        type
+      }
+    }
+  }
+`;
+
 const ResourcesTable: FunctionComponent<Props> = (
   props: Props
 ): ReactElement => {
   const { selectable } = props;
+  const { loading, error, data } = useQuery(GET_RESOURCES, {
+    variables: {
+      page: 0,
+      limit: 20,
+    },
+  });
+
   return (
     <Root>
       <DataGrid
