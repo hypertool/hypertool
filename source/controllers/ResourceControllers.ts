@@ -55,10 +55,6 @@ const filterSchema = joi.object({
 const updateSchema = joi.object({
     name: joi.string().max(256).allow(""),
     description: joi.string().max(512).allow(""),
-    type: joi
-        .string()
-        .valid(...constants.resourceTypes)
-        .required(),
     mysql: joi.object({
         host: joi.string().required(),
         port: joi.number().integer().required(),
@@ -89,8 +85,8 @@ const updateSchema = joi.object({
 });
 
 const toExternal = (resource: Resource): ExternalResource => {
-    const { id, name, description, type, status, createdAt, updatedAt } =
-        resource;
+    const { id, _id, name, description, type, status, createdAt, updatedAt } =
+        resource as any;
     let sanitizedConfiguration = null;
     switch (type) {
         case "mysql":
@@ -101,6 +97,7 @@ const toExternal = (resource: Resource): ExternalResource => {
                 port,
                 databaseName,
                 databaseUserName,
+                databasePassword,
                 connectUsingSSL,
             } = resource[type];
             sanitizedConfiguration = {
@@ -108,6 +105,7 @@ const toExternal = (resource: Resource): ExternalResource => {
                 port,
                 databaseName,
                 databaseUserName,
+                databasePassword,
                 connectUsingSSL,
             };
             break;
@@ -123,16 +121,17 @@ const toExternal = (resource: Resource): ExternalResource => {
         }
     }
 
-    return {
-        id,
+    const result = {
+        id: id || _id.toString(),
         name,
         description,
         type,
-        configuration: sanitizedConfiguration,
         status,
         createdAt,
         updatedAt,
     };
+    result[type] = sanitizedConfiguration;
+    return result as ExternalResource;
 };
 
 const create = async (context, attributes): Promise<ExternalResource> => {

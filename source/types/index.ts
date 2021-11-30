@@ -47,11 +47,10 @@ export interface Resource {
     name: string;
     description: string;
     type: typeof resourceTypes[number];
-    configuration:
-        | MySQLConfiguration
-        | PostgresConfiguration
-        | MongoDBConfiguration
-        | BigQueryConfiguration;
+    mysql: MySQLConfiguration | undefined;
+    postgres: PostgresConfiguration | undefined;
+    mongodb: MongoDBConfiguration | undefined;
+    bigquery: BigQueryConfiguration | undefined;
     status: typeof resourceStatuses[number];
     createdAt: Date;
     updatedAt: Date;
@@ -62,6 +61,7 @@ export interface ExternalMySQLConfiguration {
     port: number;
     databaseName: string;
     databaseUserName: string;
+    databasePassword: string;
     connectUsingSSL: boolean;
 }
 
@@ -70,6 +70,7 @@ export interface ExternalPostgresConfiguration {
     port: number;
     databaseName: string;
     databaseUserName: string;
+    databasePassword: string;
     connectUsingSSL: boolean;
 }
 
@@ -78,6 +79,7 @@ export interface ExternalMongoDBConfiguration {
     port: number;
     databaseName: string;
     databaseUserName: string;
+    databasePassword: string;
     connectUsingSSL: boolean;
 }
 
@@ -90,11 +92,10 @@ export interface ExternalResource {
     name: string;
     description: string;
     type: string;
-    configuration:
-        | ExternalMySQLConfiguration
-        | ExternalPostgresConfiguration
-        | ExternalMongoDBConfiguration
-        | ExternalBigQueryConfiguration;
+    mysql: ExternalMySQLConfiguration | undefined;
+    postgres: ExternalPostgresConfiguration | undefined;
+    mongodb: ExternalMongoDBConfiguration | undefined;
+    bigquery: ExternalBigQueryConfiguration | undefined;
     status: string;
     createdAt: Date;
     updatedAt: Date;
