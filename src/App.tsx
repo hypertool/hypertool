@@ -1,6 +1,6 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 
 import {
@@ -35,6 +35,7 @@ const App: FunctionComponent = (): ReactElement => {
             element={<EditResource />}
           />
         </Route>
+        <Route index={true} element={<Navigate to="/apps" />} />
       </Routes>
     </Root>
   );
