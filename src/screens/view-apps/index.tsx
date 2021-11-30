@@ -71,9 +71,10 @@ const Content = styled(Container)(({ theme }) => ({
 const Apps = styled("div")(({ theme }) => ({
   width: "100%",
   display: "flex",
-  flexDirection: "column",
+  flexDirection: "row",
   alignItems: "center",
-  justifyContent: "center",
+  justifyContent: "flex-start",
+  flexWrap: "wrap",
 }));
 
 interface Props {}
