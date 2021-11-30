@@ -19,6 +19,7 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import { Formik, FormikHelpers } from "formik";
+import * as yup from "yup";
 
 import AboutStep from "./AboutStep";
 import ResourcesStep from "./ResourcesStep";
@@ -129,6 +130,16 @@ const initialValues: FormValues = {
   description: "",
 };
 
+const validationSchema = yup.object({
+  name: yup
+    .string()
+    .max(128, "Name should be 128 characters or less")
+    .required("Name is required"),
+  description: yup
+    .string()
+    .max(512, "Description should be 512 characters or less"),
+});
+
 const NewAppStepper: FunctionComponent = (): ReactElement => {
   const [activeStep, setActiveStep] = useState(0);
   const [stepTuple, setStepTuple] = useState<Steps>(defaultSteps);
@@ -196,7 +207,11 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
 
   return (
     <div>
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
+      >
         <>
           <Hidden lgDown={true}>
             <Stepper activeStep={activeStep}>{renderStepperItems()}</Stepper>
