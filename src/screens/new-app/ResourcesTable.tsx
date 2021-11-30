@@ -17,19 +17,6 @@ const columns: GridColDef[] = [
   { field: "type", headerName: "Type", width: 200 },
 ];
 
-const rows = [
-  { id: 1, name: "ecommerce", type: "mysql", createdAt: "11-17-2021" },
-  { id: 2, name: "content", type: "mongodb", createdAt: "11-17-2021" },
-  { id: 3, name: "ecommerce_data", type: "bigquery", createdAt: "11-17-2021" },
-  { id: 4, name: "users", type: "graphql_api", createdAt: "10-17-2021" },
-  { id: 5, name: "vindb", type: "rest_api", createdAt: "9-8-2021" },
-  { id: 6, name: "ecommerce", type: "mysql", createdAt: "11-17-2021" },
-  { id: 7, name: "content", type: "mongodb", createdAt: "11-17-2021" },
-  { id: 8, name: "ecommerce_data", type: "bigquery", createdAt: "11-17-2021" },
-  { id: 9, name: "users", type: "graphql_api", createdAt: "10-17-2021" },
-  { id: 10, name: "vindb", type: "rest_api", createdAt: "9-8-2021" },
-];
-
 interface Props {
   selectable: boolean;
 }
@@ -61,8 +48,6 @@ const ResourcesTable: FunctionComponent<Props> = (
   if (loading) {
     return <div>Loading...</div>;
   }
-
-  console.log(data.getResources);
 
   return (
     <Root>
