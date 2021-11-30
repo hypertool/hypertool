@@ -1,10 +1,9 @@
 import type { FunctionComponent, ReactElement } from "react";
 import { Typography } from "@mui/material";
 
-import {
-  TextField,
-} from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import { TextField } from "../../components";
 
 const Root = styled("section")(({ theme }) => ({
   display: "flex",
@@ -52,12 +51,13 @@ const AboutStep: FunctionComponent = (): ReactElement => {
       <Form>
         <NameTextField
           required={true}
+          name="name"
           id="name"
           label="Name"
           size="small"
           variant="outlined"
           fullWidth={true}
-          helperText={
+          help={
             <Typography
               variant="caption"
               style={{
@@ -84,6 +84,7 @@ const AboutStep: FunctionComponent = (): ReactElement => {
           }
         />
         <DescriptionTextField
+          name="description"
           id="description"
           label="Description"
           size="small"
@@ -91,7 +92,7 @@ const AboutStep: FunctionComponent = (): ReactElement => {
           multiline={true}
           rows={5}
           fullWidth={true}
-          helperText={
+          help={
             <Typography
               variant="caption"
               style={{
