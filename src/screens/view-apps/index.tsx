@@ -17,6 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useNavigate } from "react-router";
 
 import AppCard from "./AppCard";
 import AppFilter from "./AppFilter";
@@ -119,8 +120,11 @@ const filters = [
 
 const ViewApps: FunctionComponent<Props> = (): ReactElement => {
   const [filter, setFilter] = useState<string>(filters[0].url);
+  const navigate = useNavigate();
 
-  const handleCreateNew = useCallback(() => {}, []);
+  const handleCreateNew = useCallback(() => {
+    navigate("/apps/new");
+  }, [navigate]);
 
   const handleFilterChange = useCallback((event) => {
     setFilter(event.target.value);
