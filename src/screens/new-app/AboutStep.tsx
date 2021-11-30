@@ -1,7 +1,10 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { Typography } from "@mui/material";
 
+import { useMemo } from "react";
+import { Typography } from "@mui/material";
+import { useFormikContext } from "formik";
 import { styled } from "@mui/material/styles";
+import slugify from "slugify";
 
 import { TextField } from "../../components";
 
@@ -39,12 +42,28 @@ const DescriptionTextField = styled(TextField)(({ theme }) => ({
 
 // const dummyFolders = ["eCommerce", "content", "human-resource", "tech"];
 
+interface FormValues {
+  name: string;
+}
+
 const AboutStep: FunctionComponent = (): ReactElement => {
+  const formik = useFormikContext<FormValues>();
   // const [folder, setFolder] = useState("root");
 
   // const handleFolderChange = useCallback((event: SelectChangeEvent) => {
   //   setFolder(event.target.value);
   // }, []);
+
+  const slug = useMemo(
+    () =>
+      slugify(formik.values.name || "", {
+        replacement: "-",
+        lower: true,
+        strict: true,
+        trim: true,
+      }),
+    [formik.values.name]
+  );
 
   return (
     <Root>
@@ -70,16 +89,20 @@ const AboutStep: FunctionComponent = (): ReactElement => {
               }}
             >
               Good app names are short and memorable.
-              <br />
-              Your app will be hosted at:
-              <a
-                href="https://trell.hypertool.io/thumbnail-generator"
-                target="_blank"
-                rel="noreferrer"
-                style={{ color: "white" }}
-              >
-                https://trell.hypertool.io/thumbnail-generator
-              </a>
+              {slug && (
+                <>
+                  <br />
+                  Your app will be hosted at:
+                  <a
+                    href="https://trell.hypertool.io/thumbnail-generator"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: "white" }}
+                  >
+                    https://trell.hypertool.io/{slug}
+                  </a>
+                </>
+              )}
             </Typography>
           }
         />
