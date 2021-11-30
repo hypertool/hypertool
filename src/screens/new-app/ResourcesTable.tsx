@@ -58,10 +58,16 @@ const ResourcesTable: FunctionComponent<Props> = (
     },
   });
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  console.log(data.getResources);
+
   return (
     <Root>
       <DataGrid
-        rows={rows}
+        rows={data.getResources.records}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10]}
