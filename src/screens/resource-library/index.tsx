@@ -14,6 +14,8 @@ import {
 import { useNavigate } from "react-router";
 import { gql, useQuery } from "@apollo/client";
 
+import type { Resource } from "../../types";
+
 import ResourcesTable from "./ResourcesTable";
 
 const Root = styled("section")(({ theme }) => ({
@@ -79,6 +81,13 @@ const ResourceLibrary: FunctionComponent = (): ReactElement => {
 
   const { records = [], totalPages = 0 } = data?.getResources || {};
 
+  const handleRowClick = useCallback(
+    (resource: Resource) => {
+      navigate(`/resources/${resource.id}/edit`);
+    },
+    [navigate]
+  );
+
   return (
     <Root>
       <AppBar position="static" elevation={1}>
@@ -105,7 +114,11 @@ const ResourceLibrary: FunctionComponent = (): ReactElement => {
         </WorkspaceToolbar>
       </AppBar>
       <TableContainer>
-        <ResourcesTable selectable={false} resources={records} />
+        <ResourcesTable
+          selectable={false}
+          resources={records}
+          onRowClick={handleRowClick}
+        />
       </TableContainer>
     </Root>
   );

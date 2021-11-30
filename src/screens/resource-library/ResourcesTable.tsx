@@ -1,5 +1,7 @@
 import type { FunctionComponent, ReactElement } from "react";
+import type { GridRowParams } from "@mui/x-data-grid";
 
+import { useCallback } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 
@@ -21,98 +23,24 @@ const columns: GridColDef[] = [
   { field: "createdBy", headerName: "Created By", width: 400 },
 ];
 
-const rows = [
-  {
-    id: 1,
-    name: "ecommerce",
-    type: "mysql",
-    createdAt: "Tuesday, May 19th, 2021",
-    status: "enabled",
-    createdBy: "Samuel Rowe",
-  },
-  {
-    id: 2,
-    name: "content",
-    type: "mongodb",
-    createdAt: "Tuesday, May 19th, 2021",
-    status: "enabled",
-    createdBy: "Samuel Rowe",
-  },
-  {
-    id: 3,
-    name: "ecommerce_data",
-    type: "bigquery",
-    createdAt: "Tuesday, May 19th, 2021",
-    status: "enabled",
-    createdBy: "Samuel Rowe",
-  },
-  {
-    id: 4,
-    name: "users",
-    type: "graphql_api",
-    createdAt: "Tuesday, May 19th, 2021",
-    status: "enabled",
-    createdBy: "Samuel Rowe",
-  },
-  {
-    id: 5,
-    name: "vindb",
-    type: "rest_api",
-    createdAt: "Tuesday, May 19th, 2021",
-    status: "enabled",
-    createdBy: "Samuel Rowe",
-  },
-  {
-    id: 6,
-    name: "ecommerce",
-    type: "mysql",
-    createdAt: "Tuesday, May 19th, 2021",
-    status: "enabled",
-    createdBy: "Samuel Rowe",
-  },
-  {
-    id: 7,
-    name: "content",
-    type: "mongodb",
-    createdAt: "Tuesday, May 19th, 2021",
-    status: "enabled",
-    createdBy: "Samuel Rowe",
-  },
-  {
-    id: 8,
-    name: "ecommerce_data",
-    type: "bigquery",
-    createdAt: "Tuesday, May 19th, 2021",
-    status: "enabled",
-    createdBy: "Samuel Rowe",
-  },
-  {
-    id: 9,
-    name: "users",
-    type: "graphql_api",
-    createdAt: "Tuesday, May 19th, 2021",
-    status: "enabled",
-    createdBy: "Samuel Rowe",
-  },
-  {
-    id: 10,
-    name: "vindb",
-    type: "rest_api",
-    createdAt: "Tuesday, May 19th, 2021",
-    status: "disabled",
-    createdBy: "Samuel Rowe",
-  },
-];
-
 interface Props {
   selectable: boolean;
   resources: Resource[];
+  onRowClick: (resource: Resource) => void;
 }
 
 const ResourcesTable: FunctionComponent<Props> = (
   props: Props
 ): ReactElement => {
-  const { selectable, resources } = props;
+  const { selectable, resources, onRowClick } = props;
+
+  const handleRowClick = useCallback(
+    (params: GridRowParams) => {
+      onRowClick(params.row as Resource);
+    },
+    [onRowClick]
+  );
+
   return (
     <Root>
       <DataGrid
@@ -121,6 +49,7 @@ const ResourcesTable: FunctionComponent<Props> = (
         pageSize={10}
         rowsPerPageOptions={[10]}
         checkboxSelection={selectable}
+        onRowClick={handleRowClick}
       />
     </Root>
   );
