@@ -3,6 +3,16 @@ import type { FunctionComponent, ReactElement } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 import { gql, useQuery } from "@apollo/client";
+import { CircularProgress } from "@mui/material";
+
+const ProgressContainer = styled("div")(({ theme }) => ({
+  width: "100%",
+  height: "calc(100vh - 264px)",
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+}));
 
 const Root = styled("div")(({ theme }) => ({
   width: "100%",
@@ -46,7 +56,11 @@ const ResourcesTable: FunctionComponent<Props> = (
   });
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <ProgressContainer>
+        <CircularProgress size="28px" />
+      </ProgressContainer>
+    );
   }
 
   return (
