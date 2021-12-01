@@ -205,6 +205,16 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
 
   const complete = activeStep === steps.length;
 
+  const isStepValuesValid = (step: number, context: any) => {
+    if (step === 0) {
+      return (
+        context.values.name &&
+        !context.errors.name &&
+        !context.errors.description
+      );
+    }
+  };
+
   return (
     <div>
       <Formik
@@ -212,126 +222,71 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
       >
-        <>
-          <Hidden lgDown={true}>
-            <Stepper activeStep={activeStep}>{renderStepperItems()}</Stepper>
-          </Hidden>
-          <Hidden lgUp={true}>
-            <Paper
-              square={true}
-              elevation={2}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                height: 50,
-                p: 2,
-                backgroundColor: "#000000",
-              }}
+        {(formik) => (
+          <>
+            <Hidden lgDown={true}>
+              <Stepper activeStep={activeStep}>{renderStepperItems()}</Stepper>
+            </Hidden>
+
+            <Hidden lgUp={true}>
+              <Paper
+                square={true}
+                elevation={2}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  height: 50,
+                  p: 2,
+                  backgroundColor: "#000000",
+                }}
+              >
+                <Typography>{steps[activeStep].title}</Typography>
+              </Paper>
+            </Hidden>
+
+            <Wrap
+              when={smallerThanLg}
+              wrapper={Container}
+              style={{ height: "calc(100vh - 156px)" }}
             >
-              <Typography>{steps[activeStep].title}</Typography>
-            </Paper>
-          </Hidden>
-
-          <Wrap
-            when={smallerThanLg}
-            wrapper={Container}
-            style={{ height: "calc(100vh - 156px)" }}
-          >
-            <Wrap when={!smallerThanLg} wrapper={StepContainer}>
-              <>
-                {complete && <StepperComplete />}
-                {Component && <Component />}
-              </>
+              <Wrap when={!smallerThanLg} wrapper={StepContainer}>
+                <>
+                  {complete && <StepperComplete />}
+                  {Component && <Component />}
+                </>
+              </Wrap>
             </Wrap>
-          </Wrap>
 
-          {!complete && (
-            <>
-              <Hidden lgDown={true}>
-                <ActionContainer>
-                  <LeftActionContainer>
-                    {activeStep > 0 && (
-                      <StepperAction
-                        color="inherit"
-                        disabled={activeStep === 0}
-                        onClick={handleBack}
-                        sx={{ mr: 1 }}
-                        variant="contained"
-                        size="small"
-                      >
-                        {theme.direction === "rtl" ? (
-                          <KeyboardArrowRight />
-                        ) : (
-                          <KeyboardArrowLeft />
-                        )}
-                        Back
-                      </StepperAction>
-                    )}
-                    {steps[activeStep].optional && (
-                      <StepperAction
-                        color="inherit"
-                        onClick={handleSkip}
-                        variant="contained"
-                        size="small"
-                        sx={{ mr: 1 }}
-                      >
-                        Skip
-                      </StepperAction>
-                    )}
-                  </LeftActionContainer>
-                  {activeStep < steps.length - 1 && (
-                    <StepperAction
-                      onClick={handleNext}
-                      variant="contained"
-                      size="small"
-                    >
-                      Next
-                      {theme.direction === "rtl" ? (
-                        <KeyboardArrowLeft />
-                      ) : (
-                        <KeyboardArrowRight />
+            {!complete && (
+              <>
+                <Hidden lgDown={true}>
+                  <ActionContainer>
+                    <LeftActionContainer>
+                      {activeStep > 0 && (
+                        <StepperAction
+                          color="inherit"
+                          disabled={activeStep === 0}
+                          onClick={handleBack}
+                          sx={{ mr: 1 }}
+                          variant="contained"
+                          size="small"
+                        >
+                          {theme.direction === "rtl" ? (
+                            <KeyboardArrowRight />
+                          ) : (
+                            <KeyboardArrowLeft />
+                          )}
+                          Back
+                        </StepperAction>
                       )}
-                    </StepperAction>
-                  )}
-                  {activeStep + 1 === steps.length && (
-                    <CreateAction
-                      onClick={handleNext}
-                      variant="contained"
-                      size="small"
-                    >
-                      Create App
-                      <CheckCircle fontSize="small" sx={{ ml: 1 }} />
-                    </CreateAction>
-                  )}
-                </ActionContainer>
-              </Hidden>
-              <Hidden lgUp={true}>
-                <Paper
-                  square
-                  elevation={1}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    height: 50,
-                    bgcolor: "background.default",
-                    padding: 0,
-                  }}
-                >
-                  <MobileStepper
-                    variant="text"
-                    steps={steps.length}
-                    position="static"
-                    activeStep={activeStep}
-                    sx={{
-                      width: "100%",
-                      backgroundColor: theme.palette.background.paper,
-                      // marginTop: theme.spacing(11)
-                    }}
-                    nextButton={
-                      <Button
-                        size="small"
+                    </LeftActionContainer>
+
+                    {activeStep < steps.length - 1 && (
+                      <StepperAction
                         onClick={handleNext}
-                        disabled={activeStep === steps.length - 1}
+                        variant="contained"
+                        size="small"
+                        disabled={!isStepValuesValid(activeStep, formik)}
                       >
                         Next
                         {theme.direction === "rtl" ? (
@@ -339,28 +294,79 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                         ) : (
                           <KeyboardArrowRight />
                         )}
-                      </Button>
-                    }
-                    backButton={
-                      <Button
+                      </StepperAction>
+                    )}
+
+                    {activeStep + 1 === steps.length && (
+                      <CreateAction
+                        onClick={handleNext}
+                        variant="contained"
                         size="small"
-                        onClick={handleBack}
-                        disabled={activeStep === 0}
                       >
-                        {theme.direction === "rtl" ? (
-                          <KeyboardArrowRight />
-                        ) : (
-                          <KeyboardArrowLeft />
-                        )}
-                        Back
-                      </Button>
-                    }
-                  />
-                </Paper>
-              </Hidden>
-            </>
-          )}
-        </>
+                        Create App
+                        <CheckCircle fontSize="small" sx={{ ml: 1 }} />
+                      </CreateAction>
+                    )}
+                  </ActionContainer>
+                </Hidden>
+
+                <Hidden lgUp={true}>
+                  <Paper
+                    square
+                    elevation={1}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      height: 50,
+                      bgcolor: "background.default",
+                      padding: 0,
+                    }}
+                  >
+                    <MobileStepper
+                      variant="text"
+                      steps={steps.length}
+                      position="static"
+                      activeStep={activeStep}
+                      sx={{
+                        width: "100%",
+                        backgroundColor: theme.palette.background.paper,
+                        // marginTop: theme.spacing(11)
+                      }}
+                      nextButton={
+                        <Button
+                          size="small"
+                          onClick={handleNext}
+                          disabled={activeStep === steps.length - 1}
+                        >
+                          Next
+                          {theme.direction === "rtl" ? (
+                            <KeyboardArrowLeft />
+                          ) : (
+                            <KeyboardArrowRight />
+                          )}
+                        </Button>
+                      }
+                      backButton={
+                        <Button
+                          size="small"
+                          onClick={handleBack}
+                          disabled={activeStep === 0}
+                        >
+                          {theme.direction === "rtl" ? (
+                            <KeyboardArrowRight />
+                          ) : (
+                            <KeyboardArrowLeft />
+                          )}
+                          Back
+                        </Button>
+                      }
+                    />
+                  </Paper>
+                </Hidden>
+              </>
+            )}
+          </>
+        )}
       </Formik>
     </div>
   );
