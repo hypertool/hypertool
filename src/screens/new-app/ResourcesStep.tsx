@@ -13,10 +13,22 @@ const Root = styled("section")(({ theme }) => ({
   paddingBottom: theme.spacing(4),
 }));
 
-const ResourcesStep: FunctionComponent = (): ReactElement => {
+interface Props {
+  onResourcesSelected: (resources: string[]) => void;
+  selectedResources: string[];
+}
+
+const ResourcesStep: FunctionComponent<Props> = (
+  props: Props
+): ReactElement => {
+  const { onResourcesSelected, selectedResources } = props;
   return (
     <Root>
-      <ResourcesTable selectable={true} />
+      <ResourcesTable
+        selectable={true}
+        onResourcesSelected={onResourcesSelected}
+        selectedResources={selectedResources}
+      />
     </Root>
   );
 };

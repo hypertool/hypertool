@@ -16,7 +16,8 @@ import { styled } from "@mui/material/styles";
 import AppOptionsMenu from "./AppOptionsMenu";
 
 const Card = styled(MuiCard)(({ theme }) => ({
-  width: "100%",
+  width: `calc(50% - ${theme.spacing(2)})`,
+  marginRight: theme.spacing(2),
   marginBottom: theme.spacing(2),
 }));
 

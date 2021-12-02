@@ -8,7 +8,7 @@ import {
 import { styled } from "@mui/material/styles";
 
 import { Wrap } from "../../components";
-import Stepper from "./Stepper";
+import NewAppStepper from "./NewAppStepper";
 
 const Container = styled(MuiContainer)(({ theme }) => ({
   paddingTop: theme.spacing(4),
@@ -20,7 +20,7 @@ const NewApp: FunctionComponent = (): ReactElement => {
   const matches = useMediaQuery(theme.breakpoints.up("lg"));
   return (
     <Wrap when={matches} wrapper={Container}>
-      <Stepper />
+      <NewAppStepper />
     </Wrap>
   );
 };

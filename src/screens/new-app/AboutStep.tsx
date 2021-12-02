@@ -1,15 +1,12 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { SelectChangeEvent, Typography } from "@mui/material";
 
-import { useState, useCallback } from "react";
-import {
-  TextField,
-  Select,
-  FormControl,
-  InputLabel,
-  MenuItem,
-} from "@mui/material";
+import { useMemo } from "react";
+import { Typography } from "@mui/material";
+import { useFormikContext } from "formik";
 import { styled } from "@mui/material/styles";
+import slugify from "slugify";
+
+import { TextField } from "../../components";
 
 const Root = styled("section")(({ theme }) => ({
   display: "flex",
@@ -38,31 +35,48 @@ const DescriptionTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 600,
 })) as any;
 
-const FolderFormControl = styled(FormControl)(({ theme }) => ({
-  marginTop: theme.spacing(3),
-  maxWidth: 400,
-}));
+// const FolderFormControl = styled(FormControl)(({ theme }) => ({
+//   marginTop: theme.spacing(3),
+//   maxWidth: 400,
+// }));
 
-const dummyFolders = ["eCommerce", "content", "human-resource", "tech"];
+// const dummyFolders = ["eCommerce", "content", "human-resource", "tech"];
+
+interface FormValues {
+  name: string;
+}
 
 const AboutStep: FunctionComponent = (): ReactElement => {
-  const [folder, setFolder] = useState("root");
+  const formik = useFormikContext<FormValues>();
+  // const [folder, setFolder] = useState("root");
 
-  const handleFolderChange = useCallback((event: SelectChangeEvent) => {
-    setFolder(event.target.value);
-  }, []);
+  // const handleFolderChange = useCallback((event: SelectChangeEvent) => {
+  //   setFolder(event.target.value);
+  // }, []);
+
+  const slug = useMemo(
+    () =>
+      slugify(formik.values.name || "", {
+        replacement: "-",
+        lower: true,
+        strict: true,
+        trim: true,
+      }),
+    [formik.values.name]
+  );
 
   return (
     <Root>
       <Form>
         <NameTextField
           required={true}
+          name="name"
           id="name"
           label="Name"
           size="small"
           variant="outlined"
           fullWidth={true}
-          helperText={
+          help={
             <Typography
               variant="caption"
               style={{
@@ -75,20 +89,25 @@ const AboutStep: FunctionComponent = (): ReactElement => {
               }}
             >
               Good app names are short and memorable.
-              <br />
-              Your app will be hosted at:
-              <a
-                href="https://trell.hypertool.io/thumbnail-generator"
-                target="_blank"
-                rel="noreferrer"
-                style={{ color: "white" }}
-              >
-                https://trell.hypertool.io/thumbnail-generator
-              </a>
+              {slug && (
+                <>
+                  <br />
+                  Your app will be hosted at:
+                  <a
+                    href="https://trell.hypertool.io/thumbnail-generator"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: "white" }}
+                  >
+                    https://trell.hypertool.io/{slug}
+                  </a>
+                </>
+              )}
             </Typography>
           }
         />
         <DescriptionTextField
+          name="description"
           id="description"
           label="Description"
           size="small"
@@ -96,7 +115,7 @@ const AboutStep: FunctionComponent = (): ReactElement => {
           multiline={true}
           rows={5}
           fullWidth={true}
-          helperText={
+          help={
             <Typography
               variant="caption"
               style={{
@@ -113,7 +132,7 @@ const AboutStep: FunctionComponent = (): ReactElement => {
             </Typography>
           }
         />
-        <FolderFormControl fullWidth={true}>
+        {/* <FolderFormControl fullWidth={true}>
           <InputLabel id="folder-label">Folder</InputLabel>
           <Select
             labelId="folder-label"
@@ -129,7 +148,7 @@ const AboutStep: FunctionComponent = (): ReactElement => {
               <MenuItem value={folder}>{folder}</MenuItem>
             ))}
           </Select>
-        </FolderFormControl>
+        </FolderFormControl> */}
       </Form>
     </Root>
   );
