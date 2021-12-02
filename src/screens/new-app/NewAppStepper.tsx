@@ -111,9 +111,32 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const renderStepperItem = (step: StepModel, index: number) => {
+  const isStepValuesValid = (step: number, context: any) => {
+    if (step === 0) {
+      return (
+        context.values.name &&
+        !context.errors.name &&
+        !context.errors.description
+      );
+    }
+  };
+
+  const isStepComplete = (step: number, context: any) => {
+    let result = false;
+    if (step === 0) {
+      result = isStepValuesValid(step, context);
+    } else if (step === 1) {
+      result = true;
+    } else {
+      throw new Error(`The specified step number (${step}) does not exist!`);
+    }
+
+    return result && activeStep > step;
+  };
+
+  const renderStepperItem = (step: StepModel, index: number, context: any) => {
     return (
-      <Step key={step.title} completed={false}>
+      <Step key={step.title} completed={isStepComplete(index, context)}>
         <StepLabel
           optional={
             step.optional && <Typography variant="caption">Optional</Typography>
@@ -125,17 +148,10 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
     );
   };
 
-  const renderStepperItems = () => steps.map(renderStepperItem);
-
-  const isStepValuesValid = (step: number, context: any) => {
-    if (step === 0) {
-      return (
-        context.values.name &&
-        !context.errors.name &&
-        !context.errors.description
-      );
-    }
-  };
+  const renderStepperItems = (context: any) =>
+    steps.map((step: StepModel, index: number) =>
+      renderStepperItem(step, index, context)
+    );
 
   return (
     <div>
@@ -147,7 +163,9 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
         {(formik) => (
           <>
             <Hidden lgDown={true}>
-              <Stepper activeStep={activeStep}>{renderStepperItems()}</Stepper>
+              <Stepper activeStep={activeStep}>
+                {renderStepperItems(formik)}
+              </Stepper>
             </Hidden>
             <Hidden lgUp={true}>
               <Paper
