@@ -13,13 +13,16 @@ import {
   Container,
   useTheme,
   useMediaQuery,
+  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import CheckCircle from "@mui/icons-material/CheckCircle";
+import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import { Formik, FormikHelpers } from "formik";
 import * as yup from "yup";
+import { gql, useMutation } from "@apollo/client";
 
 import AboutStep from "./AboutStep";
 import ResourcesStep from "./ResourcesStep";
@@ -73,6 +76,24 @@ const validationSchema = yup.object({
     .max(512, "Description should be 512 characters or less"),
 });
 
+const CREATE_APP = gql`
+  mutation CreateApp(
+    $name: String!
+    $description: String
+    $groups: [ID!]
+    $resources: [ID!]
+  ) {
+    createApp(
+      name: $name
+      description: $description
+      groups: $groups
+      resources: $resources
+    ) {
+      id
+    }
+  }
+`;
+
 interface StepModel {
   title: string;
   optional: boolean;
@@ -89,6 +110,10 @@ const steps: StepModel[] = [
 const NewAppStepper: FunctionComponent = (): ReactElement => {
   const [activeStep, setActiveStep] = useState(0);
   const [resources, setResources] = useState<string[]>([]);
+  const [
+    createApp,
+    { loading: creatingApp, error: createAppError, data: newApp },
+  ] = useMutation(CREATE_APP);
   const theme = useTheme();
   const smallerThanLg = useMediaQuery(theme.breakpoints.down("lg"));
 
@@ -99,8 +124,14 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
   const handleSubmit = useCallback(
     (values: FormValues, helpers: FormikHelpers<FormValues>): void => {
       console.log(values, resources);
+      createApp({
+        variables: {
+          ...values,
+          resources,
+        },
+      });
     },
-    [resources]
+    [createApp, resources]
   );
 
   const handleNext = () => {
@@ -122,16 +153,19 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
   };
 
   const isStepComplete = (step: number, context: any) => {
-    let result = false;
-    if (step === 0) {
-      result = isStepValuesValid(step, context);
-    } else if (step === 1) {
-      result = true;
-    } else {
-      throw new Error(`The specified step number (${step}) does not exist!`);
-    }
+    switch (step) {
+      case 0: {
+        return isStepValuesValid(step, context);
+      }
 
-    return result && activeStep > step;
+      case 1: {
+        return Boolean(newApp);
+      }
+
+      default: {
+        throw new Error(`The specified step number (${step}) does not exist!`);
+      }
+    }
   };
 
   const renderStepperItem = (step: StepModel, index: number, context: any) => {
@@ -243,9 +277,18 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                     onClick={() => formik.submitForm()}
                     variant="contained"
                     size="small"
+                    disabled={creatingApp}
                   >
                     Create App
-                    <CheckCircle fontSize="small" sx={{ ml: 1 }} />
+                    {!creatingApp && !newApp && (
+                      <CheckCircleOutline fontSize="small" sx={{ ml: 1 }} />
+                    )}
+                    {!creatingApp && newApp && (
+                      <CheckCircle fontSize="small" sx={{ ml: 1 }} />
+                    )}
+                    {creatingApp && (
+                      <CircularProgress size="14px" sx={{ ml: 1 }} />
+                    )}
                   </CreateAction>
                 )}
               </ActionContainer>
