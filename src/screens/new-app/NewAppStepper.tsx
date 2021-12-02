@@ -54,67 +54,6 @@ const CreateAction = styled(Button)(({ theme }) => ({
   width: 144,
 }));
 
-interface StepStructure {
-  title: string;
-  optional: boolean;
-  component: FunctionComponent;
-}
-
-const steps: StepStructure[] = [
-  {
-    title: "Tell us about your app",
-    optional: false,
-    component: AboutStep,
-  },
-  {
-    title: "Connect your repository",
-    optional: false,
-    component: RepositoryStep,
-  },
-];
-
-interface AboutStepData {
-  title: string;
-  description: string;
-  folder: string;
-  skipped: false;
-  completed: boolean;
-}
-
-interface ResourcesData {
-  resources: any[];
-  skipped: boolean;
-  completed: boolean;
-}
-
-interface RepositoryData {
-  repositoryURL: string;
-  skipped: false;
-  completed: boolean;
-}
-
-type Steps = [AboutStepData, ResourcesData, RepositoryData];
-
-const defaultSteps: Steps = [
-  {
-    title: "",
-    description: "",
-    folder: "",
-    skipped: false,
-    completed: false,
-  },
-  {
-    resources: [],
-    skipped: false,
-    completed: false,
-  },
-  {
-    repositoryURL: "",
-    skipped: false,
-    completed: false,
-  },
-];
-
 interface FormValues {
   name: string;
   description: string;
@@ -135,9 +74,21 @@ const validationSchema = yup.object({
     .max(512, "Description should be 512 characters or less"),
 });
 
+interface StepModel {
+  title: string;
+  optional: boolean;
+}
+
+const steps: StepModel[] = [
+  { title: "Tell us about your app", optional: false },
+  {
+    title: "Connect your repository",
+    optional: true,
+  },
+];
+
 const NewAppStepper: FunctionComponent = (): ReactElement => {
   const [activeStep, setActiveStep] = useState(0);
-  const [stepTuple, setStepTuple] = useState<Steps>(defaultSteps);
   const theme = useTheme();
   const smallerThanLg = useMediaQuery(theme.breakpoints.down("lg"));
   const [resources, setResources] = useState<string[]>([]);
@@ -152,26 +103,16 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
   );
 
   const handleNext = () => {
-    if (activeStep + 1 === steps.length) {
-      // setComplete(true);
-      return;
-    }
-
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setStepTuple((oldStepTuple) => {
-      const newStepTuple = JSON.parse(JSON.stringify(stepTuple));
-      newStepTuple[activeStep].completed = true;
-      return newStepTuple;
-    });
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const renderStepperItem = (step: StepStructure, index: number) => {
+  const renderStepperItem = (step: StepModel, index: number) => {
     return (
-      <Step key={step.title} completed={stepTuple[index].completed}>
+      <Step key={step.title} completed={false}>
         <StepLabel
           optional={
             step.optional && <Typography variant="caption">Optional</Typography>
