@@ -89,17 +89,19 @@ const steps: StepModel[] = [
 
 const NewAppStepper: FunctionComponent = (): ReactElement => {
   const [activeStep, setActiveStep] = useState(0);
+  const [resources, setResources] = useState<string[]>([]);
   const theme = useTheme();
   const smallerThanLg = useMediaQuery(theme.breakpoints.down("lg"));
-  const [resources, setResources] = useState<string[]>([]);
 
   const handleResourcesSelected = useCallback((resources: string[]) => {
     setResources(resources);
   }, []);
 
   const handleSubmit = useCallback(
-    (values: FormValues, helpers: FormikHelpers<FormValues>): void => {},
-    []
+    (values: FormValues, helpers: FormikHelpers<FormValues>): void => {
+      console.log(values, resources);
+    },
+    [resources]
   );
 
   const handleNext = () => {
@@ -228,7 +230,7 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
 
                     {activeStep + 1 === steps.length && (
                       <CreateAction
-                        onClick={handleNext}
+                        onClick={() => formik.submitForm()}
                         variant="contained"
                         size="small"
                       >
