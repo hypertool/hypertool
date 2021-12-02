@@ -169,21 +169,6 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleSkip = () => {
-    if (!steps[activeStep].optional) {
-      /* You probably want to guard against something like this,
-       * it should never occur unless someone's actively trying to break something.
-       */
-      throw new Error("You can't skip a step that isn't optional.");
-    }
-
-    setStepTuple((oldStepTuple) => {
-      const newStepTuple = JSON.parse(JSON.stringify(stepTuple));
-      newStepTuple[activeStep].skipped = true;
-      return newStepTuple;
-    });
-  };
-
   const renderStepperItem = (step: StepStructure, index: number) => {
     return (
       <Step key={step.title} completed={stepTuple[index].completed}>
