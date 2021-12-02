@@ -1,5 +1,7 @@
 import type { FunctionComponent, ReactElement } from "react";
+import type { GridSelectionModel, GridCallbackDetails } from "@mui/x-data-grid";
 
+import { useCallback } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 import { gql, useQuery } from "@apollo/client";
@@ -29,6 +31,8 @@ const columns: GridColDef[] = [
 
 interface Props {
   selectable: boolean;
+  onResourcesSelected: (resources: string[]) => void;
+  selectedResources: string[];
 }
 
 const GET_RESOURCES = gql`
@@ -47,13 +51,20 @@ const GET_RESOURCES = gql`
 const ResourcesTable: FunctionComponent<Props> = (
   props: Props
 ): ReactElement => {
-  const { selectable } = props;
+  const { selectable, onResourcesSelected, selectedResources } = props;
   const { loading, error, data } = useQuery(GET_RESOURCES, {
     variables: {
       page: 0,
       limit: 20,
     },
   });
+
+  const handleRowClick = useCallback(
+    (selectionModel: GridSelectionModel, details: GridCallbackDetails) => {
+      onResourcesSelected(selectionModel as string[]);
+    },
+    [onResourcesSelected]
+  );
 
   if (loading) {
     return (
@@ -71,6 +82,8 @@ const ResourcesTable: FunctionComponent<Props> = (
         pageSize={10}
         rowsPerPageOptions={[10]}
         checkboxSelection={selectable}
+        onSelectionModelChange={handleRowClick}
+        selectionModel={selectedResources}
       />
     </Root>
   );

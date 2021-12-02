@@ -67,11 +67,6 @@ const steps: StepStructure[] = [
     component: AboutStep,
   },
   {
-    title: "Select your resources",
-    optional: true,
-    component: ResourcesStep,
-  },
-  {
     title: "Connect your repository",
     optional: false,
     component: RepositoryStep,
@@ -145,6 +140,11 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
   const [stepTuple, setStepTuple] = useState<Steps>(defaultSteps);
   const theme = useTheme();
   const smallerThanLg = useMediaQuery(theme.breakpoints.down("lg"));
+  const [resources, setResources] = useState<string[]>([]);
+
+  const handleResourcesSelected = useCallback((resources: string[]) => {
+    setResources(resources);
+  }, []);
 
   const handleSubmit = useCallback(
     (values: FormValues, helpers: FormikHelpers<FormValues>): void => {},
@@ -184,9 +184,6 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
   };
 
   const renderStepperItems = () => steps.map(renderStepperItem);
-
-  const Component: FunctionComponent | null =
-    activeStep < steps.length ? steps[activeStep].component : null;
 
   const complete = activeStep === steps.length;
 
@@ -237,7 +234,13 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
               <Wrap when={!smallerThanLg} wrapper={StepContainer}>
                 <>
                   {complete && <StepperComplete />}
-                  {Component && <Component />}
+                  {activeStep === 0 && <AboutStep />}
+                  {activeStep === 1 && (
+                    <ResourcesStep
+                      onResourcesSelected={handleResourcesSelected}
+                      selectedResources={resources}
+                    />
+                  )}
                 </>
               </Wrap>
             </Wrap>
