@@ -1,6 +1,6 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   Stepper,
   MobileStepper,
@@ -23,6 +23,7 @@ import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import { Formik, FormikHelpers } from "formik";
 import * as yup from "yup";
 import { gql, useMutation } from "@apollo/client";
+import { useNavigate } from "react-router";
 
 import AboutStep from "./AboutStep";
 import ResourcesStep from "./ResourcesStep";
@@ -115,7 +116,14 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
     { loading: creatingApp, error: createAppError, data: newApp },
   ] = useMutation(CREATE_APP);
   const theme = useTheme();
+  const navigate = useNavigate();
   const smallerThanLg = useMediaQuery(theme.breakpoints.down("lg"));
+
+  useEffect(() => {
+    if (newApp) {
+      navigate(`/apps/${newApp.createApp.id}/edit`);
+    }
+  }, [navigate, newApp]);
 
   const handleResourcesSelected = useCallback((resources: string[]) => {
     setResources(resources);
