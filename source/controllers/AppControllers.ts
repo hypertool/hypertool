@@ -66,7 +66,11 @@ const toExternal = (app: App): ExternalApp => {
                     ? resources
                     : resources.map((resource) => resource.id)
                 : [],
-        creator: typeof creator === "string" ? creator : (creator as User).id,
+        // TODO: Remove the hard coded string.
+        creator:
+            typeof creator === "string"
+                ? creator
+                : "<todo>" || (creator as User).id,
         status,
         createdAt,
         updatedAt,
