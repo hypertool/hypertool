@@ -6,18 +6,21 @@ import { constants, BadRequestError, NotFoundError } from "../utils";
 import { AppModel } from "../models";
 
 const createSchema = joi.object({
-    name: joi.string().min(1).max(128).allow(""),
-    description: joi.string().min(0).max(512).allow(""),
-    groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    name: joi.string().max(128).allow("").default(""),
+    description: joi.string().max(512).allow("").default(""),
+    groups: joi
+        .array()
+        .items(joi.string().regex(constants.identifierPattern))
+        .default([]),
     resources: joi
         .array()
-        .items(joi.string().regex(constants.identifierPattern)),
-    creator: joi.string().regex(constants.identifierPattern),
+        .items(joi.string().regex(constants.identifierPattern))
+        .default([]),
 });
 
 const updateSchema = joi.object({
-    name: joi.string().min(1).max(128).allow(""),
-    description: joi.string().min(0).max(512).allow(""),
+    name: joi.string().max(128).allow(""),
+    description: joi.string().max(512).allow(""),
     groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
     resources: joi
         .array()
