@@ -15,9 +15,11 @@ import {
   InputAdornment,
   Button,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router";
+import { gql, useQuery } from "@apollo/client";
 
 import AppCard from "./AppCard";
 import AppFilter from "./AppFilter";
@@ -78,22 +80,13 @@ const Apps = styled("div")(({ theme }) => ({
   flexWrap: "wrap",
 }));
 
-interface Props {}
-
-const apps = [
-  {
-    id: "507f1f77bcf86cd799439011",
-    title: "Trell ECID",
-  },
-  {
-    id: "507f191e810c19729de860ea",
-    title: "WhatsApp Notifications",
-  },
-  {
-    id: "507f191e810c19729de860ea",
-    title: "Trell Forward",
-  },
-];
+const ProgressContainer = styled("div")(({ theme }) => ({
+  width: "100%",
+  height: "calc(100vh - 256px)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+}));
 
 const filters = [
   {
@@ -118,9 +111,24 @@ const filters = [
   },
 ];
 
-const ViewApps: FunctionComponent<Props> = (): ReactElement => {
+const GET_APPS = gql`
+  query GetApps($page: Int, $limit: Int) {
+    getApps(page: $page, limit: $limit) {
+      totalPages
+      records {
+        id
+        name
+        description
+        status
+      }
+    }
+  }
+`;
+
+const ViewApps: FunctionComponent = (): ReactElement => {
   const [filter, setFilter] = useState<string>(filters[0].url);
   const navigate = useNavigate();
+  const { loading, error, data } = useQuery(GET_APPS);
 
   const handleCreateNew = useCallback(() => {
     navigate("/apps/new");
@@ -128,6 +136,11 @@ const ViewApps: FunctionComponent<Props> = (): ReactElement => {
 
   const handleFilterChange = useCallback((event) => {
     setFilter(event.target.value);
+  }, []);
+
+  const handleLaunch = useCallback((slug: string) => {
+    const subdomain = "trell";
+    window.open(`https://${subdomain}.hypertool.io/${slug}`);
   }, []);
 
   const renderFilter = () => (
@@ -177,11 +190,23 @@ const ViewApps: FunctionComponent<Props> = (): ReactElement => {
           <AppFilter />
         </Hidden>
         <Hidden lgUp={true}>{renderFilter()}</Hidden>
-        <Apps>
-          {apps.map((app) => (
-            <AppCard id={app.id} title={app.title} />
-          ))}
-        </Apps>
+        {loading && (
+          <ProgressContainer>
+            <CircularProgress size="28px" />
+          </ProgressContainer>
+        )}
+        {!loading && (
+          <Apps>
+            {data.getApps.records.map((app: any) => (
+              <AppCard
+                id={app.id}
+                name={app.name}
+                description={app.description}
+                onLaunch={handleLaunch}
+              />
+            ))}
+          </Apps>
+        )}
       </Content>
     </Root>
   );
