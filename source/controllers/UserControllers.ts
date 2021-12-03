@@ -2,7 +2,7 @@ import joi from "joi";
 
 import type { User, UserPage, ExternalUser } from "../types";
 
-import { constants, BadRequestError, NotFoundError } from "../utils";
+import { constants, googleUtils, BadRequestError, NotFoundError, UnauthorizedError } from "../utils";
 import { UserModel } from "../models";
 
 const createSchema = joi.object({
@@ -251,4 +251,48 @@ const remove = async (
     return { success: true };
 };
 
-export { create, list, listByIds, getById, update, remove };
+const loginWithGoogle = async (context, token: string): Promise<{ jwtToken: string }> => {
+    const payload = await googleUtils.verifyToken(token);
+
+    if (!payload) {
+        throw new UnauthorizedError(
+            "The google authorization token you have sent is invalid."
+        );
+    }
+
+    const {
+        given_name: firstName,
+        family_name: lastName,
+        picture: pictureURL,
+        email: emailAddress,
+    } = payload;
+
+    // Find if the user is already registered.
+    const user = await UserModel.findOne(emailAddress).exec();
+
+    // If it's a new user, create the user.
+    if (!user) {
+        const newUser = new UserModel({
+            firstName,
+            lastName,
+            pictureURL,
+            emailAddress,
+            organization: null,
+            status: "activated",
+        });
+        await newUser.save();
+    }
+
+    // Create token
+    const jwtToken = jwt.sign(
+        { emailAddress },
+        process.env.TOKEN_KEY,
+        {
+            expiresIn: "2h",
+        }
+    );
+
+    return { jwtToken };
+}
+
+export { create, list, listByIds, getById, update, remove, loginWithGoogle };

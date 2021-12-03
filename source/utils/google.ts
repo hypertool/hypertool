@@ -11,3 +11,5 @@ const verifyToken = async (token) => {
     });
     return ticket.getPayload();
 };
+
+export { verifyToken };
