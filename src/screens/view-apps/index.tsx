@@ -15,6 +15,7 @@ import {
   InputAdornment,
   Button,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router";
@@ -77,6 +78,14 @@ const Apps = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "flex-start",
   flexWrap: "wrap",
+}));
+
+const ProgressContainer = styled("div")(({ theme }) => ({
+  width: "100%",
+  height: "calc(100vh - 256px)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
 }));
 
 interface Props {}
@@ -202,16 +211,23 @@ const ViewApps: FunctionComponent<Props> = (): ReactElement => {
           <AppFilter />
         </Hidden>
         <Hidden lgUp={true}>{renderFilter()}</Hidden>
-        <Apps>
-          {data.getApps.records.map((app: any) => (
-            <AppCard
-              id={app.id}
-              name={app.name}
-              description={app.description}
-              onLaunch={handleLaunch}
-            />
-          ))}
-        </Apps>
+        {loading && (
+          <ProgressContainer>
+            <CircularProgress size="28px" />
+          </ProgressContainer>
+        )}
+        {!loading && (
+          <Apps>
+            {data.getApps.records.map((app: any) => (
+              <AppCard
+                id={app.id}
+                name={app.name}
+                description={app.description}
+                onLaunch={handleLaunch}
+              />
+            ))}
+          </Apps>
+        )}
       </Content>
     </Root>
   );
