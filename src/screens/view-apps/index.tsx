@@ -88,23 +88,6 @@ const ProgressContainer = styled("div")(({ theme }) => ({
   alignItems: "center",
 }));
 
-interface Props {}
-
-const apps = [
-  {
-    id: "507f1f77bcf86cd799439011",
-    title: "Trell ECID",
-  },
-  {
-    id: "507f191e810c19729de860ea",
-    title: "WhatsApp Notifications",
-  },
-  {
-    id: "507f191e810c19729de860ea",
-    title: "Trell Forward",
-  },
-];
-
 const filters = [
   {
     title: "All",
@@ -142,7 +125,7 @@ const GET_APPS = gql`
   }
 `;
 
-const ViewApps: FunctionComponent<Props> = (): ReactElement => {
+const ViewApps: FunctionComponent = (): ReactElement => {
   const [filter, setFilter] = useState<string>(filters[0].url);
   const navigate = useNavigate();
   const { loading, error, data } = useQuery(GET_APPS);
@@ -176,10 +159,6 @@ const ViewApps: FunctionComponent<Props> = (): ReactElement => {
       </Select>
     </FormControl>
   );
-
-  if (loading) {
-    return <div>"Loading..."</div>;
-  }
 
   return (
     <Root>
