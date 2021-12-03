@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router";
+import { gql, useQuery } from "@apollo/client";
 
 import AppCard from "./AppCard";
 import AppFilter from "./AppFilter";
@@ -118,9 +119,24 @@ const filters = [
   },
 ];
 
+const GET_APPS = gql`
+  query GetApps($page: Int, $limit: Int) {
+    getApps(page: $page, limit: $limit) {
+      totalPages
+      records {
+        id
+        name
+        description
+        status
+      }
+    }
+  }
+`;
+
 const ViewApps: FunctionComponent<Props> = (): ReactElement => {
   const [filter, setFilter] = useState<string>(filters[0].url);
   const navigate = useNavigate();
+  const { loading, error, data } = useQuery(GET_APPS);
 
   const handleCreateNew = useCallback(() => {
     navigate("/apps/new");
@@ -146,6 +162,10 @@ const ViewApps: FunctionComponent<Props> = (): ReactElement => {
       </Select>
     </FormControl>
   );
+
+  if (loading) {
+    return <div>"Loading..."</div>;
+  }
 
   return (
     <Root>
@@ -178,8 +198,8 @@ const ViewApps: FunctionComponent<Props> = (): ReactElement => {
         </Hidden>
         <Hidden lgUp={true}>{renderFilter()}</Hidden>
         <Apps>
-          {apps.map((app) => (
-            <AppCard id={app.id} title={app.title} />
+          {data.getApps.records.map((app: any) => (
+            <AppCard id={app.id} title={app.name} />
           ))}
         </Apps>
       </Content>
