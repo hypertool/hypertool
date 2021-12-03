@@ -199,7 +199,11 @@ const ViewApps: FunctionComponent<Props> = (): ReactElement => {
         <Hidden lgUp={true}>{renderFilter()}</Hidden>
         <Apps>
           {data.getApps.records.map((app: any) => (
-            <AppCard id={app.id} title={app.name} />
+            <AppCard
+              id={app.id}
+              name={app.name}
+              description={app.description}
+            />
           ))}
         </Apps>
       </Content>

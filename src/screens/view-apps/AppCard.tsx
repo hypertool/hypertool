@@ -28,6 +28,16 @@ const CardHeader = styled("div")(({ theme }) => ({
   justifyContent: "space-between",
 }));
 
+const Title = styled(Typography)(({ theme }) => ({
+  fontSize: 16,
+  fontWeight: 500,
+}));
+
+const Description = styled(Typography)(({ theme }) => ({
+  fontSize: 12,
+  marginTop: theme.spacing(0.5)
+}));
+
 const CardActions = styled(MuiCardActions)(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
@@ -42,11 +52,12 @@ const ActionIcon = styled(Icon)(({ theme }) => ({
 
 interface Props {
   id: string;
-  title: string;
+  name: string;
+  description: string;
 }
 
 const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
-  const { id, title } = props;
+  const { id, name, description } = props;
   const [anchor, setAnchor] = useState<null | HTMLElement>(null);
 
   const handleOpenOptions = useCallback((event: MouseEvent<HTMLElement>) => {
@@ -61,7 +72,10 @@ const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
     <Card>
       <CardContent>
         <CardHeader>
-          <Typography>{title}</Typography>
+          <div>
+            <Title>{name}</Title>
+            <Description>{description}</Description>
+          </div>
           <Tooltip title="More app options">
             <IconButton onClick={handleOpenOptions} size="small" sx={{ ml: 2 }}>
               <Icon fontSize="small">more_vert</Icon>
