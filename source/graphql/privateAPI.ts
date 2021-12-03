@@ -9,11 +9,7 @@ const types = require("./typeDefinitions");
 import {
     resourceTypes,
     resourceStatuses,
-    genders,
-    countryCodes,
-    userStatuses,
     organizationStatuses,
-    userRoles,
     groupTypes,
     appStatuses,
     groupStatuses,

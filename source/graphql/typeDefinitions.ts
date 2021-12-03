@@ -1,20 +1,25 @@
-const { constants } = require("../utils");
+import {
+    genders,
+    countryCodes,
+    userStatuses,
+    userRoles,
+} from "../utils/constants";
 
 const typeDefinitions = `
     enum Gender {
-        ${constants.genders.join("\n")}
+        ${genders.join("\n")}
     }
 
     enum Country {
-        ${constants.countryCodes.join("\n")}
+        ${countryCodes.join("\n")}
     }
 
     enum UserStatus {
-        ${constants.userStatuses.join("\n")}
+        ${userStatuses.join("\n")}
     }
 
     enum UserRole {
-        ${constants.userRoles.join("\n")}
+        ${userRoles.join("\n")}
     }
 
     type User {
