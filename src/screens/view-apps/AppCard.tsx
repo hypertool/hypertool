@@ -35,7 +35,7 @@ const Title = styled(Typography)(({ theme }) => ({
 
 const Description = styled(Typography)(({ theme }) => ({
   fontSize: 12,
-  marginTop: theme.spacing(0.5)
+  marginTop: theme.spacing(0.5),
 }));
 
 const CardActions = styled(MuiCardActions)(({ theme }) => ({
@@ -54,10 +54,11 @@ interface Props {
   id: string;
   name: string;
   description: string;
+  onLaunch: (id: string) => void;
 }
 
 const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
-  const { id, name, description } = props;
+  const { id, name, description, onLaunch } = props;
   const [anchor, setAnchor] = useState<null | HTMLElement>(null);
 
   const handleOpenOptions = useCallback((event: MouseEvent<HTMLElement>) => {
@@ -67,6 +68,10 @@ const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
   const handleCloseOptions = useCallback(() => {
     setAnchor(null);
   }, []);
+
+  const handleLaunch = useCallback(() => {
+    onLaunch(id);
+  }, [id, onLaunch]);
 
   return (
     <Card>
@@ -96,7 +101,7 @@ const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
         </CardHeader>
       </CardContent>
       <CardActions>
-        <Button size="small">
+        <Button size="small" onClick={handleLaunch}>
           Launch <ActionIcon fontSize="small">arrow_forward</ActionIcon>
         </Button>
       </CardActions>

@@ -146,6 +146,11 @@ const ViewApps: FunctionComponent<Props> = (): ReactElement => {
     setFilter(event.target.value);
   }, []);
 
+  const handleLaunch = useCallback((slug: string) => {
+    const subdomain = "trell";
+    window.open(`https://${subdomain}.hypertool.io/${slug}`);
+  }, []);
+
   const renderFilter = () => (
     <FormControl fullWidth={true}>
       <InputLabel id="filter-label">Filter</InputLabel>
@@ -203,6 +208,7 @@ const ViewApps: FunctionComponent<Props> = (): ReactElement => {
               id={app.id}
               name={app.name}
               description={app.description}
+              onLaunch={handleLaunch}
             />
           ))}
         </Apps>
