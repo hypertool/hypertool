@@ -9,30 +9,15 @@ const typeDefs = gql`
     ${types}
 
     type Mutation {
-        createUser(
-            firstName: String!
-            lastName: String!
-            description: String
-            organization: ID
-            gender: Gender
-            countryCode: Country
-            pictureURL: String
-            emailAddress: String!
-            birthday: Date,
-            role: UserRole,
-            groups: [ID!]
+        loginWithGoogle (
+            token: String!
         ): User!
-    }
-
-    type Query {
-        getOrganizations(page: Int, limit: Int): OrganizationPage!
-        getOrganizationById(organizationId: ID!): Organization!
     }
 `;
 
 const resolvers = {
-    Users: {
-        login: async (parent, values, context) =>
+    Mutation: {
+        loginWithGoogle: async (parent, values, context) =>
             users.loginWithGoogle(context.request, parent.creator),
     },
 };
