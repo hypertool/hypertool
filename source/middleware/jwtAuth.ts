@@ -1,6 +1,8 @@
-const { UserModel } = require("../models");
-const { constants } = require("../utils");
-const jwt = require("jsonwebtoken");
+import { NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+
+import { UserModel } from '../models';
+import { constants } from '../utils';
 
 const jwtAuth = async (request, response, next) => {
     const { authorization } = request.headers;
@@ -14,15 +16,15 @@ const jwtAuth = async (request, response, next) => {
     const token = authorization.split(" ")[1];
 
     try {
-        const { emailAddress } = jwt.verify(token, process.env.TOKEN_KEY);
+        const { emailAddress } = jwt.verify(token, process.env.JWT_SIGNATURE_KEY);
         const user = await UserModel.findOne({
             emailAddress,
         }).exec();
         request.user = user;
-      } catch (err) {
-        return response.status(401).send("Invalid Token");
+    } catch (error) {
+        return response.status(401).send("The specified token is invalid.");
     }
     return next();
 };
 
-module.exports = jwtAuth;
+export { jwtAuth };

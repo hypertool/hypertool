@@ -1,9 +1,6 @@
-const { ApolloServer, gql } = require("apollo-server-express");
-
-const types = require("./typeDefinitions");
-const {
-    users,
-} = require("../controllers");
+import { ApolloServer, gql } from "apollo-server-express";
+import { types } from "./typeDefinitions";
+import { users } from "../controllers";
 
 const typeDefs = gql`
     ${types}
@@ -11,14 +8,14 @@ const typeDefs = gql`
     type Mutation {
         loginWithGoogle (
             token: String!
-        ): User!
+        ): String!
     }
 `;
 
 const resolvers = {
     Mutation: {
         loginWithGoogle: async (parent, values, context) =>
-            users.loginWithGoogle(context.request, parent.creator),
+            users.loginWithGoogle(context.request, values),
     },
 };
 
@@ -31,4 +28,4 @@ const attachRoutes = async (app) => {
     server.applyMiddleware({ app, path: "/graphql/v1/public" });
 };
 
-module.exports = { attachRoutes };
+export { attachRoutes };

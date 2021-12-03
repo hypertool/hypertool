@@ -1,10 +1,9 @@
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
 import { organizations, users, groups, apps, resources } from "../controllers";
+import { types } from "./typeDefinitions";
 
 const jwtAuth = require('../middleware/jwtAuth');
-
-const types = require("./typeDefinitions");
 
 import {
     resourceTypes,
@@ -17,8 +16,6 @@ import {
 
 const typeDefs = gql`
     ${types}
-
-    scalar Date
 
     type UserPage {
         totalRecords: Int!

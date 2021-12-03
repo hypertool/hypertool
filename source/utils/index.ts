@@ -1,3 +1,3 @@
 export * as constants from "./constants";
-export * as googleUtils from "./google";
+export * as google from "./google";
 export * from "./errors";

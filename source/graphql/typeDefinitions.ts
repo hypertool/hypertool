@@ -6,6 +6,8 @@ import {
 } from "../utils/constants";
 
 const typeDefinitions = `
+    scalar Date
+
     enum Gender {
         ${genders.join("\n")}
     }
@@ -46,4 +48,4 @@ const typeDefinitions = `
     }
 `;
 
-module.exports = typeDefinitions;
+export { typeDefinitions as types };

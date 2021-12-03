@@ -1,8 +1,10 @@
 import joi from "joi";
+import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
-import type { User, UserPage, ExternalUser } from "../types";
+import type { User, UserPage, ExternalUser, Session } from "../types";
 
-import { constants, googleUtils, BadRequestError, NotFoundError, UnauthorizedError } from "../utils";
+import { constants, google, BadRequestError, NotFoundError, UnauthorizedError } from "../utils";
 import { UserModel } from "../models";
 
 const createSchema = joi.object({
@@ -251,12 +253,12 @@ const remove = async (
     return { success: true };
 };
 
-const loginWithGoogle = async (context, token: string): Promise<{ jwtToken: string }> => {
-    const payload = await googleUtils.verifyToken(token);
+const loginWithGoogle = async (context, googleToken: string): Promise<Session> => {
+    const payload = await google.verifyToken(googleToken);
 
     if (!payload) {
         throw new UnauthorizedError(
-            "The google authorization token you have sent is invalid."
+            "The specified Google authorization token is invalid."
         );
     }
 
@@ -265,34 +267,44 @@ const loginWithGoogle = async (context, token: string): Promise<{ jwtToken: stri
         family_name: lastName,
         picture: pictureURL,
         email: emailAddress,
+        email_verified: emailVerified,
     } = payload;
 
-    // Find if the user is already registered.
-    const user = await UserModel.findOne(emailAddress).exec();
+    /* Find if the user is already registered. */
+    let user = await UserModel.findOne({ emailAddress }).exec();
 
-    // If it's a new user, create the user.
+    /* If it's a new user, create the user. */
     if (!user) {
-        const newUser = new UserModel({
+        const _id = new mongoose.Types.ObjectId();
+        /* Looks like this is the first time the user is accessing the service. Therefore,
+         * we need to create a profile with default values for the user.
+         */
+        user = new UserModel({
+            _id,
             firstName,
             lastName,
+            gender: undefined,
+            countryCode: undefined,
             pictureURL,
             emailAddress,
-            organization: null,
+            emailVerified,
+            roles: "owner",
+            birthday: null,
             status: "activated",
         });
-        await newUser.save();
+        await user.save();
     }
 
-    // Create token
+    /* Create token */
     const jwtToken = jwt.sign(
         { emailAddress },
-        process.env.TOKEN_KEY,
+        process.env.JWT_SIGNATURE_KEY,
         {
-            expiresIn: "2h",
+            expiresIn: "30d",
         }
     );
 
-    return { jwtToken };
+    return { jwtToken, user, createdAt: new Date() };
 }
 
 export { create, list, listByIds, getById, update, remove, loginWithGoogle };
