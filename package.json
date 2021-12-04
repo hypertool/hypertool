@@ -6,7 +6,8 @@
   "author": "Hypertool <contact@hypertool.io>",
   "license": "MIT",
   "scripts": {
-    "lint": "prettier --check ."
+    "lint": "prettier --check .",
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "@types/react": "^17.0.37",
