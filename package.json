@@ -1,0 +1,8 @@
+{
+  "name": "clarity",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:hypertool/clarity.git",
+  "author": "Hypertool <contact@hypertool.io>",
+  "license": "MIT"
+}
