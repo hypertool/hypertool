@@ -1,4 +1,5 @@
 import { ApolloServer, gql } from "apollo-server-express";
+
 import { types } from "./typeDefinitions";
 import { users } from "../controllers";
 

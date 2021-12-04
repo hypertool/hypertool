@@ -253,7 +253,7 @@ const remove = async (
     return { success: true };
 };
 
-const loginWithGoogle = async (context, googleToken: string): Promise<Session> => {
+const loginWithGoogle = async (context: any, googleToken: string): Promise<Session> => {
     const payload = await google.verifyToken(googleToken);
 
     if (!payload) {
@@ -288,10 +288,18 @@ const loginWithGoogle = async (context, googleToken: string): Promise<Session> =
             pictureURL,
             emailAddress,
             emailVerified,
-            roles: "owner",
+            role: "owner",
             birthday: null,
             status: "activated",
         });
+        await user.save();
+    }
+
+    if (!user.emailVerified && emailVerified) {
+        /* If the email address has been verified since the last session,
+         * update it.
+         */
+        user.emailVerified = true;
         await user.save();
     }
 
