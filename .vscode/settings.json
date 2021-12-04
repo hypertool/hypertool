@@ -1,0 +1,12 @@
+{
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "eslint.workingDirectories": [
+        {
+            "mode": "auto"
+        }
+    ],
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.rulers": [80],
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4
+}
