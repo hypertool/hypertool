@@ -5,7 +5,7 @@ import {
     userRoles,
 } from "../utils/constants";
 
-const typeDefinitions = `
+const types = `
     scalar Date
 
     enum Gender {
@@ -48,4 +48,4 @@ const typeDefinitions = `
     }
 `;
 
-export { typeDefinitions as types };
+export { types };
