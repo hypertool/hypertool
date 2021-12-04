@@ -5,6 +5,9 @@
   "repository": "git@github.com:hypertool/clarity.git",
   "author": "Hypertool <contact@hypertool.io>",
   "license": "MIT",
+  "scripts": {
+    "lint": "prettier --check ."
+  },
   "devDependencies": {
     "@types/react": "^17.0.37",
     "eslint-plugin-react": "^7.27.1",
