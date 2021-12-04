@@ -1,0 +1,15 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "react-app",
+        "prettier"
+    ],
+    "plugins": ["@typescript-eslint", "prettier"],
+    "rules": {
+        "react-hooks/exhaustive-deps": "error",
+        "prefer-const": "error"
+    }
+}
