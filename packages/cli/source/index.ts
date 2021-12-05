@@ -5,6 +5,8 @@ const packageData = require("../package");
 
 const build = async (): Promise<void> => {};
 
+const create = async (): Promise<void> => {};
+
 const configureCommands = (): Command => {
     const program = new Command();
     program.version(packageData.version);
@@ -16,6 +18,14 @@ const configureCommands = (): Command => {
         .description("builds the app")
         .action(build);
     program.addCommand(buildCommand);
+
+    const createCommand = new Command();
+    createCommand
+        .name("create")
+        .alias("c")
+        .description("creates a new app")
+        .action(create);
+    program.addCommand(createCommand);
 
     return program;
 };
