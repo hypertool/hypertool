@@ -1,6 +1,9 @@
 {
-  "name": "router",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT"
+    "name": "@hypertool/router",
+    "version": "0.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "scripts": {
+        "precommit": "echo precommit script running"
+    }
 }
