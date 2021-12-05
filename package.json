@@ -5,6 +5,7 @@
   "repository": "git@github.com:hypertool/hypertool.git",
   "author": "Hypertool <contact@hypertool.io>",
   "license": "MIT",
+  "private": true,
   "workspaces": ["packages/*"],
   "scripts": {
     "lint": "prettier --check .",
@@ -27,11 +28,7 @@
     "react": "^16.8.0",
     "react-dom": "^16.8.0"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
+  "husky": {},
   "lint-staged": {
     "*.ts": [
       "eslint --fix",
