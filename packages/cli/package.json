@@ -7,6 +7,7 @@
         "precommit": "echo precommit script running"
     },
     "dependencies": {
-        "chalk": "^5.0.0"
+        "chalk": "^5.0.0",
+        "commander": "^8.3.0"
     }
 }
