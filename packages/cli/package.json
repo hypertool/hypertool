@@ -4,6 +4,14 @@
     "main": "index.js",
     "license": "MIT",
     "scripts": {
-        "precommit": "echo precommit script running"
+        "watch": "tsc -w",
+        "start": "node ./build/index.js"
+    },
+    "dependencies": {
+        "chalk": "^4.1.2",
+        "commander": "^8.3.0"
+    },
+    "devDependencies": {
+        "@types/node": "^16.11.11"
     }
 }
