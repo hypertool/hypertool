@@ -7,6 +7,8 @@ const build = async (): Promise<void> => {};
 
 const create = async (): Promise<void> => {};
 
+const eject = async (): Promise<void> => {};
+
 const configureCommands = (): Command => {
     const program = new Command();
     program.version(packageData.version);
@@ -26,6 +28,14 @@ const configureCommands = (): Command => {
         .description("creates a new app")
         .action(create);
     program.addCommand(createCommand);
+
+    const ejectCommand = new Command();
+    ejectCommand
+        .name("eject")
+        .alias("e")
+        .description("ejects the app")
+        .action(eject);
+    program.addCommand(ejectCommand);
 
     return program;
 };
