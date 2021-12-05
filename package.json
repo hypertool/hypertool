@@ -8,7 +8,9 @@
   "workspaces": ["packages/*"],
   "scripts": {
     "lint": "prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "build": "lerna run build",
+    "test": "lerna run test"
   },
   "devDependencies": {
     "@types/react": "^17.0.37",
