@@ -1,6 +1,14 @@
 import chalk from "chalk";
+import { Command } from "commander";
 
 const packageData = require("../package");
+
+const configureCommands = (): Command => {
+    const program = new Command();
+    program.version(packageData.version);
+
+    return program;
+};
 
 const main = (): void => {
     console.log(
@@ -10,6 +18,8 @@ const main = (): void => {
             )}`,
         ),
     );
+    const program = configureCommands();
+    program.parse(process.argv);
 };
 
 main();
