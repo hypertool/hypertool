@@ -5,5 +5,8 @@
     "license": "MIT",
     "scripts": {
         "precommit": "echo precommit script running"
+    },
+    "dependencies": {
+        "chalk": "^5.0.0"
     }
 }
