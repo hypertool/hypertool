@@ -1,6 +1,9 @@
 {
-  "name": "query",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT"
+    "name": "@hypertool/query",
+    "version": "0.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "scripts": {
+        "precommit": "echo precommit script running"
+    }
 }

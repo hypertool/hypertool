@@ -1,6 +1,9 @@
 {
-  "name": "htxc",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT"
+    "name": "@hypertool/htxc",
+    "version": "0.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "scripts": {
+        "precommit": "echo precommit script running"
+    }
 }
