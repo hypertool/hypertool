@@ -5,6 +5,7 @@
   "repository": "git@github.com:hypertool/clarity.git",
   "author": "Hypertool <contact@hypertool.io>",
   "license": "MIT",
+  "workspaces": ["packages/*"],
   "scripts": {
     "lint": "prettier --check .",
     "format": "prettier --write ."
