@@ -4,6 +4,11 @@ import type { Configuration as ServerConfiguration } from "webpack-dev-server";
 import path from "path";
 import webpack from "webpack";
 import WebpackDevServer from "webpack-dev-server";
+import readline from "readline";
+import portFinder from "portfinder";
+import { Socket } from "net";
+
+import { getProcessForPort } from "./utils";
 
 export interface DevConfiguration {
     compiler: CompilerConfiguration;
@@ -14,9 +19,70 @@ interface CommandConfiguration {
     port: number;
 }
 
-export const prepareConfiguration = (
+const isPortAvailable = (port: number): Promise<boolean> =>
+    new Promise((resolve, reject) => {
+        const socket = new Socket();
+
+        const timeout = () => {
+            resolve(true);
+            socket.destroy();
+        };
+        setTimeout(timeout, 200);
+        socket.on("timeout", timeout);
+
+        socket.on("connect", function () {
+            resolve(false);
+            socket.destroy();
+        });
+
+        socket.on("error", function (error: any) {
+            if (error.code !== "ECONNREFUSED") {
+                reject(error);
+            }
+            resolve(true);
+        });
+
+        socket.connect(port, "0.0.0.0");
+    });
+
+const canUseAnotherPort = (port: number): Promise<boolean> =>
+    new Promise((resolve, reject) => {
+        try {
+            const input = readline.createInterface(
+                process.stdin,
+                process.stdout,
+            );
+            const processForPort = getProcessForPort(port);
+            input.question(
+                `A process is already listening on port ${port}.\n` +
+                    `${processForPort}\n\nWould you like to use another port instead? (y/n)`,
+                async (answer: string) => {
+                    resolve(["y", "yes"].includes(answer.toLowerCase()));
+                },
+            );
+        } catch (error) {
+            reject(error);
+        }
+    });
+
+export const prepareConfiguration = async (
     configuration: CommandConfiguration,
-): DevConfiguration => {
+): Promise<DevConfiguration> => {
+    let availablePort = configuration.port;
+    if (!(await isPortAvailable(configuration.port))) {
+        const find = await canUseAnotherPort(configuration.port);
+        if (find) {
+            availablePort = await portFinder.getPortPromise({
+                port: configuration.port,
+            });
+            console.log(
+                `Port ${availablePort} is available. Hypertool will try to use it.`,
+            );
+        } else {
+            process.exit(0);
+        }
+    }
+
     return {
         compiler: {
             mode: "development",
@@ -27,7 +93,7 @@ export const prepareConfiguration = (
                 directory: path.join(process.cwd(), "dist"),
             },
             compress: true,
-            port: configuration.port,
+            port: availablePort,
         },
     };
 };

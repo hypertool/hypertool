@@ -12,7 +12,7 @@ const create = async (): Promise<void> => {};
 const eject = async (): Promise<void> => {};
 
 const start = async (configuration: any): Promise<void> => {
-    startServer(prepareConfiguration(configuration));
+    startServer(await prepareConfiguration(configuration));
 };
 
 const configureCommands = (): Command => {
@@ -44,6 +44,11 @@ const configureCommands = (): Command => {
             "-p, --port <number>",
             "specify the development server port",
             "3000",
+        )
+        .option(
+            "-a, --auto-port",
+            "uses the next available port without prompting",
+            false,
         )
         .action(() => {
             const configuration = {
