@@ -1,16 +1,16 @@
-import type { Stats, Configuration } from "webpack";
+import type { Stats, Configuration as CompilerConfiguration } from "webpack";
 import type { Configuration as ServerConfiguration } from "webpack-dev-server";
 
 import path from "path";
 import webpack from "webpack";
 import WebpackDevServer from "webpack-dev-server";
 
-const configuration: Configuration = {
+const compilerConfiguration: CompilerConfiguration = {
     mode: "development",
     entry: "./source/index.js",
 };
 
-const devServer: ServerConfiguration = {
+const serverConfiguration: ServerConfiguration = {
     static: {
         directory: path.join(process.cwd(), "dist"),
     },
@@ -19,7 +19,7 @@ const devServer: ServerConfiguration = {
 };
 
 export const startServer = async (): Promise<void> => {
-    const compiler = webpack(configuration);
+    const compiler = webpack(compilerConfiguration);
     compiler.watch(
         {
             aggregateTimeout: 600,
@@ -46,7 +46,7 @@ export const startServer = async (): Promise<void> => {
         },
     );
 
-    const devServerOptions = { ...devServer, open: true };
+    const devServerOptions = { ...serverConfiguration, open: true };
     const server = new WebpackDevServer(devServerOptions, compiler);
 
     console.log("Starting server...");
