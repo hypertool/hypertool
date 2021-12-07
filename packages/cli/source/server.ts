@@ -16,6 +16,7 @@ export interface DevConfiguration {
 
 interface CommandConfiguration {
     port: number;
+    autoPort: boolean;
 }
 
 const promptUser = (port: number): Promise<boolean> =>
@@ -25,10 +26,9 @@ const promptUser = (port: number): Promise<boolean> =>
                 process.stdin,
                 process.stdout,
             );
-            const processForPort = getProcessForPort(port);
+
             prompt.question(
-                `A process is already listening on port ${port}.\n` +
-                    `${processForPort}\n\nWould you like to use another port instead? (y/n)`,
+                `Would you like to use another port instead? (y/n) `,
                 async (answer: string) => {
                     resolve(["y", "yes"].includes(answer.toLowerCase()));
                 },
@@ -41,19 +41,30 @@ const promptUser = (port: number): Promise<boolean> =>
 export const prepareConfiguration = async (
     configuration: CommandConfiguration,
 ): Promise<DevConfiguration> => {
-    let availablePort = configuration.port;
-    if (!(await isPortAvailable(configuration.port))) {
-        const find = await promptUser(configuration.port);
-        if (find) {
-            availablePort = await portFinder.getPortPromise({
-                port: configuration.port,
-            });
+    const { port } = configuration;
+
+    let availablePort = port;
+    if (!(await isPortAvailable(port))) {
+        const processForPort = getProcessForPort(port);
+        console.log(
+            `A process is already listening on port ${port}.\n${processForPort}`,
+        );
+
+        const find =
+            configuration.autoPort || (await promptUser(configuration.port));
+        if (!find) {
             console.log(
-                `Port ${availablePort} is available. Hypertool will try to use it.`,
+                "Cannot proceed further without a listenable port. Terminating.",
             );
-        } else {
             process.exit(0);
         }
+
+        availablePort = await portFinder.getPortPromise({
+            port: configuration.port,
+        });
+        console.log(
+            `Port ${availablePort} is available. Hypertool will try to use it.`,
+        );
     }
 
     return {
