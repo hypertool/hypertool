@@ -1,6 +1,8 @@
 import chalk from "chalk";
 import { Command } from "commander";
 
+import { startServer } from "./server";
+
 const packageData = require("../package");
 
 const build = async (): Promise<void> => {};
@@ -9,7 +11,9 @@ const create = async (): Promise<void> => {};
 
 const eject = async (): Promise<void> => {};
 
-const start = async (): Promise<void> => {};
+const start = async (): Promise<void> => {
+    startServer();
+};
 
 const configureCommands = (): Command => {
     const program = new Command();
