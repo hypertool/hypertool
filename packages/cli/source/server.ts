@@ -5,21 +5,37 @@ import path from "path";
 import webpack from "webpack";
 import WebpackDevServer from "webpack-dev-server";
 
-const compilerConfiguration: CompilerConfiguration = {
-    mode: "development",
-    entry: "./source/index.js",
+export interface DevConfiguration {
+    compiler: CompilerConfiguration;
+    server: ServerConfiguration;
+}
+
+interface CommandConfiguration {
+    port: number;
+}
+
+export const prepareConfiguration = (
+    configuration: CommandConfiguration,
+): DevConfiguration => {
+    return {
+        compiler: {
+            mode: "development",
+            entry: "./source/index.js",
+        },
+        server: {
+            static: {
+                directory: path.join(process.cwd(), "dist"),
+            },
+            compress: true,
+            port: configuration.port,
+        },
+    };
 };
 
-const serverConfiguration: ServerConfiguration = {
-    static: {
-        directory: path.join(process.cwd(), "dist"),
-    },
-    compress: true,
-    port: 8080,
-};
-
-export const startServer = async (): Promise<void> => {
-    const compiler = webpack(compilerConfiguration);
+export const startServer = async (
+    configuration: DevConfiguration,
+): Promise<void> => {
+    const compiler = webpack(configuration.compiler);
     compiler.watch(
         {
             aggregateTimeout: 600,
@@ -46,8 +62,10 @@ export const startServer = async (): Promise<void> => {
         },
     );
 
-    const devServerOptions = { ...serverConfiguration, open: true };
-    const server = new WebpackDevServer(devServerOptions, compiler);
+    const server = new WebpackDevServer(
+        { ...configuration.server, open: true },
+        compiler,
+    );
 
     console.log("Starting server...");
     await server.start();

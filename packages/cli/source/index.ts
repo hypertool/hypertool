@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import { Command } from "commander";
 
-import { startServer } from "./server";
+import { prepareConfiguration, startServer } from "./server";
 
 const packageData = require("../package");
 
@@ -11,8 +11,8 @@ const create = async (): Promise<void> => {};
 
 const eject = async (): Promise<void> => {};
 
-const start = async (): Promise<void> => {
-    startServer();
+const start = async (configuration: any): Promise<void> => {
+    startServer(prepareConfiguration(configuration));
 };
 
 const configureCommands = (): Command => {
@@ -40,7 +40,18 @@ const configureCommands = (): Command => {
         .name("start")
         .alias("s")
         .description("starts the development server")
-        .action(start);
+        .option(
+            "-p, --port <number>",
+            "specify the development server port",
+            "3000",
+        )
+        .action(() => {
+            const configuration = {
+                ...program.opts(),
+                ...startCommand.opts(),
+            };
+            start(configuration);
+        });
     program.addCommand(startCommand);
 
     const ejectCommand = new Command();
