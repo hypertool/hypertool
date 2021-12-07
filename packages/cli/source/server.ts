@@ -18,15 +18,15 @@ interface CommandConfiguration {
     port: number;
 }
 
-const canUseAnotherPort = (port: number): Promise<boolean> =>
+const promptUser = (port: number): Promise<boolean> =>
     new Promise((resolve, reject) => {
         try {
-            const input = readline.createInterface(
+            const prompt = readline.createInterface(
                 process.stdin,
                 process.stdout,
             );
             const processForPort = getProcessForPort(port);
-            input.question(
+            prompt.question(
                 `A process is already listening on port ${port}.\n` +
                     `${processForPort}\n\nWould you like to use another port instead? (y/n)`,
                 async (answer: string) => {
@@ -43,7 +43,7 @@ export const prepareConfiguration = async (
 ): Promise<DevConfiguration> => {
     let availablePort = configuration.port;
     if (!(await isPortAvailable(configuration.port))) {
-        const find = await canUseAnotherPort(configuration.port);
+        const find = await promptUser(configuration.port);
         if (find) {
             availablePort = await portFinder.getPortPromise({
                 port: configuration.port,
