@@ -6,9 +6,8 @@ import webpack from "webpack";
 import WebpackDevServer from "webpack-dev-server";
 import readline from "readline";
 import portFinder from "portfinder";
-import { Socket } from "net";
 
-import { getProcessForPort } from "./utils";
+import { getProcessForPort, isPortAvailable } from "./utils";
 
 export interface DevConfiguration {
     compiler: CompilerConfiguration;
@@ -18,32 +17,6 @@ export interface DevConfiguration {
 interface CommandConfiguration {
     port: number;
 }
-
-const isPortAvailable = (port: number): Promise<boolean> =>
-    new Promise((resolve, reject) => {
-        const socket = new Socket();
-
-        const timeout = () => {
-            resolve(true);
-            socket.destroy();
-        };
-        setTimeout(timeout, 200);
-        socket.on("timeout", timeout);
-
-        socket.on("connect", function () {
-            resolve(false);
-            socket.destroy();
-        });
-
-        socket.on("error", function (error: any) {
-            if (error.code !== "ECONNREFUSED") {
-                reject(error);
-            }
-            resolve(true);
-        });
-
-        socket.connect(port, "0.0.0.0");
-    });
 
 const canUseAnotherPort = (port: number): Promise<boolean> =>
     new Promise((resolve, reject) => {

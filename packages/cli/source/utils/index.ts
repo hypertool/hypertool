@@ -10,6 +10,7 @@ import chalk from "chalk";
 import { execSync } from "child_process";
 import { execFileSync } from "child_process";
 import path from "path";
+import { Socket } from "net";
 
 const execOptions = {
     encoding: "utf8",
@@ -84,3 +85,29 @@ export const getProcessForPort = (port: number) => {
         return null;
     }
 };
+
+export const isPortAvailable = (port: number): Promise<boolean> =>
+    new Promise((resolve, reject) => {
+        const socket = new Socket();
+
+        const timeout = () => {
+            resolve(true);
+            socket.destroy();
+        };
+        setTimeout(timeout, 200);
+        socket.on("timeout", timeout);
+
+        socket.on("connect", function () {
+            resolve(false);
+            socket.destroy();
+        });
+
+        socket.on("error", function (error: any) {
+            if (error.code !== "ECONNREFUSED") {
+                reject(error);
+            }
+            resolve(true);
+        });
+
+        socket.connect(port, "0.0.0.0");
+    });
