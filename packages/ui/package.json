@@ -5,8 +5,8 @@
     "license": "MIT",
     "scripts": {
         "precommit": "echo precommit script running",
-        "storybook": "start-storybook -p 6006",
-        "build-storybook": "build-storybook"
+        "start": "start-storybook -p 6006",
+        "build": "build-storybook"
     },
     "devDependencies": {
         "@babel/core": "^7.16.0",
