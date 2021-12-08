@@ -3,30 +3,27 @@ import "./button.css";
 
 export interface ButtonProps {
     /**
-     * Is this the principal call to action on the page?
+     * `true` if the button should use primary styles.
      */
     primary?: boolean;
     /**
-     * What background color to use
+     * The background color of the button container.
      */
     backgroundColor?: string;
     /**
-     * How large should the button be?
+     * The size of the component.
      */
     size?: "small" | "medium" | "large";
     /**
-     * Button contents
+     * The text contents inside the button.
      */
     label: string;
     /**
-     * Optional click handler
+     * Optional click handler.
      */
     onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-/**
- * Primary UI component for user interaction
- */
 const Button = ({
     primary = true,
     backgroundColor,
