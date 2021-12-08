@@ -24,13 +24,14 @@ export interface ButtonProps {
     onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-const Button = ({
-    primary = true,
-    backgroundColor,
-    size = "medium",
-    onClick,
-    label,
-}: ButtonProps) => {
+const Button = (props: ButtonProps) => {
+    const {
+        primary = true,
+        backgroundColor,
+        size = "medium",
+        onClick,
+        label,
+    } = props;
     const mode = primary
         ? "storybook-button--primary"
         : "storybook-button--secondary";
