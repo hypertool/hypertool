@@ -23,7 +23,7 @@ export interface ButtonProps {
     label: string;
 
     /**
-     * Optional click handler.
+     * Optional on-click event handler that accepts a function that gets triggered on the event of a mouse click.
      */
     onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
