@@ -25,13 +25,7 @@ export interface ButtonProps {
 }
 
 const Button = (props: ButtonProps) => {
-    const {
-        primary = true,
-        backgroundColor,
-        size = "medium",
-        onClick,
-        label,
-    } = props;
+    const { primary, backgroundColor, size, onClick, label } = props;
     const mode = primary
         ? "storybook-button--primary"
         : "storybook-button--secondary";
@@ -48,6 +42,11 @@ const Button = (props: ButtonProps) => {
             {label}
         </button>
     );
+};
+
+Button.defaultProps = {
+    primary: true,
+    size: "medium",
 };
 
 export default Button;
