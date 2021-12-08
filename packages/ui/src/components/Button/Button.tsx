@@ -6,18 +6,22 @@ export interface ButtonProps {
      * `true` if the button should use primary styles.
      */
     primary?: boolean;
+
     /**
      * The background color of the button container.
      */
     backgroundColor?: string;
+
     /**
      * The size of the component.
      */
     size?: "small" | "medium" | "large";
+
     /**
      * The text contents inside the button.
      */
     label: string;
+
     /**
      * Optional click handler.
      */
