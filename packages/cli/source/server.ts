@@ -1,58 +1,52 @@
-import type { Stats, Configuration as CompilerConfiguration } from "webpack";
-import type { Configuration as ServerConfiguration } from "webpack-dev-server";
+import type { Compiler } from "webpack";
+import type { Configuration } from "webpack-dev-server";
 
+import prompts from "prompts";
 import path from "path";
-import webpack from "webpack";
 import WebpackDevServer from "webpack-dev-server";
-import readline from "readline";
 import portFinder from "portfinder";
 
-import { getProcessForPort, isPortAvailable } from "./utils";
+import { getProcessForPort, isPortAvailable, isRoot } from "./utils";
+import * as paths from "./config/paths";
 
-export interface DevConfiguration {
-    compiler: CompilerConfiguration;
-    server: ServerConfiguration;
-}
-
-interface CommandConfiguration {
-    port: number;
-    autoPort: boolean;
-}
-
-const promptUser = (port: number): Promise<boolean> =>
-    new Promise((resolve, reject) => {
-        try {
-            const prompt = readline.createInterface(
-                process.stdin,
-                process.stdout,
-            );
-
-            prompt.question(
-                `Would you like to use another port instead? (y/n) `,
-                async (answer: string) => {
-                    resolve(["y", "yes"].includes(answer.toLowerCase()));
-                },
-            );
-        } catch (error) {
-            reject(error);
-        }
-    });
-
-export const prepareConfiguration = async (
-    configuration: CommandConfiguration,
-): Promise<DevConfiguration> => {
-    const { port } = configuration;
-
+const prepare = async (
+    port: number,
+    autoPort: boolean,
+): Promise<Configuration> => {
     let availablePort = port;
-    if (!(await isPortAvailable(port))) {
-        const processForPort = getProcessForPort(port);
+    let newPortRequired = false;
+    if (port < 1024 && process.platform !== "win32" && !isRoot()) {
+        console.log(
+            "Root permission is required to listen on ports below 1024.",
+        );
+        newPortRequired = true;
+        /* We may try to find the next available port below. Therefore, skip all the
+         * ports that require root permission.
+         */
+        availablePort = 1024;
+    } else if (!(await isPortAvailable(port))) {
+        const processForPort =
+            getProcessForPort(port) ||
+            "Could not find the process using the port.";
         console.log(
             `A process is already listening on port ${port}.\n${processForPort}`,
         );
+        newPortRequired = true;
+    }
 
-        const find =
-            configuration.autoPort || (await promptUser(configuration.port));
-        if (!find) {
+    if (newPortRequired) {
+        const shouldFind =
+            autoPort ||
+            (
+                await prompts({
+                    message: `Would you like to use another port instead?`,
+                    name: "find",
+                    type: "confirm",
+                    initial: true,
+                })
+            ).find;
+
+        if (!shouldFind) {
             console.log(
                 "Cannot proceed further without a listenable port. Terminating.",
             );
@@ -60,63 +54,37 @@ export const prepareConfiguration = async (
         }
 
         availablePort = await portFinder.getPortPromise({
-            port: configuration.port,
+            port: availablePort,
         });
+
         console.log(
             `Port ${availablePort} is available. Hypertool will try to use it.`,
         );
     }
 
     return {
-        compiler: {
-            mode: "development",
-            entry: "./source/index.js",
+        static: {
+            directory: paths.PUBLIC_DIRECTORY,
+            watch: true,
         },
-        server: {
-            static: {
-                directory: path.join(process.cwd(), "dist"),
+        client: {
+            overlay: {
+                errors: true,
+                warnings: false,
             },
-            compress: true,
-            port: availablePort,
         },
+        compress: true,
+        port: availablePort,
+        open: true,
     };
 };
 
-export const startServer = async (
-    configuration: DevConfiguration,
-): Promise<void> => {
-    const compiler = webpack(configuration.compiler);
-    compiler.watch(
-        {
-            aggregateTimeout: 600,
-            ignored: "**/node_modules",
-            poll: false,
-        },
-        (error?: Error, stats?: Stats) => {
-            if (error) {
-                console.log(error);
-                return;
-            }
-
-            if (stats) {
-                console.log(
-                    stats.toString({
-                        chunks: false,
-                        colors: true,
-                    }),
-                );
-                return;
-            }
-
-            console.log(stats);
-        },
-    );
-
-    const server = new WebpackDevServer(
-        { ...configuration.server, open: true },
-        compiler,
-    );
-
-    console.log("Starting server...");
-    await server.start();
+export const createServer = async (
+    port: number,
+    autoPort: boolean,
+    compiler: Compiler,
+): Promise<WebpackDevServer> => {
+    const configuration = await prepare(port, autoPort);
+    const server = new WebpackDevServer(configuration, compiler);
+    return server;
 };

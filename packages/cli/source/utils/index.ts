@@ -111,3 +111,7 @@ export const isPortAvailable = (port: number): Promise<boolean> =>
 
         socket.connect(port, "0.0.0.0");
     });
+
+export const isRoot = () => process.getuid && process.getuid() === 0;
+
+export * as logger from "./logger";

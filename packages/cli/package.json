@@ -11,11 +11,13 @@
         "chalk": "^4.1.2",
         "commander": "^8.3.0",
         "portfinder": "^1.0.28",
+        "prompts": "^2.4.2",
         "webpack": "^5.65.0",
         "webpack-dev-server": "^4.6.0"
     },
     "devDependencies": {
         "@types/node": "^16.11.11",
+        "@types/prompts": "^2.0.14",
         "@types/webpack-dev-server": "^4.5.0"
     }
 }

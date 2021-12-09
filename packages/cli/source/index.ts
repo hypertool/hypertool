@@ -1,7 +1,10 @@
+import type { Stats } from "webpack";
+
 import chalk from "chalk";
 import { Command } from "commander";
 
-import { prepareConfiguration, startServer } from "./server";
+import { createServer } from "./server";
+import { createCompiler } from "./compiler";
 
 const packageData = require("../package");
 
@@ -12,7 +15,15 @@ const create = async (): Promise<void> => {};
 const eject = async (): Promise<void> => {};
 
 const start = async (configuration: any): Promise<void> => {
-    startServer(await prepareConfiguration(configuration));
+    const compiler = createCompiler(false);
+    const server = await createServer(
+        configuration.port,
+        configuration.autoPort,
+        compiler,
+    );
+
+    console.log("Starting server...");
+    await server.start();
 };
 
 const configureCommands = (): Command => {
