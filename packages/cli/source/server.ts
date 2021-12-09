@@ -1,29 +1,17 @@
-import type { Stats, Configuration as CompilerConfiguration } from "webpack";
-import type { Configuration as ServerConfiguration } from "webpack-dev-server";
+import type { Compiler } from "webpack";
+import type { Configuration } from "webpack-dev-server";
 
 import prompts from "prompts";
 import path from "path";
-import webpack from "webpack";
 import WebpackDevServer from "webpack-dev-server";
 import portFinder from "portfinder";
 
 import { getProcessForPort, isPortAvailable, isRoot } from "./utils";
 
-export interface DevConfiguration {
-    compiler: CompilerConfiguration;
-    server: ServerConfiguration;
-}
-
-interface CommandConfiguration {
-    port: number;
-    autoPort: boolean;
-}
-
-export const prepareConfiguration = async (
-    configuration: CommandConfiguration,
-): Promise<DevConfiguration> => {
-    const { port } = configuration;
-
+const prepare = async (
+    port: number,
+    autoPort: boolean,
+): Promise<Configuration> => {
     let availablePort = port;
     let newPortRequired = false;
     if (port < 1024 && process.platform !== "win32" && !isRoot()) {
@@ -47,7 +35,7 @@ export const prepareConfiguration = async (
 
     if (newPortRequired) {
         const shouldFind =
-            configuration.autoPort ||
+            autoPort ||
             (
                 await prompts({
                     message: `Would you like to use another port instead?`,
@@ -74,55 +62,23 @@ export const prepareConfiguration = async (
     }
 
     return {
-        compiler: {
-            mode: "development",
-            entry: "./source/index.js",
+        static: {
+            directory: path.join(process.cwd(), "dist"),
         },
-        server: {
-            static: {
-                directory: path.join(process.cwd(), "dist"),
-            },
-            compress: true,
-            port: availablePort,
-        },
+        compress: true,
+        port: availablePort,
     };
 };
 
-export const startServer = async (
-    configuration: DevConfiguration,
-): Promise<void> => {
-    const compiler = webpack(configuration.compiler);
-    compiler.watch(
-        {
-            aggregateTimeout: 600,
-            ignored: "**/node_modules",
-            poll: false,
-        },
-        (error?: Error, stats?: Stats) => {
-            if (error) {
-                console.log(error);
-                return;
-            }
-
-            if (stats) {
-                console.log(
-                    stats.toString({
-                        chunks: false,
-                        colors: true,
-                    }),
-                );
-                return;
-            }
-
-            console.log(stats);
-        },
-    );
-
+export const createServer = async (
+    port: number,
+    autoPort: boolean,
+    compiler: Compiler,
+): Promise<WebpackDevServer> => {
+    const configuration = await prepare(port, autoPort);
     const server = new WebpackDevServer(
-        { ...configuration.server, open: true },
+        { ...configuration, open: true },
         compiler,
     );
-
-    console.log("Starting server...");
-    await server.start();
+    return server;
 };
