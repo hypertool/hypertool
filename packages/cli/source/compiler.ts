@@ -12,6 +12,8 @@ const hash = (data: any) => {
     return hash.digest("hex");
 };
 
+const IMAGE_INLINE_SIZE_LIMIT = 10000;
+
 export const prepare = (production: boolean): Configuration => {
     const enableTypeScript = false;
     return {
@@ -58,6 +60,34 @@ export const prepare = (production: boolean): Configuration => {
             //         paths.PACKAGE_DESCRIPTOR,
             //     ]),
             // ],
+        },
+        module: {
+            strictExportPresence: true,
+            rules: [
+                {
+                    oneOf: [
+                        /* "url" loader works like "file" loader except that it embeds assets
+                         * smaller than specified limit in bytes as data URLs to avoid requests.
+                         * A missing `test` is equivalent to a match.
+                         */
+                        {
+                            test: [
+                                /\.bmp$/,
+                                /\.gif$/,
+                                /\.jpe?g$/,
+                                /\.png$/,
+                                /\.avif$/,
+                            ],
+                            type: "asset",
+                            parser: {
+                                dataUrlCondition: {
+                                    maxSize: IMAGE_INLINE_SIZE_LIMIT,
+                                },
+                            },
+                        },
+                    ],
+                },
+            ],
         },
     };
 };
