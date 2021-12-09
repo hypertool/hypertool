@@ -7,7 +7,7 @@ import webpack from "webpack";
 import WebpackDevServer from "webpack-dev-server";
 import portFinder from "portfinder";
 
-import { getProcessForPort, isPortAvailable } from "./utils";
+import { getProcessForPort, isPortAvailable, isRoot } from "./utils";
 
 export interface DevConfiguration {
     compiler: CompilerConfiguration;
@@ -25,13 +25,28 @@ export const prepareConfiguration = async (
     const { port } = configuration;
 
     let availablePort = port;
-    if (!(await isPortAvailable(port))) {
-        const processForPort = getProcessForPort(port);
+    let newPortRequired = false;
+    if (port < 1024 && process.platform !== "win32" && !isRoot()) {
+        console.log(
+            "Root permission is required to listen on ports below 1024.",
+        );
+        newPortRequired = true;
+        /* We may try to find the next available port below. Therefore, skip all the
+         * ports that require root permission.
+         */
+        availablePort = 1024;
+    } else if (!(await isPortAvailable(port))) {
+        const processForPort =
+            getProcessForPort(port) ||
+            "Could not find the process using the port.";
         console.log(
             `A process is already listening on port ${port}.\n${processForPort}`,
         );
+        newPortRequired = true;
+    }
 
-        const find =
+    if (newPortRequired) {
+        const shouldFind =
             configuration.autoPort ||
             (
                 await prompts({
@@ -41,7 +56,8 @@ export const prepareConfiguration = async (
                     initial: true,
                 })
             ).find;
-        if (!find) {
+
+        if (!shouldFind) {
             console.log(
                 "Cannot proceed further without a listenable port. Terminating.",
             );
@@ -49,8 +65,9 @@ export const prepareConfiguration = async (
         }
 
         availablePort = await portFinder.getPortPromise({
-            port: configuration.port,
+            port: availablePort,
         });
+
         console.log(
             `Port ${availablePort} is available. Hypertool will try to use it.`,
         );
