@@ -7,6 +7,7 @@ import WebpackDevServer from "webpack-dev-server";
 import portFinder from "portfinder";
 
 import { getProcessForPort, isPortAvailable, isRoot } from "./utils";
+import * as paths from "./config/paths";
 
 const prepare = async (
     port: number,
@@ -63,10 +64,18 @@ const prepare = async (
 
     return {
         static: {
-            directory: path.join(process.cwd(), "dist"),
+            directory: paths.PUBLIC_DIRECTORY,
+            watch: true,
+        },
+        client: {
+            overlay: {
+                errors: true,
+                warnings: false,
+            },
         },
         compress: true,
         port: availablePort,
+        open: true,
     };
 };
 
@@ -76,9 +85,6 @@ export const createServer = async (
     compiler: Compiler,
 ): Promise<WebpackDevServer> => {
     const configuration = await prepare(port, autoPort);
-    const server = new WebpackDevServer(
-        { ...configuration, open: true },
-        compiler,
-    );
+    const server = new WebpackDevServer(configuration, compiler);
     return server;
 };
