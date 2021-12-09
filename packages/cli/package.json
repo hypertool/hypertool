@@ -17,6 +17,7 @@
     },
     "devDependencies": {
         "@types/node": "^16.11.11",
+        "@types/prompts": "^2.0.14",
         "@types/webpack-dev-server": "^4.5.0"
     }
 }
