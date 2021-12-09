@@ -1,13 +1,8 @@
 {
     "root": true,
     "parser": "@typescript-eslint/parser",
-    "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
-        "react-app",
-        "prettier"
-    ],
-    "plugins": ["@typescript-eslint", "prettier"],
+    "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+    "plugins": ["@typescript-eslint", "react", "react-hooks"],
     "rules": {
         "react-hooks/exhaustive-deps": "error",
         "prefer-const": "error"
