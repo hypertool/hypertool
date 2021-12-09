@@ -8,6 +8,7 @@
         "start": "node ./build/index.js"
     },
     "dependencies": {
+        "@babel/core": "^7.16.0",
         "@svgr/webpack": "^6.1.1",
         "chalk": "^4.1.2",
         "commander": "^8.3.0",
