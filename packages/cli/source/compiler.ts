@@ -8,6 +8,10 @@ export const prepare = (): Configuration => {
     return {
         mode: "development",
         entry: "./source/index.js",
+        infrastructureLogging: {
+            level: "none",
+        },
+        stats: "none",
     };
 };
 
