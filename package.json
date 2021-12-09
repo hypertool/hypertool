@@ -13,19 +13,25 @@
         "lint": "prettier --check .",
         "format": "prettier --write .",
         "build": "lerna run build",
-        "test": "lerna run test"
+        "test": "lerna run test",
+        "prepare": "husky install",
+        "pre-commit": "lint-staged"
     },
     "devDependencies": {
         "commitizen": "^4.2.4",
         "eslint-plugin-react": "^7.27.1",
-        "husky": "^7.0.4",
+        "husky": "^7.0.0",
         "lerna": "^4.0.0",
         "lint-staged": "^12.1.2",
         "prettier": "^2.5.0",
         "typescript": "^4.5.2"
     },
     "peerDependencies": {},
-    "husky": {},
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
+    },
     "lint-staged": {
         "*.ts": [
             "eslint --fix",

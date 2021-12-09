@@ -4,7 +4,6 @@
     "main": "index.js",
     "license": "MIT",
     "scripts": {
-        "precommit": "echo precommit script running",
         "start": "start-storybook -p 6006",
         "build": "build-storybook"
     },
