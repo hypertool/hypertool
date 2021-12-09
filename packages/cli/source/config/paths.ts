@@ -5,6 +5,12 @@ export const CWD = process.cwd();
 
 export const APP_DIRECTORY = fs.realpathSync(CWD);
 
+export const CACHE_DIRECTORY = path.join(
+    APP_DIRECTORY,
+    "node_modules",
+    ".cache",
+);
+
 export const BUILD_DIRECTORY = path.join(APP_DIRECTORY, "build");
 
 export const PUBLIC_DIRECTORY = path.join(APP_DIRECTORY, "public");

@@ -15,7 +15,7 @@ const create = async (): Promise<void> => {};
 const eject = async (): Promise<void> => {};
 
 const start = async (configuration: any): Promise<void> => {
-    const compiler = createCompiler();
+    const compiler = createCompiler(false);
     const server = await createServer(
         configuration.port,
         configuration.autoPort,
