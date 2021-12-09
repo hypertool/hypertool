@@ -3,7 +3,7 @@ import type { Configuration, Compiler } from "webpack";
 import webpack from "webpack";
 import crypto from "crypto";
 
-import { logger } from "./utils";
+import { logger /* ModuleScopePlugin */ } from "./utils";
 import * as paths from "./config/paths";
 
 const hash = (data: any) => {
@@ -13,6 +13,7 @@ const hash = (data: any) => {
 };
 
 export const prepare = (production: boolean): Configuration => {
+    const enableTypeScript = false;
     return {
         mode: production ? "production" : "development",
         /* Stop compilation early when building for production. */
@@ -43,6 +44,20 @@ export const prepare = (production: boolean): Configuration => {
                 config: [__filename],
                 // Add `tsconfig` once TypeScript is supported.
             },
+        },
+        resolve: {
+            modules: [paths.NODE_MODULES_DIRECTORY],
+            extensions: paths.extensions
+                .filter(
+                    (extension: string) =>
+                        enableTypeScript || extension !== "ts",
+                )
+                .map((extension: string) => "." + extension),
+            // plugins: [
+            //     new ModuleScopePlugin(paths.APP_SOURCE_DIRECTORY, [
+            //         paths.PACKAGE_DESCRIPTOR,
+            //     ]),
+            // ],
         },
     };
 };
