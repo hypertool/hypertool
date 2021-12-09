@@ -10,6 +10,7 @@ import type { Configuration, Compiler } from "webpack";
 
 import webpack from "webpack";
 import crypto from "crypto";
+import HtmlWebpackPlugin from "html-webpack-plugin";
 
 import { logger /* ModuleScopePlugin */ } from "./utils";
 import * as paths from "./config/paths";
@@ -152,6 +153,29 @@ export const prepare = (production: boolean): Configuration => {
                 },
             ],
         },
+        plugins: [
+            /* Generate an index file and inject a script loader. */
+            new HtmlWebpackPlugin({
+                inject: true,
+                template: paths.APP_HTML,
+                ...(production
+                    ? {
+                          minify: {
+                              removeComments: true,
+                              collapseWhitespace: true,
+                              removeRedundantAttributes: true,
+                              useShortDoctype: true,
+                              removeEmptyAttributes: true,
+                              removeStyleLinkTypeAttributes: true,
+                              keepClosingSlash: true,
+                              minifyJS: true,
+                              minifyCSS: true,
+                              minifyURLs: true,
+                          },
+                      }
+                    : {}),
+            }),
+        ],
     };
 };
 
