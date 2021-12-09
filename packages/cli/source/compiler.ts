@@ -25,6 +25,7 @@ const IMAGE_INLINE_SIZE_LIMIT = 10000;
 
 export const prepare = (production: boolean): Configuration => {
     const enableTypeScript = false;
+
     return {
         mode: production ? "production" : "development",
         /* Stop compilation early when building for production. */
@@ -56,20 +57,20 @@ export const prepare = (production: boolean): Configuration => {
                 // Add `tsconfig` once TypeScript is supported.
             },
         },
-        resolve: {
-            modules: [paths.NODE_MODULES_DIRECTORY],
-            extensions: paths.extensions
-                .filter(
-                    (extension: string) =>
-                        enableTypeScript || extension !== "ts",
-                )
-                .map((extension: string) => "." + extension),
-            // plugins: [
-            //     new ModuleScopePlugin(paths.APP_SOURCE_DIRECTORY, [
-            //         paths.PACKAGE_DESCRIPTOR,
-            //     ]),
-            // ],
-        },
+        // resolve: {
+        //     modules: [paths.NODE_MODULES_DIRECTORY],
+        //     extensions: paths.extensions
+        //         .filter(
+        //             (extension: string) =>
+        //                 enableTypeScript || extension !== "ts",
+        //         )
+        //         .map((extension: string) => "." + extension),
+        //     // plugins: [
+        //     //     new ModuleScopePlugin(paths.APP_SOURCE_DIRECTORY, [
+        //     //         paths.PACKAGE_DESCRIPTOR,
+        //     //     ]),
+        //     // ],
+        // },
         module: {
             strictExportPresence: true,
             rules: [
