@@ -22,32 +22,6 @@ const start = async (configuration: any): Promise<void> => {
         compiler,
     );
 
-    compiler.watch(
-        {
-            aggregateTimeout: 600,
-            ignored: "**/node_modules",
-            poll: false,
-        },
-        (error?: Error, stats?: Stats) => {
-            if (error) {
-                console.log(error);
-                return;
-            }
-
-            if (stats) {
-                console.log(
-                    stats.toString({
-                        chunks: false,
-                        colors: true,
-                    }),
-                );
-                return;
-            }
-
-            console.log(stats);
-        },
-    );
-
     console.log("Starting server...");
     await server.start();
 };
