@@ -11,6 +11,7 @@
         "@svgr/webpack": "^6.1.1",
         "chalk": "^4.1.2",
         "commander": "^8.3.0",
+        "file-loader": "^6.2.0",
         "portfinder": "^1.0.28",
         "prompts": "^2.4.2",
         "webpack": "^5.65.0",
