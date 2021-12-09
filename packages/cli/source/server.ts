@@ -1,10 +1,10 @@
 import type { Stats, Configuration as CompilerConfiguration } from "webpack";
 import type { Configuration as ServerConfiguration } from "webpack-dev-server";
 
+import prompts from "prompts";
 import path from "path";
 import webpack from "webpack";
 import WebpackDevServer from "webpack-dev-server";
-import readline from "readline";
 import portFinder from "portfinder";
 
 import { getProcessForPort, isPortAvailable } from "./utils";
@@ -19,25 +19,6 @@ interface CommandConfiguration {
     autoPort: boolean;
 }
 
-const promptUser = (port: number): Promise<boolean> =>
-    new Promise((resolve, reject) => {
-        try {
-            const prompt = readline.createInterface(
-                process.stdin,
-                process.stdout,
-            );
-
-            prompt.question(
-                `Would you like to use another port instead? (y/n) `,
-                async (answer: string) => {
-                    resolve(["y", "yes"].includes(answer.toLowerCase()));
-                },
-            );
-        } catch (error) {
-            reject(error);
-        }
-    });
-
 export const prepareConfiguration = async (
     configuration: CommandConfiguration,
 ): Promise<DevConfiguration> => {
@@ -51,7 +32,15 @@ export const prepareConfiguration = async (
         );
 
         const find =
-            configuration.autoPort || (await promptUser(configuration.port));
+            configuration.autoPort ||
+            (
+                await prompts({
+                    message: `Would you like to use another port instead?`,
+                    name: "find",
+                    type: "confirm",
+                    initial: true,
+                })
+            ).find;
         if (!find) {
             console.log(
                 "Cannot proceed further without a listenable port. Terminating.",
