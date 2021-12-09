@@ -113,3 +113,5 @@ export const isPortAvailable = (port: number): Promise<boolean> =>
     });
 
 export const isRoot = () => process.getuid && process.getuid() === 0;
+
+export * as logger from "./logger";
