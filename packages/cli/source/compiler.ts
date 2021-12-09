@@ -119,6 +119,35 @@ export const prepare = (production: boolean): Configuration => {
                                 and: [/\.(ts|js)$/],
                             },
                         },
+                        {
+                            test: /\.(js|ts)$/,
+                            include: paths.APP_SOURCE_DIRECTORY,
+                            loader: require.resolve("babel-loader"),
+                            options: {
+                                customize: require.resolve(
+                                    "babel-preset-react-app/webpack-overrides",
+                                ),
+                                presets: [
+                                    [
+                                        require.resolve(
+                                            "babel-preset-react-app",
+                                        ),
+                                        {
+                                            runtime: "automatic",
+                                        },
+                                    ],
+                                ],
+                                babelrc: false,
+                                configFile: false,
+                                /* This is a feature of `babel-loader` for webpack (not Babel itself).
+                                 * It enables caching results in ./node_modules/.cache/babel-loader
+                                 * directory for faster rebuilds.
+                                 */
+                                cacheDirectory: true,
+                                cacheCompression: false,
+                                compact: production,
+                            },
+                        },
                     ],
                 },
             ],
