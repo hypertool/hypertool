@@ -6,17 +6,22 @@ import { users } from "../controllers";
 const typeDefs = gql`
     ${types}
 
+    type Query {
+        dummy: String!
+    }
+
     type Mutation {
-        loginWithGoogle (
-            token: String!
-        ): String!
+        loginWithGoogle(token: String!): Session!
     }
 `;
 
 const resolvers = {
+    Query: {
+        dummy: async () => "Hello",
+    },
     Mutation: {
         loginWithGoogle: async (parent, values, context) =>
-            users.loginWithGoogle(context.request, values),
+            users.loginWithGoogle(context.request, values.token),
     },
 };
 
