@@ -224,4 +224,10 @@ export interface ExternalApp {
     updatedAt: Date;
 }
 
+export interface Session {
+    jwtToken: string;
+    user: ExternalUser;
+    createdAt: Date;
+}
+
 export type AppPage = ExternalListPage<ExternalApp>;

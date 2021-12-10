@@ -1,8 +1,16 @@
 import joi from "joi";
+import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
-import type { User, UserPage, ExternalUser } from "../types";
+import type { User, UserPage, ExternalUser, Session } from "../types";
 
-import { constants, BadRequestError, NotFoundError } from "../utils";
+import {
+    constants,
+    google,
+    BadRequestError,
+    NotFoundError,
+    UnauthorizedError,
+} from "../utils";
 import { UserModel } from "../models";
 
 const createSchema = joi.object({
@@ -251,8 +259,65 @@ const remove = async (
     return { success: true };
 };
 
-// changeRole (userId, role) -> Make user Owner/Editor/Viewer
-// addToGroup (userId, groupId)
-// removeFromGroup (userId, groupId)
+const loginWithGoogle = async (
+    context: any,
+    googleToken: string
+): Promise<Session> => {
+    const payload = await google.verifyToken(googleToken);
 
-export { create, list, listByIds, getById, update, remove };
+    if (!payload) {
+        throw new UnauthorizedError(
+            "The specified Google authorization token is invalid."
+        );
+    }
+
+    const {
+        given_name: firstName,
+        family_name: lastName,
+        picture: pictureURL,
+        email: emailAddress,
+        email_verified: emailVerified,
+    } = payload;
+
+    /* Find if the user is already registered. */
+    let user = await UserModel.findOne({ emailAddress }).exec();
+
+    /* If it's a new user, create the user. */
+    if (!user) {
+        const _id = new mongoose.Types.ObjectId();
+        /* Looks like this is the first time the user is accessing the service. Therefore,
+         * we need to create a profile with default values for the user.
+         */
+        user = new UserModel({
+            _id,
+            firstName,
+            lastName,
+            gender: undefined,
+            countryCode: undefined,
+            pictureURL,
+            emailAddress,
+            emailVerified,
+            role: "owner",
+            birthday: null,
+            status: "activated",
+        });
+        await user.save();
+    }
+
+    if (!user.emailVerified && emailVerified) {
+        /* If the email address has been verified since the last session,
+         * update it.
+         */
+        user.emailVerified = true;
+        await user.save();
+    }
+
+    /* Create token */
+    const jwtToken = jwt.sign({ emailAddress }, process.env.JWT_SIGNATURE_KEY, {
+        expiresIn: "30d",
+    });
+
+    return { jwtToken, user, createdAt: new Date() };
+};
+
+export { create, list, listByIds, getById, update, remove, loginWithGoogle };

@@ -1,61 +1,20 @@
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
 import { organizations, users, groups, apps, resources } from "../controllers";
+import { types } from "./typeDefinitions";
+import { jwtAuth } from "../middleware";
 
 import {
     resourceTypes,
     resourceStatuses,
-    genders,
-    countryCodes,
-    userStatuses,
     organizationStatuses,
-    userRoles,
     groupTypes,
     appStatuses,
     groupStatuses,
 } from "../utils/constants";
 
 const typeDefs = gql`
-    scalar Date
-
-    enum Gender {
-        ${genders.join("\n")}
-    }
-
-    enum Country {
-        ${countryCodes.join("\n")}
-    }
-
-    enum UserStatus {
-        ${userStatuses.join("\n")}
-    }
-
-    enum UserRole {
-        ${userRoles.join("\n")}
-    }
-
-    type User {
-        id: ID!
-        firstName: String!
-        lastName: String!
-        description: String!
-        # Organization points to User directly, making each other mutually recursive.
-        # Therefore, we flatten the data structure here.
-        organization: ID!
-        gender: Gender
-        countryCode: Country
-        pictureURL: String
-        emailAddress: String!
-        emailVerified: Boolean!
-        birthday: Date
-        status: UserStatus!
-        role: UserRole!
-        # Group points to User directly, making each other mutually recursive.
-        # Therefore, we flatten the data structure here.
-        groups: [ID!]!
-        createdAt: Date!
-        updatedAt: Date!
-    }
+    ${types}
 
     type UserPage {
         totalRecords: Int!
@@ -470,6 +429,7 @@ const attachRoutes = async (app: any) => {
         }),
     });
     await server.start();
+    app.use("/graphql/v1/private", jwtAuth);
     server.applyMiddleware({
         app,
         path: "/graphql/v1/private",
