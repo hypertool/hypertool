@@ -1,18 +1,23 @@
-import type { Stats } from "webpack";
-
 import chalk from "chalk";
 import { Command } from "commander";
 
 import { createServer } from "./server";
 import { createCompiler } from "./compiler";
+import { manifestCompiler } from "./manifest";
 
-const packageData = require("../package");
+import packageData from "../package.json";
 
-const build = async (): Promise<void> => {};
+const build = async (): Promise<void> => {
+    manifestCompiler();
+};
 
-const create = async (): Promise<void> => {};
+const create = async (): Promise<void> => {
+    console.log("You just called the create command");
+};
 
-const eject = async (): Promise<void> => {};
+const eject = async (): Promise<void> => {
+    console.log("You just called the eject command");
+};
 
 const start = async (configuration: any): Promise<void> => {
     const compiler = createCompiler(false);
