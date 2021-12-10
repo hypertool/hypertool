@@ -2,14 +2,13 @@ import { FunctionComponent, ReactElement, useCallback } from 'react';
 import { Typography, Button } from "@mui/material";
 import { useGoogleLogin } from "react-google-login";
 import { styled } from "@mui/material/styles";
-import { gql } from "@apollo/client";
 import { useNavigate } from "react-router";
 
 import {
+  gql,
   ApolloClient,
   InMemoryCache,
 } from "@apollo/client";
-
 
 const Root = styled("section")(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
