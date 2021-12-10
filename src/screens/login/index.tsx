@@ -3,6 +3,10 @@ import { Typography, Button, CircularProgress } from "@mui/material";
 import { useGoogleLogin } from "react-google-login";
 import { styled } from "@mui/material/styles";
 import { gql, useMutation } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+} from "@apollo/client";
 
 
 const Root = styled("section")(({ theme }) => ({
@@ -53,10 +57,6 @@ const PrimaryAction = styled(Button)(({ theme }) => ({
   },
 }));
 
-const Loader = styled(CircularProgress)(({ theme }) => ({
-  marginRight: theme.spacing(1),
-}))
-
 const LOGIN_WITH_GOOGLE = gql`
   mutation LoginWithGoogle(
     $token: String!
@@ -65,19 +65,33 @@ const LOGIN_WITH_GOOGLE = gql`
       token: $token
     ) {
       jwtToken
+      user {
+        id
+      }
+      createdAt
     }
   }
 `;
 
-const Login: FunctionComponent = (): ReactElement => {
-  const [loginWithGoogle, { loading, error, }] = useMutation(LOGIN_WITH_GOOGLE);
+const client = new ApolloClient({
+  uri: `${process.env.REACT_APP_API_URL}/graphql/v1/public`,
+  cache: new InMemoryCache(),
+});
 
+
+const Login: FunctionComponent = (): ReactElement => {
   const onSuccess = useCallback(
     async (response: any) => {
-        const jwtToken = await loginWithGoogle(response.tokenId);
-        localStorage.setItem("jwtAuthToken", String(jwtToken));
+        const result = await client
+        .mutate({
+          mutation: LOGIN_WITH_GOOGLE,
+          variables: {token: response.tokenId}
+        });
+    delete result.data.loginWithGoogle.__typename;
+    delete result.data.loginWithGoogle.user.__typename;
+    localStorage.setItem("session", JSON.stringify(result.data.loginWithGoogle));
     },
-    [loginWithGoogle]
+    []
   );
 
   const onFailure = (event: any) => { };
@@ -102,12 +116,6 @@ const Login: FunctionComponent = (): ReactElement => {
         Don't have an account? No worries, we'll create it for you.
       </SectionSubtitle>
       <PrimaryAction variant="contained" color="primary" size="medium" onClick={handleContinueWithGoogle}>
-        {loading && (
-          <Loader
-            size="16px"
-            color="inherit"
-          />
-        )}
         Continue with Google
       </PrimaryAction>
     </Root>
