@@ -4,7 +4,13 @@ import mongoose from "mongoose";
 
 import type { User, UserPage, ExternalUser, Session } from "../types";
 
-import { constants, google, BadRequestError, NotFoundError, UnauthorizedError } from "../utils";
+import {
+    constants,
+    google,
+    BadRequestError,
+    NotFoundError,
+    UnauthorizedError,
+} from "../utils";
 import { UserModel } from "../models";
 
 const createSchema = joi.object({
@@ -253,7 +259,10 @@ const remove = async (
     return { success: true };
 };
 
-const loginWithGoogle = async (context: any, googleToken: string): Promise<Session> => {
+const loginWithGoogle = async (
+    context: any,
+    googleToken: string
+): Promise<Session> => {
     const payload = await google.verifyToken(googleToken);
 
     if (!payload) {
@@ -304,15 +313,11 @@ const loginWithGoogle = async (context: any, googleToken: string): Promise<Sessi
     }
 
     /* Create token */
-    const jwtToken = jwt.sign(
-        { emailAddress },
-        process.env.JWT_SIGNATURE_KEY,
-        {
-            expiresIn: "30d",
-        }
-    );
+    const jwtToken = jwt.sign({ emailAddress }, process.env.JWT_SIGNATURE_KEY, {
+        expiresIn: "30d",
+    });
 
     return { jwtToken, user, createdAt: new Date() };
-}
+};
 
 export { create, list, listByIds, getById, update, remove, loginWithGoogle };
