@@ -1,9 +1,11 @@
 import { FunctionComponent, ReactElement } from "react";
 
-import { useState, useCallback } from 'react';
+import { useRef, useCallback } from 'react';
 import { Typography, Button, CircularProgress } from "@mui/material";
 import { useGoogleLogin } from "react-google-login";
 import { styled } from "@mui/material/styles";
+import { gql, useMutation } from "@apollo/client";
+
 
 const Root = styled("section")(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -57,8 +59,21 @@ const Loader = styled(CircularProgress)(({ theme }) => ({
   marginRight: theme.spacing(1),
 }))
 
+const LOGIN_WITH_GOOGLE = gql`
+  mutation LoginWithGoogle(
+    $token: String!
+  ) {
+    loginWithGoogle(
+      token: $token
+    ) {
+      id
+    }
+  }
+`;
+
 const Login: FunctionComponent = (): ReactElement => {
-  const [loading, setLoading] = useState(false);
+  const jwtToken = useRef({});
+  const [loginWithGoogle, { loading, error, }] = useMutation(LOGIN_WITH_GOOGLE);
 
   const onSuccess = useCallback(
     (response: any) => {
@@ -72,16 +87,14 @@ const Login: FunctionComponent = (): ReactElement => {
             newAuthResponse.expires_in ||
             3600 - 5 * 60) * 1000;
 
-        // dispatch(createSession(response.tokenId));
+        jwtToken.current = await loginWithGoogle(response.tokenId);
+
         setTimeout(refreshToken, refreshTiming);
       };
 
-      // dispatch(createSession(response.tokenId));
       setTimeout(refreshToken, refreshTiming);
     },
-    [
-      /*dispatch*/
-    ]
+    [loginWithGoogle]
   );
 
   const onFailure = (event: any) => { };
@@ -96,9 +109,7 @@ const Login: FunctionComponent = (): ReactElement => {
 
 
   const handleContinueWithGoogle = useCallback(() => {
-    setLoading(true);
     signIn();
-    setLoading(false);
   }, [signIn]);
 
   return (
