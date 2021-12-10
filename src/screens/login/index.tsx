@@ -1,6 +1,4 @@
-import { FunctionComponent, ReactElement } from "react";
-
-import { useRef, useCallback } from 'react';
+import { FunctionComponent, ReactElement, useRef, useCallback } from 'react';
 import { Typography, Button, CircularProgress } from "@mui/material";
 import { useGoogleLogin } from "react-google-login";
 import { styled } from "@mui/material/styles";
@@ -66,33 +64,18 @@ const LOGIN_WITH_GOOGLE = gql`
     loginWithGoogle(
       token: $token
     ) {
-      id
+      jwtToken
     }
   }
 `;
 
 const Login: FunctionComponent = (): ReactElement => {
-  const jwtToken = useRef({});
   const [loginWithGoogle, { loading, error, }] = useMutation(LOGIN_WITH_GOOGLE);
 
   const onSuccess = useCallback(
-    (response: any) => {
-      let refreshTiming =
-        (response.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
-
-      const refreshToken = async () => {
-        const newAuthResponse = await response.reloadAuthResponse();
-        refreshTiming =
-          (newAuthResponse.expires_in ||
-            newAuthResponse.expires_in ||
-            3600 - 5 * 60) * 1000;
-
-        jwtToken.current = await loginWithGoogle(response.tokenId);
-
-        setTimeout(refreshToken, refreshTiming);
-      };
-
-      setTimeout(refreshToken, refreshTiming);
+    async (response: any) => {
+        const jwtToken = await loginWithGoogle(response.tokenId);
+        localStorage.setItem("jwtAuthToken", String(jwtToken));
     },
     [loginWithGoogle]
   );
