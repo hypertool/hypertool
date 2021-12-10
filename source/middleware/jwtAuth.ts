@@ -1,10 +1,14 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
 
-import { UserModel } from '../models';
-import { constants } from '../utils';
+import { UserModel } from "../models";
+import { constants } from "../utils";
 
-const jwtAuth = async (request: Request, response: Response, next: NextFunction) => {
+const jwtAuth = async (
+    request: Request,
+    response: Response,
+    next: NextFunction
+) => {
     const { authorization } = request.headers;
     if (!authorization) {
         response.status(constants.httpStatuses.FORBIDDEN).json({
@@ -16,7 +20,10 @@ const jwtAuth = async (request: Request, response: Response, next: NextFunction)
     const token = authorization.split(" ")[1];
 
     try {
-        const { emailAddress } = jwt.verify(token, process.env.JWT_SIGNATURE_KEY);
+        const { emailAddress } = jwt.verify(
+            token,
+            process.env.JWT_SIGNATURE_KEY
+        );
         const user = await UserModel.findOne({
             emailAddress,
         }).exec();
@@ -27,4 +34,4 @@ const jwtAuth = async (request: Request, response: Response, next: NextFunction)
     return next();
 };
 
-export { jwtAuth };
+export default jwtAuth;
