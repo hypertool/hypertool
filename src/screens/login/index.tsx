@@ -1,6 +1,8 @@
-import type { FunctionComponent, ReactElement } from "react";
+import { FunctionComponent, ReactElement } from "react";
 
-import { Typography, Button } from "@mui/material";
+import { useState, useCallback } from 'react';
+import { Typography, Button, CircularProgress } from "@mui/material";
+import { useGoogleLogin } from "react-google-login";
 import { styled } from "@mui/material/styles";
 
 const Root = styled("section")(({ theme }) => ({
@@ -45,22 +47,73 @@ const PrimaryAction = styled(Button)(({ theme }) => ({
   marginTop: theme.spacing(2),
   borderRadius: theme.spacing(1),
   textTransform: "none",
-
   width: "100%",
-
   [theme.breakpoints.up("md")]: {
     width: 264,
   },
 }));
 
+const Loader = styled(CircularProgress)(({ theme }) => ({
+  marginRight: theme.spacing(1),
+}))
+
 const Login: FunctionComponent = (): ReactElement => {
+  const [loading, setLoading] = useState(false);
+
+  const onSuccess = useCallback(
+    (response: any) => {
+      let refreshTiming =
+        (response.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
+
+      const refreshToken = async () => {
+        const newAuthResponse = await response.reloadAuthResponse();
+        refreshTiming =
+          (newAuthResponse.expires_in ||
+            newAuthResponse.expires_in ||
+            3600 - 5 * 60) * 1000;
+
+        // dispatch(createSession(response.tokenId));
+        setTimeout(refreshToken, refreshTiming);
+      };
+
+      // dispatch(createSession(response.tokenId));
+      setTimeout(refreshToken, refreshTiming);
+    },
+    [
+      /*dispatch*/
+    ]
+  );
+
+  const onFailure = (event: any) => { };
+
+  const { signIn } = useGoogleLogin({
+    onSuccess,
+    onFailure,
+    clientId: process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID || "",
+    cookiePolicy: "single_host_origin",
+    isSignedIn: true,
+  });
+
+
+  const handleContinueWithGoogle = useCallback(() => {
+    setLoading(true);
+    signIn();
+    setLoading(false);
+  }, [signIn]);
+
   return (
     <Root>
       <SectionTitle>Welcome to HyperTool</SectionTitle>
       <SectionSubtitle>
         Don't have an account? No worries, we'll create it for you.
       </SectionSubtitle>
-      <PrimaryAction variant="contained" color="primary" size="medium">
+      <PrimaryAction variant="contained" color="primary" size="medium" onClick={handleContinueWithGoogle}>
+        {loading && (
+          <Loader
+            size="16px"
+            color="inherit"
+          />
+        )}
         Continue with Google
       </PrimaryAction>
     </Root>
