@@ -1,8 +1,10 @@
-import { FunctionComponent, ReactElement, useRef, useCallback } from 'react';
-import { Typography, Button, CircularProgress } from "@mui/material";
+import { FunctionComponent, ReactElement, useCallback } from 'react';
+import { Typography, Button } from "@mui/material";
 import { useGoogleLogin } from "react-google-login";
 import { styled } from "@mui/material/styles";
-import { gql, useMutation } from "@apollo/client";
+import { gql } from "@apollo/client";
+import { useNavigate } from "react-router";
+
 import {
   ApolloClient,
   InMemoryCache,
@@ -80,6 +82,9 @@ const client = new ApolloClient({
 
 
 const Login: FunctionComponent = (): ReactElement => {
+
+  const navigate = useNavigate();
+
   const onSuccess = useCallback(
     async (response: any) => {
         const result = await client
@@ -90,6 +95,7 @@ const Login: FunctionComponent = (): ReactElement => {
     delete result.data.loginWithGoogle.__typename;
     delete result.data.loginWithGoogle.user.__typename;
     localStorage.setItem("session", JSON.stringify(result.data.loginWithGoogle));
+    navigate("/apps");
     },
     []
   );
