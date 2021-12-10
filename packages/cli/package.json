@@ -23,6 +23,7 @@
         "webpack-dev-server": "^4.6.0"
     },
     "devDependencies": {
+        "@types/js-yaml": "^4.0.5",
         "@types/node": "^16.11.11",
         "@types/prompts": "^2.0.14",
         "@types/webpack-dev-server": "^4.5.0"
