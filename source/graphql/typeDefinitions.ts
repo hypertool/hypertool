@@ -46,6 +46,12 @@ const types = `
         createdAt: Date!
         updatedAt: Date!
     }
+
+    type Session {
+        jwtToken: String!
+        user: User!
+        createdAt: Date!
+    }
 `;
 
 export { types };
