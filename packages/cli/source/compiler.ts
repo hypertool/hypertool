@@ -14,6 +14,7 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 
 import { logger /* ModuleScopePlugin */ } from "./utils";
 import * as paths from "./config/paths";
+import { env } from "./utils";
 
 const hash = (data: any) => {
     const hash = crypto.createHash("md5");
@@ -25,6 +26,9 @@ const IMAGE_INLINE_SIZE_LIMIT = 10000;
 
 export const prepare = (production: boolean): Configuration => {
     const enableTypeScript = false;
+    const clientEnv = env.getClientEnvironment(
+        paths.PUBLIC_URL_OR_PATH.slice(0, -1),
+    );
 
     return {
         mode: production ? "production" : "development",
@@ -176,6 +180,21 @@ export const prepare = (production: boolean): Configuration => {
                       }
                     : {}),
             }),
+            /* Injects environment variables derived from `getClientEnvironment()`
+             * to the application.
+             *
+             * You can using the environment varaible as shown below:
+             * ```
+             * if (process.env.NODE_ENV === "production") {
+             *     ...
+             * }
+             * ```
+             *
+             * It is absolutely essential that `NODE_ENV` is set to "production"
+             * during a production build. Otherwise React will be compiled in
+             * the very slow development mode.
+             */
+            new webpack.DefinePlugin(clientEnv.stringified),
         ],
     };
 };
