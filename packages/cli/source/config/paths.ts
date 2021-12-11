@@ -27,4 +27,6 @@ export const PACKAGE_DESCRIPTOR = path.join(APP_DIRECTORY, "package.json");
 
 export const MANIFEST_DIRECTORY = path.join(APP_DIRECTORY, "manifest");
 
+export const DOT_ENV = path.join(APP_DIRECTORY, ".env");
+
 export const extensions = ["js", "ts", "htx", "json"];

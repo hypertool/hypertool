@@ -39,6 +39,7 @@ const getPackageNameInDirectory = (directory: string) => {
     const packagePath = path.join(directory.trim(), "package.json");
 
     try {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         return require(packagePath).name;
     } catch (error) {
         return null;
@@ -115,5 +116,5 @@ export const isPortAvailable = (port: number): Promise<boolean> =>
 export const isRoot = () => process.getuid && process.getuid() === 0;
 
 export * as logger from "./logger";
-
+export * as env from "./env";
 export { default as ModuleScopePlugin } from "./ModuleScopePlugin";
