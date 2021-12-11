@@ -25,4 +25,6 @@ export const APP_HTML = path.join(APP_DIRECTORY, "public", "index.html");
 
 export const PACKAGE_DESCRIPTOR = path.join(APP_DIRECTORY, "package.json");
 
+export const MANIFEST_DIRECTORY = path.join(APP_DIRECTORY, "manifest");
+
 export const extensions = ["js", "ts", "htx", "json"];

@@ -15,13 +15,16 @@
         "chalk": "^4.1.2",
         "commander": "^8.3.0",
         "file-loader": "^6.2.0",
+        "glob": "^7.2.0",
         "html-webpack-plugin": "^5.5.0",
+        "js-yaml": "^4.1.0",
         "portfinder": "^1.0.28",
         "prompts": "^2.4.2",
         "webpack": "^5.65.0",
         "webpack-dev-server": "^4.6.0"
     },
     "devDependencies": {
+        "@types/js-yaml": "^4.0.5",
         "@types/node": "^16.11.11",
         "@types/prompts": "^2.0.14",
         "@types/webpack-dev-server": "^4.5.0"
