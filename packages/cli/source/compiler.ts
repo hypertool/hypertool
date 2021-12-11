@@ -11,8 +11,9 @@ import type { Configuration, Compiler } from "webpack";
 import webpack from "webpack";
 import crypto from "crypto";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import CaseSensitivePathsPlugin from "case-sensitive-paths-webpack-plugin";
 
-import { logger /* ModuleScopePlugin */ } from "./utils";
+import { logger /* ModuleScopePlugin */, truthy } from "./utils";
 import { env, paths } from "./utils";
 
 const hash = (data: any) => {
@@ -199,7 +200,13 @@ export const prepare = (
              * the very slow development mode.
              */
             new webpack.DefinePlugin(clientEnv.stringified),
-        ],
+
+            /* Watcher doesn't work well if you mistype casing in a path so we use
+             * a plugin that prints an error when you attempt to do this.
+             * See https://github.com/facebook/create-react-app/issues/240
+             */
+            development && new CaseSensitivePathsPlugin(),
+        ].filter(truthy) as any,
     };
 };
 
