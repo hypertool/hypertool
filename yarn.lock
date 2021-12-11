@@ -3458,6 +3458,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/case-sensitive-paths-webpack-plugin@^2.1.6":
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/@types/case-sensitive-paths-webpack-plugin/-/case-sensitive-paths-webpack-plugin-2.1.6.tgz#dece04d6c9ac2209f12b357b8290c8a294e31ef3"
+  integrity sha512-1bk/krfgJ2bVPUusnmvWHg8Xwr/4I29yFxvZBFi5FZOshQzfcZ7XdutFHpYMs1w5RD319pjJbDk7J2ibWSW6QQ==
+  dependencies:
+    "@types/webpack" "^4"
+
 "@types/color-convert@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/color-convert/-/color-convert-2.0.0.tgz#8f5ee6b9e863dcbee5703f5a517ffb13d3ea4e22"
@@ -3791,7 +3798,7 @@
     "@types/source-list-map" "*"
     source-map "^0.7.3"
 
-"@types/webpack@^4.41.26", "@types/webpack@^4.41.8":
+"@types/webpack@^4", "@types/webpack@^4.41.26", "@types/webpack@^4.41.8":
   version "4.41.32"
   resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.41.32.tgz#a7bab03b72904070162b2f169415492209e94212"
   integrity sha512-cb+0ioil/7oz5//7tZUSwbrSAN/NWHrQylz5cW8G0dWTcF/g+/dSdMlKVZspBYuMAN1+WnwHrkxiRrLcwd0Heg==
