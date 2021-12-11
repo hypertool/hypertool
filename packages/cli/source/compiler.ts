@@ -13,8 +13,9 @@ import crypto from "crypto";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import CaseSensitivePathsPlugin from "case-sensitive-paths-webpack-plugin";
 
-import { logger /* ModuleScopePlugin */, truthy } from "./utils";
+import { logger, truthy } from "./utils";
 import { env, paths } from "./utils";
+import { InterpolateHtmlPlugin /* ModuleScopePlugin */ } from "./plugins";
 
 const hash = (data: any) => {
     const hash = crypto.createHash("md5");
@@ -181,6 +182,19 @@ export const prepare = (
                       }
                     : {}),
             }),
+            /* Makes some environment variables available in `index.html`.
+             * The public URL is available as `%PUBLIC_URL%` in `index.html`.
+             *
+             * For example:
+             * ```html
+             * <link rel="icon" href="%PUBLIC_URL%/favicon.ico">
+             * ```
+             *
+             * It will be an empty string unless you specify "homepage"
+             * in `package.json`, in which case it will be the pathname of
+             * that URL.
+             */
+            new InterpolateHtmlPlugin(clientEnv.raw),
             /* Injects environment variables derived from `getClientEnvironment()`
              * to the application.
              *
