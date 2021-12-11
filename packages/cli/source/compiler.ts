@@ -53,11 +53,7 @@ export const prepare = (
         stats: "none",
         cache: {
             type: "filesystem",
-            version: hash({
-                firstName: "Bruce",
-                lastName: "Wayne",
-                heroNames: ["Batman", "The Dark Knight"],
-            }),
+            version: hash(clientEnv.raw),
             cacheDirectory: paths.CACHE_DIRECTORY,
             store: "pack",
             buildDependencies: {
