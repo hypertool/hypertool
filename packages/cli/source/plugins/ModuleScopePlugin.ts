@@ -12,7 +12,7 @@ import os from "os";
 
 class ModuleScopePlugin {
     allowedDirectories: string[];
-    allowedFiles: Set<String>;
+    allowedFiles: Set<string>;
     allowedPaths: string[];
 
     constructor(allowedDirectories: string, allowedFiles: string[] = []) {
