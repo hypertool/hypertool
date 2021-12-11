@@ -4,7 +4,7 @@ import fs from "fs";
 
 import * as paths from "../config/paths";
 
-const compiler = () => {
+const compile = () => {
     glob(paths.MANIFEST_DIRECTORY + "**/*.{yml, yaml}", function (err, files) {
         files.forEach((file) => {
             const loaded = yaml.load(fs.readFileSync(file, "utf8"));
@@ -13,4 +13,4 @@ const compiler = () => {
     });
 };
 
-export default compiler;
+export default compile;

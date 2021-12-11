@@ -1,1 +1,1 @@
-export { default as manifestCompiler } from "./compiler";
+export { default as compile } from "./compile";
