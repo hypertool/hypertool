@@ -3,12 +3,12 @@ import { Command } from "commander";
 
 import { createServer } from "./server";
 import { createCompiler } from "./compiler";
-import { manifestCompiler } from "./manifest";
+import * as manifest from "./manifest";
 
 import packageData from "../package.json";
 
 const build = async (): Promise<void> => {
-    manifestCompiler();
+    manifest.compile();
 };
 
 const create = async (): Promise<void> => {
