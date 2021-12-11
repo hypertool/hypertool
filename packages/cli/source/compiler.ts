@@ -13,8 +13,7 @@ import crypto from "crypto";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 
 import { logger /* ModuleScopePlugin */ } from "./utils";
-import * as paths from "./config/paths";
-import { env } from "./utils";
+import { env, paths } from "./utils";
 
 const hash = (data: any) => {
     const hash = crypto.createHash("md5");

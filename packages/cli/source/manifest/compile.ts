@@ -2,7 +2,7 @@ import yaml from "js-yaml";
 import { glob } from "glob";
 import fs from "fs";
 
-import * as paths from "../config/paths";
+import { paths } from "../utils";
 
 const compile = () => {
     glob(

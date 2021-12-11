@@ -5,8 +5,7 @@ import prompts from "prompts";
 import WebpackDevServer from "webpack-dev-server";
 import portFinder from "portfinder";
 
-import { getProcessForPort, isPortAvailable, isRoot } from "./utils";
-import * as paths from "./config/paths";
+import { getProcessForPort, isPortAvailable, isRoot, paths } from "./utils";
 
 const prepare = async (
     port: number,

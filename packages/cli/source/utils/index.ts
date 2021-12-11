@@ -117,4 +117,5 @@ export const isRoot = () => process.getuid && process.getuid() === 0;
 
 export * as logger from "./logger";
 export * as env from "./env";
+export * as paths from "./paths";
 export { default as ModuleScopePlugin } from "./ModuleScopePlugin";
