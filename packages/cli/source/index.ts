@@ -26,7 +26,7 @@ const start = async (configuration: any): Promise<void> => {
     process.env.NODE_ENV = "development";
     env.loadEnv();
 
-    const compiler = createCompiler(false);
+    const compiler = createCompiler("development");
     const server = await createServer(
         configuration.port,
         configuration.autoPort,

@@ -23,7 +23,12 @@ const hash = (data: any) => {
 
 const IMAGE_INLINE_SIZE_LIMIT = 10000;
 
-export const prepare = (production: boolean): Configuration => {
+export const prepare = (
+    environment: "production" | "development" | "test",
+): Configuration => {
+    const production = environment === "production";
+    const development = environment === "development";
+    const test = environment === "test";
     const enableTypeScript = false;
     const clientEnv = env.getClientEnvironment(
         paths.PUBLIC_URL_OR_PATH.slice(0, -1),
@@ -39,7 +44,7 @@ export const prepare = (production: boolean): Configuration => {
         entry: paths.APP_ENTRY,
         output: {
             path: paths.BUILD_DIRECTORY,
-            pathinfo: !production,
+            pathinfo: development,
         },
         infrastructureLogging: {
             level: "none",
@@ -198,8 +203,10 @@ export const prepare = (production: boolean): Configuration => {
     };
 };
 
-export const createCompiler = (production: boolean): Compiler => {
-    const configuration = prepare(production);
+export const createCompiler = (
+    environment: "production" | "development" | "test",
+): Compiler => {
+    const configuration = prepare(environment);
     try {
         const compiler = webpack(configuration);
         return compiler;
