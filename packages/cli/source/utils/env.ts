@@ -12,7 +12,7 @@ import path from "path";
 import * as paths from "../config/paths";
 
 // Make sure that including paths.js after env.js will read .env variables.
-delete require.cache[require.resolve("./paths")];
+delete require.cache[require.resolve("../config/paths")];
 
 export const loadEnv = () => {
     const { NODE_ENV } = process.env;
