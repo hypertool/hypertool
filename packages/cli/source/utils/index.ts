@@ -115,6 +115,12 @@ export const isPortAvailable = (port: number): Promise<boolean> =>
 
 export const isRoot = () => process.getuid && process.getuid() === 0;
 
+export type Truthy<T> = T extends false | "" | 0 | null | undefined ? never : T;
+
+export const truthy = <T>(value: T): value is Truthy<T> => {
+    return !!value;
+};
+
 export * as logger from "./logger";
 export * as env from "./env";
 export * as paths from "./paths";

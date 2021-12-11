@@ -8,6 +8,7 @@
 
 import fs from "fs";
 import path from "path";
+import { truthy } from ".";
 
 import * as paths from "./paths";
 
@@ -31,7 +32,7 @@ export const loadEnv = () => {
         NODE_ENV !== "test" && `${paths.DOT_ENV}.local`,
         `${paths.DOT_ENV}.${NODE_ENV}`,
         paths.DOT_ENV,
-    ].filter(Boolean) as string[];
+    ].filter(truthy);
 
     /* Load the environment variables from .env* files. Suppress warnings using silent
      * if this file is missing. `dotenv` will never modify any environment variables
