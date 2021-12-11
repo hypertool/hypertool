@@ -41,7 +41,9 @@ export const loadEnv = () => {
      */
     for (const file of files) {
         if (fs.existsSync(file)) {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
             require("dotenv-expand")(
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
                 require("dotenv").config({
                     path: file,
                 }),
@@ -70,6 +72,7 @@ export const loadEnv = () => {
         .join(path.delimiter);
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Env = { [key: string]: any };
 
 /* Create a copy of `NODE_ENV`, `REACT_APP_*`, `HT_*` environment
