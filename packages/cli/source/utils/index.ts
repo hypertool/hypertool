@@ -1,6 +1,8 @@
 /**
  * Copyright (c) 2015 - present, Facebook, Inc.
  * Copyright (c) 2021 - present, Hypertool <hello@hypertool.io>
+ * Copyright (c) 2014 - present, Sindre Sorhus <sindresorhus@gmail.com>
+ *                               (https://sindresorhus.com)
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -121,7 +123,28 @@ export const truthy = <T>(value: T): value is Truthy<T> => {
     return !!value;
 };
 
+/**
+ * Escape `RegExp` special characters.
+ * You can also use this to escape a string that is inserted into the middle of
+ * a regex, for example, into a character class.
+ *
+ * @example
+ * ```
+ * const escapedString = escapeStringRegexp('How much $ for a 🦄?');
+ * // escapedString = 'How much \\$ for a 🦄\\?'
+ * new RegExp(escapedString);
+ * ```
+ */
+export const escapeStringRegexp = (value: string): string => {
+    /* Escape characters with special meaning either inside or outside character
+     * sets. Use a simple backslash escape when it’s always valid, and a `\xnn`
+     * escape when the simpler form would be disallowed by Unicode patterns’
+     * stricter grammar.
+     */
+    return value.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&").replace(/-/g, "\\x2d");
+};
+
 export * as logger from "./logger";
 export * as env from "./env";
 export * as paths from "./paths";
-export { default as ModuleScopePlugin } from "./ModuleScopePlugin";
+export { default as ModuleScopePlugin } from "../plugins/ModuleScopePlugin";
