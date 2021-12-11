@@ -12,7 +12,10 @@ export const warning = (message: string) => {
     console.log(`${chalk.yellow("[warning]")} ${message}`);
 };
 
-export const compileError = (message: string, filePath: string) => {
-    console.log(`${chalk.red("[error]")} ${message}`);
-    console.log(`${chalk.yellow("[file-path]")} ${filePath}`);
+export const compileError = (duplicate: string, filePath: string) => {
+    console.log(
+        `${chalk.red(
+            "[error]",
+        )} ${filePath}: Duplicate symbol "${duplicate}" found.`,
+    );
 };

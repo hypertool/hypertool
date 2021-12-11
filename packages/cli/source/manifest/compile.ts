@@ -33,17 +33,11 @@ const compile = () => {
                 for (const key in manifest) {
                     if (key === "app") {
                         if (Object.keys(app).length !== 0) {
-                            logger.compileError(
-                                "You have a duplicate app declaration.",
-                                manifest.file,
-                            );
+                            logger.compileError("app", manifest.file);
                         } else {
                             for (const appKey in manifest[key]) {
                                 if (app[appKey]) {
-                                    logger.compileError(
-                                        "Duplicate key declared inside your app.",
-                                        manifest.file,
-                                    );
+                                    logger.compileError(appKey, manifest.file);
                                 }
                                 app[appKey] = (manifest as any)[key][appKey];
                             }
@@ -51,10 +45,7 @@ const compile = () => {
                     } else if (key === "queries") {
                         for (const query of manifest[key]) {
                             if (queries[query.name]) {
-                                logger.compileError(
-                                    "Duplicate query name found.",
-                                    manifest.file,
-                                );
+                                logger.compileError(query.name, manifest.file);
                             }
                             const queryProperties: Record<string, any> = {};
                             for (const property in query) {
@@ -68,7 +59,7 @@ const compile = () => {
                         for (const resource of manifest[key]) {
                             if (resources[resource.name]) {
                                 logger.compileError(
-                                    "Duplicate resource name found.",
+                                    resource.name,
                                     manifest.file,
                                 );
                             }
