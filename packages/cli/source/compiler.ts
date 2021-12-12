@@ -243,7 +243,15 @@ export const prepare = (
                             },
                         },
                         {
-                            test: /\.css$/,
+                            /* By default CSS files are imported as CSS modules.
+                             * This allows styles to be local within components
+                             * and prevents global style pollution.
+                             *
+                             * Developers can override this behavior and import
+                             * CSS files into the global scope by naming their
+                             * stylesheets with `.global.css` extension.
+                             */
+                            test: /\.global\.css$/,
                             use: getStyleLoaders({
                                 importLoaders: 1,
                                 sourceMap,
