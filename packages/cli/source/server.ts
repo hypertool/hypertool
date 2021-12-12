@@ -2,12 +2,10 @@ import type { Compiler } from "webpack";
 import type { Configuration } from "webpack-dev-server";
 
 import prompts from "prompts";
-import path from "path";
 import WebpackDevServer from "webpack-dev-server";
 import portFinder from "portfinder";
 
-import { getProcessForPort, isPortAvailable, isRoot } from "./utils";
-import * as paths from "./config/paths";
+import { getProcessForPort, isPortAvailable, isRoot, paths } from "./utils";
 
 const prepare = async (
     port: number,

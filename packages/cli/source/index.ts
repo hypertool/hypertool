@@ -4,6 +4,7 @@ import { Command } from "commander";
 import { createServer } from "./server";
 import { createCompiler } from "./compiler";
 import * as manifest from "./manifest";
+import { env } from "./utils";
 
 import packageData from "../package.json";
 
@@ -20,7 +21,12 @@ const eject = async (): Promise<void> => {
 };
 
 const start = async (configuration: any): Promise<void> => {
-    const compiler = createCompiler(false);
+    /* Initialize the environment variables in a controlled fashion. */
+    process.env.BABEL_ENV = "development";
+    process.env.NODE_ENV = "development";
+    env.loadEnv();
+
+    const compiler = createCompiler("development");
     const server = await createServer(
         configuration.port,
         configuration.autoPort,

@@ -11,9 +11,11 @@ import type { Configuration, Compiler } from "webpack";
 import webpack from "webpack";
 import crypto from "crypto";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import CaseSensitivePathsPlugin from "case-sensitive-paths-webpack-plugin";
 
-import { logger /* ModuleScopePlugin */ } from "./utils";
-import * as paths from "./config/paths";
+import { logger, truthy } from "./utils";
+import { env, paths } from "./utils";
+import { InterpolateHtmlPlugin /* ModuleScopePlugin */ } from "./plugins";
 
 const hash = (data: any) => {
     const hash = crypto.createHash("md5");
@@ -23,8 +25,16 @@ const hash = (data: any) => {
 
 const IMAGE_INLINE_SIZE_LIMIT = 10000;
 
-export const prepare = (production: boolean): Configuration => {
+export const prepare = (
+    environment: "production" | "development" | "test",
+): Configuration => {
+    const production = environment === "production";
+    const development = environment === "development";
+    const test = environment === "test";
     const enableTypeScript = false;
+    const clientEnv = env.getClientEnvironment(
+        paths.PUBLIC_URL_OR_PATH.slice(0, -1),
+    );
 
     return {
         mode: production ? "production" : "development",
@@ -36,7 +46,7 @@ export const prepare = (production: boolean): Configuration => {
         entry: paths.APP_ENTRY,
         output: {
             path: paths.BUILD_DIRECTORY,
-            pathinfo: !production,
+            pathinfo: development,
         },
         infrastructureLogging: {
             level: "none",
@@ -44,11 +54,7 @@ export const prepare = (production: boolean): Configuration => {
         stats: "none",
         cache: {
             type: "filesystem",
-            version: hash({
-                firstName: "Bruce",
-                lastName: "Wayne",
-                heroNames: ["Batman", "The Dark Knight"],
-            }),
+            version: hash(clientEnv.raw),
             cacheDirectory: paths.CACHE_DIRECTORY,
             store: "pack",
             buildDependencies: {
@@ -176,12 +182,48 @@ export const prepare = (production: boolean): Configuration => {
                       }
                     : {}),
             }),
-        ],
+            /* Makes some environment variables available in `index.html`.
+             * The public URL is available as `%PUBLIC_URL%` in `index.html`.
+             *
+             * For example:
+             * ```html
+             * <link rel="icon" href="%PUBLIC_URL%/favicon.ico">
+             * ```
+             *
+             * It will be an empty string unless you specify "homepage"
+             * in `package.json`, in which case it will be the pathname of
+             * that URL.
+             */
+            new InterpolateHtmlPlugin(clientEnv.raw),
+            /* Injects environment variables derived from `getClientEnvironment()`
+             * to the application.
+             *
+             * You can using the environment varaible as shown below:
+             * ```
+             * if (process.env.NODE_ENV === "production") {
+             *     ...
+             * }
+             * ```
+             *
+             * It is absolutely essential that `NODE_ENV` is set to "production"
+             * during a production build. Otherwise React will be compiled in
+             * the very slow development mode.
+             */
+            new webpack.DefinePlugin(clientEnv.stringified),
+
+            /* Watcher doesn't work well if you mistype casing in a path so we use
+             * a plugin that prints an error when you attempt to do this.
+             * See https://github.com/facebook/create-react-app/issues/240
+             */
+            development && new CaseSensitivePathsPlugin(),
+        ].filter(truthy) as any,
     };
 };
 
-export const createCompiler = (production: boolean): Compiler => {
-    const configuration = prepare(production);
+export const createCompiler = (
+    environment: "production" | "development" | "test",
+): Compiler => {
+    const configuration = prepare(environment);
     try {
         const compiler = webpack(configuration);
         return compiler;
