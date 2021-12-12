@@ -40,6 +40,13 @@ export const prepare = (
     /* Source map is always enabled in development. */
     const sourceMap = production ? enableSourceMap : development;
 
+    /* PostCSS loader applies autoprefixer to our CSS.
+     * CSS loader resolves paths in CSS and adds assets as dependencies.
+     * Style loader turns CSS into JS modules that inject `<style>` tags.
+     * In production, we use `MiniCSSExtractPlugin` to extract that CSS
+     * to a file, but in development style loader enables hot editing
+     * of CSS.
+     */
     const getStyleLoaders = (options: any, preprocessor?: string) => {
         const loaders = [
             development && require.resolve("style-loader"),
@@ -235,14 +242,6 @@ export const prepare = (
                                 compact: production,
                             },
                         },
-                        /* "postcss" loader applies autoprefixer to our CSS.
-                         * "css" loader resolves paths in CSS and adds assets as dependencies.
-                         * "style" loader turns CSS into JS modules that inject <style> tags.
-                         * In production, we use MiniCSSExtractPlugin to extract that CSS
-                         * to a file, but in development "style" loader enables hot editing
-                         * of CSS.
-                         * By default we support CSS Modules with the extension .module.css
-                         */
                         {
                             test: /\.css$/,
                             use: getStyleLoaders({
