@@ -14,7 +14,7 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import CaseSensitivePathsPlugin from "case-sensitive-paths-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
-import { logger, truthy } from "./utils";
+import { getLocalIdentifier, logger, truthy } from "./utils";
 import { env, paths } from "./utils";
 import { InterpolateHtmlPlugin /* ModuleScopePlugin */ } from "./plugins";
 
@@ -241,6 +241,22 @@ export const prepare = (
                                 cacheCompression: false,
                                 compact: production,
                             },
+                        },
+                        /* In Hypertool, when a .css file is imported, it is
+                         * imported via CSS Modules (https://github.com/css-modules/css-modules).
+                         * This allows global style pollution.
+                         */
+                        {
+                            test: /\.css$/,
+                            exclude: /\.global\.css$/,
+                            use: getStyleLoaders({
+                                importLoaders: 1,
+                                sourceMap,
+                                modules: {
+                                    mode: "local",
+                                    getLocalIdent: getLocalIdentifier,
+                                },
+                            }),
                         },
                         {
                             /* By default CSS files are imported as CSS modules.
