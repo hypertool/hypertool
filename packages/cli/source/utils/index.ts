@@ -195,7 +195,18 @@ export const listFiles = (pattern: string): Promise<string[]> =>
         });
     });
 
+export const getMissingKeys = (array: string[], registry: any) => {
+    const keys: string[] = [];
+    for (const key of array) {
+        if (!Object.prototype.hasOwnProperty.call(registry, key)) {
+            keys.push(key);
+        }
+    }
+    return keys.length === 0 ? null : keys;
+};
+
 export * as logger from "./logger";
 export * as env from "./env";
 export * as paths from "./paths";
+export * as constants from "./constants";
 export { default as ModuleScopePlugin } from "../plugins/ModuleScopePlugin";
