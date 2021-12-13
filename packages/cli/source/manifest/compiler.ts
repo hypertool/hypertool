@@ -6,10 +6,25 @@ import fs from "fs";
 import path from "path";
 import chalk from "chalk";
 
-import { paths } from "../utils";
+import { paths, getMissingKeys, constants } from "../utils";
 import type { Manifest, App, Query, Resource } from "../types";
 
 const IDENTIFIER_REGEX = /^[a-zA-Z_][a-zA-Z_0-9]+[a-zA-Z_0-9]$/;
+
+export const logMissingKeys = (
+    regsitryType: string,
+    keys: string[],
+    filePath: string,
+) => {
+    console.log(
+        `${chalk.red(
+            "[error]",
+        )} ${filePath}: The following missing keys were found in ${regsitryType}:`,
+    );
+    for (const key of keys) {
+        console.log(`\n❌  ${key}`);
+    }
+};
 
 export const logDuplicateError = (duplicate: string, filePath: string) => {
     console.log(
@@ -25,6 +40,13 @@ export const logSemanticError = (message: string, filePath: string) => {
 
 const parseApp = (app: App, path: string) => {
     const result: Record<string, any> = {};
+
+    const missingKeys = getMissingKeys(constants.appKeys, app);
+
+    if (missingKeys) {
+        logMissingKeys("app", missingKeys, path);
+    }
+
     for (const key in app) {
         if (result[key]) {
             logDuplicateError(key, path);
@@ -68,6 +90,13 @@ const parseQuery = (query: Query, path: string) => {
         resource: "",
         content: "",
     };
+
+    const missingKeys = getMissingKeys(constants.queryKeys, query);
+
+    if (missingKeys) {
+        logMissingKeys("queries", missingKeys, path);
+    }
+
     for (const key in query) {
         const value = (query as any)[key];
 
@@ -103,6 +132,13 @@ const parseResource = (resource: Resource, path: string) => {
         type: "",
         connection: "",
     };
+
+    const missingKeys = getMissingKeys(constants.resourceKeys, resource);
+
+    if (missingKeys) {
+        logMissingKeys("resources", missingKeys, path);
+    }
+
     for (const key in resource) {
         const value = (resource as any)[key];
 
