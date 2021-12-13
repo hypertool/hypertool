@@ -2,9 +2,9 @@
 import yaml from "js-yaml";
 import { glob } from "glob";
 import fs from "fs";
+import path from "path/posix";
 
-import * as paths from "../config/paths";
-import { logger } from "../utils";
+import { logger, paths } from "../utils";
 import { Manifest, Query, Resource } from "../types";
 
 const IDENTIFIER_REGEX = /^[a-zA-Z_][a-zA-Z_0-9]+[a-zA-Z_0-9]$/;
@@ -112,9 +112,10 @@ const compile = () => {
                 fs.promises.readFile(file, "utf-8"),
             );
             const result: string[] = await Promise.all(promises);
+            const currentDirectory = process.cwd();
             const manifests: Manifest[] = result.map((item, index) => {
                 const manifest: Manifest = yaml.load(item) as Manifest;
-                manifest.file = files[index];
+                manifest.file = path.relative(currentDirectory, files[index]);
                 return manifest;
             });
 
@@ -169,7 +170,7 @@ const compile = () => {
             queries = Object.entries(queries).map((item) => item[1]);
             resources = Object.entries(resources).map((item) => item[1]);
 
-            console.log(app, queries, resources);
+            // Send the parsed objects to the Query Engine Service
         },
     );
 };
