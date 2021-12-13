@@ -1,107 +1,154 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import yaml from "js-yaml";
 import { glob } from "glob";
 import fs from "fs";
-import path from "path/posix";
+import path from "path";
+import chalk from "chalk";
 
-import { logger, paths } from "../utils";
-import { Manifest, Query, Resource } from "../types";
+import { paths } from "../utils";
+import type { Manifest, App, Query, Resource } from "../types";
 
 const IDENTIFIER_REGEX = /^[a-zA-Z_][a-zA-Z_0-9]+[a-zA-Z_0-9]$/;
 
-const appParser = (manifest: Manifest) => {
-    const appObject: Record<string, any> = {};
-    for (const property in manifest.app) {
-        if (appObject[property]) {
-            logger.compileError(property, manifest.file);
-        }
-
-        const value = (manifest.app as any)[property];
-        switch (property) {
-            case "slug":
-                if (!IDENTIFIER_REGEX.test(value)) {
-                    logger.semanticError(
-                        `App slug ${value} is invalid.`,
-                        manifest.file,
-                    );
-                }
-                appObject.slug = value;
-                break;
-            case "title":
-                if (!IDENTIFIER_REGEX.test(value)) {
-                    logger.semanticError(
-                        `App title ${value} is invalid.`,
-                        manifest.file,
-                    );
-                }
-                appObject.title = value.trim();
-                break;
-            case "description":
-                appObject.description = value.trim();
-                break;
-            case "groups":
-                appObject.groups = value;
-                break;
-        }
-    }
-    return appObject;
+export const logDuplicateError = (duplicate: string, filePath: string) => {
+    console.log(
+        `${chalk.red(
+            "[error]",
+        )} ${filePath}: Duplicate symbol "${duplicate}" found.`,
+    );
 };
 
-const queryParser = (query: Query, path: string) => {
-    const queryObject: Query = {
+export const logSemanticError = (message: string, filePath: string) => {
+    console.log(`${chalk.red("[error]")} ${filePath}: ${message}`);
+};
+
+const parseApp = (app: App, path: string) => {
+    const result: Record<string, any> = {};
+    for (const key in app) {
+        if (result[key]) {
+            logDuplicateError(key, path);
+        }
+
+        const value = (app as any)[key];
+        switch (key) {
+            case "slug": {
+                if (!IDENTIFIER_REGEX.test(value)) {
+                    logSemanticError(`App slug ${value} is invalid.`, path);
+                }
+                result.slug = value;
+                break;
+            }
+
+            case "title": {
+                if (!IDENTIFIER_REGEX.test(value)) {
+                    logSemanticError(`App title ${value} is invalid.`, path);
+                }
+                result.title = value.trim();
+                break;
+            }
+
+            case "description": {
+                result.description = value.trim();
+                break;
+            }
+
+            case "groups": {
+                result.groups = value;
+                break;
+            }
+        }
+    }
+    return result;
+};
+
+const parseQuery = (query: Query, path: string) => {
+    const result: Query = {
         name: "",
         resource: "",
         content: "",
     };
-    for (const property in query) {
-        const value = (query as any)[property];
+    for (const key in query) {
+        const value = (query as any)[key];
 
-        switch (property) {
-            case "name":
+        switch (key) {
+            case "name": {
                 if (!IDENTIFIER_REGEX.test(value)) {
-                    logger.semanticError("Query name is invalid.", path);
+                    logSemanticError("Query name is invalid.", path);
                 }
-                queryObject.name = value.trim();
+                result.name = value.trim();
                 break;
-            case "resource":
+            }
+
+            case "resource": {
                 if (!IDENTIFIER_REGEX.test(value)) {
-                    logger.semanticError("Query resource is invalid.", path);
+                    logSemanticError("Query resource is invalid.", path);
                 }
-                queryObject.resource = value.trim();
+                result.resource = value.trim();
                 break;
-            case "content":
-                queryObject.content = value;
+            }
+
+            case "content": {
+                result.content = value;
                 break;
+            }
         }
     }
-    return queryObject;
+    return result;
 };
 
-const resourceParser = (resource: Resource, path: string) => {
-    const resourceObject: Resource = {
+const parseResource = (resource: Resource, path: string) => {
+    const result: Resource = {
         name: "",
         type: "",
         connection: "",
     };
-    for (const property in resource) {
-        const value = (resource as any)[property];
+    for (const key in resource) {
+        const value = (resource as any)[key];
 
-        switch (property) {
-            case "name":
+        switch (key) {
+            case "name": {
                 if (!IDENTIFIER_REGEX.test(value)) {
-                    logger.semanticError("Resource name is invalid.", path);
+                    logSemanticError("Resource name is invalid.", path);
                 }
-                resourceObject.name = value;
+                result.name = value;
                 break;
-            case "type":
-                resourceObject.type = value;
+            }
+
+            case "type": {
+                result.type = value;
                 break;
-            case "connection":
-                resourceObject.connection = value;
+            }
+
+            case "connection": {
+                result.connection = value;
                 break;
+            }
         }
     }
-    return resourceObject;
+    return result;
+};
+
+const parseQueries = (queries: any, path: string) => {
+    const result: any = {};
+    for (const query of queries) {
+        if (result[query.name]) {
+            logDuplicateError(query.name, path);
+        }
+        result[query.name] = parseQuery(query, path);
+    }
+    return result;
+};
+
+const parseResources = (resources: any, path: string) => {
+    const result: any = {};
+    for (const resource of resources) {
+        if (result[resource.name]) {
+            logDuplicateError(resource.name, path);
+        }
+        result[resource.name] = parseResource(resource, path);
+    }
+    return result;
 };
 
 const compile = () => {
@@ -126,43 +173,35 @@ const compile = () => {
             for (const manifest of manifests) {
                 for (const key in manifest) {
                     switch (key) {
-                        case "app":
+                        case "app": {
                             if (app) {
-                                logger.compileError("app", manifest.file);
+                                logDuplicateError("app", manifest.file);
                             }
-
-                            app = appParser(manifest);
+                            app = parseApp(manifest.app, manifest.file);
                             break;
-                        case "queries":
-                            for (const query of manifest[key]) {
-                                if (queries[query.name]) {
-                                    logger.compileError(
-                                        query.name,
-                                        manifest.file,
-                                    );
-                                }
+                        }
 
-                                queries[query.name] = queryParser(
-                                    query,
+                        case "queries": {
+                            queries = {
+                                ...queries,
+                                ...parseQueries(
+                                    manifest.queries,
                                     manifest.file,
-                                );
-                            }
+                                ),
+                            };
                             break;
-                        case "resources":
-                            for (const resource of manifest[key]) {
-                                if (resources[resource.name]) {
-                                    logger.compileError(
-                                        resource.name,
-                                        manifest.file,
-                                    );
-                                }
+                        }
 
-                                resources[resource.name] = resourceParser(
-                                    resource,
+                        case "resources": {
+                            resources = {
+                                ...resources,
+                                ...parseResources(
+                                    manifest.resources,
                                     manifest.file,
-                                );
-                            }
+                                ),
+                            };
                             break;
+                        }
                     }
                 }
             }
