@@ -16,7 +16,10 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 import { getLocalIdentifier, logger, truthy } from "./utils";
 import { env, paths } from "./utils";
-import { InterpolateHtmlPlugin /* ModuleScopePlugin */ } from "./plugins";
+import {
+    DefineHypertoolPlugin,
+    InterpolateHtmlPlugin /* ModuleScopePlugin */,
+} from "./plugins";
 
 const hash = (data: any) => {
     const hash = crypto.createHash("md5");
@@ -289,6 +292,7 @@ export const prepare = (
             ],
         },
         plugins: [
+            new DefineHypertoolPlugin(),
             /* Generate an index file and inject a script loader. */
             new HtmlWebpackPlugin({
                 inject: true,
