@@ -12,8 +12,9 @@ import webpack from "webpack";
 import crypto from "crypto";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import CaseSensitivePathsPlugin from "case-sensitive-paths-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
-import { logger, truthy } from "./utils";
+import { getLocalIdentifier, logger, truthy } from "./utils";
 import { env, paths } from "./utils";
 import { InterpolateHtmlPlugin /* ModuleScopePlugin */ } from "./plugins";
 
@@ -32,9 +33,94 @@ export const prepare = (
     const development = environment === "development";
     const test = environment === "test";
     const enableTypeScript = false;
+    const enableSourceMap = false;
     const clientEnv = env.getClientEnvironment(
         paths.PUBLIC_URL_OR_PATH.slice(0, -1),
     );
+    /* Source map is always enabled in development. */
+    const sourceMap = production ? enableSourceMap : development;
+
+    /* PostCSS loader applies autoprefixer to our CSS.
+     * CSS loader resolves paths in CSS and adds assets as dependencies.
+     * Style loader turns CSS into JS modules that inject `<style>` tags.
+     * In production, we use `MiniCSSExtractPlugin` to extract that CSS
+     * to a file, but in development style loader enables hot editing
+     * of CSS.
+     */
+    const getStyleLoaders = (options: any, preprocessor?: string) => {
+        const loaders = [
+            development && require.resolve("style-loader"),
+            production && {
+                loader: MiniCssExtractPlugin.loader,
+                /* CSS is located in `static/css`, use '../../' to locate `index.html`
+                 * directory in production `paths.PUBLIC_URL_OR_PATH` can be a
+                 * relative path.
+                 */
+                options: {
+                    publicPath: paths.PUBLIC_URL_OR_PATH.startsWith(".")
+                        ? "../.."
+                        : undefined,
+                },
+            },
+            {
+                loader: require.resolve("css-loader"),
+                options,
+            },
+            {
+                /* Options for PostCSS as we reference these options twice.
+                 * Adds vendor prefixing based on your specified browser support in
+                 * package.json.
+                 */
+                loader: require.resolve("postcss-loader"),
+                options: {
+                    postcssOptions: {
+                        /* Necessary for external CSS imports to work
+                         * https://github.com/facebook/create-react-app/issues/2677
+                         */
+                        ident: "postcss",
+                        plugins: [
+                            "postcss-flexbugs-fixes",
+                            [
+                                "postcss-preset-env",
+                                {
+                                    autoprefixer: {
+                                        flexbox: "no-2009",
+                                    },
+                                    stage: 3,
+                                },
+                            ],
+                            /* Adds PostCSS Normalize as the reset css with default options,
+                             * so that it honors browserslist config in `package.json`
+                             * which in turn let's users customize the target behavior as per
+                             * their needs.
+                             */
+                            "postcss-normalize",
+                        ],
+                    },
+                    sourceMap,
+                },
+            },
+        ].filter(truthy);
+
+        if (preprocessor) {
+            loaders.push(
+                {
+                    loader: require.resolve("resolve-url-loader"),
+                    options: {
+                        sourceMap,
+                        root: paths.APP_SOURCE_DIRECTORY,
+                    },
+                },
+                {
+                    loader: require.resolve(preprocessor),
+                    options: {
+                        sourceMap: true,
+                    },
+                },
+            );
+        }
+        return loaders;
+    };
 
     return {
         mode: production ? "production" : "development",
@@ -155,6 +241,48 @@ export const prepare = (
                                 cacheCompression: false,
                                 compact: production,
                             },
+                        },
+                        /* In Hypertool, when a .css file is imported, it is
+                         * imported via CSS Modules (https://github.com/css-modules/css-modules).
+                         * This allows global style pollution.
+                         */
+                        {
+                            test: /\.css$/,
+                            exclude: /\.global\.css$/,
+                            use: getStyleLoaders({
+                                importLoaders: 1,
+                                sourceMap,
+                                modules: {
+                                    mode: "local",
+                                    getLocalIdent: getLocalIdentifier,
+                                },
+                            }),
+                        },
+                        {
+                            /* By default CSS files are imported as CSS modules.
+                             * This allows styles to be local within components
+                             * and prevents global style pollution.
+                             *
+                             * Developers can override this behavior and import
+                             * CSS files into the global scope by naming their
+                             * stylesheets with `.global.css` extension.
+                             */
+                            test: /\.global\.css$/,
+                            use: getStyleLoaders({
+                                importLoaders: 1,
+                                sourceMap,
+                                modules: {
+                                    mode: "icss",
+                                },
+                            }),
+                            /* Do not consider CSS imports dead code even if the
+                             * containing package claims to have no side effects.
+                             * Remove this when webpack adds a warning or an error
+                             * for this.
+                             *
+                             * See https://github.com/webpack/webpack/issues/6571
+                             */
+                            sideEffects: true,
                         },
                     ],
                 },

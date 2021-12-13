@@ -13,6 +13,7 @@ import { execSync } from "child_process";
 import { execFileSync } from "child_process";
 import path from "path";
 import { Socket } from "net";
+import loaderUtils from "loader-utils";
 
 const execOptions = {
     encoding: "utf8",
@@ -142,6 +143,43 @@ export const escapeStringRegexp = (value: string): string => {
      * stricter grammar.
      */
     return value.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&").replace(/-/g, "\\x2d");
+};
+
+export const getLocalIdentifier = (
+    context: any,
+    _localIdentifierName: string,
+    localName: string,
+    options: any,
+) => {
+    /* Use the file name or directory name, based on some uses the `index.js`
+     * / index.(css|scss|sass) project style
+     */
+    const fileOrDirectoryName = context.resourcePath.match(
+        /index\.(css|scss|sass)$/,
+    )
+        ? "[folder]"
+        : "[name]";
+    /* Create a hash based on a the file location and class name. Will be unique
+     * across a project, and close to globally unique.
+     */
+    const hash = loaderUtils.getHashDigest(
+        Buffer.from(
+            path.posix.relative(context.rootContext, context.resourcePath) +
+                localName,
+            "utf-8",
+        ),
+        "md5",
+        "base64",
+        5,
+    );
+    /* Use `loaderUtils` to find the file or directory name. */
+    const className = loaderUtils.interpolateName(
+        context,
+        fileOrDirectoryName + "__" + localName + "__" + hash,
+        options,
+    );
+
+    return className;
 };
 
 export * as logger from "./logger";
