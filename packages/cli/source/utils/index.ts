@@ -14,6 +14,7 @@ import { execFileSync } from "child_process";
 import path from "path";
 import { Socket } from "net";
 import loaderUtils from "loader-utils";
+import glob from "glob";
 
 const execOptions = {
     encoding: "utf8",
@@ -181,6 +182,18 @@ export const getLocalIdentifier = (
 
     return className;
 };
+
+export const listFiles = (pattern: string): Promise<string[]> =>
+    new Promise((resolve, reject) => {
+        glob(pattern, {}, (error: Error | null, matches: string[]) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+
+            resolve(matches);
+        });
+    });
 
 export * as logger from "./logger";
 export * as env from "./env";
