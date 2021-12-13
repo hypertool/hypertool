@@ -19,11 +19,10 @@ export const logMissingKeys = (
     console.log(
         `${chalk.red(
             "[error]",
-        )} ${filePath}: The following missing keys were found in ${regsitryType}:`,
+        )} ${filePath}: The following keys are missing in ${regsitryType}: ${keys.join(
+            ", ",
+        )}`,
     );
-    for (const key of keys) {
-        console.log(`\n❌  ${key}`);
-    }
 };
 
 export const logDuplicateError = (duplicate: string, filePath: string) => {

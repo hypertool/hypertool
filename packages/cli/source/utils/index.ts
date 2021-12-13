@@ -194,6 +194,7 @@ export const listFiles = (pattern: string): Promise<string[]> =>
             resolve(matches);
         });
     });
+
 export const getMissingKeys = (array: string[], registry: any) => {
     const keys: string[] = [];
     for (const key of array) {
