@@ -21,5 +21,8 @@
         "start": "node ./build/index.js",
         "storybook": "start-storybook -p 6006",
         "build-storybook": "build-storybook"
+    },
+    "peerDependencies": {
+        "react-router-dom": "^6.2.1"
     }
 }
