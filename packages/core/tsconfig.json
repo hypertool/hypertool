@@ -3,6 +3,7 @@
         "module": "commonjs",
         "esModuleInterop": true,
         "target": "es6",
+        "lib": ["es2016", "dom"],
         "allowJs": true,
         "moduleResolution": "node",
         "sourceMap": true,
@@ -11,8 +12,10 @@
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,
         "resolveJsonModule": true,
-        "jsx": "react"
+        "jsx": "react",
+        "rootDir": "source",
+        "noImplicitReturns": true,
+        "noImplicitThis": true
     },
-    "lib": ["es2015"],
     "include": ["source"]
 }
