@@ -9,6 +9,8 @@ import {
     groupTypes,
     groupStatuses,
     genders,
+    queryStatuses,
+    queryLifecycleStages,
 } from "../utils/constants";
 
 export interface MySQLConfiguration {
@@ -228,6 +230,18 @@ export interface Session {
     jwtToken: string;
     user: ExternalUser;
     createdAt: Date;
+}
+
+export interface Query {
+    name: string;
+    description: string;
+    resource: string;
+    appId: string;
+    content: string;
+    status: typeof queryStatuses[number];
+    lifecycle: typeof queryLifecycleStages[number];
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export type AppPage = ExternalListPage<ExternalApp>;
