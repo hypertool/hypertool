@@ -1,6 +1,13 @@
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
-import { organizations, users, groups, apps, resources } from "../controllers";
+import {
+    organizations,
+    users,
+    groups,
+    apps,
+    resources,
+    queryTemplates,
+} from "../controllers";
 import { types } from "./typeDefinitions";
 import { jwtAuth } from "../middleware";
 
@@ -357,6 +364,9 @@ const typeDefs = gql`
 
         getResources(page: Int, limit: Int): ResourcePage!
         getResourceById(resourceId: ID!): Resource!
+
+        getQueryTemplateByAppId(page: Int, limit: Int, appId: ID!): QueryTemplatePage!
+        getQueryTemplateById(id: ID!): QueryTemplate!
     }
 `;
 
@@ -450,6 +460,9 @@ const resolvers = {
 
         getResourceById: async (parent, values, context) =>
             resources.getById(context.request, values.resourceId),
+
+        getQueryTemplateByAppId: async (parent, values, context) =>
+            queryTemplates.listByAppId(context.request, values),
     },
 };
 
