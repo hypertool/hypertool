@@ -192,15 +192,18 @@ const update = async (
     return toExternal(query);
 };
 
-const remove = async (context, id: string): Promise<{ success: boolean }> => {
-    if (!constants.identifierPattern.test(id)) {
+const remove = async (
+    context,
+    queryTemplateId: string
+): Promise<{ success: boolean }> => {
+    if (!constants.identifierPattern.test(queryTemplateId)) {
         throw new BadRequestError("The specified query identifier is invalid.");
     }
 
     // TODO: Update filters
     const query = await QueryTemplateModel.findOneAndUpdate(
         {
-            _id: id,
+            _id: queryTemplateId,
             status: { $ne: "deleted" },
         },
         {
@@ -221,10 +224,14 @@ const remove = async (context, id: string): Promise<{ success: boolean }> => {
     return { success: true };
 };
 
-const removeAllStatic = async (context): Promise<{ success: boolean }> => {
+const removeAllStatic = async (
+    context,
+    appId: string
+): Promise<{ success: boolean }> => {
     // TODO: Update filters
     const query = await QueryTemplateModel.updateMany(
         {
+            app: appId,
             lifecycle: "static",
             status: { $ne: "deleted" },
         },

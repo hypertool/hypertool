@@ -348,6 +348,15 @@ const typeDefs = gql`
 
         deleteResource(resourceId: ID!): RemoveResult!
 
+        createQueryTemplate(
+            name: String!,
+            description: String!,
+            resource: ID!,
+            app: ID!,
+            content: String!,
+            lifecycle: QueryLifecycleType,
+        ): QueryTemplate!
+
         updateQueryTemplate(
             queryTemplateId: ID!
             name: String,
@@ -355,13 +364,9 @@ const typeDefs = gql`
             content: String,
         ): QueryTemplate!
 
-        deleteQueryTemplates(
+        deleteQueryTemplate(queryTemplateId: ID!): RemoveResult!
 
-        ): RemoveResult!
-
-        deleteAllStaticQueryTemplates(
-
-        ): RemoveResult!
+        deleteAllStaticQueryTemplates(appId: ID!): RemoveResult!
     }
 
     type Query {
@@ -445,8 +450,21 @@ const resolvers = {
         deleteResource: async (parent, values, context) =>
             resources.remove(context.request, context.resourceId),
 
+        createQueryTemplate: async (parent, values, context) =>
+            queryTemplates.create(context.request, values),
+
         updateQueryTemplate: async (parent, values, context) =>
-            resources.update(context.request, values.queryTemplateId, values),
+            queryTemplates.update(
+                context.request,
+                values.queryTemplateId,
+                values
+            ),
+
+        deleteQueryTemplate: async (parent, values, context) =>
+            queryTemplates.remove(context.request, context.queryTemplateId),
+
+        deleteAllStaticQueryTemplates: async (parent, values, context) =>
+            queryTemplates.removeAllStatic(context.request, values.appId),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>
