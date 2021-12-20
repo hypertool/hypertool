@@ -8,6 +8,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mui/icons-material": "^5.2.5",
     "@mui/material": "^5.2.5",
     "@mui/styled-engine-sc": "^5.1.0",
     "framer-motion": "^5.5.5",
