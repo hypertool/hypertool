@@ -347,6 +347,21 @@ const typeDefs = gql`
         ): Resource!
 
         deleteResource(resourceId: ID!): RemoveResult!
+
+        updateQueryTemplate(
+            queryTemplateId: ID!
+            name: String,
+            description: String,
+            content: String,
+        ): QueryTemplate!
+
+        deleteQueryTemplates(
+
+        ): RemoveResult!
+
+        deleteAllStaticQueryTemplates(
+
+        ): RemoveResult!
     }
 
     type Query {
@@ -429,6 +444,9 @@ const resolvers = {
 
         deleteResource: async (parent, values, context) =>
             resources.remove(context.request, context.resourceId),
+
+        updateQueryTemplate: async (parent, values, context) =>
+            resources.update(context.request, values.queryTemplateId, values),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>

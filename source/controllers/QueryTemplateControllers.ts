@@ -157,10 +157,10 @@ const getById = async (
 
 const update = async (
     context,
-    id: string,
+    queryTemplateId: string,
     attributes
 ): Promise<ExternalQuery> => {
-    if (!constants.identifierPattern.test(id)) {
+    if (!constants.identifierPattern.test(queryTemplateId)) {
         throw new BadRequestError("The specified query identifier is invalid.");
     }
 
@@ -173,7 +173,7 @@ const update = async (
 
     const query = await QueryTemplateModel.findOneAndUpdate(
         {
-            _id: id,
+            _id: queryTemplateId,
             status: { $ne: "deleted" },
         },
         value,
