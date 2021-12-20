@@ -149,6 +149,43 @@ const getById = async (context, id: string): Promise<ExternalQuery> => {
     return toExternal(query);
 };
 
+const update = async (
+    context,
+    id: string,
+    attributes
+): Promise<ExternalQuery> => {
+    if (!constants.identifierPattern.test(id)) {
+        throw new BadRequestError("The specified query identifier is invalid.");
+    }
+
+    const { error, value } = updateSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const query = await QueryTemplateModel.findOneAndUpdate(
+        {
+            _id: id,
+            status: { $ne: "deleted" },
+        },
+        value,
+        {
+            new: true,
+            lean: true,
+        }
+    ).exec();
+
+    if (!query) {
+        throw new NotFoundError(
+            "A query with the specified identifier does not exist."
+        );
+    }
+
+    return toExternal(query);
+};
+
 const remove = async (context, id: string): Promise<{ success: boolean }> => {
     if (!constants.identifierPattern.test(id)) {
         throw new BadRequestError("The specified query identifier is invalid.");
@@ -201,4 +238,12 @@ const removeAllStatic = async (context): Promise<{ success: boolean }> => {
     return { success: true };
 };
 
-export { create, listByIds, listByAppId, getById, remove, removeAllStatic };
+export {
+    create,
+    listByIds,
+    listByAppId,
+    getById,
+    update,
+    remove,
+    removeAllStatic,
+};
