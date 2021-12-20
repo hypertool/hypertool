@@ -244,4 +244,16 @@ export interface Query {
     updatedAt: Date;
 }
 
+export interface ExternalQuery {
+    name: string;
+    description: string;
+    resource: string;
+    appId: string;
+    content: string;
+    status: typeof queryStatuses[number];
+    lifecycle: typeof queryLifecycleStages[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export type AppPage = ExternalListPage<ExternalApp>;
