@@ -1,6 +1,7 @@
 import joi from "joi";
 
 import type { Query, ExternalQuery, QueryPage } from "../types";
+
 import { constants, BadRequestError, NotFoundError } from "../utils";
 import { QueryTemplateModel } from "../models";
 
