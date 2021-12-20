@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
 import type { Query } from "../types";
-import { queryStatuses, queryLifecycleStages } from "../utils/constants";
+import { queryStatuses, queryLifecycleTypes } from "../utils/constants";
 
 const queryTemplateSchema = new Schema(
     {
@@ -57,7 +57,7 @@ const queryTemplateSchema = new Schema(
          */
         lifecycle: {
             type: String,
-            enum: queryLifecycleStages,
+            enum: queryLifecycleTypes,
             required: true,
         },
     },

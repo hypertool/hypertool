@@ -10,7 +10,7 @@ import {
     groupStatuses,
     genders,
     queryStatuses,
-    queryLifecycleStages,
+    queryLifecycleTypes,
 } from "../utils/constants";
 
 export interface MySQLConfiguration {
@@ -239,7 +239,7 @@ export interface Query {
     app: string | App;
     content: string;
     status: typeof queryStatuses[number];
-    lifecycle: typeof queryLifecycleStages[number];
+    lifecycle: typeof queryLifecycleTypes[number];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -251,7 +251,7 @@ export interface ExternalQuery {
     app: string | App;
     content: string;
     status: typeof queryStatuses[number];
-    lifecycle: typeof queryLifecycleStages[number];
+    lifecycle: typeof queryLifecycleTypes[number];
     createdAt: Date;
     updatedAt: Date;
 }
