@@ -59,6 +59,24 @@ const toExternal = (query: Query): ExternalQuery => {
     };
 };
 
+const create = async (context, attributes): Promise<ExternalQuery> => {
+    const { error, value } = createSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const newQuery = new QueryTemplateModel({
+        ...value,
+        status: "enabled",
+    });
+    await newQuery.save();
+
+    return toExternal(newQuery);
+};
+
 const listByAppId = async (context, parameters): Promise<QueryPage> => {
     const { error, value } = filterSchema.validate(parameters);
     if (error) {
@@ -183,4 +201,4 @@ const removeAllStatic = async (context): Promise<{ success: boolean }> => {
     return { success: true };
 };
 
-export { listByIds, listByAppId, getById, remove, removeAllStatic };
+export { create, listByIds, listByAppId, getById, remove, removeAllStatic };
