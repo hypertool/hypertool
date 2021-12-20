@@ -64,4 +64,26 @@ const listByAppIds = async (
     return appIds.map((key) => toExternal(object[key]));
 };
 
-export { listByIds, listByAppIds };
+const getById = async (context, id: string): Promise<ExternalQuery> => {
+    if (!constants.identifierPattern.test(id)) {
+        throw new BadRequestError("The specified query identifier is invalid.");
+    }
+
+    // TODO: Update filters
+    const filters = {
+        _id: id,
+        status: { $ne: "deleted" },
+    };
+    const query = await QueryTemplateModel.findOne(filters as any).exec();
+
+    /* We return a 404 error, if we did not find the query. */
+    if (!query) {
+        throw new NotFoundError(
+            "Cannot find a query with the specified identifier."
+        );
+    }
+
+    return toExternal(query);
+};
+
+export { listByIds, listByAppIds, getById };
