@@ -1,8 +1,12 @@
-import type { NextPage } from "next";
+import type { ReactElement } from "react";
 
 import Head from "next/head";
 
-const Home: NextPage = () => {
+import type { Page } from "../types";
+
+import { VisitorLayout } from "../components/layouts";
+
+const Home: Page = () => {
   return (
     <div>
       <Head>
@@ -16,6 +20,10 @@ const Home: NextPage = () => {
       <p>Hello, world!</p>
     </div>
   );
+};
+
+Home.getLayout = function getLayout(children: ReactElement): ReactElement {
+  return <VisitorLayout>{children}</VisitorLayout>;
 };
 
 export default Home;
