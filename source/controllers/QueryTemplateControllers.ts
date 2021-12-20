@@ -13,6 +13,7 @@ const filterSchema = joi.object({
         .min(constants.paginateMinLimit)
         .max(constants.paginateMaxLimit)
         .default(constants.paginateMinLimit),
+    appId: joi.string().regex(constants.identifierPattern),
 });
 
 const toExternal = (query: Query): ExternalQuery => {
@@ -43,6 +44,42 @@ const toExternal = (query: Query): ExternalQuery => {
     };
 };
 
+const listByAppId = async (context, parameters): Promise<QueryPage> => {
+    const { error, value } = filterSchema.validate(parameters);
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const { page, limit, appId } = value;
+    const filters = {
+        app: appId,
+        status: {
+            $ne: "deleted",
+        },
+    };
+
+    const queries = await (QueryTemplateModel as any).paginate(filters, {
+        limit,
+        page: page + 1,
+        lean: true,
+        leanWithId: true,
+        pagination: true,
+        sort: {
+            updatedAt: -1,
+        },
+    });
+
+    return {
+        totalRecords: queries.totalDocs,
+        totalPages: queries.totalPages,
+        previousPage: queries.prevPage ? queries.prevPage - 1 : -1,
+        nextPage: queries.nextPage ? queries.nextPage - 1 : -1,
+        hasPreviousPage: queries.hasPrevPage,
+        hasNextPage: queries.hasNextPage,
+        records: queries.docs.map(toExternal),
+    };
+};
+
 const listByIds = async (context, ids: string[]): Promise<ExternalQuery[]> => {
     const unorderedQueries = await QueryTemplateModel.find({
         _id: { $in: ids },
@@ -55,23 +92,6 @@ const listByIds = async (context, ids: string[]): Promise<ExternalQuery[]> => {
     }
     // eslint-disable-next-line security/detect-object-injection
     return ids.map((key) => toExternal(object[key]));
-};
-
-const listByAppIds = async (
-    context,
-    appIds: string[]
-): Promise<ExternalQuery[]> => {
-    const unorderedQueries = await QueryTemplateModel.find({
-        app: { $in: appIds },
-        status: { $ne: "deleted" },
-    }).exec();
-    const object = {};
-    // eslint-disable-next-line no-restricted-syntax
-    for (const query of unorderedQueries) {
-        object[query._id] = query;
-    }
-    // eslint-disable-next-line security/detect-object-injection
-    return appIds.map((key) => toExternal(object[key]));
 };
 
 const getById = async (context, id: string): Promise<ExternalQuery> => {
@@ -148,4 +168,4 @@ const removeAllStatic = async (context): Promise<{ success: boolean }> => {
     return { success: true };
 };
 
-export { listByIds, listByAppIds, getById, remove, removeAllStatic };
+export { listByIds, listByAppId, getById, remove, removeAllStatic };
