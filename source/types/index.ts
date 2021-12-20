@@ -233,6 +233,7 @@ export interface Session {
 }
 
 export interface Query {
+    id: string;
     name: string;
     description: string;
     resource: string | Resource;
@@ -245,6 +246,7 @@ export interface Query {
 }
 
 export interface ExternalQuery {
+    id: string;
     name: string;
     description: string;
     resource: string | Resource;
