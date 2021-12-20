@@ -249,8 +249,8 @@ export interface ExternalQuery {
     id: string;
     name: string;
     description: string;
-    resource: string | Resource;
-    app: string | App;
+    resource: string | ExternalResource;
+    app: string | ExternalApp;
     content: string;
     status: typeof queryStatuses[number];
     lifecycle: typeof queryLifecycleTypes[number];
