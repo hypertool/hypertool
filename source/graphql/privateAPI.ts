@@ -228,8 +228,12 @@ const typeDefs = gql`
         id: ID!
         name: String!
         description: String!
-        resource: String!
-        app: String!
+        # Resource does not point to QueryTemplate directly, making each other not mutually 
+        # recursive. Therefore, we don't have to flatten the data structure here.
+        resource: Resource!
+        # App points to QueryTemplate directly, making each other mutually recursive. But since 
+        # queries is flattened in App, we can use the aggregate type here.         
+        app: App!
         content: String!
         status: QueryStatus!
         lifecycle: QueryLifecycle!
