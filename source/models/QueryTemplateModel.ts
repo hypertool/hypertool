@@ -18,13 +18,17 @@ const queryTemplateSchema = new Schema(
             maxlength: 1024,
             default: "",
         },
-        resourceId: {
-            type: Schema.Types.ObjectId,
-            ref: "Resource",
+        resource: {
+            type: {
+                type: Schema.Types.ObjectId,
+                ref: "Resource",
+            },
         },
-        appId: {
-            type: Schema.Types.ObjectId,
-            ref: "App",
+        app: {
+            type: {
+                type: Schema.Types.ObjectId,
+                ref: "App",
+            },
         },
         content: {
             type: String,

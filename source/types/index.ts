@@ -235,8 +235,8 @@ export interface Session {
 export interface Query {
     name: string;
     description: string;
-    resource: string;
-    appId: string;
+    resource: string | Resource;
+    app: string | App;
     content: string;
     status: typeof queryStatuses[number];
     lifecycle: typeof queryLifecycleStages[number];
@@ -247,8 +247,8 @@ export interface Query {
 export interface ExternalQuery {
     name: string;
     description: string;
-    resource: string;
-    appId: string;
+    resource: string | Resource;
+    app: string | App;
     content: string;
     status: typeof queryStatuses[number];
     lifecycle: typeof queryLifecycleStages[number];
