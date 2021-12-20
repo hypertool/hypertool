@@ -30,6 +30,11 @@ const queryTemplateSchema = new Schema(
                 ref: "App",
             },
         },
+        /* Contingent on the resource type, the content should be treated differently by the service
+         * executing the query. For example, for MySQL queries, the content is a SQL statement. On
+         * the other hand, for MongoDB queries, the content will be a JSON string that will be
+         * parsed before execution.
+         */
         content: {
             type: String,
             minlength: 1,
@@ -41,6 +46,15 @@ const queryTemplateSchema = new Schema(
             enum: queryStatuses,
             default: "enabled",
         },
+        /* The queries are always processed as a whole by the Hypertool command-line interface.
+         * The lifecycle of the queries depends on the YAML configuration files. On the other hand,
+         * third-party integrations and Hypertool GUI manipulate the queries individually. These
+         * queries are not bound by any YAML configuration files. The lifecycle attribute
+         * differentiates queries both these types of queries.
+         *
+         * This attribute is immutable. In other words, once a lifecycle value is assigned,
+         * it cannot be changed.
+         */
         lifecycle: {
             type: String,
             enum: queryLifecycleStages,
