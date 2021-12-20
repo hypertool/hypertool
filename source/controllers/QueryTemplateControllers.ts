@@ -28,8 +28,7 @@ const filterSchema = joi.object({
         .min(constants.paginateMinLimit)
         .max(constants.paginateMaxLimit)
         .default(constants.paginateMinLimit),
-    status: joi.string().valid(...constants.queryStatuses),
-    appId: joi.string().regex(constants.identifierPattern),
+    app: joi.string().regex(constants.identifierPattern),
 });
 
 const toExternal = (query: Query): ExternalQuery => {
@@ -84,9 +83,9 @@ const listByAppId = async (context, parameters): Promise<QueryPage> => {
         throw new BadRequestError(error.message);
     }
 
-    const { page, limit, appId } = value;
+    const { page, limit, app } = value;
     const filters = {
-        app: appId,
+        app,
         status: {
             $ne: "deleted",
         },

@@ -385,7 +385,7 @@ const typeDefs = gql`
         getResources(page: Int, limit: Int): ResourcePage!
         getResourceById(resourceId: ID!): Resource!
 
-        getQueryTemplateByAppId(page: Int, limit: Int, appId: ID!): QueryTemplatePage!
+        getQueryTemplateByAppId(page: Int, limit: Int, app: ID!): QueryTemplatePage!
         getQueryTemplateById(queryTemplateId: ID!): QueryTemplate!
     }
 `;
