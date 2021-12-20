@@ -115,4 +115,27 @@ const remove = async (context, id: string): Promise<{ success: boolean }> => {
     return { success: true };
 };
 
-export { listByIds, listByAppIds, getById, remove };
+const removeAllStatic = async (context): Promise<{ success: boolean }> => {
+    // TODO: Update filters
+    const query = await QueryTemplateModel.updateMany(
+        {
+            lifecycle: "static",
+            status: { $ne: "deleted" },
+        },
+        {
+            status: "deleted",
+        },
+        {
+            new: true,
+            lean: true,
+        }
+    );
+
+    if (!query) {
+        throw new NotFoundError("Cannot find any static queries.");
+    }
+
+    return { success: true };
+};
+
+export { listByIds, listByAppIds, getById, remove, removeAllStatic };
