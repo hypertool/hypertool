@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import type { App } from "../types";
+import type { Query } from "../types";
 import { queryStatuses, queryLifecycleStages } from "../utils/constants";
 
 const queryTemplateSchema = new Schema(
@@ -48,4 +48,4 @@ const queryTemplateSchema = new Schema(
 
 queryTemplateSchema.plugin(paginate);
 
-export default model<App>("QueryTemplate", queryTemplateSchema);
+export default model<Query>("QueryTemplate", queryTemplateSchema);
