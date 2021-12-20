@@ -242,7 +242,7 @@ const removeAllStatic = async (
             new: true,
             lean: true,
         }
-    );
+    ).exec();
 
     if (!query) {
         throw new NotFoundError("Cannot find any static queries.");
