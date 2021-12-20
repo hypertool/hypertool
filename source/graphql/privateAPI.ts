@@ -11,6 +11,8 @@ import {
     groupTypes,
     appStatuses,
     groupStatuses,
+    queryStatuses,
+    queryLifecycleTypes,
 } from "../utils/constants";
 
 const typeDefs = gql`
@@ -185,6 +187,14 @@ const typeDefs = gql`
         ${groupStatuses.join("\n")}
     }
 
+    enum QueryStatus {
+        ${queryStatuses.join("\n")}
+    }
+
+    enum QueryLifecycleType {
+        ${queryLifecycleTypes.join("\n")}
+    }
+
     type Group {
         id: ID!
         name: String!
@@ -205,6 +215,29 @@ const typeDefs = gql`
         hasPreviousPage: Int!
         hasNextPage: Int!
         records: [Group!]!
+    }
+
+    type QueryTemplate {
+        id: ID!
+        name: String!
+        description: String!
+        resource: String!
+        app: String!
+        content: String!
+        status: QueryStatus!
+        lifecycle: QueryLifecycle!
+        createdAt: Date!
+        updatedAt: Date!
+    }
+
+    type QueryTemplatePage {
+        totalRecords: Int!
+        totalPages: Int!
+        previousPage: Int!
+        nextPage: Int!
+        hasPreviousPage: Int!
+        hasNextPage: Int!
+        records: [QueryTemplate!]!
     }
 
     type RemoveResult {
