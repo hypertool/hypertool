@@ -1,9 +1,19 @@
 import joi from "joi";
 
-import type { Query, ExternalQuery } from "../types";
+import type { Query, ExternalQuery, QueryPage } from "../types";
 
 import { constants, BadRequestError, NotFoundError } from "../utils";
 import { QueryTemplateModel } from "../models";
+
+const filterSchema = joi.object({
+    page: joi.number().integer().default(0),
+    limit: joi
+        .number()
+        .integer()
+        .min(constants.paginateMinLimit)
+        .max(constants.paginateMaxLimit)
+        .default(constants.paginateMinLimit),
+});
 
 const toExternal = (query: Query): ExternalQuery => {
     const {
