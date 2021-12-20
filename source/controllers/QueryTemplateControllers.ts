@@ -86,4 +86,33 @@ const getById = async (context, id: string): Promise<ExternalQuery> => {
     return toExternal(query);
 };
 
-export { listByIds, listByAppIds, getById };
+const remove = async (context, id: string): Promise<{ success: boolean }> => {
+    if (!constants.identifierPattern.test(id)) {
+        throw new BadRequestError("The specified query identifier is invalid.");
+    }
+
+    // TODO: Update filters
+    const query = await QueryTemplateModel.findOneAndUpdate(
+        {
+            _id: id,
+            status: { $ne: "deleted" },
+        },
+        {
+            status: "deleted",
+        },
+        {
+            new: true,
+            lean: true,
+        }
+    );
+
+    if (!query) {
+        throw new NotFoundError(
+            "A query with the specified identifier does not exist."
+        );
+    }
+
+    return { success: true };
+};
+
+export { listByIds, listByAppIds, getById, remove };
