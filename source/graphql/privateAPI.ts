@@ -354,7 +354,7 @@ const typeDefs = gql`
             resource: ID!,
             app: ID!,
             content: String!,
-            lifecycle: QueryLifecycleType,
+            lifecycle: QueryLifecycleType!,
         ): QueryTemplate!
 
         updateQueryTemplate(
