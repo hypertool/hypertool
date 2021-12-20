@@ -113,9 +113,12 @@ const listByAppId = async (context, parameters): Promise<QueryPage> => {
     };
 };
 
-const listByIds = async (context, ids: string[]): Promise<ExternalQuery[]> => {
+const listByIds = async (
+    context,
+    queryTemplateIds: string[]
+): Promise<ExternalQuery[]> => {
     const unorderedQueries = await QueryTemplateModel.find({
-        _id: { $in: ids },
+        _id: { $in: queryTemplateIds },
         status: { $ne: "deleted" },
     }).exec();
     const object = {};
@@ -124,17 +127,20 @@ const listByIds = async (context, ids: string[]): Promise<ExternalQuery[]> => {
         object[query._id] = query;
     }
     // eslint-disable-next-line security/detect-object-injection
-    return ids.map((key) => toExternal(object[key]));
+    return queryTemplateIds.map((key) => toExternal(object[key]));
 };
 
-const getById = async (context, id: string): Promise<ExternalQuery> => {
-    if (!constants.identifierPattern.test(id)) {
+const getById = async (
+    context,
+    queryTemplateId: string
+): Promise<ExternalQuery> => {
+    if (!constants.identifierPattern.test(queryTemplateId)) {
         throw new BadRequestError("The specified query identifier is invalid.");
     }
 
     // TODO: Update filters
     const filters = {
-        _id: id,
+        _id: queryTemplateId,
         status: { $ne: "deleted" },
     };
     const query = await QueryTemplateModel.findOne(filters as any).exec();
