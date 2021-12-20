@@ -259,3 +259,5 @@ export interface ExternalQuery {
 }
 
 export type AppPage = ExternalListPage<ExternalApp>;
+
+export type QueryPage = ExternalListPage<ExternalQuery>;
