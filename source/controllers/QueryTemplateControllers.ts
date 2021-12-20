@@ -1,9 +1,23 @@
 import joi from "joi";
 
 import type { Query, ExternalQuery, QueryPage } from "../types";
-
 import { constants, BadRequestError, NotFoundError } from "../utils";
 import { QueryTemplateModel } from "../models";
+
+const createSchema = joi.object({
+    name: joi.string().max(128).required(),
+    description: joi.string().max(1024).allow(""),
+    resource: joi.string().regex(constants.identifierPattern),
+    app: joi.string().regex(constants.identifierPattern),
+    content: joi.string().max(10240).required(),
+    lifecycle: joi.string().valid(...constants.queryLifecycleTypes),
+});
+
+const updateSchema = joi.object({
+    name: joi.string().max(128),
+    description: joi.string().max(1024).allow(""),
+    content: joi.string().max(10240),
+});
 
 const filterSchema = joi.object({
     page: joi.number().integer().default(0),
@@ -13,6 +27,7 @@ const filterSchema = joi.object({
         .min(constants.paginateMinLimit)
         .max(constants.paginateMaxLimit)
         .default(constants.paginateMinLimit),
+    status: joi.string().valid(...constants.queryStatuses),
     appId: joi.string().regex(constants.identifierPattern),
 });
 
