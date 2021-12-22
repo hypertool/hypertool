@@ -112,4 +112,4 @@ export const PUBLIC_URL_OR_PATH = getPublicUrlOrPath(
     process.env.PUBLIC_URL,
 );
 
-export const extensions = ["js", "ts", "htx", "json"];
+export const extensions = ["js", "ts", "htx", "tsx", "jsx", "json"];

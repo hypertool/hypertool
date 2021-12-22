@@ -35,7 +35,7 @@ export const prepare = (
     const production = environment === "production";
     const development = environment === "development";
     const test = environment === "test";
-    const enableTypeScript = false;
+    const enableTypeScript = true;
     const enableSourceMap = false;
     const clientEnv = env.getClientEnvironment(
         paths.PUBLIC_URL_OR_PATH.slice(0, -1),
@@ -137,10 +137,10 @@ export const prepare = (
             path: paths.BUILD_DIRECTORY,
             pathinfo: development,
         },
-        infrastructureLogging: {
-            level: "none",
-        },
-        stats: "none",
+        // infrastructureLogging: {
+        //     level: "none",
+        // },
+        // stats: "none",
         cache: {
             type: "filesystem",
             version: hash(clientEnv.raw),
@@ -152,20 +152,21 @@ export const prepare = (
                 // Add `tsconfig` once TypeScript is supported.
             },
         },
-        // resolve: {
-        //     modules: [paths.NODE_MODULES_DIRECTORY],
-        //     extensions: paths.extensions
-        //         .filter(
-        //             (extension: string) =>
-        //                 enableTypeScript || extension !== "ts",
-        //         )
-        //         .map((extension: string) => "." + extension),
-        //     // plugins: [
-        //     //     new ModuleScopePlugin(paths.APP_SOURCE_DIRECTORY, [
-        //     //         paths.PACKAGE_DESCRIPTOR,
-        //     //     ]),
-        //     // ],
-        // },
+        resolve: {
+            // modules: [paths.NODE_MODULES_DIRECTORY],
+            extensions: paths.extensions
+                .filter(
+                    (extension: string) =>
+                        enableTypeScript ||
+                        (extension !== "ts" && extension !== "tsx"),
+                )
+                .map((extension: string) => "." + extension),
+            // plugins: [
+            //     new ModuleScopePlugin(paths.APP_SOURCE_DIRECTORY, [
+            //         paths.PACKAGE_DESCRIPTOR,
+            //     ]),
+            // ],
+        },
         module: {
             strictExportPresence: true,
             rules: [
@@ -213,11 +214,11 @@ export const prepare = (
                                 },
                             ],
                             issuer: {
-                                and: [/\.(ts|js)$/],
+                                and: [/\.(ts|js|tsx|jsx)$/],
                             },
                         },
                         {
-                            test: /\.(js|ts)$/,
+                            test: /\.(js|ts|tsx|jsx)$/,
                             include: paths.APP_SOURCE_DIRECTORY,
                             loader: require.resolve("babel-loader"),
                             options: {
