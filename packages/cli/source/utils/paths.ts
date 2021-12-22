@@ -87,7 +87,7 @@ export const APP_SOURCE_DIRECTORY = path.join(APP_DIRECTORY, "source");
 
 export const MANIFEST_DIRECTORY = path.join(APP_DIRECTORY, "manifest");
 
-export const SCREENS_DIRECTORY = path.join(APP_DIRECTORY, "screens");
+export const SCREENS_DIRECTORY = path.join(APP_DIRECTORY, "source", "screens");
 
 export const APP_ENTRY = path.join(APP_DIRECTORY, "source", "index");
 
