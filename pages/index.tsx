@@ -2,7 +2,6 @@ import type { ReactElement } from "react";
 
 import Head from "next/head";
 import { styled } from "@mui/material/styles";
-import { Hidden } from "@mui/material";
 
 import type { Page } from "../types";
 

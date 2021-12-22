@@ -7,7 +7,6 @@ import LogoImage from "../../../public/logo.png";
 
 const Container = styled("footer")(({ theme }) => ({
   width: "100%",
-  background: "linear-gradient(45deg, rgba(0,0,0,1) 0%, rgba(60,60,60,1) 100%)",
   display: "flex",
   flexDirection: "column",
   justifyContent: "flex-start",
