@@ -71,6 +71,13 @@ const prepare = async (
                 warnings: false,
             },
         },
+        historyApiFallback: {
+            /* Paths with dots should still use the history fallback.
+             * See https://github.com/facebook/create-react-app/issues/387.
+             */
+            disableDotRule: true,
+            index: paths.PUBLIC_URL_OR_PATH,
+        },
         compress: true,
         port: availablePort,
         open: true,
