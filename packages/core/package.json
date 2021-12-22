@@ -2,6 +2,7 @@
     "name": "@hypertool/core",
     "version": "0.0.0",
     "license": "MIT",
+    "main": "build/index.js",
     "devDependencies": {
         "@babel/core": "^7.16.5",
         "@storybook/addon-actions": "^6.4.9",
@@ -11,11 +12,17 @@
         "@types/react": "^17.0.37",
         "babel-loader": "^8.2.3",
         "react": "^17.0.2",
-        "react-dom": "^17.0.2"
+        "react-dom": "^17.0.2",
+        "react-router-dom": "^6.2.1"
     },
     "dependencies": {},
     "scripts": {
+        "watch": "tsc -w",
+        "start": "node ./build/index.js",
         "storybook": "start-storybook -p 6006",
         "build-storybook": "build-storybook"
+    },
+    "peerDependencies": {
+        "react-router-dom": "^6.2.1"
     }
 }
