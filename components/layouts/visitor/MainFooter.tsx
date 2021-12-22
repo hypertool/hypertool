@@ -121,20 +121,8 @@ const groups = [
     title: "Connect",
     children: [
       {
-        title: "hello@hypertool.io",
+        title: "Email",
         url: "mailto:hello@hypertool.io",
-      },
-      {
-        title: "+91 8310843835",
-        url: "tel:+918310843835",
-      },
-      {
-        title: "Instagram",
-        url: "https://instagram.com/hypertool",
-      },
-      {
-        title: "Twitter",
-        url: "https://twitter.com/hypertool",
       },
       {
         title: "LinkedIn",
