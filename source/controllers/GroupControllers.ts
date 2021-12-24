@@ -74,6 +74,7 @@ const create = async (context, attributes): Promise<ExternalGroup> => {
         throw new BadRequestError(error.message);
     }
 
+    // Add `group` to `app.groups`.
     const newGroup = new GroupModel({
         ...value,
         status: "enabled",

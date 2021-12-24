@@ -1,6 +1,13 @@
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
-import { organizations, users, groups, apps, resources } from "../controllers";
+import {
+    organizations,
+    users,
+    groups,
+    apps,
+    resources,
+    queryTemplates,
+} from "../controllers";
 import { types } from "./typeDefinitions";
 import { jwtAuth } from "../middleware";
 
@@ -11,6 +18,8 @@ import {
     groupTypes,
     appStatuses,
     groupStatuses,
+    queryStatuses,
+    queryLifecycleTypes,
 } from "../utils/constants";
 
 const typeDefs = gql`
@@ -185,6 +194,14 @@ const typeDefs = gql`
         ${groupStatuses.join("\n")}
     }
 
+    enum QueryStatus {
+        ${queryStatuses.join("\n")}
+    }
+
+    enum QueryLifecycleType {
+        ${queryLifecycleTypes.join("\n")}
+    }
+
     type Group {
         id: ID!
         name: String!
@@ -205,6 +222,33 @@ const typeDefs = gql`
         hasPreviousPage: Int!
         hasNextPage: Int!
         records: [Group!]!
+    }
+
+    type QueryTemplate {
+        id: ID!
+        name: String!
+        description: String!
+        # Resource does not point to QueryTemplate directly, making each other not mutually 
+        # recursive. Therefore, we don't have to flatten the data structure here.
+        resource: Resource!
+        # App points to QueryTemplate directly, making each other mutually recursive. But since 
+        # queries is flattened in App, we can use the aggregate type here.         
+        app: App!
+        content: String!
+        status: QueryStatus!
+        lifecycle: QueryLifecycle!
+        createdAt: Date!
+        updatedAt: Date!
+    }
+
+    type QueryTemplatePage {
+        totalRecords: Int!
+        totalPages: Int!
+        previousPage: Int!
+        nextPage: Int!
+        hasPreviousPage: Int!
+        hasNextPage: Int!
+        records: [QueryTemplate!]!
     }
 
     type RemoveResult {
@@ -307,6 +351,26 @@ const typeDefs = gql`
         ): Resource!
 
         deleteResource(resourceId: ID!): RemoveResult!
+
+        createQueryTemplate(
+            name: String!,
+            description: String!,
+            resource: ID!,
+            app: ID!,
+            content: String!,
+            lifecycle: QueryLifecycleType!,
+        ): QueryTemplate!
+
+        updateQueryTemplate(
+            queryTemplateId: ID!
+            name: String,
+            description: String,
+            content: String,
+        ): QueryTemplate!
+
+        deleteQueryTemplate(queryTemplateId: ID!): RemoveResult!
+
+        deleteAllStaticQueryTemplates(appId: ID!): RemoveResult!
     }
 
     type Query {
@@ -324,6 +388,9 @@ const typeDefs = gql`
 
         getResources(page: Int, limit: Int): ResourcePage!
         getResourceById(resourceId: ID!): Resource!
+
+        getQueryTemplateByAppId(page: Int, limit: Int, app: ID!): QueryTemplatePage!
+        getQueryTemplateById(queryTemplateId: ID!): QueryTemplate!
     }
 `;
 
@@ -386,6 +453,22 @@ const resolvers = {
 
         deleteResource: async (parent, values, context) =>
             resources.remove(context.request, context.resourceId),
+
+        createQueryTemplate: async (parent, values, context) =>
+            queryTemplates.create(context.request, values),
+
+        updateQueryTemplate: async (parent, values, context) =>
+            queryTemplates.update(
+                context.request,
+                values.queryTemplateId,
+                values
+            ),
+
+        deleteQueryTemplate: async (parent, values, context) =>
+            queryTemplates.remove(context.request, context.queryTemplateId),
+
+        deleteAllStaticQueryTemplates: async (parent, values, context) =>
+            queryTemplates.removeAllStatic(context.request, values.appId),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>
@@ -417,6 +500,12 @@ const resolvers = {
 
         getResourceById: async (parent, values, context) =>
             resources.getById(context.request, values.resourceId),
+
+        getQueryTemplateByAppId: async (parent, values, context) =>
+            queryTemplates.listByAppId(context.request, values),
+
+        getQueryTemplateById: async (parent, values, context) =>
+            queryTemplates.getById(context.request, values.queryTemplateId),
     },
 };
 
