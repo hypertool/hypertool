@@ -24,6 +24,7 @@
         "js-yaml": "^4.1.0",
         "loader-utils": "^3.2.0",
         "mini-css-extract-plugin": "^2.4.5",
+        "open": "^8.4.0",
         "portfinder": "^1.0.28",
         "postcss-flexbugs-fixes": "^5.0.2",
         "postcss-loader": "^6.2.1",
