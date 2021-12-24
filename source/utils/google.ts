@@ -3,21 +3,11 @@ import axios from "axios";
 
 const keys = require("../../credentials.json");
 
-const { GOOGLE_CLIENT_ID } = process.env;
-
 const client = new OAuth2Client({
     clientId: keys.web.client_id,
     clientSecret: keys.web.client_secret,
     redirectUri: keys.web.redirect_uris[0],
 });
-
-const verifyToken = async (token: string) => {
-    const ticket = await client.verifyIdToken({
-        idToken: token,
-        audience: [GOOGLE_CLIENT_ID],
-    });
-    return ticket.getPayload();
-};
 
 /**
  * The `getUserInfo` utility function plays a central role in Google OAuth2
@@ -51,4 +41,4 @@ const getUserInfo = async (code: string) => {
     }
 };
 
-export { verifyToken, getUserInfo };
+export { getUserInfo };
