@@ -3,6 +3,7 @@ import type { Server } from "http";
 
 import express from "express";
 import open from "open";
+import path from "path";
 
 const startServer = (): Promise<string> =>
     new Promise((resolve) => {
@@ -12,7 +13,9 @@ const startServer = (): Promise<string> =>
         app.get(
             "/oauth",
             async (request: Request, response: Response): Promise<void> => {
-                response.send("Successfully authenticated!");
+                response.sendFile("success.html", {
+                    root: path.join(__dirname, "../../../public/auth"),
+                });
                 server?.close();
 
                 resolve(request.query.code as string);
