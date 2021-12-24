@@ -236,7 +236,7 @@ const typeDefs = gql`
         app: App!
         content: String!
         status: QueryStatus!
-        lifecycle: QueryLifecycle!
+        lifecycle: QueryLifecycleType!
         createdAt: Date!
         updatedAt: Date!
     }
