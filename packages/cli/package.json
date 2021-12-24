@@ -10,6 +10,7 @@
     "dependencies": {
         "@babel/core": "^7.16.0",
         "@svgr/webpack": "^6.1.1",
+        "axios": "^0.24.0",
         "babel-loader": "^8.2.3",
         "babel-preset-react-app": "^10.0.0",
         "case-sensitive-paths-webpack-plugin": "^2.4.0",
