@@ -8,6 +8,10 @@ import { env } from "./utils";
 
 import packageData from "../package.json";
 
+const auth = async (): Promise<void> => {
+    console.log("Authenticated");
+};
+
 const build = async (): Promise<void> => {
     manifest.compile();
 };
@@ -40,6 +44,14 @@ const start = async (configuration: any): Promise<void> => {
 const configureCommands = (): Command => {
     const program = new Command();
     program.version(packageData.version);
+
+    const authCommand = new Command();
+    authCommand
+        .name("auth")
+        .alias("a")
+        .description("authenticates the current machine")
+        .action(auth);
+    program.addCommand(authCommand);
 
     const buildCommand = new Command();
     buildCommand
