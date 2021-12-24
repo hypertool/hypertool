@@ -68,6 +68,7 @@ const create = async (context, attributes): Promise<ExternalQuery> => {
         throw new BadRequestError(error.message);
     }
 
+    // TODO: Add `query` to `app.queries`
     const newQuery = new QueryTemplateModel({
         ...value,
         status: "enabled",

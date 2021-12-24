@@ -143,6 +143,7 @@ const create = async (context, attributes): Promise<ExternalResource> => {
         throw new BadRequestError(error.message);
     }
 
+    // TODO: Add `resource` to `app.resources`
     // TODO: Check if value.creator is correct.
     // TODO: Check if value.name is unique across the organization and matches the identifier regex.
     const newResource = new ResourceModel({

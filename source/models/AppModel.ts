@@ -36,6 +36,7 @@ const appSchema = new Schema(
             ],
             default: [],
         },
+        // TODO: Add queries
         creator: {
             type: Schema.Types.ObjectId,
             ref: "User",
