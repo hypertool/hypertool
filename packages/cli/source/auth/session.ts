@@ -1,5 +1,19 @@
 import fetch from "cross-fetch";
 import { gql, ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
+import chalk from "chalk";
+import fs from "fs-extra";
+import os from "os";
+import path from "path";
+
+import { startServer } from "./server";
+import { logger } from "../utils";
+
+const HOME_DIRECTORY = os.homedir();
+const SESSION_DESCRIPTOR = path.join(
+    HOME_DIRECTORY,
+    ".hypertool",
+    "session.json",
+);
 
 const LOGIN_WITH_GOOGLE = gql`
     mutation LoginWithGoogle($token: String!) {
@@ -43,7 +57,7 @@ const client = new ApolloClient({
  * @returns
  * The session object after deleting unnecessary keys.
  */
-export const createSession = async (token: string) => {
+const createSession = async (token: string) => {
     const {
         data: { loginWithGoogle: session },
     } = await client.mutate({
@@ -53,4 +67,17 @@ export const createSession = async (token: string) => {
     delete session.__typename;
     delete session.user.__typename;
     return session;
+};
+
+export const authenticate = async () => {
+    const authorizationToken = await startServer();
+    const session = await createSession(authorizationToken);
+
+    logger.info(`Hi, ${session.user.firstName}!`);
+    logger.info(
+        `You have authenticated as ${chalk.blue.bold(
+            session.user.emailAddress,
+        )}.`,
+    );
+    await fs.outputFile(SESSION_DESCRIPTOR, JSON.stringify(session, null, 4));
 };

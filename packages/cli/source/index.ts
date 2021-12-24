@@ -3,13 +3,14 @@ import { Command } from "commander";
 
 import { createServer } from "./server";
 import { createCompiler } from "./compiler";
+import * as authUtils from "./auth";
 import * as manifest from "./manifest";
 import { env } from "./utils";
 
 import packageData from "../package.json";
 
 const auth = async (): Promise<void> => {
-    console.log("Authenticated");
+    authUtils.authenticate();
 };
 
 const build = async (): Promise<void> => {
