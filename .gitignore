@@ -60,3 +60,5 @@ typings/
 
 # Typescript build output
 dist
+
+credentials.json
