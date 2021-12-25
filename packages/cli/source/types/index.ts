@@ -21,5 +21,5 @@ export interface Manifest {
     queries: Query[];
     resources: Resource[];
     app: App;
-    file: string;
+    file?: string;
 }

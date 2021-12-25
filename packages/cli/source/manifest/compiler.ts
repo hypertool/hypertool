@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import yaml from "js-yaml";
-import { glob } from "glob";
 import fs from "fs";
 import path from "path";
 import chalk from "chalk";
@@ -14,7 +13,7 @@ const IDENTIFIER_REGEX = /^[a-zA-Z_][a-zA-Z_0-9]+[a-zA-Z_0-9]$/;
 export const logMissingKeys = (
     regsitryType: string,
     keys: string[],
-    filePath: string,
+    filePath = "<anonymous>",
 ) => {
     console.log(
         `${chalk.red(
@@ -25,7 +24,10 @@ export const logMissingKeys = (
     );
 };
 
-export const logDuplicateError = (duplicate: string, filePath: string) => {
+export const logDuplicateError = (
+    duplicate: string,
+    filePath = "<anonymous>",
+) => {
     console.log(
         `${chalk.red(
             "[error]",
@@ -33,12 +35,17 @@ export const logDuplicateError = (duplicate: string, filePath: string) => {
     );
 };
 
-export const logSemanticError = (message: string, filePath: string) => {
+export const logSemanticError = (message: string, filePath = "<anonymous>") => {
     console.log(`${chalk.red("[error]")} ${filePath}: ${message}`);
 };
 
-const parseApp = (app: App, path: string) => {
-    const result: Record<string, any> = {};
+const parseApp = (app: App, path = "<anonymous>"): App => {
+    const result: App = {
+        slug: "",
+        title: "",
+        description: "",
+        groups: [],
+    };
 
     const missingKeys = getMissingKeys(constants.appKeys, app);
 
@@ -47,10 +54,6 @@ const parseApp = (app: App, path: string) => {
     }
 
     for (const key in app) {
-        if (result[key]) {
-            logDuplicateError(key, path);
-        }
-
         const value = (app as any)[key];
         switch (key) {
             case "slug": {
@@ -83,7 +86,7 @@ const parseApp = (app: App, path: string) => {
     return result;
 };
 
-const parseQuery = (query: Query, path: string) => {
+const parseQuery = (query: Query, path = "<anonymous>"): Query => {
     const result: Query = {
         name: "",
         resource: "",
@@ -125,7 +128,7 @@ const parseQuery = (query: Query, path: string) => {
     return result;
 };
 
-const parseResource = (resource: Resource, path: string) => {
+const parseResource = (resource: Resource, path: string): Resource => {
     const result: Resource = {
         name: "",
         type: "",
@@ -164,7 +167,7 @@ const parseResource = (resource: Resource, path: string) => {
     return result;
 };
 
-const parseQueries = (queries: any, path: string) => {
+const parseQueries = (queries: any, path = "<anonymous>") => {
     const result: any = {};
     for (const query of queries) {
         if (result[query.name]) {
@@ -175,7 +178,7 @@ const parseQueries = (queries: any, path: string) => {
     return result;
 };
 
-const parseResources = (resources: any, path: string) => {
+const parseResources = (resources: any, path = "<anonymous>") => {
     const result: any = {};
     for (const resource of resources) {
         if (result[resource.name]) {
@@ -186,67 +189,70 @@ const parseResources = (resources: any, path: string) => {
     return result;
 };
 
-const compile = () => {
-    glob(
+const compile = async (): Promise<Manifest> => {
+    const files = await paths.globAsync(
         paths.MANIFEST_DIRECTORY + "/**/*.{yml, yaml}",
-        async (error: Error | null, files: string[]) => {
-            const promises: Promise<string>[] = files.map((file) =>
-                fs.promises.readFile(file, "utf-8"),
-            );
-            const result: string[] = await Promise.all(promises);
-            const currentDirectory = process.cwd();
-            const manifests: Manifest[] = result.map((item, index) => {
-                const manifest: Manifest = yaml.load(item) as Manifest;
-                manifest.file = path.relative(currentDirectory, files[index]);
-                return manifest;
-            });
+    );
 
-            let app: any = null,
-                queries: any = {},
-                resources: any = {};
+    const promises: Promise<string>[] = files.map((file) =>
+        fs.promises.readFile(file, "utf-8"),
+    );
+    const result: string[] = await Promise.all(promises);
+    const currentDirectory = process.cwd();
+    const manifests: Manifest[] = result.map((item, index) => {
+        const manifest: Manifest = yaml.load(item) as Manifest;
+        manifest.file = path.relative(currentDirectory, files[index]);
+        return manifest;
+    });
 
-            for (const manifest of manifests) {
-                for (const key in manifest) {
-                    switch (key) {
-                        case "app": {
-                            if (app) {
-                                logDuplicateError("app", manifest.file);
-                            }
-                            app = parseApp(manifest.app, manifest.file);
-                            break;
-                        }
+    let app: App | null = null;
+    let queries: {
+        [key: string]: Query;
+    } = {};
+    let resources: {
+        [key: string]: Resource;
+    } = {};
 
-                        case "queries": {
-                            queries = {
-                                ...queries,
-                                ...parseQueries(
-                                    manifest.queries,
-                                    manifest.file,
-                                ),
-                            };
-                            break;
-                        }
-
-                        case "resources": {
-                            resources = {
-                                ...resources,
-                                ...parseResources(
-                                    manifest.resources,
-                                    manifest.file,
-                                ),
-                            };
-                            break;
-                        }
+    for (const manifest of manifests) {
+        for (const key in manifest) {
+            switch (key) {
+                case "app": {
+                    if (app) {
+                        logDuplicateError("app", manifest.file);
                     }
+                    app = parseApp(manifest.app, manifest.file);
+                    break;
+                }
+
+                case "queries": {
+                    queries = {
+                        ...queries,
+                        ...parseQueries(manifest.queries, manifest.file),
+                    };
+                    break;
+                }
+
+                case "resources": {
+                    resources = {
+                        ...resources,
+                        ...parseResources(manifest.resources, manifest.file),
+                    };
+                    break;
                 }
             }
+        }
+    }
 
-            queries = Object.entries(queries).map((item) => item[1]);
-            resources = Object.entries(resources).map((item) => item[1]);
-
-            // Send the parsed objects to the Query Engine Service
-        },
+    const queryList: Query[] = Object.entries(queries).map((item) => item[1]);
+    const resourceList: Resource[] = Object.entries(resources).map(
+        (item) => item[1],
     );
+
+    if (!app) {
+        logSemanticError("App manifest is missing", "<global>");
+    }
+
+    return { app: app as App, queries: queryList, resources: resourceList };
 };
 
 export default compile;
