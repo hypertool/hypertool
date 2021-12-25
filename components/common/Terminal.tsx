@@ -8,6 +8,10 @@ const ApplicationFormPaper = styled('div')(({ theme }) => ({
     borderStyle: "solid",
     borderColor: "rgba(255, 255, 255, 0.225)",
     borderRadius: 8,
+    width: 600,
+    [theme.breakpoints.down("md")]: {
+        width: 400
+    },
 }))
 
 const Taskbar = styled('div')(({ theme }) => ({

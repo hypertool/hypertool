@@ -39,9 +39,10 @@ const SubTitle =  styled(Typography)(({ theme }) => ({
     [theme.breakpoints.down("md")]: {
         fontSize: 16,
         textAlign: "center",
+        padding: theme.spacing(2)
     },
     [theme.breakpoints.up("md")]: {
-        width: 600
+        width: 600,
     }
   }));
 

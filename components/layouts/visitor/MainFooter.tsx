@@ -8,6 +8,7 @@ import LogoImage from "../../../public/logo.png";
 const Container = styled("footer")(({ theme }) => ({
   width: "100%",
   display: "flex",
+  backgroundColor: 'black',
   flexDirection: "column",
   justifyContent: "flex-start",
   alignItems: "center",

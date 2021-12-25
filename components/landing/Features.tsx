@@ -3,6 +3,7 @@ import { Typography, Button } from "@mui/material";
 import { Terminal } from "../common";
 
 const Container = styled("div")(({ theme }) => ({
+    background: 'linear-gradient(0deg, rgba(24,24,24,1) 0%, rgba(0,0,0,1) 100%)',
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
@@ -14,6 +15,21 @@ const Container = styled("div")(({ theme }) => ({
     },
 }));
 
+const LeftContainer = styled("div")(({ theme }) => ({
+    marginRight: theme.spacing(6),
+    [theme.breakpoints.down("md")]: {
+        marginRight: theme.spacing(0),
+        padding: theme.spacing(4)
+    },
+}))
+
+const RightContainer = styled("div")(({ theme }) => ({
+    marginTop: theme.spacing(0),
+    [theme.breakpoints.down("md")]: {
+        marginTop: theme.spacing(6),
+        padding: theme.spacing(4)
+    },
+}))
 
 const Title = styled(Typography)(({ theme }) => ({
     fontSize: 40,
@@ -30,7 +46,7 @@ const Title = styled(Typography)(({ theme }) => ({
 }));
 
 const SubTitle = styled(Typography)(({ theme }) => ({
-    fontSize: 24,
+    fontSize: 20,
     marginTop: theme.spacing(3),
     textAlign: "left",
     lineHeight: 1.4,
@@ -59,7 +75,7 @@ const GreyText = styled('span')(({ theme }) => ({
 const Features = () => {
     const renderPrompt = () => (
         <>
-            <span style={{ color: "green" }}>rover@Titan</span>:
+            <span style={{ color: "green" }}>hypertool@work</span>:
             <span style={{ color: "blue" }}>~</span>${" "}
         </>
     );
@@ -68,7 +84,7 @@ const Features = () => {
         <Terminal>
             <Line>
                 {renderPrompt()}
-                <span>npm install -global @academyjs/rover</span>
+                <span>npm install -global @hypertool/core</span>
             </Line>
             <br />
             <Line>
@@ -92,59 +108,33 @@ const Features = () => {
         </Terminal>
     );
 
-    const renderExercises = () => (
+    const renderSafeAndSecure = () => (
         <Terminal>
             <Line>
                 {renderPrompt()}
-                <span>rover show node/factorial</span>
+                <span>hypertool auth</span>
             </Line>
             <br />
             <Line>
                 <span
                     style={{
-                        color: "yellow",
+                        color: "white",
                         fontWeight: "bold",
                     }}
                 >
-                    node/factorial
-                </span>
-                <br />
-                <br />
-                <span>Calculate the factorial of a given integer.</span>
-                <br />
-                <br />
-                <span>
-                    Factorial of a non-negative integer, is multiplication of
-                    all integers smaller than or equal to n. For example
-                    factorial of 6 is 6 * 5 * 4 * 3 * 2 * 1 which is 720.
-                </span>
-                <br />
-                <br />
-                <span>
-                    Factorial can be calculated iteratively or recursively. You
-                    can solve using any approach.
+                    Hello, John.
                 </span>
             </Line>
             <br />
-            <br />
             <Line>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <GreenText>✔ </GreenText>
-                <span>Write the program in factorial.js</span>
-            </Line>
-            <br />
-            <br />
-            <Line>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <GreenText>✔ </GreenText>
-                <span>Calculate the factorial of 5</span>
-            </Line>
-            <br />
-            <br />
-            <Line>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <GreenText>✔ </GreenText>
-                <span>Calculate the factorial of 6</span>
+                <span
+                    style={{
+                        color: "white",
+                        fontWeight: "bold",
+                    }}
+                >
+                    You are authenticated with johndoe@gmail.com.
+                </span>
             </Line>
         </Terminal>
     );
@@ -155,17 +145,17 @@ const Features = () => {
                 {renderPrompt()}
                 <span>git clone</span>{" "}
                 <span style={{ color: "yellow" }}>
-                    https://github.com/itsganymede/rover
+                    https://github.com/hypertool/hypertool
                 </span>
             </Line>
         </Terminal>
     );
 
-    const renderPathway = () => (
+    const renderStart = () => (
         <Terminal>
             <Line>
                 {renderPrompt()}
-                <span>rover submit node/factorial</span>
+                <span>hypertool start</span>
             </Line>
             <br />
             <Line>
@@ -175,7 +165,7 @@ const Features = () => {
                         fontWeight: "bold",
                     }}
                 >
-                    rover 0.1.15
+                    hypertool 0.1.15
                 </span>{" "}
                 <span
                     style={{
@@ -183,94 +173,66 @@ const Features = () => {
                         fontWeight: "bold",
                     }}
                 >
-                    (https://academyjs.com/rover)
+                    (https://hypertool.io/docs)
                 </span>
-            </Line>
-            <br />
-            <br />
-            <Line>
-                &nbsp;&nbsp;&nbsp;&nbsp;‣ node/factorial
-            </Line>
-            <br />
-            <br />
-            <Line>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↪ Calculate the factorial of
-                a given integer.
-            </Line>
-            <br />
-            <br />
-            <Line>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <GreenText>✔ </GreenText>
-                <GreyText>
-                    Write the program in factorial.js
-                </GreyText>
-            </Line>
-            <br />
-            <br />
-            <Line>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <GreenText>✔ </GreenText>
-                <GreyText>
-                    Calculate the factorial of 5
-                </GreyText>
-            </Line>
-            <br />
-            <br />
-            <Line>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <GreenText>✔ </GreenText>
-                <GreyText>
-                    Calculate the factorial of 6
-                </GreyText>
-            </Line>
-            <br />
-            <br />
-            <Line>
-                &nbsp;&nbsp;
-                <GreenText>3 passing</GreenText>
-                <GreyText>(33ms)</GreyText>
             </Line>
         </Terminal>
     );
 
     const sections = [
         {
+            title: "Start building fast",
+            text: "Hypertool gives you everything you need out of the box, such as a component library, routing, authentication and access control, team management and a lot more!",
+            terminal: renderStart,
+        },
+        {
             title: "Installs in seconds",
-            text: "Rover does not have high system requirements. All you need to have is NodeJS installed on your machine. Rover can be installed using npm or yarn, and takes just a few seconds to be up and running.",
+            text: "Hypertool CLI does not have high system requirements. All you need to have is NodeJS installed on your machine. Rover can be installed using npm or yarn, and takes just a few seconds to be up and running.",
             terminal: renderInstall,
         },
         {
-            title: "Built-in exercises",
-            text: "Each exercises that you want to work on comes with a unique handle, that you need to use when you are submitting your solution to Rover. All the exercises are built-in.",
-            terminal: renderExercises,
+            title: "Safe and Secure",
+            text: "Hypertool CLI lets you access all your existing Hypertool apps, including your resources and queries, and allows creation of new apps only after your machine is authenticated from your terminal.",
+            terminal: renderSafeAndSecure,
         },
         {
             title: "Free and Open-Source",
-            text: "Rover is free and open source. All our code is hosted on GitHub. Rover is light-weight, has a very small bundle size and hardly takes any space on your machine.",
+            text: "Hypertool is free and open source. All our code is hosted on GitHub. Hypertool is light-weight, has a very small bundle size and hardly takes any space on your machine.",
             terminal: renderOpenSource,
-        },
-        {
-            title: "Structured pathway",
-            text: "The exercises in Rover go hand-in-hand with the courses taught at AcademyJS. Enroll and follow a structured pathway towards your dream job.",
-            terminal: renderPathway,
         },
     ];
 
 
-    return sections.map(section =>
-        <Container key={section.title}>
-            <div>
-                <Title>
-                    {section.title}
-                </Title>
-                <SubTitle>
-                    {section.text}
-                </SubTitle>
-            </div>
-            {section.terminal()}
-        </Container>);
-
+    return sections.map((section, index) =>
+        index % 2 === 0 ? (
+            <Container key={section.title}>
+                <LeftContainer>
+                    <Title>
+                        {section.title}
+                    </Title>
+                    <SubTitle>
+                        {section.text}
+                    </SubTitle>
+                </LeftContainer>
+                <RightContainer>
+                    {section.terminal()}
+                </RightContainer>
+            </Container>
+        ) : (
+            <Container key={section.title}>
+                <LeftContainer>
+                {section.terminal()}
+                </LeftContainer>
+                <RightContainer>
+                    <Title>
+                        {section.title}
+                    </Title>
+                    <SubTitle>
+                        {section.text}
+                    </SubTitle>
+                </RightContainer>
+            </Container>
+        ));
 };
 
 export default Features;
