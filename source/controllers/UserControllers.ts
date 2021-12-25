@@ -261,9 +261,9 @@ const remove = async (
 
 const loginWithGoogle = async (
     context: any,
-    googleToken: string
+    authorizationToken: string
 ): Promise<Session> => {
-    const payload = await google.verifyToken(googleToken);
+    const payload = await google.getUserInfo(authorizationToken);
 
     if (!payload) {
         throw new UnauthorizedError(
