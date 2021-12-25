@@ -13,7 +13,7 @@ const auth = async (): Promise<void> => {
     authUtils.authenticate();
 };
 
-const build = async (): Promise<void> => {
+const deploy = async (): Promise<void> => {
     manifest.compile();
 };
 
@@ -54,13 +54,13 @@ const configureCommands = (): Command => {
         .action(auth);
     program.addCommand(authCommand);
 
-    const buildCommand = new Command();
-    buildCommand
-        .name("build")
-        .alias("b")
-        .description("builds the app")
-        .action(build);
-    program.addCommand(buildCommand);
+    const deployCommand = new Command();
+    deployCommand
+        .name("deploy")
+        .alias("d")
+        .description("deploys the app")
+        .action(deploy);
+    program.addCommand(deployCommand);
 
     const createCommand = new Command();
     createCommand
