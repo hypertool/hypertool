@@ -81,3 +81,15 @@ export const authenticate = async () => {
     );
     await fs.outputFile(SESSION_DESCRIPTOR, JSON.stringify(session, null, 4));
 };
+
+export const loadSession = async () => {
+    const session = await fs.readJSON(SESSION_DESCRIPTOR, {
+        throws: false,
+    });
+    if (!session) {
+        throw new Error(
+            "You are not authenticated. Run `hypertool auth` to before continuing.",
+        );
+    }
+    return session;
+};
