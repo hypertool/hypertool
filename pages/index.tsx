@@ -6,7 +6,7 @@ import { styled } from "@mui/material/styles";
 import type { Page } from "../types";
 
 import { VisitorLayout } from "../components/layouts";
-import { Hero } from "../components/landing";
+import { Hero, Features } from "../components/landing";
 
 const Container = styled("div")(({ theme }) => ({
   display: "flex",
@@ -28,8 +28,9 @@ const Home: Page = () => {
       </Head>
 
       <Container>
-          <Hero />
-        </Container>
+        <Hero />
+        <Features />
+      </Container>
     </div>
   );
 };

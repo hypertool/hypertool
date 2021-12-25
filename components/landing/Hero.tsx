@@ -70,6 +70,10 @@ const HeroImage = styled('img')(({theme}) => ({
     width: 700,
     height: 525,
     marginTop: theme.spacing(6),
+    marginLeft: theme.spacing(6),
+    [theme.breakpoints.down("md")]: {
+        marginLeft: theme.spacing(6),
+    },   
     [theme.breakpoints.down("sm")]: {
         width: 350,
         height: 262,
@@ -85,7 +89,7 @@ const Hero = () => {
                 Hypertool helps you build internal tools blazingly fast.
             </Title>
             <SubTitle>
-                Streamline your process of building internal tools, while owning the source. 
+                Streamline your process of building internal tools from your local machine.
             </SubTitle>
             <ButtonContainer>
                 <PrimaryButton variant="contained">
