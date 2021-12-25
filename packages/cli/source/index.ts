@@ -17,9 +17,22 @@ const auth = async (): Promise<void> => {
 const deploy = async (): Promise<void> => {
     const tasks = new TaskList([
         {
-            title: "Compile manifests",
-            task: async (context) => {
+            title: "Checking authentication status...",
+            task: async (context, task) => {
+                const session = await authUtils.loadSession();
+                task.title = `Authenticated as ${chalk.bold(
+                    session.user.firstName,
+                )} ${chalk.bold(session.user.lastName)} <${chalk.bold(
+                    session.user.emailAddress,
+                )}>`;
+                context.session = session;
+            },
+        },
+        {
+            title: "Compiling manifests...",
+            task: async (context, task) => {
                 context.manifest = await manifest.compile();
+                task.title = `Compiled manifests`;
             },
         },
     ]);
