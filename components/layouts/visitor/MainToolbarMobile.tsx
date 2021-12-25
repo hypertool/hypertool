@@ -28,8 +28,7 @@ const Background = styled(motion.div)(({ theme }) => ({
   alignItems: "center",
   margin: 0,
   padding: 0,
-  background:
-    "linear-gradient(45deg, rgba(66,66,66,1) 0%, rgba(134,134,134,1) 100%)",
+  background: "#000",
   zIndex: 4,
 }));
 
@@ -88,25 +87,18 @@ const variants = {
 
 const menuItems = [
   {
-    name: "Pricing",
-    url: "/pricing",
+    name: "Download Free",
+    url: "https://github.com/hypertool/hypertool",
     description:
-      "Hypertool offers a variety of plans with a free tier, suitable for teams as well as individuals.",
-    icon: "sell",
-  },
-  {
-    name: "Articles",
-    url: "/articles",
-    description:
-      "Read articles on career advice, tips on writing better code and a lot more, curated just for you.",
-    icon: "book",
+      "The Hypertool CLI is completely open-sourced and free. Checkout our GitHub repository.",
+    icon: "download",
   },
   {
     name: "Docs",
-    url: "/docs",
+    url: "/",
     description:
-      "Read articles on career advice, tips on writing better code and a lot more, curated just for you.",
-    icon: "local_library",
+      "Read the offcial Hypertool documentation, with tons of examples to get your started.",
+    icon: "book",
   },
 ];
 
