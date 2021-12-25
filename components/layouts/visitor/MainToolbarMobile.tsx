@@ -40,6 +40,7 @@ const ToggleButton = styled(Button)(({ theme }) => ({
 const LogoText = styled(Typography)(({ theme }) => ({
   fontSize: 24,
   paddingLeft: theme.spacing(1),
+  color: 'white'
 }));
 
 const LogoButton = styled(Button)(({ theme }) => ({

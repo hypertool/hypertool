@@ -162,14 +162,14 @@ const menuGroups: MenuGroup[] = [
 
 const toolbarMenuItems = [
   {
-    name: "Pricing",
-    url: "/pricing",
-    icon: "sell",
+    name: "Download",
+    url: "https://github.com/hypertool/hypertool",
+    icon: "download",
   },
   {
     name: "Docs",
-    url: "/docs",
-    icon: "local_library",
+    url: "/",
+    icon: "books",
   },
 ];
 
@@ -245,7 +245,7 @@ const MainToolbarDesktop = () => {
         </LogoButton>
         <div>
           {toolbarMenuItems.map((menuItem) => renderLink(menuItem))}
-          <ToolbarItem onClick={() => toggleOpen()}>
+          {/* <ToolbarItem onClick={() => toggleOpen()}>
             <Icon>menu</Icon>
             <ToolbarText>Explore</ToolbarText>
           </ToolbarItem>
@@ -285,9 +285,9 @@ const MainToolbarDesktop = () => {
                     )}
                   </motion.div>
                 ))}
-              </NavigationContainer>
+              </NavigationContainer> 
             </Background>
-          </motion.nav>
+          </motion.nav>*/}
         </div>
       </Toolbar>
     </>
