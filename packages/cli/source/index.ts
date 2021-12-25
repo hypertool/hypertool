@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import { Command } from "commander";
+import TaskList from "listr";
 
 import { createServer } from "./server";
 import { createCompiler } from "./compiler";
@@ -14,7 +15,16 @@ const auth = async (): Promise<void> => {
 };
 
 const deploy = async (): Promise<void> => {
-    manifest.compile();
+    const tasks = new TaskList([
+        {
+            title: "Compile manifests",
+            task: async (context) => {
+                context.manifest = await manifest.compile();
+            },
+        },
+    ]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    tasks.run().catch((_error) => null);
 };
 
 const create = async (): Promise<void> => {
@@ -110,7 +120,7 @@ const main = (): void => {
         chalk.bold(
             `hypertool v${packageData.version} ${chalk.greenBright(
                 "(https://hypertool.io)",
-            )}`,
+            )}\n`,
         ),
     );
     const program = configureCommands();

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import yaml from "js-yaml";
@@ -10,17 +11,20 @@ import type { Manifest, App, Query, Resource } from "../types";
 
 const IDENTIFIER_REGEX = /^[a-zA-Z_][a-zA-Z_0-9]+[a-zA-Z_0-9]$/;
 
+let errorCount = 0;
+
 export const logMissingKeys = (
     regsitryType: string,
     keys: string[],
     filePath = "<anonymous>",
 ) => {
+    errorCount++;
     console.log(
         `${chalk.red(
             "[error]",
         )} ${filePath}: The following keys are missing in ${regsitryType}: ${keys.join(
             ", ",
-        )}`,
+        )}\n`,
     );
 };
 
@@ -28,15 +32,17 @@ export const logDuplicateError = (
     duplicate: string,
     filePath = "<anonymous>",
 ) => {
+    errorCount++;
     console.log(
         `${chalk.red(
             "[error]",
-        )} ${filePath}: Duplicate symbol "${duplicate}" found.`,
+        )} ${filePath}: Duplicate symbol "${duplicate}" found.\n`,
     );
 };
 
 export const logSemanticError = (message: string, filePath = "<anonymous>") => {
-    console.log(`${chalk.red("[error]")} ${filePath}: ${message}`);
+    errorCount++;
+    console.log(`${chalk.red("[error]")} ${filePath}: ${message}\n`);
 };
 
 const parseApp = (app: App, path = "<anonymous>"): App => {
@@ -250,6 +256,14 @@ const compile = async (): Promise<Manifest> => {
 
     if (!app) {
         logSemanticError("App manifest is missing", "<global>");
+    }
+
+    if (errorCount > 0) {
+        throw new Error(
+            `The compilation failed with ${errorCount} error${
+                errorCount === 1 ? "" : "s"
+            }.`,
+        );
     }
 
     return { app: app as App, queries: queryList, resources: resourceList };
