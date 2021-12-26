@@ -160,6 +160,7 @@ const parseQuery = (query: Query, path = "<anonymous>"): Query => {
 const parseResource = (resource: Resource, path: string): Resource => {
     const result: Resource = {
         name: "",
+        description: "",
         type: "",
         connection: "",
     };
@@ -179,6 +180,11 @@ const parseResource = (resource: Resource, path: string): Resource => {
                     logSemanticError("Resource name is invalid.", path);
                 }
                 result.name = value.trim();
+                break;
+            }
+
+            case "description": {
+                result.description = value.trim();
                 break;
             }
 

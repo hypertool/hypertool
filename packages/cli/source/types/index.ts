@@ -7,6 +7,7 @@ export interface Query {
 
 export interface Resource {
     name: string;
+    description: string;
     type: string;
     connection: string;
 }
