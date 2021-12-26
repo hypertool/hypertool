@@ -47,6 +47,7 @@ export const logSemanticError = (message: string, filePath = "<anonymous>") => {
 
 const parseApp = (app: App, path = "<anonymous>"): App => {
     const result: App = {
+        name: "",
         slug: "",
         title: "",
         description: "",
@@ -62,6 +63,14 @@ const parseApp = (app: App, path = "<anonymous>"): App => {
     for (const key in app) {
         const value = (app as any)[key];
         switch (key) {
+            case "name": {
+                if (!IDENTIFIER_REGEX.test(value)) {
+                    logSemanticError(`App name "${value}" is invalid.`, path);
+                }
+                result.name = value;
+                break;
+            }
+
             case "slug": {
                 if (!IDENTIFIER_REGEX.test(value)) {
                     logSemanticError(`App slug "${value}" is invalid.`, path);

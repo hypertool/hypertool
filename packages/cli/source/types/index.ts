@@ -11,6 +11,7 @@ export interface Resource {
 }
 
 export interface App {
+    name: string;
     slug: string;
     title: string;
     description: string;
