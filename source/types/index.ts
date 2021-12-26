@@ -204,6 +204,8 @@ export type GroupPage = ExternalListPage<ExternalGroup>;
 export interface App {
     id: string;
     name: string;
+    title: string;
+    slug: string;
     description: string;
     groups: string[] | Group[];
     resources: string[] | Resource[];
@@ -216,6 +218,8 @@ export interface App {
 export interface ExternalApp {
     id: string;
     name: string;
+    title: string;
+    slug: string;
     description: string;
     resources: string[];
     groups: string[];

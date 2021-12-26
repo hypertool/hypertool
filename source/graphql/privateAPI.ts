@@ -161,6 +161,8 @@ const typeDefs = gql`
     type App {
         id: ID!
         name: String!
+        title: String!
+        slug: String!
         description: String!
         # Group points to App directly, making each other mutually recursive.
         # Therefore, we flatten the data structure here.
@@ -312,6 +314,7 @@ const typeDefs = gql`
         createApp(
             name: String!
             title: String!
+            slug: String!
             description: String
             groups: [ID!]
             resources: [ID!]
@@ -320,6 +323,7 @@ const typeDefs = gql`
         updateApp(
             name: String
             title: String
+            slug: String
             description: String
             groups: [ID!]
             resources: [ID!]

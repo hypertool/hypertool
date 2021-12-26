@@ -13,6 +13,7 @@ import { AppModel } from "../models";
 const createSchema = joi.object({
     name: joi.string().max(128).required(),
     title: joi.string().max(256).required(),
+    slug: joi.string().max(128).required(),
     description: joi.string().max(512).allow("").default(""),
     groups: joi
         .array()
@@ -25,7 +26,9 @@ const createSchema = joi.object({
 });
 
 const updateSchema = joi.object({
-    name: joi.string().max(128).allow(""),
+    name: joi.string().max(128),
+    title: joi.string().max(256),
+    slug: joi.string().max(128),
     description: joi.string().max(512).allow(""),
     groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
     resources: joi
@@ -47,6 +50,8 @@ const toExternal = (app: App): ExternalApp => {
     const {
         id,
         name,
+        title,
+        slug,
         description,
         groups,
         resources,
@@ -59,6 +64,8 @@ const toExternal = (app: App): ExternalApp => {
     return {
         id,
         name,
+        title,
+        slug,
         description,
         groups: extractIds(groups),
         resources: extractIds(resources),
