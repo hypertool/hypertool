@@ -1,8 +1,23 @@
 import type { ApolloClient } from "@apollo/client";
 
-import { gql } from "@apollo/client";
+import { gql, ApolloError } from "@apollo/client";
 
-import type { Manifest } from "../types";
+import type { Manifest, App } from "../types";
+
+const GET_APP_BY_NAME = gql`
+    query GetAppByName($name: String!) {
+        getAppByName(name: $name) {
+            id
+            name
+            description
+            groups
+            resources
+            status
+            createdAt
+            updatedAt
+        }
+    }
+`;
 
 const CREATE_APP = gql`
     mutation CreateApp(
@@ -68,6 +83,19 @@ const CREATE_RESOURCE = gql`
     }
 `;
 
+const isNotFoundError = (error0: unknown): boolean => {
+    if (error0 instanceof ApolloError) {
+        const error = error0 as ApolloError;
+        if (
+            error.graphQLErrors.length > 0 &&
+            error.graphQLErrors[0].extensions.code === "NOT_FOUND_ERROR"
+        ) {
+            return true;
+        }
+    }
+    return false;
+};
+
 export default class Client<T> {
     client: ApolloClient<T>;
 
@@ -75,8 +103,27 @@ export default class Client<T> {
         this.client = client;
     }
 
+    async getAppByName(name: string): Promise<App | null> {
+        try {
+            const app = await this.client.query({
+                query: GET_APP_BY_NAME,
+                variables: {
+                    name: name,
+                },
+            });
+            return app.data.getAppByName;
+        } catch (error: unknown) {
+            if (isNotFoundError(error)) {
+                return null;
+            }
+            throw error;
+        }
+    }
+
     async syncManifest(manifest: Manifest) {
         const { app, queries, resources } = manifest;
+
+        // const deployedApp = await this.getAppByName(app.name);
 
         const convertNameToId = (name: string, type: string) => {
             return "507f1f77bcf86cd799439011";
