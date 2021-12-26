@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
 import type { Query } from "../types";
-import { queryStatuses, queryLifecycleTypes } from "../utils/constants";
+import { queryStatuses } from "../utils/constants";
 
 const queryTemplateSchema = new Schema(
     {
@@ -45,20 +45,6 @@ const queryTemplateSchema = new Schema(
             type: String,
             enum: queryStatuses,
             default: "enabled",
-        },
-        /* The queries are always processed as a whole by the Hypertool command-line interface.
-         * The lifecycle of the queries depends on the YAML configuration files. On the other hand,
-         * third-party integrations and Hypertool GUI manipulate the queries individually. These
-         * queries are not bound by any YAML configuration files. The lifecycle attribute
-         * differentiates queries both these types of queries.
-         *
-         * This attribute is immutable. In other words, once a lifecycle value is assigned,
-         * it cannot be changed.
-         */
-        lifecycle: {
-            type: String,
-            enum: queryLifecycleTypes,
-            required: true,
         },
     },
     { timestamps: true }

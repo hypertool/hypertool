@@ -19,7 +19,6 @@ import {
     appStatuses,
     groupStatuses,
     queryStatuses,
-    queryLifecycleTypes,
 } from "../utils/constants";
 
 const typeDefs = gql`
@@ -198,10 +197,6 @@ const typeDefs = gql`
         ${queryStatuses.join("\n")}
     }
 
-    enum QueryLifecycleType {
-        ${queryLifecycleTypes.join("\n")}
-    }
-
     type Group {
         id: ID!
         name: String!
@@ -236,7 +231,6 @@ const typeDefs = gql`
         app: App!
         content: String!
         status: QueryStatus!
-        lifecycle: QueryLifecycleType!
         createdAt: Date!
         updatedAt: Date!
     }
@@ -353,19 +347,19 @@ const typeDefs = gql`
         deleteResource(resourceId: ID!): RemoveResult!
 
         createQueryTemplate(
-            name: String!,
-            description: String!,
-            resource: ID!,
-            app: ID!,
-            content: String!,
-            lifecycle: QueryLifecycleType!,
+            name: String!
+            description: String!
+            resource: ID!
+            app: ID!
+            content: String!
+            lifecycle: QueryLifecycleType!
         ): QueryTemplate!
 
         updateQueryTemplate(
             queryTemplateId: ID!
-            name: String,
-            description: String,
-            content: String,
+            name: String
+            description: String
+            content: String
         ): QueryTemplate!
 
         deleteQueryTemplate(queryTemplateId: ID!): RemoveResult!
@@ -466,9 +460,6 @@ const resolvers = {
 
         deleteQueryTemplate: async (parent, values, context) =>
             queryTemplates.remove(context.request, context.queryTemplateId),
-
-        deleteAllStaticQueryTemplates: async (parent, values, context) =>
-            queryTemplates.removeAllStatic(context.request, values.appId),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>

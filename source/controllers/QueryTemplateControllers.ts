@@ -11,7 +11,6 @@ const createSchema = joi.object({
     resource: joi.string().regex(constants.identifierPattern),
     app: joi.string().regex(constants.identifierPattern),
     content: joi.string().max(10240).required(),
-    lifecycle: joi.string().valid(...constants.queryLifecycleTypes),
 });
 
 const updateSchema = joi.object({
@@ -40,7 +39,6 @@ const toExternal = (query: Query): ExternalQuery => {
         app,
         content,
         status,
-        lifecycle,
         createdAt,
         updatedAt,
     } = query;
@@ -53,7 +51,6 @@ const toExternal = (query: Query): ExternalQuery => {
         app: typeof app === "string" ? app : app.id,
         content,
         status,
-        lifecycle,
         createdAt,
         updatedAt,
     };
@@ -225,39 +222,4 @@ const remove = async (
     return { success: true };
 };
 
-const removeAllStatic = async (
-    context,
-    appId: string
-): Promise<{ success: boolean }> => {
-    // TODO: Update filters
-    const query = await QueryTemplateModel.updateMany(
-        {
-            app: appId,
-            lifecycle: "static",
-            status: { $ne: "deleted" },
-        },
-        {
-            status: "deleted",
-        },
-        {
-            new: true,
-            lean: true,
-        }
-    ).exec();
-
-    if (!query) {
-        throw new NotFoundError("Cannot find any static queries.");
-    }
-
-    return { success: true };
-};
-
-export {
-    create,
-    listByIds,
-    listByAppId,
-    getById,
-    update,
-    remove,
-    removeAllStatic,
-};
+export { create, listByIds, listByAppId, getById, update, remove };
