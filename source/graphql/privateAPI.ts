@@ -394,6 +394,7 @@ const typeDefs = gql`
 
         getQueryTemplateByAppId(page: Int, limit: Int, app: ID!): QueryTemplatePage!
         getQueryTemplateById(queryTemplateId: ID!): QueryTemplate!
+        getQueryTemplateByName(name: String!): QueryTemplate!
     }
 `;
 
@@ -509,6 +510,9 @@ const resolvers = {
 
         getQueryTemplateById: async (parent, values, context) =>
             queryTemplates.getById(context.request, values.queryTemplateId),
+
+        getQueryTemplateByName: async (parent, values, context) =>
+            queryTemplates.getByName(context.request, values.name),
     },
 };
 
