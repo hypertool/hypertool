@@ -21,10 +21,6 @@ const createSchema = joi.object({
         .array()
         .items(joi.string().regex(constants.identifierPattern))
         .default([]),
-    resources: joi
-        .array()
-        .items(joi.string().regex(constants.identifierPattern))
-        .default([]),
 });
 
 const updateSchema = joi.object({
@@ -33,9 +29,6 @@ const updateSchema = joi.object({
     slug: joi.string().max(128),
     description: joi.string().max(512).allow(""),
     groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
-    resources: joi
-        .array()
-        .items(joi.string().regex(constants.identifierPattern)),
 });
 
 const filterSchema = joi.object({

@@ -320,7 +320,6 @@ const typeDefs = gql`
             slug: String!
             description: String
             groups: [ID!]
-            resources: [ID!]
         ): App!
 
         updateApp(
@@ -330,7 +329,6 @@ const typeDefs = gql`
             slug: String
             description: String
             groups: [ID!]
-            resources: [ID!]
         ): App!
 
         deleteApp(appId: ID!): RemoveResult!
