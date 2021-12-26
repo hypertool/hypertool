@@ -44,6 +44,30 @@ const CREATE_QUERY_TEMPLATE = gql`
     }
 `;
 
+const CREATE_RESOURCE = gql`
+    mutation CreateResource(
+        $name: String!
+        $description: String
+        $type: ResourceType!
+        $mysql: MySQLConfigurationInput
+        $postgres: PostgresConfigurationInput
+        $mongodb: MongoDBConfigurationInput
+        $bigquery: BigQueryConfigurationInput
+    ) {
+        createResource(
+            name: $name
+            description: $description
+            type: $type
+            mysql: $mysql
+            postgres: $postgres
+            mongodb: $mongodb
+            bigquery: $bigquery
+        ) {
+            id
+        }
+    }
+`;
+
 export default class Client<T> {
     client: ApolloClient<T>;
 
@@ -52,7 +76,7 @@ export default class Client<T> {
     }
 
     async syncManifest(manifest: Manifest) {
-        const { app, queries } = manifest;
+        const { app, queries, resources } = manifest;
 
         const convertNameToId = (name: string, type: string) => {
             return "507f1f77bcf86cd799439011";
@@ -78,6 +102,18 @@ export default class Client<T> {
                     resource: convertNameToId(query.resource, "resource"),
                     app: convertNameToId(app.name, "app"),
                     content: query.content,
+                },
+            });
+        }
+
+        for (const resource of resources) {
+            await this.client.mutate({
+                mutation: CREATE_RESOURCE,
+                variables: {
+                    name: resource.name,
+                    description: resource.description,
+                    type: resource.type,
+                    [resource.type]: resource.connection,
                 },
             });
         }
