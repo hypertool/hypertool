@@ -111,6 +111,7 @@ const parseApp = (app: App, path = "<anonymous>"): App => {
 const parseQuery = (query: Query, path = "<anonymous>"): Query => {
     const result: Query = {
         name: "",
+        description: "",
         resource: "",
         content: "",
     };
@@ -130,6 +131,11 @@ const parseQuery = (query: Query, path = "<anonymous>"): Query => {
                     logSemanticError("Query name is invalid.", path);
                 }
                 result.name = value.trim();
+                break;
+            }
+
+            case "description": {
+                result.description = value;
                 break;
             }
 

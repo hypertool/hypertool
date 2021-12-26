@@ -1,5 +1,6 @@
 export interface Query {
     name: string;
+    description: string;
     resource: string;
     content: string;
 }
