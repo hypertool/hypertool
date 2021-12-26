@@ -24,6 +24,26 @@ const CREATE_APP = gql`
     }
 `;
 
+const CREATE_QUERY_TEMPLATE = gql`
+    mutation CreateQueryTemplate(
+        $name: String!
+        $description: String
+        $resource: ID!
+        $app: ID!
+        $content: String!
+    ) {
+        createQueryTemplate(
+            name: $name
+            description: $description
+            resource: $resource
+            app: $app
+            content: $content
+        ) {
+            id
+        }
+    }
+`;
+
 export default class Client<T> {
     client: ApolloClient<T>;
 
@@ -32,9 +52,13 @@ export default class Client<T> {
     }
 
     async syncManifest(manifest: Manifest) {
-        const { app } = manifest;
+        const { app, queries } = manifest;
 
-        return await this.client.mutate({
+        const convertNameToId = (name: string, type: string) => {
+            return "507f1f77bcf86cd799439011";
+        };
+
+        await this.client.mutate({
             mutation: CREATE_APP,
             variables: {
                 name: app.name,
@@ -44,5 +68,18 @@ export default class Client<T> {
                 resources: [],
             },
         });
+
+        for (const query of queries) {
+            await this.client.mutate({
+                mutation: CREATE_QUERY_TEMPLATE,
+                variables: {
+                    name: query.name,
+                    description: query.description,
+                    resource: convertNameToId(query.resource, "resource"),
+                    app: convertNameToId(app.name, "app"),
+                    content: query.content,
+                },
+            });
+        }
     }
 }
