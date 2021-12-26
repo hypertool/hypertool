@@ -44,6 +44,30 @@ const CREATE_APP = gql`
     }
 `;
 
+const UPDATE_APP = gql`
+    mutation UpdateApp(
+        $appId: ID!
+        $name: String
+        $title: String
+        $slug: String
+        $description: String
+        $groups: [ID!]
+        $resources: [ID!]
+    ) {
+        updateApp(
+            appId: $appId
+            name: $name
+            title: $title
+            slug: $slug
+            description: $description
+            groups: $groups
+            resources: $resources
+        ) {
+            id
+        }
+    }
+`;
+
 const CREATE_QUERY_TEMPLATE = gql`
     mutation CreateQueryTemplate(
         $name: String!
@@ -137,12 +161,29 @@ export default class Client<T> {
                 title: app.title,
                 slug: app.slug,
                 description: app.description,
-                groups:
-                    app.groups.length > 0
-                        ? app.groups.map((group) =>
-                              this.convertNameToId(group, "group"),
-                          )
-                        : [this.convertNameToId("default", "group")],
+                groups: app.groups.map((group) =>
+                    this.convertNameToId(group, "group"),
+                ),
+                resources: [],
+            },
+        });
+    }
+
+    async updateApp(appId: string, app: App): Promise<void> {
+        await this.client.mutate({
+            mutation: UPDATE_APP,
+            variables: {
+                appId,
+                name: app.name,
+                title: app.title,
+                slug: app.slug,
+                description: app.description,
+                /* Any implicit value injection to the manifests must be done
+                 * during compilation by the compiler, not when syncing changes.
+                 */
+                groups: app.groups.map((group) =>
+                    this.convertNameToId(group, "group"),
+                ),
                 resources: [],
             },
         });
@@ -194,7 +235,7 @@ export default class Client<T> {
             return false;
         }
 
-        console.log("App needs to be updated.");
+        await this.updateApp(oldApp.id as string, newApp);
 
         return true;
     }
