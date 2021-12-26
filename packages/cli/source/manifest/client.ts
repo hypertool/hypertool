@@ -88,7 +88,12 @@ export default class Client<T> {
                 name: app.name,
                 title: app.title,
                 description: app.description,
-                groups: app.groups.length > 0 ? app.groups : ["default"],
+                groups:
+                    app.groups.length > 0
+                        ? app.groups.map((group) =>
+                              convertNameToId(group, "group"),
+                          )
+                        : [convertNameToId("default", "group")],
                 resources: [],
             },
         });
