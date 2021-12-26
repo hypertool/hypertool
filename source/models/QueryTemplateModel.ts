@@ -19,16 +19,12 @@ const queryTemplateSchema = new Schema(
             default: "",
         },
         resource: {
-            type: {
-                type: Schema.Types.ObjectId,
-                ref: "Resource",
-            },
+            type: Schema.Types.ObjectId,
+            ref: "Resource",
         },
         app: {
-            type: {
-                type: Schema.Types.ObjectId,
-                ref: "App",
-            },
+            type: Schema.Types.ObjectId,
+            ref: "App",
         },
         /* Contingent on the resource type, the content should be treated differently by the service
          * executing the query. For example, for MySQL queries, the content is a SQL statement. On
