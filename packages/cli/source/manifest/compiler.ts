@@ -67,7 +67,7 @@ const parseApp = (app: App, path = "<anonymous>"): App => {
                 if (!IDENTIFIER_REGEX.test(value)) {
                     logSemanticError(`App name "${value}" is invalid.`, path);
                 }
-                result.name = value;
+                result.name = value.trim();
                 break;
             }
 
@@ -75,7 +75,7 @@ const parseApp = (app: App, path = "<anonymous>"): App => {
                 if (!IDENTIFIER_REGEX.test(value)) {
                     logSemanticError(`App slug "${value}" is invalid.`, path);
                 }
-                result.slug = value;
+                result.slug = value.trim();
                 break;
             }
 
@@ -135,7 +135,7 @@ const parseQuery = (query: Query, path = "<anonymous>"): Query => {
             }
 
             case "description": {
-                result.description = value;
+                result.description = value.trim();
                 break;
             }
 
@@ -148,7 +148,8 @@ const parseQuery = (query: Query, path = "<anonymous>"): Query => {
             }
 
             case "content": {
-                result.content = value;
+                result.content =
+                    typeof value === "string" ? value.trim() : value;
                 break;
             }
         }
@@ -177,17 +178,19 @@ const parseResource = (resource: Resource, path: string): Resource => {
                 if (!IDENTIFIER_REGEX.test(value)) {
                     logSemanticError("Resource name is invalid.", path);
                 }
-                result.name = value;
+                result.name = value.trim();
                 break;
             }
 
             case "type": {
-                result.type = value;
+                result.type = value.trim();
                 break;
             }
 
+            // TODO: Implement parseConnection()
             case "connection": {
-                result.connection = value;
+                result.connection =
+                    typeof value === "string" ? value.trim() : value;
                 break;
             }
         }
