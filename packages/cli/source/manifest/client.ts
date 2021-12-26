@@ -29,7 +29,6 @@ const CREATE_APP = gql`
         $slug: String!
         $description: String
         $groups: [ID!]
-        $resources: [ID!]
     ) {
         createApp(
             name: $name
@@ -37,7 +36,6 @@ const CREATE_APP = gql`
             slug: $slug
             description: $description
             groups: $groups
-            resources: $resources
         ) {
             id
         }
@@ -52,7 +50,6 @@ const UPDATE_APP = gql`
         $slug: String
         $description: String
         $groups: [ID!]
-        $resources: [ID!]
     ) {
         updateApp(
             appId: $appId
@@ -61,7 +58,6 @@ const UPDATE_APP = gql`
             slug: $slug
             description: $description
             groups: $groups
-            resources: $resources
         ) {
             id
         }
@@ -164,7 +160,6 @@ export default class Client<T> {
                 groups: app.groups.map((group) =>
                     this.convertNameToId(group, "group"),
                 ),
-                resources: [],
             },
         });
     }
@@ -184,7 +179,6 @@ export default class Client<T> {
                 groups: app.groups.map((group) =>
                     this.convertNameToId(group, "group"),
                 ),
-                resources: [],
             },
         });
     }
