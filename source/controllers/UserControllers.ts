@@ -10,6 +10,7 @@ import {
     BadRequestError,
     NotFoundError,
     UnauthorizedError,
+    extractIds,
 } from "../utils";
 import { UserModel } from "../models";
 
@@ -85,12 +86,7 @@ const toExternal = (user: User): ExternalUser => {
         birthday,
         status,
         role,
-        groups:
-            groups.length > 0
-                ? typeof groups[0] === "string"
-                    ? groups
-                    : groups.map((group) => group.id)
-                : [],
+        groups: extractIds(groups),
         createdAt,
         updatedAt,
     };

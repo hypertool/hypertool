@@ -2,7 +2,12 @@ import joi from "joi";
 
 import type { Group, GroupPage, ExternalGroup } from "../types";
 
-import { constants, BadRequestError, NotFoundError } from "../utils";
+import {
+    constants,
+    BadRequestError,
+    NotFoundError,
+    extractIds,
+} from "../utils";
 import { GroupModel } from "../models";
 
 const createSchema = joi.object({
@@ -47,18 +52,8 @@ const toExternal = (group: Group): ExternalGroup => {
         name,
         description,
         type,
-        users:
-            users.length > 0
-                ? typeof users[0] === "string"
-                    ? users
-                    : users.map((user) => user.id)
-                : [],
-        apps:
-            apps.length > 0
-                ? typeof apps[0] === "string"
-                    ? apps
-                    : apps.map((app) => app.id)
-                : [],
+        users: extractIds(users),
+        apps: extractIds(apps),
         status,
         createdAt,
         updatedAt,

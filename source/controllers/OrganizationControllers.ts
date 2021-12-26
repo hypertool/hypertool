@@ -6,7 +6,12 @@ import type {
     OrganizationPage,
 } from "../types";
 
-import { constants, BadRequestError, NotFoundError } from "../utils";
+import {
+    constants,
+    BadRequestError,
+    NotFoundError,
+    extractIds,
+} from "../utils";
 import { OrganizationModel } from "../models";
 
 const createSchema = joi.object({
@@ -39,12 +44,7 @@ const toExternal = (organization: Organization): ExternalOrganization => {
         id,
         name,
         description,
-        users:
-            users.length > 0
-                ? typeof users[0] === "string"
-                    ? users
-                    : users.map((user) => user.id)
-                : [],
+        users: extractIds(users),
         status,
         createdAt,
         updatedAt,

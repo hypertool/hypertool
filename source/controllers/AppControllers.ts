@@ -2,7 +2,12 @@ import joi from "joi";
 
 import type { App, ExternalApp, AppPage, User } from "../types";
 
-import { constants, BadRequestError, NotFoundError } from "../utils";
+import {
+    constants,
+    BadRequestError,
+    NotFoundError,
+    extractIds,
+} from "../utils";
 import { AppModel } from "../models";
 
 const createSchema = joi.object({
@@ -55,18 +60,8 @@ const toExternal = (app: App): ExternalApp => {
         id,
         name,
         description,
-        groups:
-            groups.length > 0
-                ? typeof groups[0] === "string"
-                    ? groups
-                    : groups.map((group) => group.id)
-                : [],
-        resources:
-            resources.length > 0
-                ? typeof resources[0] === "string"
-                    ? resources
-                    : resources.map((resource) => resource.id)
-                : [],
+        groups: extractIds(groups),
+        resources: extractIds(resources),
         // TODO: Remove the hard coded string.
         creator:
             typeof creator === "string"
