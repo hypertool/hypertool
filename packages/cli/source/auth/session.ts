@@ -10,6 +10,7 @@ import type { Session } from "../types";
 
 import { startServer } from "./server";
 import { logger } from "../utils";
+import { Client } from "../manifest";
 
 const HOME_DIRECTORY = os.homedir();
 const SESSION_DESCRIPTOR = path.join(
@@ -90,7 +91,7 @@ export const loadSession = async (): Promise<Session> => {
         return await fs.readJSON(SESSION_DESCRIPTOR);
     } catch (error) {
         throw new Error(
-            "You are not authenticated. Run `hypertool auth` to before continuing.",
+            "You are not authenticated. Run `hypertool auth` before continuing.",
         );
     }
 };
@@ -108,8 +109,10 @@ export const createPrivateClient = (session: Session) => {
             },
         };
     });
-    return new ApolloClient({
-        link: authLink.concat(httpLink),
-        cache: new InMemoryCache(),
-    });
+    return new Client(
+        new ApolloClient({
+            link: authLink.concat(httpLink),
+            cache: new InMemoryCache(),
+        }),
+    );
 };

@@ -17,22 +17,31 @@ const auth = async (): Promise<void> => {
 const deploy = async (): Promise<void> => {
     const tasks = new TaskList([
         {
-            title: "Checking authentication status...",
+            title: "Check authentication status",
             task: async (context, task) => {
+                task.title = "Checking authentication status...";
                 const session = await authUtils.loadSession();
-                task.title = `Authenticated as ${chalk.bold(
-                    session.user.firstName,
-                )} ${chalk.bold(session.user.lastName)} <${chalk.bold(
-                    session.user.emailAddress,
-                )}>`;
+                task.title = `Authenticated as ${session.user.firstName} ${session.user.lastName} <${session.user.emailAddress}>`;
                 context.session = session;
             },
         },
         {
-            title: "Compiling manifests...",
+            title: "Compile manifests",
             task: async (context, task) => {
-                context.manifest = await manifest.compile();
-                task.title = `Compiled manifests`;
+                task.title = "Compiling manifests...";
+                const result = await manifest.compile();
+                task.title = `Compiled manifests (queries=${result.queries.length}, resources=${result.resources.length})`;
+                context.manifest = result;
+            },
+        },
+        {
+            title: "Post manifests to Hypertool API",
+            task: async (context, task) => {
+                task.title = "Posting manifests to Hypertool API...";
+                const client = authUtils.createPrivateClient(context.session);
+                client.syncManifest(context.manifest);
+                task.title =
+                    "Posted manifests to Hypertool API\n   Run `hypertool status` to check the deployment status.";
             },
         },
     ]);
