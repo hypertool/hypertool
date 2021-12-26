@@ -2,7 +2,7 @@ import type { ApolloClient } from "@apollo/client";
 
 import { gql, ApolloError } from "@apollo/client";
 
-import type { Manifest, App } from "../types";
+import type { Manifest, App, Query, Resource } from "../types";
 
 const GET_APP_BY_NAME = gql`
     query GetAppByName($name: String!) {
@@ -120,15 +120,11 @@ export default class Client<T> {
         }
     }
 
-    async syncManifest(manifest: Manifest) {
-        const { app, queries, resources } = manifest;
+    convertNameToId(name: string, type: string) {
+        return "507f1f77bcf86cd799439011";
+    }
 
-        // const deployedApp = await this.getAppByName(app.name);
-
-        const convertNameToId = (name: string, type: string) => {
-            return "507f1f77bcf86cd799439011";
-        };
-
+    async createApp(app: App): Promise<void> {
         await this.client.mutate({
             mutation: CREATE_APP,
             variables: {
@@ -138,36 +134,51 @@ export default class Client<T> {
                 groups:
                     app.groups.length > 0
                         ? app.groups.map((group) =>
-                              convertNameToId(group, "group"),
+                              this.convertNameToId(group, "group"),
                           )
-                        : [convertNameToId("default", "group")],
+                        : [this.convertNameToId("default", "group")],
                 resources: [],
             },
         });
+    }
+
+    async createQuery(query: Query, appName: string): Promise<void> {
+        await this.client.mutate({
+            mutation: CREATE_QUERY_TEMPLATE,
+            variables: {
+                name: query.name,
+                description: query.description,
+                resource: this.convertNameToId(query.resource, "resource"),
+                app: this.convertNameToId(appName, "app"),
+                content: query.content,
+            },
+        });
+    }
+
+    async createResource(resource: Resource, appName: string): Promise<void> {
+        await this.client.mutate({
+            mutation: CREATE_RESOURCE,
+            variables: {
+                name: resource.name,
+                description: resource.description,
+                type: resource.type,
+                [resource.type]: resource.connection,
+            },
+        });
+    }
+
+    async syncManifest(manifest: Manifest) {
+        const { app, queries, resources } = manifest;
+
+        // const deployedApp = await this.getAppByName(app.name);
+        await this.createApp(app);
 
         for (const query of queries) {
-            await this.client.mutate({
-                mutation: CREATE_QUERY_TEMPLATE,
-                variables: {
-                    name: query.name,
-                    description: query.description,
-                    resource: convertNameToId(query.resource, "resource"),
-                    app: convertNameToId(app.name, "app"),
-                    content: query.content,
-                },
-            });
+            await this.createQuery(query, app.name);
         }
 
         for (const resource of resources) {
-            await this.client.mutate({
-                mutation: CREATE_RESOURCE,
-                variables: {
-                    name: resource.name,
-                    description: resource.description,
-                    type: resource.type,
-                    [resource.type]: resource.connection,
-                },
-            });
+            await this.createResource(resource, app.name);
         }
     }
 }
