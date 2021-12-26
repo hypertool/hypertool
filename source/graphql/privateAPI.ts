@@ -260,6 +260,7 @@ const typeDefs = gql`
         ): Organization!
 
         updateOrganization(
+            organizationId: ID!
             name: String
             description: String
             users: [ID!]
@@ -282,6 +283,7 @@ const typeDefs = gql`
         ): User!
 
         updateUser(
+            userId: ID!
             firstName: String,
             lastName: String,
             description: String,
@@ -303,6 +305,7 @@ const typeDefs = gql`
         ): Group!
 
         updateGroup(
+            groupId: ID!
             name: String
             description: String
             users: [ID!]
@@ -321,6 +324,7 @@ const typeDefs = gql`
         ): App!
 
         updateApp(
+            appId: ID!
             name: String
             title: String
             slug: String
