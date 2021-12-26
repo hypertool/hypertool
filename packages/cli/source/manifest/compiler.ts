@@ -9,7 +9,7 @@ import chalk from "chalk";
 import { paths, getMissingKeys, constants } from "../utils";
 import type { Manifest, App, Query, Resource } from "../types";
 
-const IDENTIFIER_REGEX = /^[a-zA-Z_][a-zA-Z_0-9]+[a-zA-Z_0-9]$/;
+const IDENTIFIER_REGEX = /^[a-zA-Z_][a-zA-Z_0-9-]+[a-zA-Z_0-9]$/;
 
 let errorCount = 0;
 
@@ -64,17 +64,24 @@ const parseApp = (app: App, path = "<anonymous>"): App => {
         switch (key) {
             case "slug": {
                 if (!IDENTIFIER_REGEX.test(value)) {
-                    logSemanticError(`App slug ${value} is invalid.`, path);
+                    logSemanticError(`App slug "${value}" is invalid.`, path);
                 }
                 result.slug = value;
                 break;
             }
 
             case "title": {
-                if (!IDENTIFIER_REGEX.test(value)) {
-                    logSemanticError(`App title ${value} is invalid.`, path);
+                const trimmed = value.trim();
+
+                if (trimmed.indexOf("\n") > 0) {
+                    logSemanticError("App title cannot contain newlines", path);
                 }
-                result.title = value.trim();
+
+                if (trimmed.length === 0) {
+                    logSemanticError("App title cannot be empty", path);
+                }
+
+                result.title = trimmed;
                 break;
             }
 
@@ -197,7 +204,7 @@ const parseResources = (resources: any, path = "<anonymous>") => {
 
 const compile = async (): Promise<Manifest> => {
     const files = await paths.globAsync(
-        paths.MANIFEST_DIRECTORY + "/**/*.{yml, yaml}",
+        paths.MANIFEST_DIRECTORY + "/**/*.{yml,yaml}",
     );
 
     const promises: Promise<string>[] = files.map((file) =>
@@ -218,7 +225,6 @@ const compile = async (): Promise<Manifest> => {
     let resources: {
         [key: string]: Resource;
     } = {};
-
     for (const manifest of manifests) {
         for (const key in manifest) {
             switch (key) {
