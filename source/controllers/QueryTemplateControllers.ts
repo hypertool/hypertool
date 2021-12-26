@@ -1,3 +1,5 @@
+import type { Document } from "mongoose";
+
 import joi from "joi";
 
 import type { Query, ExternalQuery, QueryPage } from "../types";
@@ -30,9 +32,10 @@ const filterSchema = joi.object({
     app: joi.string().regex(constants.identifierPattern),
 });
 
-const toExternal = (query: Query): ExternalQuery => {
+const toExternal = (query: Query & Document<Query>): ExternalQuery => {
     const {
         id,
+        _id,
         name,
         description,
         resource,
@@ -44,7 +47,7 @@ const toExternal = (query: Query): ExternalQuery => {
     } = query;
 
     return {
-        id,
+        id: id || _id.toString(),
         name,
         description,
         resource: typeof resource === "string" ? resource : resource.id,

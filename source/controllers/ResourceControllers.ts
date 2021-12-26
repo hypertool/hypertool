@@ -1,3 +1,5 @@
+import type { Document } from "mongoose";
+
 import joi from "joi";
 
 import type { Resource, ExternalResource, ResourcePage } from "../types";
@@ -84,9 +86,11 @@ const updateSchema = joi.object({
     }),
 });
 
-const toExternal = (resource: Resource): ExternalResource => {
+const toExternal = (
+    resource: Resource & Document<Resource>
+): ExternalResource => {
     const { id, _id, name, description, type, status, createdAt, updatedAt } =
-        resource as any;
+        resource;
     let sanitizedConfiguration = null;
     switch (type) {
         case "mysql":

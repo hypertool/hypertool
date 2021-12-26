@@ -1,3 +1,5 @@
+import type { Document } from "mongoose";
+
 import joi from "joi";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
@@ -52,9 +54,10 @@ const updateSchema = joi.object({
     groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const toExternal = (user: User): ExternalUser => {
+const toExternal = (user: User & Document<User>): ExternalUser => {
     const {
         id,
+        _id,
         firstName,
         lastName,
         description,
@@ -73,7 +76,7 @@ const toExternal = (user: User): ExternalUser => {
     } = user;
 
     return {
-        id,
+        id: id || _id.toString(),
         firstName,
         lastName,
         description,

@@ -1,3 +1,5 @@
+import type { Document } from "mongoose";
+
 import joi from "joi";
 
 import type {
@@ -36,12 +38,14 @@ const updateSchema = joi.object({
     users: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const toExternal = (organization: Organization): ExternalOrganization => {
-    const { id, name, description, users, status, createdAt, updatedAt } =
+const toExternal = (
+    organization: Organization & Document<Organization>
+): ExternalOrganization => {
+    const { id, _id, name, description, users, status, createdAt, updatedAt } =
         organization;
 
     return {
-        id,
+        id: id || _id.toString(),
         name,
         description,
         users: extractIds(users),

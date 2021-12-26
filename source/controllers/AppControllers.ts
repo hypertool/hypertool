@@ -1,3 +1,5 @@
+import type { Document } from "mongoose";
+
 import joi from "joi";
 
 import type { App, ExternalApp, AppPage, User } from "../types";
@@ -46,9 +48,10 @@ const filterSchema = joi.object({
         .default(constants.paginateMinLimit),
 });
 
-const toExternal = (app: App): ExternalApp => {
+const toExternal = (app: App & Document<App>): ExternalApp => {
     const {
         id,
+        _id,
         name,
         title,
         slug,
@@ -61,8 +64,8 @@ const toExternal = (app: App): ExternalApp => {
         updatedAt,
     } = app;
 
-    return {
-        id,
+    const result = {
+        id: id || _id.toString(),
         name,
         title,
         slug,
@@ -78,6 +81,8 @@ const toExternal = (app: App): ExternalApp => {
         createdAt,
         updatedAt,
     };
+    console.log(result);
+    return result;
 };
 
 const create = async (context, attributes): Promise<ExternalApp> => {

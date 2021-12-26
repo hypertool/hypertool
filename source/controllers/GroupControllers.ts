@@ -1,3 +1,5 @@
+import type { Document } from "mongoose";
+
 import joi from "joi";
 
 import type { Group, GroupPage, ExternalGroup } from "../types";
@@ -34,9 +36,10 @@ const updateSchema = joi.object({
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const toExternal = (group: Group): ExternalGroup => {
+const toExternal = (group: Group & Document<Group>): ExternalGroup => {
     const {
         id,
+        _id,
         name,
         description,
         type,
@@ -48,7 +51,7 @@ const toExternal = (group: Group): ExternalGroup => {
     } = group;
 
     return {
-        id,
+        id: id || _id.toString(),
         name,
         description,
         type,
