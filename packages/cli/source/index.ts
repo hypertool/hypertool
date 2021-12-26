@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import { Command } from "commander";
+import TaskList from "listr";
 
 import { createServer } from "./server";
 import { createCompiler } from "./compiler";
@@ -13,8 +14,39 @@ const auth = async (): Promise<void> => {
     authUtils.authenticate();
 };
 
-const build = async (): Promise<void> => {
-    manifest.compile();
+const deploy = async (): Promise<void> => {
+    const tasks = new TaskList([
+        {
+            title: "Check authentication status",
+            task: async (context, task) => {
+                task.title = "Checking authentication status...";
+                const session = await authUtils.loadSession();
+                task.title = `Authenticated as ${session.user.firstName} ${session.user.lastName} <${session.user.emailAddress}>`;
+                context.session = session;
+            },
+        },
+        {
+            title: "Compile manifests",
+            task: async (context, task) => {
+                task.title = "Compiling manifests...";
+                const result = await manifest.compile();
+                task.title = `Compiled manifests (queries=${result.queries.length}, resources=${result.resources.length})`;
+                context.manifest = result;
+            },
+        },
+        {
+            title: "Post manifests to Hypertool API",
+            task: async (context, task) => {
+                task.title = "Posting manifests to Hypertool API...";
+                const client = authUtils.createPrivateClient(context.session);
+                client.syncManifest(context.manifest);
+                task.title =
+                    "Posted manifests to Hypertool API\n   Run `hypertool status` to check the deployment status.";
+            },
+        },
+    ]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    tasks.run().catch((_error) => null);
 };
 
 const create = async (): Promise<void> => {
@@ -54,13 +86,13 @@ const configureCommands = (): Command => {
         .action(auth);
     program.addCommand(authCommand);
 
-    const buildCommand = new Command();
-    buildCommand
-        .name("build")
-        .alias("b")
-        .description("builds the app")
-        .action(build);
-    program.addCommand(buildCommand);
+    const deployCommand = new Command();
+    deployCommand
+        .name("deploy")
+        .alias("d")
+        .description("deploys the app")
+        .action(deploy);
+    program.addCommand(deployCommand);
 
     const createCommand = new Command();
     createCommand
@@ -110,7 +142,7 @@ const main = (): void => {
         chalk.bold(
             `hypertool v${packageData.version} ${chalk.greenBright(
                 "(https://hypertool.io)",
-            )}`,
+            )}\n`,
         ),
     );
     const program = configureCommands();

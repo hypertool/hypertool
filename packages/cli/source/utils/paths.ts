@@ -9,6 +9,7 @@
 import fs from "fs";
 import path from "path";
 import { URL } from "url";
+import glob from "glob";
 
 /**
  * Returns a URL or a path with slash at the end.
@@ -113,3 +114,15 @@ export const PUBLIC_URL_OR_PATH = getPublicUrlOrPath(
 );
 
 export const extensions = ["js", "ts", "htx", "tsx", "jsx", "json"];
+
+export const globAsync = (pattern: string): Promise<string[]> =>
+    new Promise((resolve, reject) => {
+        glob(pattern, (error: Error | null, files: string[]) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+
+            resolve(files);
+        });
+    });

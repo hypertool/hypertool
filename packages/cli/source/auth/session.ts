@@ -1,12 +1,16 @@
 import fetch from "cross-fetch";
 import { gql, ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 import chalk from "chalk";
 import fs from "fs-extra";
 import os from "os";
 import path from "path";
 
+import type { Session } from "../types";
+
 import { startServer } from "./server";
 import { logger } from "../utils";
+import { Client } from "../manifest";
 
 const HOME_DIRECTORY = os.homedir();
 const SESSION_DESCRIPTOR = path.join(
@@ -57,7 +61,7 @@ const client = new ApolloClient({
  * @returns
  * The session object after deleting unnecessary keys.
  */
-const createSession = async (token: string) => {
+const createSession = async (token: string): Promise<Session> => {
     const {
         data: { loginWithGoogle: session },
     } = await client.mutate({
@@ -69,7 +73,7 @@ const createSession = async (token: string) => {
     return session;
 };
 
-export const authenticate = async () => {
+export const authenticate = async (): Promise<void> => {
     const authorizationToken = await startServer();
     const session = await createSession(authorizationToken);
 
@@ -80,4 +84,35 @@ export const authenticate = async () => {
         )}.`,
     );
     await fs.outputFile(SESSION_DESCRIPTOR, JSON.stringify(session, null, 4));
+};
+
+export const loadSession = async (): Promise<Session> => {
+    try {
+        return await fs.readJSON(SESSION_DESCRIPTOR);
+    } catch (error) {
+        throw new Error(
+            "You are not authenticated. Run `hypertool auth` before continuing.",
+        );
+    }
+};
+
+export const createPrivateClient = (session: Session) => {
+    const httpLink = new HttpLink({
+        uri: `http://localhost:3001/graphql/v1/private`,
+        fetch,
+    });
+    const authLink = setContext((_, { headers }) => {
+        return {
+            headers: {
+                ...headers,
+                authorization: `Bearer ${session.jwtToken}`,
+            },
+        };
+    });
+    return new Client(
+        new ApolloClient({
+            link: authLink.concat(httpLink),
+            cache: new InMemoryCache(),
+        }),
+    );
 };
