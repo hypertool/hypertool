@@ -1,6 +1,7 @@
 import type { ApolloClient } from "@apollo/client";
 
 import { gql, ApolloError } from "@apollo/client";
+import lodash from "lodash";
 
 import type { Manifest, App, Query, Resource } from "../types";
 
@@ -9,6 +10,8 @@ const GET_APP_BY_NAME = gql`
         getAppByName(name: $name) {
             id
             name
+            title
+            slug
             description
             groups
             resources
@@ -23,6 +26,7 @@ const CREATE_APP = gql`
     mutation CreateApp(
         $name: String!
         $title: String!
+        $slug: String!
         $description: String
         $groups: [ID!]
         $resources: [ID!]
@@ -30,6 +34,7 @@ const CREATE_APP = gql`
         createApp(
             name: $name
             title: $title
+            slug: $slug
             description: $description
             groups: $groups
             resources: $resources
@@ -130,6 +135,7 @@ export default class Client<T> {
             variables: {
                 name: app.name,
                 title: app.title,
+                slug: app.slug,
                 description: app.description,
                 groups:
                     app.groups.length > 0
@@ -167,11 +173,41 @@ export default class Client<T> {
         });
     }
 
+    async patchApp(oldApp: App, newApp: App): Promise<boolean> {
+        const keys = ["name", "slug", "description", "title", "groups"];
+        const oldAppPicked = lodash.pick(oldApp, keys);
+        const newAppPicked = lodash.pick(newApp, keys);
+
+        if (!oldAppPicked || !newAppPicked) {
+            throw new Error("lodash.pick() returned undefined for some reason");
+        }
+
+        /* `oldAppPicked.groups` contains IDs, not names. Therefore, convert
+         * names in `newAppPicked.groups` to their corresponding IDs before
+         * comparing.
+         */
+        newAppPicked.groups = newAppPicked?.groups?.map((group) =>
+            this.convertNameToId(group, "group"),
+        );
+
+        if (lodash.isEqual(oldAppPicked, newAppPicked)) {
+            return false;
+        }
+
+        console.log("App needs to be updated.");
+
+        return true;
+    }
+
     async syncManifest(manifest: Manifest) {
         const { app, queries, resources } = manifest;
 
-        // const deployedApp = await this.getAppByName(app.name);
-        await this.createApp(app);
+        const deployedApp = await this.getAppByName(app.name);
+        if (!deployedApp) {
+            await this.createApp(app);
+        } else {
+            await this.patchApp(deployedApp, app);
+        }
 
         for (const query of queries) {
             await this.createQuery(query, app.name);
