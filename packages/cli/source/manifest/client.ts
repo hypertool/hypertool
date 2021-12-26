@@ -3,7 +3,7 @@ import type { ApolloClient } from "@apollo/client";
 import { gql, ApolloError } from "@apollo/client";
 import lodash from "lodash";
 
-import type { Manifest, App, Query, Resource } from "../types";
+import type { Manifest, App, Query as QueryTemplate, Resource } from "../types";
 
 const GET_APP_BY_NAME = gql`
     query GetAppByName($name: String!) {
@@ -64,6 +64,15 @@ const UPDATE_APP = gql`
     }
 `;
 
+const GET_QUERY_TEMPLATE_BY_NAME = gql`
+    query GetQueryTemplateByName($name: String!) {
+        getQueryTemplateByName(name: $name) {
+            id
+            name
+        }
+    }
+`;
+
 const CREATE_QUERY_TEMPLATE = gql`
     mutation CreateQueryTemplate(
         $name: String!
@@ -77,6 +86,24 @@ const CREATE_QUERY_TEMPLATE = gql`
             description: $description
             resource: $resource
             app: $app
+            content: $content
+        ) {
+            id
+        }
+    }
+`;
+
+const UPDATE_QUERY_TEMPLATE = gql`
+    mutation UpdateQueryTemplate(
+        $queryTemplateId: ID!
+        $name: String
+        $description: String
+        $content: String
+    ) {
+        updateQueryTemplate(
+            queryTemplateId: $queryTemplateId
+            name: $name
+            description: $description
             content: $content
         ) {
             id
@@ -183,15 +210,53 @@ export default class Client<T> {
         });
     }
 
-    async createQuery(query: Query, appName: string): Promise<void> {
+    async getQueryTemplateByName(name: string): Promise<QueryTemplate | null> {
+        try {
+            const queryTemplate = await this.client.query({
+                query: GET_QUERY_TEMPLATE_BY_NAME,
+                variables: {
+                    name: name,
+                },
+            });
+            return queryTemplate.data.getQueryTemplateByName;
+        } catch (error: unknown) {
+            if (isNotFoundError(error)) {
+                return null;
+            }
+            throw error;
+        }
+    }
+
+    async createQueryTemplate(
+        queryTemplate: QueryTemplate,
+        appName: string,
+    ): Promise<void> {
         await this.client.mutate({
             mutation: CREATE_QUERY_TEMPLATE,
             variables: {
-                name: query.name,
-                description: query.description,
-                resource: this.convertNameToId(query.resource, "resource"),
+                name: queryTemplate.name,
+                description: queryTemplate.description,
+                resource: this.convertNameToId(
+                    queryTemplate.resource,
+                    "resource",
+                ),
                 app: this.convertNameToId(appName, "app"),
-                content: query.content,
+                content: queryTemplate.content,
+            },
+        });
+    }
+
+    async updateQueryTemplate(
+        queryTemplateId: string,
+        queryTemplate: QueryTemplate,
+    ): Promise<void> {
+        await this.client.mutate({
+            mutation: UPDATE_QUERY_TEMPLATE,
+            variables: {
+                queryTemplateId,
+                name: queryTemplate.name,
+                description: queryTemplate.description,
+                content: queryTemplate.content,
             },
         });
     }
@@ -234,6 +299,29 @@ export default class Client<T> {
         return true;
     }
 
+    async patchQueryTemplate(
+        oldQueryTemplate: QueryTemplate,
+        newQueryTemplate: QueryTemplate,
+    ): Promise<boolean> {
+        const keys = ["name", "description", "content"];
+        const oldQueryTemplatePicked = lodash.pick(oldQueryTemplate, keys);
+        const newQueryTemplatePicked = lodash.pick(newQueryTemplate, keys);
+
+        if (!oldQueryTemplatePicked || !newQueryTemplatePicked) {
+            throw new Error("lodash.pick() returned undefined for some reason");
+        }
+
+        if (lodash.isEqual(oldQueryTemplatePicked, newQueryTemplatePicked)) {
+            return false;
+        }
+
+        await this.updateQueryTemplate(
+            oldQueryTemplate.id as string,
+            newQueryTemplate,
+        );
+        return true;
+    }
+
     async syncManifest(manifest: Manifest) {
         const { app, queries, resources } = manifest;
 
@@ -244,8 +332,19 @@ export default class Client<T> {
             await this.patchApp(deployedApp, app);
         }
 
-        for (const query of queries) {
-            await this.createQuery(query, app.name);
+        /* TODO: Fetch all the queries at once and then run the patching algorithm. */
+        for (const queryTemplate of queries) {
+            const deployedQueryTemplate = await this.getQueryTemplateByName(
+                queryTemplate.name,
+            );
+            if (!deployedQueryTemplate) {
+                await this.createQueryTemplate(queryTemplate, app.name);
+            } else {
+                await this.patchQueryTemplate(
+                    deployedQueryTemplate,
+                    queryTemplate,
+                );
+            }
         }
 
         for (const resource of resources) {
