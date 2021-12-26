@@ -10,7 +10,13 @@ const appSchema = new Schema(
             type: String,
             minlength: 1,
             maxlength: 128,
-            default: "",
+            required: true,
+        },
+        title: {
+            type: String,
+            minlength: 1,
+            maxlength: 256,
+            required: true,
         },
         description: {
             type: String,

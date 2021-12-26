@@ -309,7 +309,8 @@ const typeDefs = gql`
         deleteGroup(groupId: ID!): RemoveResult!
 
         createApp(
-            name: String
+            name: String!
+            title: String!
             description: String
             groups: [ID!]
             resources: [ID!]
@@ -317,6 +318,7 @@ const typeDefs = gql`
 
         updateApp(
             name: String
+            title: String
             description: String
             groups: [ID!]
             resources: [ID!]
@@ -348,11 +350,10 @@ const typeDefs = gql`
 
         createQueryTemplate(
             name: String!
-            description: String!
+            description: String
             resource: ID!
             app: ID!
             content: String!
-            lifecycle: QueryLifecycleType!
         ): QueryTemplate!
 
         updateQueryTemplate(
