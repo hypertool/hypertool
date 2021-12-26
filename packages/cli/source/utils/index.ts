@@ -209,4 +209,5 @@ export * as logger from "./logger";
 export * as env from "./env";
 export * as paths from "./paths";
 export * as constants from "./constants";
+export * as objects from "./objects";
 export { default as ModuleScopePlugin } from "../plugins/ModuleScopePlugin";
