@@ -339,8 +339,6 @@ const groupStatuses = tuple("enabled", "disabled", "deleted", "banned");
 
 const queryStatuses = tuple("enabled", "disabled", "deleted", "banned");
 
-const queryLifecycleTypes = tuple("static", "dynamic");
-
 export {
     paginateMaxLimit,
     paginateMinLimit,
@@ -358,5 +356,4 @@ export {
     groupTypes,
     groupStatuses,
     queryStatuses,
-    queryLifecycleTypes,
 };

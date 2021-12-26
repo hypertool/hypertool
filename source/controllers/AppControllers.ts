@@ -6,7 +6,8 @@ import { constants, BadRequestError, NotFoundError } from "../utils";
 import { AppModel } from "../models";
 
 const createSchema = joi.object({
-    name: joi.string().max(128).allow("").default(""),
+    name: joi.string().max(128).required(),
+    title: joi.string().max(256).required(),
     description: joi.string().max(512).allow("").default(""),
     groups: joi
         .array()
@@ -86,7 +87,7 @@ const create = async (context, attributes): Promise<ExternalApp> => {
         throw new BadRequestError(error.message);
     }
 
-    // TODO: Check if value.members, value.resources, and value.creator are correct.
+    // TODO: Check if value.members and value.resources are correct.
     const newApp = new AppModel({
         ...value,
         status: "private",
