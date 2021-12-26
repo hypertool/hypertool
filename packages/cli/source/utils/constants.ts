@@ -1,4 +1,4 @@
-export const appKeys = ["name", "slug", "title", "groups"];
+export const appKeys = ["name", "slug", "title"];
 
 export const queryKeys = ["name", "resource", "content"];
 
