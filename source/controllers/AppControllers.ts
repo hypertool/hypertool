@@ -162,8 +162,28 @@ const getById = async (context, appId: string): Promise<ExternalApp> => {
     /* We return a 404 error, if we did not find the app. */
     if (!app) {
         throw new NotFoundError(
-            "Cannot find a app with the specified identifier."
+            "Cannot find an app with the specified identifier."
         );
+    }
+
+    return toExternal(app);
+};
+
+const getByName = async (context, name: string): Promise<ExternalApp> => {
+    if (!constants.namePattern.test(name)) {
+        throw new BadRequestError("The specified app name is invalid.");
+    }
+
+    // TODO: Update filters
+    const filters = {
+        name,
+        status: { $ne: "deleted" },
+    };
+    const app = await AppModel.findOne(filters as any).exec();
+
+    /* We return a 404 error, if we did not find the app. */
+    if (!app) {
+        throw new NotFoundError("Cannot find an app with the specified name.");
     }
 
     return toExternal(app);
@@ -298,4 +318,14 @@ const remove = async (
     return { success: true };
 };
 
-export { create, list, listByIds, getById, update, publish, unpublish, remove };
+export {
+    create,
+    list,
+    listByIds,
+    getById,
+    getByName,
+    update,
+    publish,
+    unpublish,
+    remove,
+};

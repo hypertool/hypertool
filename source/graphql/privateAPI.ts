@@ -157,6 +157,7 @@ const typeDefs = gql`
         ${appStatuses.join("\n")}
     }
 
+    # TODO: Add slug, title
     type App {
         id: ID!
         name: String!
@@ -380,6 +381,7 @@ const typeDefs = gql`
 
         getApps(page: Int, limit: Int): AppPage!
         getAppById(appId: ID!): App!
+        getAppByName(name: String!): App!
 
         getResources(page: Int, limit: Int): ResourcePage!
         getResourceById(resourceId: ID!): Resource!
@@ -486,6 +488,9 @@ const resolvers = {
 
         getAppById: async (parent, values, context) =>
             apps.getById(context.request, values.appId),
+
+        getAppByName: async (parent, values, context) =>
+            apps.getByName(context.request, values.name),
 
         getResources: async (parent, values, context) =>
             resources.list(context.request, values),
