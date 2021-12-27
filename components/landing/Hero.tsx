@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import { Typography, Button } from "@mui/material";
+import { Typography, Button, Hidden } from "@mui/material";
 
 const heroImage =
   "https://res.cloudinary.com/academyjs/image/upload/v1640405901/path670_pvv1wh.png";
@@ -89,15 +89,17 @@ const Hero = () => {
       <div>
         <Title>Build internal tools rapidly</Title>
         <SubTitle>
-          Hypertool helps you build internal tools that seamelessly work
-          with your databases, APIs, spreadsheets, and other apps.
+          Hypertool helps you build internal tools that seamelessly work with
+          your databases, APIs, spreadsheets, and other apps.
         </SubTitle>
         <ButtonContainer>
           <PrimaryButton variant="contained">Create Account</PrimaryButton>
           <SecondaryButton variant="outlined">Getting Started</SecondaryButton>
         </ButtonContainer>
       </div>
-      <HeroImage src={heroImage} alt="logos" />
+      <Hidden lgDown={true}>
+        <HeroImage src={heroImage} alt="logos" />
+      </Hidden>
     </Container>
   );
 };
