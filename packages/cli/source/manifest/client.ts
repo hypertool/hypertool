@@ -239,8 +239,43 @@ export default class Client<T> {
         }
     }
 
-    convertNameToId(name: string, type: string) {
-        return "507f1f77bcf86cd799439011";
+    /**
+     * During name resolution, `name` is used fetch the corresponding
+     * entity based on `type`. This would become highly inefficient without
+     * Apollo Client's in-memory caching mechanism.
+     *
+     * NOTE: The hit rate of the cache has not been tested.
+     */
+    async convertNameToId(name: string, type: string): Promise<string> {
+        switch (type) {
+            case "app": {
+                const app = await this.getAppByName(name);
+                if (!app) {
+                    throw new Error(`Cannot resolve unknown app ${name}`);
+                }
+                return app.id as string;
+            }
+
+            case "resource": {
+                /* NOTE: For this resolution to work, all the resources must be
+                 * created before the queries because queries refer resources.
+                 */
+                const resource = await this.getResourceByName(name);
+                if (!resource) {
+                    throw new Error(`Cannot resolve unknown resource ${name}`);
+                }
+                return resource.id as string;
+            }
+
+            case "group": {
+                /* TODO */
+                return "507f1f77bcf86cd799439011";
+            }
+
+            default: {
+                throw new Error(`Unknown type ${type}`);
+            }
+        }
     }
 
     async createApp(app: App): Promise<void> {
@@ -251,8 +286,10 @@ export default class Client<T> {
                 title: app.title,
                 slug: app.slug,
                 description: app.description,
-                groups: app.groups.map((group) =>
-                    this.convertNameToId(group, "group"),
+                groups: await Promise.all(
+                    app.groups.map((group) =>
+                        this.convertNameToId(group, "group"),
+                    ),
                 ),
             },
         });
@@ -270,8 +307,10 @@ export default class Client<T> {
                 /* Any implicit value injection to the manifests must be done
                  * during compilation by the compiler, not when syncing changes.
                  */
-                groups: app.groups.map((group) =>
-                    this.convertNameToId(group, "group"),
+                groups: await Promise.all(
+                    app.groups.map((group) =>
+                        this.convertNameToId(group, "group"),
+                    ),
                 ),
             },
         });
@@ -303,11 +342,11 @@ export default class Client<T> {
             variables: {
                 name: queryTemplate.name,
                 description: queryTemplate.description,
-                resource: this.convertNameToId(
+                resource: await this.convertNameToId(
                     queryTemplate.resource,
                     "resource",
                 ),
-                app: this.convertNameToId(appName, "app"),
+                app: await this.convertNameToId(appName, "app"),
                 content: queryTemplate.content,
             },
         });
@@ -385,8 +424,10 @@ export default class Client<T> {
          * names in `newAppPicked.groups` to their corresponding IDs before
          * comparing.
          */
-        newAppPicked.groups = newAppPicked?.groups?.map((group) =>
-            this.convertNameToId(group, "group"),
+        newAppPicked.groups = await Promise.all(
+            (newAppPicked as App).groups.map((group: string) =>
+                this.convertNameToId(group, "group"),
+            ),
         );
 
         if (lodash.isEqual(oldAppPicked, newAppPicked)) {
@@ -499,6 +540,18 @@ export default class Client<T> {
             await this.patchApp(deployedApp, app);
         }
 
+        /* TODO: Fetch all the resources at once and then run the patching algorithm. */
+        for (const resource of resources) {
+            const deployedResource = await this.getResourceByName(
+                resource.name,
+            );
+            if (!deployedResource) {
+                await this.createResource(resource, app.name);
+            } else {
+                await this.patchResource(deployedResource, resource);
+            }
+        }
+
         /* TODO: Fetch all the queries at once and then run the patching algorithm. */
         for (const queryTemplate of queries) {
             const deployedQueryTemplate = await this.getQueryTemplateByName(
@@ -511,18 +564,6 @@ export default class Client<T> {
                     deployedQueryTemplate,
                     queryTemplate,
                 );
-            }
-        }
-
-        /* TODO: Fetch all the resources at once and then run the patching algorithm. */
-        for (const resource of resources) {
-            const deployedResource = await this.getResourceByName(
-                resource.name,
-            );
-            if (!deployedResource) {
-                await this.createResource(resource, app.name);
-            } else {
-                await this.patchResource(deployedResource, resource);
             }
         }
     }
