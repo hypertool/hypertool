@@ -69,6 +69,8 @@ const GET_QUERY_TEMPLATE_BY_NAME = gql`
         getQueryTemplateByName(name: $name) {
             id
             name
+            description
+            content
         }
     }
 `;
@@ -111,6 +113,47 @@ const UPDATE_QUERY_TEMPLATE = gql`
     }
 `;
 
+const GET_RESOURCE_BY_NAME = gql`
+    query GetResourceByName($name: String!) {
+        getResourceByName(name: $name) {
+            id
+            name
+            description
+            type
+            mysql {
+                host
+                port
+                databaseName
+                databaseUserName
+                databasePassword
+                connectUsingSSL
+            }
+            postgres {
+                host
+                port
+                databaseName
+                databaseUserName
+                databasePassword
+                connectUsingSSL
+            }
+            mongodb {
+                host
+                port
+                databaseName
+                databaseUserName
+                databasePassword
+                connectUsingSSL
+            }
+            bigquery {
+                key
+            }
+            status
+            createdAt
+            updatedAt
+        }
+    }
+`;
+
 const CREATE_RESOURCE = gql`
     mutation CreateResource(
         $name: String!
@@ -125,6 +168,30 @@ const CREATE_RESOURCE = gql`
             name: $name
             description: $description
             type: $type
+            mysql: $mysql
+            postgres: $postgres
+            mongodb: $mongodb
+            bigquery: $bigquery
+        ) {
+            id
+        }
+    }
+`;
+
+const UPDATE_RESOURCE = gql`
+    mutation UpdateResource(
+        $resourceId: ID!
+        $name: String
+        $description: String
+        $mysql: MySQLConfigurationInput
+        $postgres: PostgresConfigurationInput
+        $mongodb: MongoDBConfigurationInput
+        $bigquery: BigQueryConfigurationInput
+    ) {
+        updateResource(
+            resourceId: $resourceId
+            name: $name
+            description: $description
             mysql: $mysql
             postgres: $postgres
             mongodb: $mongodb
@@ -160,7 +227,7 @@ export default class Client<T> {
             const app = await this.client.query({
                 query: GET_APP_BY_NAME,
                 variables: {
-                    name: name,
+                    name,
                 },
             });
             return app.data.getAppByName;
@@ -215,7 +282,7 @@ export default class Client<T> {
             const queryTemplate = await this.client.query({
                 query: GET_QUERY_TEMPLATE_BY_NAME,
                 variables: {
-                    name: name,
+                    name,
                 },
             });
             return queryTemplate.data.getQueryTemplateByName;
@@ -261,6 +328,23 @@ export default class Client<T> {
         });
     }
 
+    async getResourceByName(name: string): Promise<Resource | null> {
+        try {
+            const resource = await this.client.query({
+                query: GET_RESOURCE_BY_NAME,
+                variables: {
+                    name,
+                },
+            });
+            return resource.data.getResourceByName;
+        } catch (error: unknown) {
+            if (isNotFoundError(error)) {
+                return null;
+            }
+            throw error;
+        }
+    }
+
     async createResource(resource: Resource, appName: string): Promise<void> {
         await this.client.mutate({
             mutation: CREATE_RESOURCE,
@@ -268,6 +352,21 @@ export default class Client<T> {
                 name: resource.name,
                 description: resource.description,
                 type: resource.type,
+                [resource.type]: resource.connection,
+            },
+        });
+    }
+
+    async updateResource(
+        resourceId: string,
+        resource: Resource,
+    ): Promise<void> {
+        await this.client.mutate({
+            mutation: UPDATE_RESOURCE,
+            variables: {
+                resourceId,
+                name: resource.name,
+                description: resource.description,
                 [resource.type]: resource.connection,
             },
         });
@@ -315,10 +414,78 @@ export default class Client<T> {
             return false;
         }
 
+        console.log("Patching");
         await this.updateQueryTemplate(
             oldQueryTemplate.id as string,
             newQueryTemplate,
         );
+        return true;
+    }
+
+    async patchResource(
+        oldResource: Resource,
+        newResource: Resource,
+    ): Promise<boolean> {
+        /* TODO: At the moment, the connection object does not have any optional keys.
+         * When optional keys are present, the following picking logic needs to
+         * to be updated accordingly.
+         */
+        const keys = ["name", "description", "type"];
+        const pickListByType = {
+            mysql: [
+                "databaseUserName",
+                "databasePassword",
+                "databaseName",
+                "host",
+                "port",
+                "connectUsingSSL",
+            ],
+            postgres: [
+                "databaseUserName",
+                "databasePassword",
+                "databaseName",
+                "host",
+                "port",
+                "connectUsingSSL",
+            ],
+            mongodb: [
+                "databaseUserName",
+                "databasePassword",
+                "databaseName",
+                "host",
+                "port",
+                "connectUsingSSL",
+            ],
+            bigquery: ["key"],
+        };
+        const oldAppPicked = lodash.pick(oldResource, keys);
+        const newAppPicked = lodash.pick(newResource, keys);
+
+        if (!oldAppPicked || !newAppPicked) {
+            throw new Error("lodash.pick() returned undefined for some reason");
+        }
+
+        if (
+            lodash.isEqual(oldAppPicked, newAppPicked) &&
+            /* Compare `oldResource[mysql|postgres|mongodb|bigquery]` with
+             * `newResource.connection`
+             */
+            lodash.isEqual(
+                lodash.pick(
+                    (oldResource as any)[newResource.type],
+                    (pickListByType as any)[newResource.type],
+                ),
+                lodash.pick(
+                    newResource.connection,
+                    (pickListByType as any)[newResource.type],
+                ),
+            )
+        ) {
+            return false;
+        }
+
+        await this.updateResource(oldResource.id as string, newResource);
+
         return true;
     }
 
@@ -347,8 +514,16 @@ export default class Client<T> {
             }
         }
 
+        /* TODO: Fetch all the resources at once and then run the patching algorithm. */
         for (const resource of resources) {
-            await this.createResource(resource, app.name);
+            const deployedResource = await this.getResourceByName(
+                resource.name,
+            );
+            if (!deployedResource) {
+                await this.createResource(resource, app.name);
+            } else {
+                await this.patchResource(deployedResource, resource);
+            }
         }
     }
 }
