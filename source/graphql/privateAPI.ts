@@ -391,6 +391,7 @@ const typeDefs = gql`
 
         getResources(page: Int, limit: Int): ResourcePage!
         getResourceById(resourceId: ID!): Resource!
+        getResourceByName(name: String!): Resource!
 
         getQueryTemplateByAppId(page: Int, limit: Int, app: ID!): QueryTemplatePage!
         getQueryTemplateById(queryTemplateId: ID!): QueryTemplate!
@@ -504,6 +505,9 @@ const resolvers = {
 
         getResourceById: async (parent, values, context) =>
             resources.getById(context.request, values.resourceId),
+
+        getResourceByName: async (parent, values, context) =>
+            resources.getByName(context.request, values.name),
 
         getQueryTemplateByAppId: async (parent, values, context) =>
             queryTemplates.listByAppId(context.request, values),

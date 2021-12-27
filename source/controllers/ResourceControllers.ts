@@ -239,6 +239,28 @@ const getById = async (
     return toExternal(resource);
 };
 
+const getByName = async (context, name: string): Promise<ExternalResource> => {
+    if (!constants.namePattern.test(name)) {
+        throw new BadRequestError("The specified resource name is invalid.");
+    }
+
+    // TODO: Update filters
+    const filters = {
+        name,
+        status: { $ne: "deleted" },
+    };
+    const resource = await ResourceModel.findOne(filters as any).exec();
+
+    /* We return a 404 error, if we did not find the resource. */
+    if (!resource) {
+        throw new NotFoundError(
+            "Cannot find a resource with the specified name."
+        );
+    }
+
+    return toExternal(resource);
+};
+
 const update = async (
     context,
     resourceId: string,
@@ -386,4 +408,14 @@ const remove = async (
     return { success: true };
 };
 
-export { create, list, listByIds, getById, update, enable, disable, remove };
+export {
+    create,
+    list,
+    listByIds,
+    getById,
+    getByName,
+    update,
+    enable,
+    disable,
+    remove,
+};
