@@ -157,9 +157,12 @@ const typeDefs = gql`
         ${appStatuses.join("\n")}
     }
 
+    # TODO: Add slug, title
     type App {
         id: ID!
         name: String!
+        title: String!
+        slug: String!
         description: String!
         # Group points to App directly, making each other mutually recursive.
         # Therefore, we flatten the data structure here.
@@ -257,6 +260,7 @@ const typeDefs = gql`
         ): Organization!
 
         updateOrganization(
+            organizationId: ID!
             name: String
             description: String
             users: [ID!]
@@ -279,6 +283,7 @@ const typeDefs = gql`
         ): User!
 
         updateUser(
+            userId: ID!
             firstName: String,
             lastName: String,
             description: String,
@@ -300,6 +305,7 @@ const typeDefs = gql`
         ): Group!
 
         updateGroup(
+            groupId: ID!
             name: String
             description: String
             users: [ID!]
@@ -311,17 +317,18 @@ const typeDefs = gql`
         createApp(
             name: String!
             title: String!
+            slug: String!
             description: String
             groups: [ID!]
-            resources: [ID!]
         ): App!
 
         updateApp(
+            appId: ID!
             name: String
             title: String
+            slug: String
             description: String
             groups: [ID!]
-            resources: [ID!]
         ): App!
 
         deleteApp(appId: ID!): RemoveResult!
@@ -380,12 +387,15 @@ const typeDefs = gql`
 
         getApps(page: Int, limit: Int): AppPage!
         getAppById(appId: ID!): App!
+        getAppByName(name: String!): App!
 
         getResources(page: Int, limit: Int): ResourcePage!
         getResourceById(resourceId: ID!): Resource!
+        getResourceByName(name: String!): Resource!
 
         getQueryTemplateByAppId(page: Int, limit: Int, app: ID!): QueryTemplatePage!
         getQueryTemplateById(queryTemplateId: ID!): QueryTemplate!
+        getQueryTemplateByName(name: String!): QueryTemplate!
     }
 `;
 
@@ -487,17 +497,26 @@ const resolvers = {
         getAppById: async (parent, values, context) =>
             apps.getById(context.request, values.appId),
 
+        getAppByName: async (parent, values, context) =>
+            apps.getByName(context.request, values.name),
+
         getResources: async (parent, values, context) =>
             resources.list(context.request, values),
 
         getResourceById: async (parent, values, context) =>
             resources.getById(context.request, values.resourceId),
 
+        getResourceByName: async (parent, values, context) =>
+            resources.getByName(context.request, values.name),
+
         getQueryTemplateByAppId: async (parent, values, context) =>
             queryTemplates.listByAppId(context.request, values),
 
         getQueryTemplateById: async (parent, values, context) =>
             queryTemplates.getById(context.request, values.queryTemplateId),
+
+        getQueryTemplateByName: async (parent, values, context) =>
+            queryTemplates.getByName(context.request, values.name),
     },
 };
 

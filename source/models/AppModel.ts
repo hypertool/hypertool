@@ -18,6 +18,12 @@ const appSchema = new Schema(
             maxlength: 256,
             required: true,
         },
+        slug: {
+            type: String,
+            minlength: 1,
+            maxlength: 128,
+            required: true,
+        },
         description: {
             type: String,
             minlength: 0,

@@ -1,3 +1,5 @@
+import type { Document } from "mongoose";
+
 import joi from "joi";
 
 import type { Query, ExternalQuery, QueryPage } from "../types";
@@ -30,9 +32,10 @@ const filterSchema = joi.object({
     app: joi.string().regex(constants.identifierPattern),
 });
 
-const toExternal = (query: Query): ExternalQuery => {
+const toExternal = (query: Query & Document<Query>): ExternalQuery => {
     const {
         id,
+        _id,
         name,
         description,
         resource,
@@ -44,7 +47,7 @@ const toExternal = (query: Query): ExternalQuery => {
     } = query;
 
     return {
-        id,
+        id: id || _id.toString(),
         name,
         description,
         resource: typeof resource === "string" ? resource : resource.id,
@@ -153,6 +156,26 @@ const getById = async (
     return toExternal(query);
 };
 
+const getByName = async (context, name: string): Promise<ExternalQuery> => {
+    if (!constants.namePattern.test(name)) {
+        throw new BadRequestError("The specified query name is invalid.");
+    }
+
+    // TODO: Update filters
+    const filters = {
+        name,
+        status: { $ne: "deleted" },
+    };
+    const query = await QueryTemplateModel.findOne(filters as any).exec();
+
+    /* We return a 404 error, if we did not find the query. */
+    if (!query) {
+        throw new NotFoundError("Cannot find a query with the specified name.");
+    }
+
+    return toExternal(query);
+};
+
 const update = async (
     context,
     queryTemplateId: string,
@@ -222,4 +245,4 @@ const remove = async (
     return { success: true };
 };
 
-export { create, listByIds, listByAppId, getById, update, remove };
+export { create, listByIds, listByAppId, getById, getByName, update, remove };

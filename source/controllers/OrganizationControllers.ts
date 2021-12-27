@@ -1,3 +1,5 @@
+import type { Document } from "mongoose";
+
 import joi from "joi";
 
 import type {
@@ -6,7 +8,12 @@ import type {
     OrganizationPage,
 } from "../types";
 
-import { constants, BadRequestError, NotFoundError } from "../utils";
+import {
+    constants,
+    BadRequestError,
+    NotFoundError,
+    extractIds,
+} from "../utils";
 import { OrganizationModel } from "../models";
 
 const createSchema = joi.object({
@@ -31,20 +38,17 @@ const updateSchema = joi.object({
     users: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const toExternal = (organization: Organization): ExternalOrganization => {
-    const { id, name, description, users, status, createdAt, updatedAt } =
+const toExternal = (
+    organization: Organization & Document<Organization>
+): ExternalOrganization => {
+    const { id, _id, name, description, users, status, createdAt, updatedAt } =
         organization;
 
     return {
-        id,
+        id: id || _id.toString(),
         name,
         description,
-        users:
-            users.length > 0
-                ? typeof users[0] === "string"
-                    ? users
-                    : users.map((user) => user.id)
-                : [],
+        users: extractIds(users),
         status,
         createdAt,
         updatedAt,

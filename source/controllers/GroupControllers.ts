@@ -1,8 +1,15 @@
+import type { Document } from "mongoose";
+
 import joi from "joi";
 
 import type { Group, GroupPage, ExternalGroup } from "../types";
 
-import { constants, BadRequestError, NotFoundError } from "../utils";
+import {
+    constants,
+    BadRequestError,
+    NotFoundError,
+    extractIds,
+} from "../utils";
 import { GroupModel } from "../models";
 
 const createSchema = joi.object({
@@ -29,9 +36,10 @@ const updateSchema = joi.object({
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const toExternal = (group: Group): ExternalGroup => {
+const toExternal = (group: Group & Document<Group>): ExternalGroup => {
     const {
         id,
+        _id,
         name,
         description,
         type,
@@ -43,22 +51,12 @@ const toExternal = (group: Group): ExternalGroup => {
     } = group;
 
     return {
-        id,
+        id: id || _id.toString(),
         name,
         description,
         type,
-        users:
-            users.length > 0
-                ? typeof users[0] === "string"
-                    ? users
-                    : users.map((user) => user.id)
-                : [],
-        apps:
-            apps.length > 0
-                ? typeof apps[0] === "string"
-                    ? apps
-                    : apps.map((app) => app.id)
-                : [],
+        users: extractIds(users),
+        apps: extractIds(apps),
         status,
         createdAt,
         updatedAt,

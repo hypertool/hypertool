@@ -1,31 +1,34 @@
+import type { Document } from "mongoose";
+
 import joi from "joi";
 
 import type { App, ExternalApp, AppPage, User } from "../types";
 
-import { constants, BadRequestError, NotFoundError } from "../utils";
+import {
+    constants,
+    BadRequestError,
+    NotFoundError,
+    extractIds,
+} from "../utils";
 import { AppModel } from "../models";
 
 const createSchema = joi.object({
     name: joi.string().max(128).required(),
     title: joi.string().max(256).required(),
+    slug: joi.string().max(128).required(),
     description: joi.string().max(512).allow("").default(""),
     groups: joi
-        .array()
-        .items(joi.string().regex(constants.identifierPattern))
-        .default([]),
-    resources: joi
         .array()
         .items(joi.string().regex(constants.identifierPattern))
         .default([]),
 });
 
 const updateSchema = joi.object({
-    name: joi.string().max(128).allow(""),
+    name: joi.string().max(128),
+    title: joi.string().max(256),
+    slug: joi.string().max(128),
     description: joi.string().max(512).allow(""),
     groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
-    resources: joi
-        .array()
-        .items(joi.string().regex(constants.identifierPattern)),
 });
 
 const filterSchema = joi.object({
@@ -38,10 +41,13 @@ const filterSchema = joi.object({
         .default(constants.paginateMinLimit),
 });
 
-const toExternal = (app: App): ExternalApp => {
+const toExternal = (app: App & Document<App>): ExternalApp => {
     const {
         id,
+        _id,
         name,
+        title,
+        slug,
         description,
         groups,
         resources,
@@ -51,22 +57,14 @@ const toExternal = (app: App): ExternalApp => {
         updatedAt,
     } = app;
 
-    return {
-        id,
+    const result = {
+        id: id || _id.toString(),
         name,
+        title,
+        slug,
         description,
-        groups:
-            groups.length > 0
-                ? typeof groups[0] === "string"
-                    ? groups
-                    : groups.map((group) => group.id)
-                : [],
-        resources:
-            resources.length > 0
-                ? typeof resources[0] === "string"
-                    ? resources
-                    : resources.map((resource) => resource.id)
-                : [],
+        groups: extractIds(groups),
+        resources: extractIds(resources),
         // TODO: Remove the hard coded string.
         creator:
             typeof creator === "string"
@@ -76,6 +74,8 @@ const toExternal = (app: App): ExternalApp => {
         createdAt,
         updatedAt,
     };
+    console.log(result);
+    return result;
 };
 
 const create = async (context, attributes): Promise<ExternalApp> => {
@@ -162,8 +162,28 @@ const getById = async (context, appId: string): Promise<ExternalApp> => {
     /* We return a 404 error, if we did not find the app. */
     if (!app) {
         throw new NotFoundError(
-            "Cannot find a app with the specified identifier."
+            "Cannot find an app with the specified identifier."
         );
+    }
+
+    return toExternal(app);
+};
+
+const getByName = async (context, name: string): Promise<ExternalApp> => {
+    if (!constants.namePattern.test(name)) {
+        throw new BadRequestError("The specified app name is invalid.");
+    }
+
+    // TODO: Update filters
+    const filters = {
+        name,
+        status: { $ne: "deleted" },
+    };
+    const app = await AppModel.findOne(filters as any).exec();
+
+    /* We return a 404 error, if we did not find the app. */
+    if (!app) {
+        throw new NotFoundError("Cannot find an app with the specified name.");
     }
 
     return toExternal(app);
@@ -298,4 +318,14 @@ const remove = async (
     return { success: true };
 };
 
-export { create, list, listByIds, getById, update, publish, unpublish, remove };
+export {
+    create,
+    list,
+    listByIds,
+    getById,
+    getByName,
+    update,
+    publish,
+    unpublish,
+    remove,
+};

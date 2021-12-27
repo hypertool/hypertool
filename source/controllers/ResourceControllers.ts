@@ -1,3 +1,5 @@
+import type { Document } from "mongoose";
+
 import joi from "joi";
 
 import type { Resource, ExternalResource, ResourcePage } from "../types";
@@ -84,9 +86,11 @@ const updateSchema = joi.object({
     }),
 });
 
-const toExternal = (resource: Resource): ExternalResource => {
+const toExternal = (
+    resource: Resource & Document<Resource>
+): ExternalResource => {
     const { id, _id, name, description, type, status, createdAt, updatedAt } =
-        resource as any;
+        resource;
     let sanitizedConfiguration = null;
     switch (type) {
         case "mysql":
@@ -229,6 +233,28 @@ const getById = async (
     if (!resource) {
         throw new NotFoundError(
             "Cannot find a resource with the specified identifier."
+        );
+    }
+
+    return toExternal(resource);
+};
+
+const getByName = async (context, name: string): Promise<ExternalResource> => {
+    if (!constants.namePattern.test(name)) {
+        throw new BadRequestError("The specified resource name is invalid.");
+    }
+
+    // TODO: Update filters
+    const filters = {
+        name,
+        status: { $ne: "deleted" },
+    };
+    const resource = await ResourceModel.findOne(filters as any).exec();
+
+    /* We return a 404 error, if we did not find the resource. */
+    if (!resource) {
+        throw new NotFoundError(
+            "Cannot find a resource with the specified name."
         );
     }
 
@@ -382,4 +408,14 @@ const remove = async (
     return { success: true };
 };
 
-export { create, list, listByIds, getById, update, enable, disable, remove };
+export {
+    create,
+    list,
+    listByIds,
+    getById,
+    getByName,
+    update,
+    enable,
+    disable,
+    remove,
+};

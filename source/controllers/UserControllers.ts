@@ -1,3 +1,5 @@
+import type { Document } from "mongoose";
+
 import joi from "joi";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
@@ -10,6 +12,7 @@ import {
     BadRequestError,
     NotFoundError,
     UnauthorizedError,
+    extractIds,
 } from "../utils";
 import { UserModel } from "../models";
 
@@ -51,9 +54,10 @@ const updateSchema = joi.object({
     groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const toExternal = (user: User): ExternalUser => {
+const toExternal = (user: User & Document<User>): ExternalUser => {
     const {
         id,
+        _id,
         firstName,
         lastName,
         description,
@@ -72,7 +76,7 @@ const toExternal = (user: User): ExternalUser => {
     } = user;
 
     return {
-        id,
+        id: id || _id.toString(),
         firstName,
         lastName,
         description,
@@ -85,12 +89,7 @@ const toExternal = (user: User): ExternalUser => {
         birthday,
         status,
         role,
-        groups:
-            groups.length > 0
-                ? typeof groups[0] === "string"
-                    ? groups
-                    : groups.map((group) => group.id)
-                : [],
+        groups: extractIds(groups),
         createdAt,
         updatedAt,
     };
