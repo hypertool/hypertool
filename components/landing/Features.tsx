@@ -1,7 +1,7 @@
 import type { FunctionComponent, ReactElement } from "react";
 
 import { styled } from "@mui/material/styles";
-import { Typography } from "@mui/material";
+import { Typography, Hidden } from "@mui/material";
 import { Terminal } from "../common";
 
 const Container = styled("div")(({ theme }) => ({
@@ -35,6 +35,7 @@ const RightContainer = styled("div")(({ theme }) => ({
 
 const Title = styled(Typography)(({ theme }) => ({
   fontSize: 40,
+  fontWeight: 800,
   lineHeight: 1.3,
   color: "white",
   textAlign: "left",
@@ -210,11 +211,15 @@ const Features: FunctionComponent = (): ReactElement => {
               <Title>{section.title}</Title>
               <SubTitle>{section.text}</SubTitle>
             </LeftContainer>
-            <RightContainer>{section.terminal()}</RightContainer>
+            <Hidden lgDown={true}>
+              <RightContainer>{section.terminal()}</RightContainer>
+            </Hidden>
           </Container>
         ) : (
           <Container key={section.title}>
-            <LeftContainer>{section.terminal()}</LeftContainer>
+            <Hidden lgDown={true}>
+              <LeftContainer>{section.terminal()}</LeftContainer>
+            </Hidden>
             <RightContainer>
               <Title>{section.title}</Title>
               <SubTitle>{section.text}</SubTitle>
