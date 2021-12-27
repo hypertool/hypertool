@@ -1,10 +1,19 @@
 import type { ReactElement } from "react";
 
 import Head from "next/head";
+import { styled } from "@mui/material/styles";
 
 import type { Page } from "../types";
 
 import { VisitorLayout } from "../components/layouts";
+import { Hero, Features, Problems } from "../components/landing";
+
+const Container = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+}));
 
 const Home: Page = () => {
   return (
@@ -17,7 +26,12 @@ const Home: Page = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <p>Hello, world!</p>
+
+      <Container>
+        <Hero />
+        <Problems />
+        <Features />
+      </Container>
     </div>
   );
 };

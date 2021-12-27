@@ -7,8 +7,8 @@ import LogoImage from "../../../public/logo.png";
 
 const Container = styled("footer")(({ theme }) => ({
   width: "100%",
-  background: "linear-gradient(45deg, rgba(0,0,0,1) 0%, rgba(60,60,60,1) 100%)",
   display: "flex",
+  backgroundColor: 'black',
   flexDirection: "column",
   justifyContent: "flex-start",
   alignItems: "center",
@@ -121,20 +121,8 @@ const groups = [
     title: "Connect",
     children: [
       {
-        title: "hello@hypertool.io",
+        title: "Email",
         url: "mailto:hello@hypertool.io",
-      },
-      {
-        title: "+91 8310843835",
-        url: "tel:+918310843835",
-      },
-      {
-        title: "Instagram",
-        url: "https://instagram.com/hypertool",
-      },
-      {
-        title: "Twitter",
-        url: "https://twitter.com/hypertool",
       },
       {
         title: "LinkedIn",
