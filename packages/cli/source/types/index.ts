@@ -1,4 +1,5 @@
 export interface Query {
+    id?: string;
     name: string;
     description: string;
     resource: string;
@@ -6,6 +7,7 @@ export interface Query {
 }
 
 export interface Resource {
+    id?: string;
     name: string;
     description: string;
     type: string;
@@ -13,11 +15,16 @@ export interface Resource {
 }
 
 export interface App {
+    id?: string;
     name: string;
     slug: string;
-    title: string;
     description: string;
+    title: string;
     groups: string[];
+    resources?: string[];
+    status?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface Manifest {

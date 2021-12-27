@@ -51,7 +51,7 @@ const parseApp = (app: App, path = "<anonymous>"): App => {
         slug: "",
         title: "",
         description: "",
-        groups: [],
+        groups: ["default"],
     };
 
     const missingKeys = getMissingKeys(constants.appKeys, app);
@@ -100,7 +100,7 @@ const parseApp = (app: App, path = "<anonymous>"): App => {
             }
 
             case "groups": {
-                result.groups = value;
+                result.groups = value.length === 0 ? ["default"] : value;
                 break;
             }
         }
