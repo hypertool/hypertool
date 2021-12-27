@@ -3,12 +3,10 @@ import { styled } from "@mui/material/styles";
 import Link from "next/link";
 import Image from "next/image";
 
-import LogoImage from "../../../public/logo.png";
-
 const Container = styled("footer")(({ theme }) => ({
   width: "100%",
   display: "flex",
-  backgroundColor: 'black',
+  backgroundColor: "black",
   flexDirection: "column",
   justifyContent: "flex-start",
   alignItems: "center",
@@ -141,7 +139,12 @@ const MainFooter = () => {
     <Container>
       <Top>
         <Logo>
-          <Image src={LogoImage} width={56} height={56} alt="Logo" />
+          <Image
+            src="https://res.cloudinary.com/academyjs/image/upload/v1640633721/logo_ynhdgd.png"
+            width={56}
+            height={56}
+            alt="Logo"
+          />
           <CompanyTitle>Hypertool</CompanyTitle>
         </Logo>
         <Right>

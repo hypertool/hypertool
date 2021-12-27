@@ -6,9 +6,6 @@ import Router from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 
-import MenuItem from "./MenuItem";
-import Logo from "../../../public/logo.png";
-
 const Toolbar = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
@@ -240,7 +237,12 @@ const MainToolbarDesktop = () => {
     <>
       <Toolbar>
         <LogoButton onClick={openURL("/")}>
-          <Image src={Logo} width={48} height={48} alt="Logo" />
+          <Image
+            src="https://res.cloudinary.com/academyjs/image/upload/v1640633721/logo_ynhdgd.png"
+            width={48}
+            height={48}
+            alt="Logo"
+          />
           <LogoText variant="h1">Hypertool</LogoText>
         </LogoButton>
         <div>

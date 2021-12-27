@@ -6,7 +6,6 @@ import Image from "next/image";
 import Router from "next/router";
 
 import MenuItem from "./MenuItem";
-import Logo from "../../../public/logo.png";
 
 const Toolbar = styled("div")(({ theme }) => ({
   display: "flex",
@@ -39,7 +38,7 @@ const ToggleButton = styled(Button)(({ theme }) => ({
 const LogoText = styled(Typography)(({ theme }) => ({
   fontSize: 24,
   paddingLeft: theme.spacing(1),
-  color: 'white'
+  color: "white",
 }));
 
 const LogoButton = styled(Button)(({ theme }) => ({
@@ -172,10 +171,13 @@ const MainToolbarMobile = () => {
         </ToggleButton>
       </motion.nav>
       <LogoButton onClick={openURL("/")}>
-        <Image src={Logo} width={48} height={48} alt="Logo" />
-        <LogoText variant="h1">
-          Hypertool
-        </LogoText>
+        <Image
+          src="https://res.cloudinary.com/academyjs/image/upload/v1640633721/logo_ynhdgd.png"
+          width={48}
+          height={48}
+          alt="Logo"
+        />
+        <LogoText variant="h1">Hypertool</LogoText>
       </LogoButton>
     </Toolbar>
   );
