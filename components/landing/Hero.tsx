@@ -18,6 +18,7 @@ const Container = styled("div")(({ theme }) => ({
 
 const Title = styled(Typography)(({ theme }) => ({
   fontSize: 40,
+  fontWeight: 800,
   lineHeight: 1.3,
   color: "white",
   textAlign: "left",
