@@ -2,7 +2,6 @@ import { useRef, useEffect } from "react";
 import { motion, useCycle } from "framer-motion";
 import { styled } from "@mui/material/styles";
 import { Button, Typography } from "@mui/material";
-import Image from "next/image";
 import Router from "next/router";
 
 import MenuItem from "./MenuItem";
@@ -171,7 +170,8 @@ const MainToolbarMobile = () => {
         </ToggleButton>
       </motion.nav>
       <LogoButton onClick={openURL("/")}>
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src="https://res.cloudinary.com/academyjs/image/upload/v1640633721/logo_ynhdgd.png"
           width={48}
           height={48}

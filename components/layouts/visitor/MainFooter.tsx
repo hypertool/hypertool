@@ -1,7 +1,6 @@
 import { Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Link from "next/link";
-import Image from "next/image";
 
 const Container = styled("footer")(({ theme }) => ({
   width: "100%",
@@ -139,7 +138,8 @@ const MainFooter = () => {
     <Container>
       <Top>
         <Logo>
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src="https://res.cloudinary.com/academyjs/image/upload/v1640633721/logo_ynhdgd.png"
             width={56}
             height={56}

@@ -3,7 +3,6 @@ import { Button, Icon, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { motion, useCycle } from "framer-motion";
 import Router from "next/router";
-import Image from "next/image";
 import Link from "next/link";
 
 const Toolbar = styled("div")(({ theme }) => ({
@@ -237,7 +236,8 @@ const MainToolbarDesktop = () => {
     <>
       <Toolbar>
         <LogoButton onClick={openURL("/")}>
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src="https://res.cloudinary.com/academyjs/image/upload/v1640633721/logo_ynhdgd.png"
             width={48}
             height={48}
