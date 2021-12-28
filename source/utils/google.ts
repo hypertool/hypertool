@@ -1,12 +1,9 @@
 import { OAuth2Client } from "google-auth-library";
 import axios from "axios";
 
-const keys = require("../../credentials.json");
-
 const client = new OAuth2Client({
-    clientId: keys.web.client_id,
-    clientSecret: keys.web.client_secret,
-    redirectUri: keys.web.redirect_uris[0],
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 });
 
 /**
