@@ -20,8 +20,8 @@ const SESSION_DESCRIPTOR = path.join(
 );
 
 const LOGIN_WITH_GOOGLE = gql`
-    mutation LoginWithGoogle($token: String!) {
-        loginWithGoogle(token: $token) {
+    mutation LoginWithGoogle($token: String!, $client: ClientType!) {
+        loginWithGoogle(token: $token, client: $client) {
             jwtToken
             user {
                 id
@@ -66,7 +66,7 @@ const createSession = async (token: string): Promise<Session> => {
         data: { loginWithGoogle: session },
     } = await client.mutate({
         mutation: LOGIN_WITH_GOOGLE,
-        variables: { token },
+        variables: { token, client: "cli" },
     });
     delete session.__typename;
     delete session.user.__typename;
