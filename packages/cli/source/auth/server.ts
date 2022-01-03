@@ -24,7 +24,7 @@ const startServer = (): Promise<string> =>
 
         server = app.listen(2819, () => {
             const clientId =
-                "590734770034-7ck6d902nujaucv4o2vttb9kfti0pqbu.apps.googleusercontent.com";
+                "700990591828-odb28j531ek1gvmq5kqf7qve8eh065n2.apps.googleusercontent.com";
             const redirectURL = encodeURIComponent(
                 "http://localhost:2819/oauth",
             );
