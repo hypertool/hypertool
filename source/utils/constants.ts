@@ -341,6 +341,8 @@ const groupStatuses = tuple("enabled", "disabled", "deleted", "banned");
 
 const queryStatuses = tuple("enabled", "disabled", "deleted", "banned");
 
+const googleClientTypes = tuple("web", "cli");
+
 export {
     paginateMaxLimit,
     paginateMinLimit,
@@ -359,4 +361,5 @@ export {
     groupTypes,
     groupStatuses,
     queryStatuses,
+    googleClientTypes,
 };

@@ -1,9 +1,17 @@
 import { OAuth2Client } from "google-auth-library";
 import axios from "axios";
 
-const client = new OAuth2Client({
-    clientId: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+import * as constants from "./constants";
+
+const cliClient = new OAuth2Client({
+    clientId: process.env.CLI_GOOGLE_CLIENT_ID,
+    clientSecret: process.env.CLI_GOOGLE_CLIENT_SECRET,
+    redirectUri: process.env.CLI_GOOGLE_REDIRECT_URI,
+});
+
+const webClient = new OAuth2Client({
+    clientId: process.env.WEB_GOOGLE_CLIENT_ID,
+    clientSecret: process.env.WEB_GOOGLE_CLIENT_SECRET,
 });
 
 /**
@@ -21,9 +29,15 @@ const client = new OAuth2Client({
  * @returns
  * The information of the user who authorized the application.
  */
-const getUserInfo = async (code: string) => {
+const getUserInfo = async (
+    code: string,
+    client: typeof constants.googleClientTypes[number]
+) => {
     try {
-        const credentials = await client.getToken(code);
+        const credentials = await (client === "web"
+            ? webClient
+            : cliClient
+        ).getToken(code);
         const result = await axios.get(
             "https://www.googleapis.com/oauth2/v2/userinfo",
             {

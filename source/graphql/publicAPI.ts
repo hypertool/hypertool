@@ -2,6 +2,7 @@ import { ApolloServer, gql } from "apollo-server-express";
 
 import { types } from "./typeDefinitions";
 import { users } from "../controllers";
+import { googleClientTypes } from "../utils/constants";
 
 const typeDefs = gql`
     ${types}
@@ -10,8 +11,12 @@ const typeDefs = gql`
         dummy: String!
     }
 
+    enum ClientType {
+        ${googleClientTypes.join("\n")}
+    }
+
     type Mutation {
-        loginWithGoogle(token: String!): Session!
+        loginWithGoogle(token: String!, client: ClientType!): Session!
     }
 `;
 
@@ -21,7 +26,7 @@ const resolvers = {
     },
     Mutation: {
         loginWithGoogle: async (parent, values, context) =>
-            users.loginWithGoogle(context.request, values.token),
+            users.loginWithGoogle(context.request, values.token, values.client),
     },
 };
 
