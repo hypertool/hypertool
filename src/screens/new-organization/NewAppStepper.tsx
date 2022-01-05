@@ -25,9 +25,7 @@ import * as yup from "yup";
 import { gql, useMutation } from "@apollo/client";
 import { useNavigate } from "react-router";
 
-import AboutStep from "./AboutStep";
-import ResourcesStep from "./ResourcesStep";
-// import RepositoryStep from "./RepositoryStep";
+import FormHelper from "./FormHelper";
 import Wrap from "../../components/Wrap";
 
 const StepContainer = styled("div")(({ theme }) => ({
@@ -102,15 +100,10 @@ interface StepModel {
 
 const steps: StepModel[] = [
   { title: "Create your organization", optional: false },
-  {
-    title: "Connect your repository",
-    optional: true,
-  },
 ];
 
 const NewAppStepper: FunctionComponent = (): ReactElement => {
   const [activeStep, setActiveStep] = useState(0);
-  const [resources, setResources] = useState<string[]>([]);
   const [
     createApp,
     { loading: creatingApp, error: createAppError, data: newApp },
@@ -125,21 +118,15 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
     }
   }, [navigate, newApp]);
 
-  const handleResourcesSelected = useCallback((resources: string[]) => {
-    setResources(resources);
-  }, []);
-
   const handleSubmit = useCallback(
     (values: FormValues, helpers: FormikHelpers<FormValues>): void => {
-      console.log(values, resources);
       createApp({
         variables: {
           ...values,
-          resources,
         },
       });
     },
-    [createApp, resources]
+    [createApp]
   );
 
   const handleNext = () => {
@@ -150,50 +137,6 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const isStepValuesValid = (step: number, context: any) => {
-    if (step === 0) {
-      return (
-        context.values.name &&
-        !context.errors.name &&
-        !context.errors.description
-      );
-    }
-  };
-
-  const isStepComplete = (step: number, context: any) => {
-    switch (step) {
-      case 0: {
-        return isStepValuesValid(step, context);
-      }
-
-      case 1: {
-        return Boolean(newApp);
-      }
-
-      default: {
-        throw new Error(`The specified step number (${step}) does not exist!`);
-      }
-    }
-  };
-
-  const renderStepperItem = (step: StepModel, index: number, context: any) => {
-    return (
-      <Step key={step.title} completed={isStepComplete(index, context)}>
-        <StepLabel
-          optional={
-            step.optional && <Typography variant="caption">Optional</Typography>
-          }
-        >
-          {step.title}
-        </StepLabel>
-      </Step>
-    );
-  };
-
-  const renderStepperItems = (context: any) =>
-    steps.map((step: StepModel, index: number) =>
-      renderStepperItem(step, index, context)
-    );
 
   return (
     <div>
@@ -204,82 +147,20 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
       >
         {(formik) => (
           <>
-            <Hidden lgDown={true}>
-              <Stepper activeStep={activeStep}>
-                {renderStepperItems(formik)}
-              </Stepper>
-            </Hidden>
-            <Hidden lgUp={true}>
-              <Paper
-                square={true}
-                elevation={2}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  height: 50,
-                  p: 2,
-                  backgroundColor: "#000000",
-                }}
-              >
-                <Typography>{steps[activeStep].title}</Typography>
-              </Paper>
-            </Hidden>
+
+            <Typography sx={{color: 'white'}}>Create your organization</Typography>
             <Wrap
               when={smallerThanLg}
               wrapper={Container}
               style={{ height: "calc(100vh - 156px)" }}
             >
               <Wrap when={!smallerThanLg} wrapper={StepContainer}>
-                <>
-                  {activeStep === 0 && <AboutStep />}
-                  {activeStep === 1 && (
-                    <ResourcesStep
-                      onResourcesSelected={handleResourcesSelected}
-                      selectedResources={resources}
-                    />
-                  )}
-                </>
+                <FormHelper />
               </Wrap>
             </Wrap>
 
             <Hidden lgDown={true}>
               <ActionContainer>
-                <LeftActionContainer>
-                  {activeStep > 0 && (
-                    <StepperAction
-                      color="inherit"
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      sx={{ mr: 1 }}
-                      variant="contained"
-                      size="small"
-                    >
-                      {theme.direction === "rtl" ? (
-                        <KeyboardArrowRight />
-                      ) : (
-                        <KeyboardArrowLeft />
-                      )}
-                      Back
-                    </StepperAction>
-                  )}
-                </LeftActionContainer>
-
-                {activeStep < steps.length - 1 && (
-                  <StepperAction
-                    onClick={handleNext}
-                    variant="contained"
-                    size="small"
-                    disabled={!isStepValuesValid(activeStep, formik)}
-                  >
-                    Next
-                    {theme.direction === "rtl" ? (
-                      <KeyboardArrowLeft />
-                    ) : (
-                      <KeyboardArrowRight />
-                    )}
-                  </StepperAction>
-                )}
-
                 {activeStep + 1 === steps.length && (
                   <CreateAction
                     onClick={() => formik.submitForm()}
@@ -287,7 +168,7 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                     size="small"
                     disabled={creatingApp}
                   >
-                    Create App
+                    Create
                     {!creatingApp && !newApp && (
                       <CheckCircleOutline fontSize="small" sx={{ ml: 1 }} />
                     )}
@@ -322,7 +203,6 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                   sx={{
                     width: "100%",
                     backgroundColor: theme.palette.background.paper,
-                    // marginTop: theme.spacing(11)
                   }}
                   nextButton={
                     <Button

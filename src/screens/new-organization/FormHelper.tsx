@@ -35,24 +35,12 @@ const DescriptionTextField = styled(TextField)(({ theme }) => ({
   maxWidth: 600,
 })) as any;
 
-// const FolderFormControl = styled(FormControl)(({ theme }) => ({
-//   marginTop: theme.spacing(3),
-//   maxWidth: 400,
-// }));
-
-// const dummyFolders = ["eCommerce", "content", "human-resource", "tech"];
-
 interface FormValues {
   name: string;
 }
 
-const AboutStep: FunctionComponent = (): ReactElement => {
+const FormHelper: FunctionComponent = (): ReactElement => {
   const formik = useFormikContext<FormValues>();
-  // const [folder, setFolder] = useState("root");
-
-  // const handleFolderChange = useCallback((event: SelectChangeEvent) => {
-  //   setFolder(event.target.value);
-  // }, []);
 
   const slug = useMemo(
     () =>
@@ -129,26 +117,9 @@ const AboutStep: FunctionComponent = (): ReactElement => {
             </Typography>
           }
         />
-        {/* <FolderFormControl fullWidth={true}>
-          <InputLabel id="folder-label">Folder</InputLabel>
-          <Select
-            labelId="folder-label"
-            id="folder"
-            value={folder}
-            label="Folder"
-            onChange={handleFolderChange}
-            size="small"
-            variant="outlined"
-          >
-            <MenuItem value="root">root</MenuItem>
-            {dummyFolders.map((folder) => (
-              <MenuItem value={folder}>{folder}</MenuItem>
-            ))}
-          </Select>
-        </FolderFormControl> */}
       </Form>
     </Root>
   );
 };
 
-export default AboutStep;
+export default FormHelper;
