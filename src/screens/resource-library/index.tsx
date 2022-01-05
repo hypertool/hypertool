@@ -68,7 +68,8 @@ const GET_RESOURCES = gql`
 
 const ResourceLibrary: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
-  const { loading, error, data, refetch } = useQuery(GET_RESOURCES, {
+  // TODO: Destructure `error`, check for non-null, send to sentry
+  const { data } = useQuery(GET_RESOURCES, {
     variables: {
       page: 0,
       limit: 20,
