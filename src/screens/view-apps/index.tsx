@@ -128,7 +128,8 @@ const GET_APPS = gql`
 const ViewApps: FunctionComponent = (): ReactElement => {
   const [filter, setFilter] = useState<string>(filters[0].url);
   const navigate = useNavigate();
-  const { loading, error, data } = useQuery(GET_APPS);
+  // TODO: Destructure `error`, check for non-null, send to sentry
+  const { loading, data } = useQuery(GET_APPS);
 
   const handleCreateNew = useCallback(() => {
     navigate("/apps/new");
