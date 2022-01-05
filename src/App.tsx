@@ -5,7 +5,7 @@ import { styled } from "@mui/material/styles";
 
 import {
   Login,
-  Test,
+  NewOrganization,
   ViewApps,
   NewApp,
   ResourceLibrary,
@@ -24,8 +24,8 @@ const App: FunctionComponent = (): ReactElement => {
     <Root>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/test" element={<Test />} />
         <Route path="/" element={<WorkspaceLayout />}>
+          <Route path="/organizations/new" element={<NewOrganization />} />
           <Route path="/apps" element={<ViewApps />} />
           <Route path="/apps/new" element={<NewApp />} />
           <Route path="/resources" element={<ResourceLibrary />} />
