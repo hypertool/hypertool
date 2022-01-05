@@ -78,15 +78,7 @@ const FormHelper: FunctionComponent = (): ReactElement => {
             >
               {slug && (
                 <>
-                  Your organization will be hosted at:
-                  <a
-                    href="https://trell.hypertool.io/thumbnail-generator"
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ color: "white" }}
-                  >
-                    https://{slug}.hypertool.io
-                  </a>
+                  Your organization will be hosted at {slug}.hypertool.io
                 </>
               )}
             </Typography>
