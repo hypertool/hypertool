@@ -111,9 +111,10 @@ const steps: StepModel[] = [
 const NewAppStepper: FunctionComponent = (): ReactElement => {
   const [activeStep, setActiveStep] = useState(0);
   const [resources, setResources] = useState<string[]>([]);
+  // TODO: Destructure `error`, check for non-null, send to sentry
   const [
     createApp,
-    { loading: creatingApp, error: createAppError, data: newApp },
+    { loading: creatingApp, data: newApp },
   ] = useMutation(CREATE_APP);
   const theme = useTheme();
   const navigate = useNavigate();

@@ -20,6 +20,14 @@ import { useNavigate } from "react-router";
 import FormHelper from "./FormHelper";
 import Wrap from "../../components/Wrap";
 
+const TitleContainer = styled(Typography)(({ theme }) => ({
+  color: "white",
+  [theme.breakpoints.down("lg")]: {
+    padding: theme.spacing(4),
+    paddingBottom: theme.spacing(0)
+  }
+}))
+
 const StepContainer = styled("div")(({ theme }) => ({
   height: "calc(100vh - 200px)",
 }));
@@ -34,6 +42,7 @@ const ActionContainer = styled("div")(({ theme }) => ({
 
 const CreateAction = styled(Button)(({ theme }) => ({
   width: 144,
+  marginLeft: theme.spacing(2)
 }));
 
 interface FormValues {
@@ -56,18 +65,16 @@ const validationSchema = yup.object({
     .max(512, "Description should be 512 characters or less"),
 });
 
-const CREATE_APP = gql`
-  mutation CreateApp(
+const CREATE_ORGANIZATION = gql`
+  mutation CreateOrganization(
     $name: String!
     $description: String
-    $groups: [ID!]
-    $resources: [ID!]
+    $users: [ID!]
   ) {
-    createApp(
+    createOrganization(
       name: $name
       description: $description
-      groups: $groups
-      resources: $resources
+      users: $users
     ) {
       id
     }
@@ -77,28 +84,29 @@ const CREATE_APP = gql`
 const NewOrganization: FunctionComponent = (): ReactElement => {
   // TODO: Destructure `error`, check for non-null, send to sentry
   const [
-    createApp,
-    { loading: creatingApp, data: newApp },
-  ] = useMutation(CREATE_APP);
+    createOrganization,
+    { loading: creatingOrganization, data: newOrganization },
+  ] = useMutation(CREATE_ORGANIZATION);
   const theme = useTheme();
   const navigate = useNavigate();
   const smallerThanLg = useMediaQuery(theme.breakpoints.down("lg"));
 
   useEffect(() => {
-    if (newApp) {
-      navigate(`/apps/${newApp.createApp.id}/edit`);
+    if (newOrganization) {
+      navigate('/apps');
     }
-  }, [navigate, newApp]);
+  }, [navigate, newOrganization]);
 
   const handleSubmit = useCallback(
     (values: FormValues, helpers: FormikHelpers<FormValues>): void => {
-      createApp({
+      console.log(values);
+      createOrganization({
         variables: {
           ...values,
         },
       });
     },
-    [createApp]
+    [createOrganization]
   );
 
   return (
@@ -111,7 +119,7 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
         {(formik) => (
           <>
 
-            <Typography sx={{ color: 'white' }}>Create your organization</Typography>
+            <TitleContainer>Create your organization</TitleContainer>
             <Wrap
               when={smallerThanLg}
               wrapper={Container}
@@ -127,16 +135,16 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
                 onClick={() => formik.submitForm()}
                 variant="contained"
                 size="small"
-                disabled={creatingApp}
+                disabled={creatingOrganization}
               >
                 Create
-                {!creatingApp && !newApp && (
+                {!creatingOrganization && !newOrganization && (
                   <CheckCircleOutline fontSize="small" sx={{ ml: 1 }} />
                 )}
-                {!creatingApp && newApp && (
+                {!creatingOrganization && newOrganization && (
                   <CheckCircle fontSize="small" sx={{ ml: 1 }} />
                 )}
-                {creatingApp && (
+                {creatingOrganization && (
                   <CircularProgress size="14px" sx={{ ml: 1 }} />
                 )}
               </CreateAction>
