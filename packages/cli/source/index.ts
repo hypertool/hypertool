@@ -4,6 +4,7 @@ import TaskList from "listr";
 
 import { createServer } from "./server";
 import { createCompiler } from "./compiler";
+import { createProject } from "./project";
 import * as authUtils from "./auth";
 import * as manifest from "./manifest";
 import { env } from "./utils";
@@ -49,8 +50,8 @@ const deploy = async (): Promise<void> => {
     tasks.run().catch((_error) => null);
 };
 
-const create = async (): Promise<void> => {
-    console.log("You just called the create command");
+const create = async (configuration: any): Promise<void> => {
+    await createProject(configuration.name, configuration.template);
 };
 
 const eject = async (): Promise<void> => {
@@ -99,7 +100,16 @@ const configureCommands = (): Command => {
         .name("create")
         .alias("c")
         .description("creates a new app")
-        .action(create);
+        .argument("<name>", "name of the new app")
+        .option("-t, --template <name>", "the template to use", "javascript")
+        .action((name) => {
+            const configuration = {
+                ...program.opts(),
+                ...createCommand.opts(),
+                name,
+            };
+            create(configuration);
+        });
     program.addCommand(createCommand);
 
     const startCommand = new Command();
