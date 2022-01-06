@@ -76,7 +76,6 @@ const Login: FunctionComponent = (): ReactElement => {
 
   const onSuccess = useCallback(
     async (response: any) => {
-      console.log(response);
       const result = await client.mutate({
         mutation: LOGIN_WITH_GOOGLE,
         variables: { token: response.code },
@@ -87,7 +86,7 @@ const Login: FunctionComponent = (): ReactElement => {
         "session",
         JSON.stringify(result.data.loginWithGoogle)
       );
-      navigate("/apps");
+      navigate("/organizations/new");
     },
     [navigate]
   );

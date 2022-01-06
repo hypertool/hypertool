@@ -20,6 +20,7 @@ const Root = styled("div")(({ theme }) => ({
 }));
 
 const App: FunctionComponent = (): ReactElement => {
+  const session = localStorage.getItem("session");
   return (
     <Root>
       <Routes>
@@ -35,7 +36,7 @@ const App: FunctionComponent = (): ReactElement => {
             element={<EditResource />}
           />
         </Route>
-        <Route index={true} element={<Navigate to="/apps" />} />
+        <Route index={true} element={<Navigate to={session ? "/apps" : "/login"} />} />
       </Routes>
     </Root>
   );

@@ -39,7 +39,7 @@ interface FormValues {
   name: string;
 }
 
-const FormHelper: FunctionComponent = (): ReactElement => {
+const OrganizationForm: FunctionComponent = (): ReactElement => {
   const formik = useFormikContext<FormValues>();
 
   const slug = useMemo(
@@ -114,4 +114,4 @@ const FormHelper: FunctionComponent = (): ReactElement => {
   );
 };
 
-export default FormHelper;
+export default OrganizationForm;

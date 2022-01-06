@@ -80,7 +80,10 @@ const ResourceLibrary: FunctionComponent = (): ReactElement => {
     navigate("/resources/new");
   }, [navigate]);
 
-  const { records = [], totalPages = 0 } = data?.getResources || {};
+  const {
+    records = [],
+    // totalPages = 0
+  } = data?.getResources || {};
 
   const handleRowClick = useCallback(
     (resource: Resource) => {

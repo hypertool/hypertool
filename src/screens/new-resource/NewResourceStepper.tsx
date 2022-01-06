@@ -285,7 +285,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
     createResource,
     {
       loading: creatingResource,
-      error: createResourceError,
+      // error: createResourceError,
       data: newResource,
     },
   ] = useMutation(CREATE_RESOURCE);

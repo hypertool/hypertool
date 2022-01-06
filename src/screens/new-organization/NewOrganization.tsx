@@ -10,14 +10,13 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import CheckCircle from "@mui/icons-material/CheckCircle";
 import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import { Formik, FormikHelpers } from "formik";
 import * as yup from "yup";
 import { gql, useMutation } from "@apollo/client";
 import { useNavigate } from "react-router";
 
-import FormHelper from "./FormHelper";
+import OrganizationForm from "./OrganizationForm";
 import Wrap from "../../components/Wrap";
 
 const TitleContainer = styled(Typography)(({ theme }) => ({
@@ -28,7 +27,7 @@ const TitleContainer = styled(Typography)(({ theme }) => ({
   }
 }))
 
-const StepContainer = styled("div")(({ theme }) => ({
+const FormContainer = styled("div")(({ theme }) => ({
   height: "calc(100vh - 200px)",
 }));
 
@@ -81,32 +80,61 @@ const CREATE_ORGANIZATION = gql`
   }
 `;
 
+const UPDATE_USER = gql`
+mutation UpdateUser(
+  $userId: ID!
+  $organization: ID!
+) {
+  updateUser(
+    userId: $userId
+    organization: $organization
+  ) {
+    id
+  }
+}
+`;
+
 const NewOrganization: FunctionComponent = (): ReactElement => {
   // TODO: Destructure `error`, check for non-null, send to sentry
   const [
     createOrganization,
     { loading: creatingOrganization, data: newOrganization },
   ] = useMutation(CREATE_ORGANIZATION);
+  const [updateUser, { loading: updatingUser, data: updatedUser }] = useMutation(UPDATE_USER);
   const theme = useTheme();
   const navigate = useNavigate();
   const smallerThanLg = useMediaQuery(theme.breakpoints.down("lg"));
+  const session = localStorage.getItem("session") as string;
 
   useEffect(() => {
     if (newOrganization) {
-      navigate('/apps');
-    }
-  }, [navigate, newOrganization]);
-
-  const handleSubmit = useCallback(
-    (values: FormValues, helpers: FormikHelpers<FormValues>): void => {
-      console.log(values);
-      createOrganization({
+      updateUser({
         variables: {
-          ...values,
+          userId: JSON.parse(session)?.user?._id,
+          organization: newOrganization.createOrganization.id
         },
       });
+      if (updatedUser) {
+        navigate('/apps');
+      }
+    }
+  }, [navigate, newOrganization, session, updateUser, updatedUser]);
+
+
+
+  const handleSubmit = useCallback(
+    (values: FormValues, helpers: FormikHelpers<FormValues>): any => {
+      if (session) {
+        createOrganization({
+          variables: {
+            ...values,
+            users: [JSON.parse(session)?.user?._id]
+          },
+        });
+      }
+
     },
-    [createOrganization]
+    [createOrganization, session]
   );
 
   return (
@@ -125,8 +153,8 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
               wrapper={Container}
               style={{ height: "calc(100vh - 156px)" }}
             >
-              <Wrap when={!smallerThanLg} wrapper={StepContainer}>
-                <FormHelper />
+              <Wrap when={!smallerThanLg} wrapper={FormContainer}>
+                <OrganizationForm />
               </Wrap>
             </Wrap>
 
@@ -135,16 +163,13 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
                 onClick={() => formik.submitForm()}
                 variant="contained"
                 size="small"
-                disabled={creatingOrganization}
+                disabled={creatingOrganization || updatingUser}
               >
                 Create
-                {!creatingOrganization && !newOrganization && (
+                {(!creatingOrganization && !updatingUser) && (
                   <CheckCircleOutline fontSize="small" sx={{ ml: 1 }} />
                 )}
-                {!creatingOrganization && newOrganization && (
-                  <CheckCircle fontSize="small" sx={{ ml: 1 }} />
-                )}
-                {creatingOrganization && (
+                {(creatingOrganization || updatingUser) && (
                   <CircularProgress size="14px" sx={{ ml: 1 }} />
                 )}
               </CreateAction>
