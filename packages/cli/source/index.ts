@@ -4,6 +4,7 @@ import TaskList from "listr";
 
 import { createServer } from "./server";
 import { createCompiler } from "./compiler";
+import { createProject } from "./project";
 import * as authUtils from "./auth";
 import * as manifest from "./manifest";
 import { env } from "./utils";
@@ -50,11 +51,7 @@ const deploy = async (): Promise<void> => {
 };
 
 const create = async (configuration: any): Promise<void> => {
-    console.log(
-        `You just called the create command with ${JSON.stringify(
-            configuration,
-        )}`,
-    );
+    await createProject(configuration.name, configuration.template);
 };
 
 const eject = async (): Promise<void> => {
