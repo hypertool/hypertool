@@ -287,6 +287,7 @@ const typeDefs = gql`
             firstName: String,
             lastName: String,
             description: String,
+            organization: ID,
             gender: Gender,
             countryCode: Country,
             pictureURL: String,
