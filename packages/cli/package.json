@@ -40,6 +40,7 @@
         "postcss-normalize": "^10.0.1",
         "postcss-preset-env": "^7.0.1",
         "prompts": "^2.4.2",
+        "simple-git": "^2.48.0",
         "style-loader": "^3.3.1",
         "webpack": "^5.65.0",
         "webpack-dev-server": "^4.6.0"
