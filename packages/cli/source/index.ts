@@ -7,7 +7,7 @@ import { createCompiler } from "./compiler";
 import { createProject } from "./project";
 import * as authUtils from "./auth";
 import * as manifest from "./manifest";
-import { env, logger } from "./utils";
+import { env, logger, listFiles, fsHelper } from "./utils";
 
 import packageData from "../package.json";
 
@@ -22,9 +22,17 @@ const deploy = async (): Promise<void> => {
             title: "Check authentication status",
             task: async (context, task) => {
                 task.title = "Checking authentication status...";
+
                 const session = await authUtils.loadSession();
-                task.title = `Authenticated as ${session.user.firstName} ${session.user.lastName} <${session.user.emailAddress}>`;
+                const client = authUtils.createPrivateClient(session);
+
+                /* Forward reference to the session and client objects to other
+                 * tasks.
+                 */
                 context.session = session;
+                context.client = client;
+
+                task.title = `Authenticated as ${session.user.firstName} ${session.user.lastName} <${session.user.emailAddress}>`;
             },
         },
         {
@@ -62,9 +70,35 @@ const deploy = async (): Promise<void> => {
             title: "Post manifests to Hypertool API",
             task: async (context, task) => {
                 task.title = "Posting manifests to Hypertool API...";
-                const client = authUtils.createPrivateClient(context.session);
-                client.syncManifest(context.manifest);
+
+                context.client.syncManifest(context.manifest);
                 task.title = "Posted manifests to Hypertool API";
+            },
+        },
+        {
+            title: "Upload client bundle",
+            task: async (context, task) => {
+                task.title = "List files...";
+                /* The "./build/" prefix must be removed before generating the
+                 * signed URLs.
+                 *
+                 * For some reason Google Cloud Storage produces an error if the
+                 * object names begin with "./".
+                 */
+                const fileNames = await listFiles("./build/**/*");
+                const virtualFileNames = fileNames.map((file) =>
+                    file.replace("./build/", ""),
+                );
+
+                task.title = "Generating signed URL to upload...";
+                const signedURLs = await context.client.generateSignedURLs(
+                    virtualFileNames,
+                );
+
+                task.title = "Uploading files...";
+                await fsHelper.uploadFiles(fileNames, signedURLs);
+
+                task.title = "Uploaded client bundle";
             },
         },
     ]);
