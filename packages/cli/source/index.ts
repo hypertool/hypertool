@@ -36,18 +36,38 @@ const deploy = async (): Promise<void> => {
             },
         },
         {
+            title: "Compile client",
+            task: async (context, task) => {
+                task.title = "Compiling client...";
+                /* The `babel-preset-react-app` preset requires `process.env.NODE_ENV`
+                 * to be one of "production", "development", and "test". For the `start`
+                 * command, the corresponding value is "development". Similarly, for
+                 * the `deploy` command, the corresponding value is "production".
+                 * Therefore, we hard code the value where the command is handled.
+                 */
+                process.env.NODE_ENV = "production";
+                const compiler = createCompiler("production");
+                compiler.run((error, stats) => {
+                    compiler.close((error) => {
+                        if (error) {
+                            console.log(error);
+                        }
+                    });
+                });
+                task.title = `Compiled client`;
+            },
+        },
+        {
             title: "Post manifests to Hypertool API",
             task: async (context, task) => {
                 task.title = "Posting manifests to Hypertool API...";
                 const client = authUtils.createPrivateClient(context.session);
                 client.syncManifest(context.manifest);
-                task.title =
-                    "Posted manifests to Hypertool API\n   Run `hypertool status` to check the deployment status.";
+                task.title = "Posted manifests to Hypertool API";
             },
         },
     ]);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    tasks.run().catch((_error) => null);
+    await tasks.run();
 };
 
 const create = async (configuration: any): Promise<void> => {
