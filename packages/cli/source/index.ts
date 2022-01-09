@@ -7,7 +7,7 @@ import { createCompiler } from "./compiler";
 import { createProject } from "./project";
 import * as authUtils from "./auth";
 import * as manifest from "./manifest";
-import { env } from "./utils";
+import { env, logger } from "./utils";
 
 import packageData from "../package.json";
 
@@ -16,6 +16,7 @@ const auth = async (): Promise<void> => {
 };
 
 const deploy = async (): Promise<void> => {
+    const startTime = new Date().getTime();
     const tasks = new TaskList([
         {
             title: "Check authentication status",
@@ -67,7 +68,17 @@ const deploy = async (): Promise<void> => {
             },
         },
     ]);
-    await tasks.run();
+
+    const endTime = new Date().getTime();
+
+    try {
+        await tasks.run();
+        console.log();
+        logger.info("Run `hypertool status` to check the deployment status.");
+        logger.info(`Done in ${((endTime - startTime) / 1000).toFixed(2)}s`);
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 const create = async (configuration: any): Promise<void> => {
