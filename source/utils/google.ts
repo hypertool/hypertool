@@ -1,17 +1,39 @@
+import type { GetSignedUrlConfig } from "@google-cloud/storage";
+
 import { OAuth2Client } from "google-auth-library";
+import { Storage } from "@google-cloud/storage";
 import axios from "axios";
 
 import * as constants from "./constants";
 
+const {
+    CLI_GOOGLE_CLIENT_ID,
+    CLI_GOOGLE_CLIENT_SECRET,
+    CLI_GOOGLE_REDIRECT_URI,
+    WEB_GOOGLE_CLIENT_ID,
+    WEB_GOOGLE_CLIENT_SECRET,
+    API_SERVICE_ACCOUNT_PROJECT_ID,
+    API_SERVICE_ACCOUNT_CLIENT_EMAIL,
+    API_SERVICE_ACCOUNT_PRIVATE_KEY,
+} = process.env;
+
+const storage = new Storage({
+    projectId: API_SERVICE_ACCOUNT_PROJECT_ID,
+    credentials: {
+        client_email: API_SERVICE_ACCOUNT_CLIENT_EMAIL,
+        private_key: API_SERVICE_ACCOUNT_PRIVATE_KEY,
+    },
+});
+
 const cliClient = new OAuth2Client({
-    clientId: process.env.CLI_GOOGLE_CLIENT_ID,
-    clientSecret: process.env.CLI_GOOGLE_CLIENT_SECRET,
-    redirectUri: process.env.CLI_GOOGLE_REDIRECT_URI,
+    clientId: CLI_GOOGLE_CLIENT_ID,
+    clientSecret: CLI_GOOGLE_CLIENT_SECRET,
+    redirectUri: CLI_GOOGLE_REDIRECT_URI,
 });
 
 const webClient = new OAuth2Client({
-    clientId: process.env.WEB_GOOGLE_CLIENT_ID,
-    clientSecret: process.env.WEB_GOOGLE_CLIENT_SECRET,
+    clientId: WEB_GOOGLE_CLIENT_ID,
+    clientSecret: WEB_GOOGLE_CLIENT_SECRET,
 });
 
 /**
@@ -29,10 +51,10 @@ const webClient = new OAuth2Client({
  * @returns
  * The information of the user who authorized the application.
  */
-const getUserInfo = async (
+export const getUserInfo = async (
     code: string,
     client: typeof constants.googleClientTypes[number]
-) => {
+): Promise<any> => {
     try {
         const credentials = await (client === "web"
             ? webClient
@@ -52,4 +74,29 @@ const getUserInfo = async (
     }
 };
 
-export { getUserInfo };
+export const generateUploadSignedURL = async (
+    bucketName: string,
+    fileName: string
+): Promise<string> => {
+    /* These options will allow temporary uploading of the file with outgoing
+     * `Content-Type: application/octet-stream` header.
+     */
+    const options: GetSignedUrlConfig = {
+        version: "v4",
+        action: "write",
+        expires: Date.now() + 10 * 60 * 1000, // 10 minutes
+        contentType: "application/octet-stream",
+    };
+
+    const [url] = await storage
+        .bucket(bucketName)
+        .file(fileName)
+        .getSignedUrl(options);
+
+    /* You can use this URL with any user agent, for example:
+     * ```
+     * curl -X PUT -H 'Content-Type: application/octet-stream' --upload-file index.html <url>
+     * ```
+     */
+    return url;
+};
