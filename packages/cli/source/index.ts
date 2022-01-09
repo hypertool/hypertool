@@ -7,7 +7,7 @@ import { createCompiler } from "./compiler";
 import { createProject } from "./project";
 import * as authUtils from "./auth";
 import * as manifest from "./manifest";
-import { env } from "./utils";
+import { env, logger, listFiles, fsHelper } from "./utils";
 
 import packageData from "../package.json";
 
@@ -16,14 +16,23 @@ const auth = async (): Promise<void> => {
 };
 
 const deploy = async (): Promise<void> => {
+    const startTime = new Date().getTime();
     const tasks = new TaskList([
         {
             title: "Check authentication status",
             task: async (context, task) => {
                 task.title = "Checking authentication status...";
+
                 const session = await authUtils.loadSession();
-                task.title = `Authenticated as ${session.user.firstName} ${session.user.lastName} <${session.user.emailAddress}>`;
+                const client = authUtils.createPrivateClient(session);
+
+                /* Forward reference to the session and client objects to other
+                 * tasks.
+                 */
                 context.session = session;
+                context.client = client;
+
+                task.title = `Authenticated as ${session.user.firstName} ${session.user.lastName} <${session.user.emailAddress}>`;
             },
         },
         {
@@ -36,18 +45,74 @@ const deploy = async (): Promise<void> => {
             },
         },
         {
+            title: "Compile client",
+            task: async (context, task) => {
+                task.title = "Compiling client...";
+                /* The `babel-preset-react-app` preset requires `process.env.NODE_ENV`
+                 * to be one of "production", "development", and "test". For the `start`
+                 * command, the corresponding value is "development". Similarly, for
+                 * the `deploy` command, the corresponding value is "production".
+                 * Therefore, we hard code the value where the command is handled.
+                 */
+                process.env.NODE_ENV = "production";
+                const compiler = createCompiler("production");
+                compiler.run((error, stats) => {
+                    compiler.close((error) => {
+                        if (error) {
+                            console.log(error);
+                        }
+                    });
+                });
+                task.title = `Compiled client`;
+            },
+        },
+        {
             title: "Post manifests to Hypertool API",
             task: async (context, task) => {
                 task.title = "Posting manifests to Hypertool API...";
-                const client = authUtils.createPrivateClient(context.session);
-                client.syncManifest(context.manifest);
-                task.title =
-                    "Posted manifests to Hypertool API\n   Run `hypertool status` to check the deployment status.";
+
+                context.client.syncManifest(context.manifest);
+                task.title = "Posted manifests to Hypertool API";
+            },
+        },
+        {
+            title: "Upload client bundle",
+            task: async (context, task) => {
+                task.title = "List files...";
+                /* The "./build/" prefix must be removed before generating the
+                 * signed URLs.
+                 *
+                 * For some reason Google Cloud Storage produces an error if the
+                 * object names begin with "./".
+                 */
+                const fileNames = await listFiles("./build/**/*");
+                const virtualFileNames = fileNames.map((file) =>
+                    file.replace("./build/", ""),
+                );
+
+                task.title = "Generating signed URL to upload...";
+                const signedURLs = await context.client.generateSignedURLs(
+                    virtualFileNames,
+                );
+
+                task.title = "Uploading files...";
+                await fsHelper.uploadFiles(fileNames, signedURLs);
+
+                task.title = "Uploaded client bundle";
             },
         },
     ]);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    tasks.run().catch((_error) => null);
+
+    const endTime = new Date().getTime();
+
+    try {
+        await tasks.run();
+        console.log();
+        logger.info("Run `hypertool status` to check the deployment status.");
+        logger.info(`Done in ${((endTime - startTime) / 1000).toFixed(2)}s`);
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 const create = async (configuration: any): Promise<void> => {

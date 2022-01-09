@@ -39,6 +39,7 @@ export const prepare = (
     const enableSourceMap = false;
     const clientEnv = env.getClientEnvironment(
         paths.PUBLIC_URL_OR_PATH.slice(0, -1),
+        environment,
     );
     /* Source map is always enabled in development. */
     const sourceMap = production ? enableSourceMap : development;
@@ -147,7 +148,7 @@ export const prepare = (
             cacheDirectory: paths.CACHE_DIRECTORY,
             store: "pack",
             buildDependencies: {
-                defaultWebpack: ["webpack/lib/"],
+                defaultWebpack: [],
                 config: [__filename],
                 // Add `tsconfig` once TypeScript is supported.
             },
@@ -343,6 +344,8 @@ export const prepare = (
              * the very slow development mode.
              */
             new webpack.DefinePlugin(clientEnv.stringified),
+
+            new MiniCssExtractPlugin(),
 
             /* Watcher doesn't work well if you mistype casing in a path so we use
              * a plugin that prints an error when you attempt to do this.

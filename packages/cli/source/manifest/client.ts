@@ -202,6 +202,12 @@ const UPDATE_RESOURCE = gql`
     }
 `;
 
+const GENERATE_SIGNED_URLS = gql`
+    mutation GenerateSignedURLs($files: [String!]!) {
+        generateSignedURLs(files: $files)
+    }
+`;
+
 const isNotFoundError = (error0: unknown): boolean => {
     if (error0 instanceof ApolloError) {
         const error = error0 as ApolloError;
@@ -455,7 +461,6 @@ export default class Client<T> {
             return false;
         }
 
-        console.log("Patching");
         await this.updateQueryTemplate(
             oldQueryTemplate.id as string,
             newQueryTemplate,
@@ -566,5 +571,15 @@ export default class Client<T> {
                 );
             }
         }
+    }
+
+    async generateSignedURLs(files: string[]): Promise<string[]> {
+        const app = await this.client.mutate({
+            mutation: GENERATE_SIGNED_URLS,
+            variables: {
+                files,
+            },
+        });
+        return app.data.generateSignedURLs;
     }
 }

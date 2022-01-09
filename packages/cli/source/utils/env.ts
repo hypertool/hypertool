@@ -80,7 +80,10 @@ type Env = { [key: string]: any };
  * variables. The copy will be injected into the application via `DefinePlugin`
  * in webpack configuration.
  */
-export const getClientEnvironment = (publicUrl: string) => {
+export const getClientEnvironment = (
+    publicUrl: string,
+    environment: "production" | "development" | "test" = "development",
+) => {
     const raw = Object.keys(process.env)
         .filter((key) => key.startsWith("REACT_APP_") || key.startsWith("HT_"))
         .reduce(
@@ -92,7 +95,7 @@ export const getClientEnvironment = (publicUrl: string) => {
                 /* Useful for determining whether we’re running in production mode.
                  * Most importantly, it switches React into the correct mode.
                  */
-                NODE_ENV: process.env.NODE_ENV || "development",
+                NODE_ENV: environment,
 
                 /* Useful for resolving the correct path to static assets in `public`.
                  * For example, `<img src={process.env.PUBLIC_URL + '/img/logo.png'} />`.
