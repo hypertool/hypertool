@@ -455,7 +455,6 @@ export default class Client<T> {
             return false;
         }
 
-        console.log("Patching");
         await this.updateQueryTemplate(
             oldQueryTemplate.id as string,
             newQueryTemplate,
