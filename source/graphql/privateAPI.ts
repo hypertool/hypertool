@@ -7,6 +7,7 @@ import {
     apps,
     resources,
     queryTemplates,
+    deployments,
 } from "../controllers";
 import { types } from "./typeDefinitions";
 import { jwtAuth } from "../middleware";
@@ -374,6 +375,8 @@ const typeDefs = gql`
         deleteQueryTemplate(queryTemplateId: ID!): RemoveResult!
 
         deleteAllStaticQueryTemplates(appId: ID!): RemoveResult!
+
+        generateSignedURLs(fileNames: [String!]!): [String!]!
     }
 
     type Query {
@@ -472,6 +475,9 @@ const resolvers = {
 
         deleteQueryTemplate: async (parent, values, context) =>
             queryTemplates.remove(context.request, context.queryTemplateId),
+
+        generateSignedURLs: async (parent, values, context) =>
+            deployments.generateSignedURLs(context.request, values.fileNames),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>
