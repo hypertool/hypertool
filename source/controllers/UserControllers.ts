@@ -46,6 +46,7 @@ const updateSchema = joi.object({
     firstName: joi.string().min(1).max(256),
     lastName: joi.string().min(1).max(256),
     description: joi.string().max(512).allow(""),
+    organization: joi.string().regex(constants.identifierPattern),
     gender: joi.string().valid(...constants.genders),
     countryCode: joi.string().valid(...constants.countryCodes),
     pictureURL: joi.string().allow(""),
