@@ -376,7 +376,7 @@ const typeDefs = gql`
 
         deleteAllStaticQueryTemplates(appId: ID!): RemoveResult!
 
-        generateSignedURLs(fileNames: [String!]!): [String!]!
+        generateSignedURLs(files: [String!]!): [String!]!
     }
 
     type Query {
@@ -477,7 +477,7 @@ const resolvers = {
             queryTemplates.remove(context.request, context.queryTemplateId),
 
         generateSignedURLs: async (parent, values, context) =>
-            deployments.generateSignedURLs(context.request, values.fileNames),
+            deployments.generateSignedURLs(context.request, values.files),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>

@@ -7,9 +7,9 @@ const generateSchema = joi.array().items(joi.string());
 
 export const generateSignedURLs = async (
     context,
-    fileNames: string[]
+    files: string[]
 ): Promise<string[]> => {
-    const { error, value } = generateSchema.validate(fileNames);
+    const { error, value: files0 } = generateSchema.validate(files);
 
     if (error) {
         throw new BadRequestError(error.message);
@@ -19,10 +19,10 @@ export const generateSignedURLs = async (
 
     // TODO: Prefix `fileName` with organization ID
     const promises = [];
-    for (const fileName of value) {
+    for (const file of files0) {
         const promise = google.generateUploadSignedURL(
             "hypertool-client-builds-asia",
-            `organizationId/${deploymentId.toString()}/${fileName}`
+            `organizationId/${deploymentId.toString()}/${file}`
         );
         promises.push(promise);
     }
