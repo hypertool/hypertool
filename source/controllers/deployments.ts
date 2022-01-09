@@ -1,4 +1,5 @@
 import joi from "joi";
+import { Types } from "mongoose";
 
 import { google, BadRequestError } from "../utils";
 
@@ -14,12 +15,14 @@ export const generateSignedURLs = async (
         throw new BadRequestError(error.message);
     }
 
-    // TODO: Prefix `fileName` with organization ID and deployment ID.
+    const deploymentId = new Types.ObjectId();
+
+    // TODO: Prefix `fileName` with organization ID
     const promises = [];
-    for (const fileName of value.filesNames) {
+    for (const fileName of value) {
         const promise = google.generateUploadSignedURL(
             "hypertool-client-builds-asia",
-            fileName
+            `organizationId/${deploymentId.toString()}/${fileName}`
         );
         promises.push(promise);
     }
