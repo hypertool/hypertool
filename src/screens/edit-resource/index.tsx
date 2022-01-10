@@ -158,13 +158,15 @@ const resourceFormByType: ResourceFormByType = {
 
 const EditResource: FunctionComponent = (): ReactElement => {
   const { resourceId } = useParams();
-  const { loading, error, data, refetch } = useQuery(GET_RESOURCE, {
+  // TODO: Destructure `error`, check for non-null, send to sentry
+  const { loading, data, refetch } = useQuery(GET_RESOURCE, {
     variables: {
       resourceId,
     },
     notifyOnNetworkStatusChange: true,
   });
-  const [updateResource, { loading: updating, error: updateResourceError }] =
+
+  const [updateResource] =
     useMutation(UPDATE_RESOURCE);
   const {
     name = "<unavailable>",
@@ -173,7 +175,7 @@ const EditResource: FunctionComponent = (): ReactElement => {
     ...others
   } = data?.getResourceById ?? {};
 
-  const handleCreateNew = () => {};
+  const handleCreateNew = () => { };
 
   const handleRefresh = useCallback(() => {
     refetch();

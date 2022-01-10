@@ -52,7 +52,8 @@ const ResourcesTable: FunctionComponent<Props> = (
   props: Props
 ): ReactElement => {
   const { selectable, onResourcesSelected, selectedResources } = props;
-  const { loading, error, data } = useQuery(GET_RESOURCES, {
+  // TODO: Destructure `error`, check for non-null, send to sentry
+  const { loading, data } = useQuery(GET_RESOURCES, {
     variables: {
       page: 0,
       limit: 20,

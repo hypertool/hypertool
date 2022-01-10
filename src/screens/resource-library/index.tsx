@@ -68,7 +68,8 @@ const GET_RESOURCES = gql`
 
 const ResourceLibrary: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
-  const { loading, error, data, refetch } = useQuery(GET_RESOURCES, {
+  // TODO: Destructure `error`, check for non-null, send to sentry
+  const { data } = useQuery(GET_RESOURCES, {
     variables: {
       page: 0,
       limit: 20,
@@ -79,7 +80,10 @@ const ResourceLibrary: FunctionComponent = (): ReactElement => {
     navigate("/resources/new");
   }, [navigate]);
 
-  const { records = [], totalPages = 0 } = data?.getResources || {};
+  const {
+    records = [],
+    // totalPages = 0
+  } = data?.getResources || {};
 
   const handleRowClick = useCallback(
     (resource: Resource) => {

@@ -1,14 +1,10 @@
-import { FunctionComponent, ReactElement, useCallback } from 'react';
+import { FunctionComponent, ReactElement, useCallback } from "react";
 import { Typography, Button } from "@mui/material";
 import { useGoogleLogin } from "react-google-login";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router";
 
-import {
-  gql,
-  ApolloClient,
-  InMemoryCache,
-} from "@apollo/client";
+import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 
 const Root = styled("section")(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -45,7 +41,7 @@ const SectionSubtitle = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
     fontSize: 18,
     maxWidth: 400,
-  }
+  },
 }));
 
 const PrimaryAction = styled(Button)(({ theme }) => ({
@@ -59,12 +55,8 @@ const PrimaryAction = styled(Button)(({ theme }) => ({
 }));
 
 const LOGIN_WITH_GOOGLE = gql`
-  mutation LoginWithGoogle(
-    $token: String!
-  ) {
-    loginWithGoogle(
-      token: $token
-    ) {
+  mutation LoginWithGoogle($token: String!) {
+    loginWithGoogle(token: $token, client: web) {
       jwtToken
       user {
         id
@@ -79,36 +71,36 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-
 const Login: FunctionComponent = (): ReactElement => {
-
   const navigate = useNavigate();
 
   const onSuccess = useCallback(
     async (response: any) => {
-        const result = await client
-        .mutate({
-          mutation: LOGIN_WITH_GOOGLE,
-          variables: {token: response.tokenId}
-        });
-    delete result.data.loginWithGoogle.__typename;
-    delete result.data.loginWithGoogle.user.__typename;
-    localStorage.setItem("session", JSON.stringify(result.data.loginWithGoogle));
-    navigate("/apps");
+      const result = await client.mutate({
+        mutation: LOGIN_WITH_GOOGLE,
+        variables: { token: response.code },
+      });
+      delete result.data.loginWithGoogle.__typename;
+      delete result.data.loginWithGoogle.user.__typename;
+      localStorage.setItem(
+        "session",
+        JSON.stringify(result.data.loginWithGoogle)
+      );
+      navigate("/organizations/new");
     },
-    []
+    [navigate]
   );
 
-  const onFailure = (event: any) => { };
+  const onFailure = (event: any) => {};
 
   const { signIn } = useGoogleLogin({
     onSuccess,
     onFailure,
     clientId: process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID || "",
     cookiePolicy: "single_host_origin",
-    isSignedIn: true,
+    // isSignedIn: true,
+    responseType: "code",
   });
-
 
   const handleContinueWithGoogle = useCallback(() => {
     signIn();
@@ -120,7 +112,12 @@ const Login: FunctionComponent = (): ReactElement => {
       <SectionSubtitle>
         Don't have an account? No worries, we'll create it for you.
       </SectionSubtitle>
-      <PrimaryAction variant="contained" color="primary" size="medium" onClick={handleContinueWithGoogle}>
+      <PrimaryAction
+        variant="contained"
+        color="primary"
+        size="medium"
+        onClick={handleContinueWithGoogle}
+      >
         Continue with Google
       </PrimaryAction>
     </Root>

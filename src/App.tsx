@@ -5,7 +5,7 @@ import { styled } from "@mui/material/styles";
 
 import {
   Login,
-  Test,
+  NewOrganization,
   ViewApps,
   NewApp,
   ResourceLibrary,
@@ -20,12 +20,13 @@ const Root = styled("div")(({ theme }) => ({
 }));
 
 const App: FunctionComponent = (): ReactElement => {
+  const session = localStorage.getItem("session");
   return (
     <Root>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/test" element={<Test />} />
         <Route path="/" element={<WorkspaceLayout />}>
+          <Route path="/organizations/new" element={<NewOrganization />} />
           <Route path="/apps" element={<ViewApps />} />
           <Route path="/apps/new" element={<NewApp />} />
           <Route path="/resources" element={<ResourceLibrary />} />
@@ -35,7 +36,7 @@ const App: FunctionComponent = (): ReactElement => {
             element={<EditResource />}
           />
         </Route>
-        <Route index={true} element={<Navigate to="/apps" />} />
+        <Route index={true} element={<Navigate to={session ? "/apps" : "/login"} />} />
       </Routes>
     </Root>
   );
