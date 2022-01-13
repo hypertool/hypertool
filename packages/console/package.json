@@ -1,6 +1,7 @@
 {
-  "name": "hypertool-web",
-  "version": "0.1.0",
+  "name": "@hypertool/console",
+  "version": "0.0.0",
+  "repository": "https://github.com/hypertool/hypertool",
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.5.5",
