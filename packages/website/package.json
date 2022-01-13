@@ -1,5 +1,7 @@
 {
-  "name": "hypertool-web",
+  "name": "@hypertool/website",
+  "version": "0.0.0",
+  "repository": "https://github.com/hypertool/hypertool",
   "private": true,
   "scripts": {
     "dev": "next dev",
