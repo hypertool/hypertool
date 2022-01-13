@@ -1,7 +1,7 @@
 {
-    "name": "hypertool-api",
-    "version": "0.1.0",
-    "repository": "https://github.com/hypertool/hypertool-api",
+    "name": "@hypertool/api",
+    "version": "0.0.0",
+    "repository": "https://github.com/hypertool/hypertool",
     "private": true,
     "scripts": {
         "watch": "tsc -w",
