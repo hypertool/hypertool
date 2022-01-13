@@ -1,5 +1,5 @@
 {
-    "name": "@hypertool/authorization",
+    "name": "@hypertool/activity-logs",
     "version": "0.0.0",
     "main": "build/index.js",
     "license": "MIT",
