@@ -1,0 +1,12 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hypertool-web
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: hypertool-static-ip
+spec:
+  defaultBackend:
+    service:
+      name: hypertool-web
+      port:
+        number: 3000
