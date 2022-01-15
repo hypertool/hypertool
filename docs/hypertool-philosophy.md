@@ -1,4 +1,4 @@
-# The Hypertool Philosophy
+# Hypertool Philosophy
 
 Existing solutions allow you to build internal tools in one of the following ways:
 
