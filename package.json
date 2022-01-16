@@ -10,7 +10,6 @@
         "packages/*"
     ],
     "scripts": {
-        "lint": "eslint --fix",
         "format": "prettier --write .",
         "build": "lerna run build",
         "test": "lerna run test",
@@ -18,17 +17,11 @@
         "pre-commit": "lint-staged"
     },
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^5.6.0",
-        "@typescript-eslint/parser": "^5.6.0",
         "commitizen": "^4.2.4",
-        "eslint": "^8.4.1",
-        "eslint-plugin-react": "^7.27.1",
-        "eslint-plugin-react-hooks": "^4.3.0",
         "husky": "^7.0.0",
         "lerna": "^4.0.0",
         "lint-staged": "^12.1.2",
-        "prettier": "^2.5.0",
-        "typescript": "^4.5.2"
+        "prettier": "^2.5.0"
     },
     "peerDependencies": {},
     "config": {
@@ -37,10 +30,6 @@
         }
     },
     "lint-staged": {
-        "**/*.ts": [
-            "eslint",
-            "prettier --write"
-        ],
         "*.json": [
             "prettier --write"
         ]
