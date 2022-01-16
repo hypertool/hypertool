@@ -6,7 +6,9 @@
     "scripts": {
         "watch": "tsc -w",
         "build": "tsc",
-        "start": "nodemon --exec \"node ./dist/start.js\""
+        "start": "nodemon --exec \"node ./dist/start.js\"",
+        "test": "mocha --config .mocharc.json ./test",
+        "test:watch": "mocha --config .mocharc.json --watch ./test"
     },
     "dependencies": {
         "@google-cloud/storage": "^5.16.1",
