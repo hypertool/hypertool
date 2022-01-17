@@ -98,6 +98,16 @@ const typeDefs = gql`
         key: String!
     }
 
+    input GoogleAuthInput {
+        enabled: Boolean!
+        clientId: String!
+        secret: String!
+    }
+
+    input AuthServicesInput {
+        googleAuth: GoogleAuthInput
+    }
+
     type MySQLConfiguration {
         host: String!
         port: Int!
@@ -331,6 +341,7 @@ const typeDefs = gql`
             slug: String
             description: String
             groups: [ID!]
+            authServices: AuthServicesInput
         ): App!
 
         deleteApp(appId: ID!): RemoveResult!
@@ -421,7 +432,7 @@ const resolvers = {
             organizations.update(
                 context.request,
                 values.organizationId,
-                values
+                values,
             ),
 
         deleteOrganization: async (parent, values, context) =>
@@ -470,7 +481,7 @@ const resolvers = {
             queryTemplates.update(
                 context.request,
                 values.queryTemplateId,
-                values
+                values,
             ),
 
         deleteQueryTemplate: async (parent, values, context) =>
