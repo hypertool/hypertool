@@ -9,6 +9,7 @@
     },
     "dependencies": {},
     "devDependencies": {
-        "eslint": "^8.7.0"
+        "eslint": "^8.7.0",
+        "typescript": "^4.5.4"
     }
 }
