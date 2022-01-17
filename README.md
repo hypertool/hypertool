@@ -1,5 +1,7 @@
 # Hypertool
 
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
+
 Hypertool is a low-code platform for building internal tools quickly.
 
 Hypertool combines multiple components to provide a simple interface for building
