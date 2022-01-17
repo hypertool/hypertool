@@ -8,5 +8,7 @@
         "start": "node ./build/index.js"
     },
     "dependencies": {},
-    "devDependencies": {}
+    "devDependencies": {
+        "eslint": "^8.7.0"
+    }
 }
