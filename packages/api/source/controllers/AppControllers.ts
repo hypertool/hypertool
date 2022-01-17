@@ -29,6 +29,13 @@ const updateSchema = joi.object({
     slug: joi.string().max(128),
     description: joi.string().max(512).allow(""),
     groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    authServices: joi.object({
+        googleAuth: joi.object({
+            enabled: joi.boolean(),
+            clientId: joi.string(),
+            secret: joi.string(),
+        }),
+    }),
 });
 
 const filterSchema = joi.object({
@@ -162,7 +169,7 @@ const getById = async (context, appId: string): Promise<ExternalApp> => {
     /* We return a 404 error, if we did not find the app. */
     if (!app) {
         throw new NotFoundError(
-            "Cannot find an app with the specified identifier."
+            "Cannot find an app with the specified identifier.",
         );
     }
 
@@ -192,7 +199,7 @@ const getByName = async (context, name: string): Promise<ExternalApp> => {
 const update = async (
     context,
     appId: string,
-    attributes
+    attributes,
 ): Promise<ExternalApp> => {
     if (!constants.identifierPattern.test(appId)) {
         throw new BadRequestError("The specified app identifier is invalid.");
@@ -216,12 +223,12 @@ const update = async (
         {
             new: true,
             lean: true,
-        }
+        },
     ).exec();
 
     if (!app) {
         throw new NotFoundError(
-            "An app with the specified identifier does not exist."
+            "An app with the specified identifier does not exist.",
         );
     }
 
@@ -245,12 +252,12 @@ const publish = async (context, appId: string): Promise<ExternalApp> => {
         {
             new: true,
             lean: true,
-        }
+        },
     );
 
     if (!app) {
         throw new NotFoundError(
-            "An app with the specified identifier does not exist."
+            "An app with the specified identifier does not exist.",
         );
     }
 
@@ -274,12 +281,12 @@ const unpublish = async (context, appId: string): Promise<ExternalApp> => {
         {
             new: true,
             lean: true,
-        }
+        },
     );
 
     if (!app) {
         throw new NotFoundError(
-            "An app with the specified identifier does not exist."
+            "An app with the specified identifier does not exist.",
         );
     }
 
@@ -288,7 +295,7 @@ const unpublish = async (context, appId: string): Promise<ExternalApp> => {
 
 const remove = async (
     context,
-    appId: string
+    appId: string,
 ): Promise<{ success: boolean }> => {
     if (!constants.identifierPattern.test(appId)) {
         throw new BadRequestError("The specified app identifier is invalid.");
@@ -306,12 +313,12 @@ const remove = async (
         {
             new: true,
             lean: true,
-        }
+        },
     );
 
     if (!app) {
         throw new NotFoundError(
-            "An app with the specified identifier does not exist."
+            "An app with the specified identifier does not exist.",
         );
     }
 
