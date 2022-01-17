@@ -31,9 +31,9 @@ const updateSchema = joi.object({
     groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
     authServices: joi.object({
         googleAuth: joi.object({
-            enabled: joi.boolean(),
-            clientId: joi.string(),
-            secret: joi.string(),
+            enabled: joi.boolean().required(),
+            clientId: joi.string().required(),
+            secret: joi.string().required(),
         }),
     }),
 });
