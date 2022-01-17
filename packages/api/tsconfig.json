@@ -8,5 +8,6 @@
         "outDir": "dist",
         "allowJs": true
     },
+    "include": ["./source/**/*.ts"],
     "lib": ["es2015"]
 }
