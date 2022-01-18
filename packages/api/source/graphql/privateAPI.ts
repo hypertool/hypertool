@@ -8,6 +8,7 @@ import {
     resources,
     queryTemplates,
     deployments,
+    role,
 } from "../controllers";
 import { types } from "./typeDefinitions";
 import { jwtAuth } from "../middleware";
@@ -199,6 +200,11 @@ const typeDefs = gql`
         records: [App!]!
     }
 
+    type RoleModel{
+        name:String!
+        priviledges:[String!]
+    }
+
     enum GroupType {
         ${groupTypes.join("\n")}
     }
@@ -388,6 +394,10 @@ const typeDefs = gql`
         deleteAllStaticQueryTemplates(appId: ID!): RemoveResult!
 
         generateSignedURLs(files: [String!]!): [String!]!
+
+        createRoleModel(name:String!,priviledges:String!):RoleModel!
+
+        updateRoleModel(name:String!,priviledges:String!):RoleModel!
     }
 
     type Query {
@@ -411,6 +421,7 @@ const typeDefs = gql`
         getQueryTemplateByAppId(page: Int, limit: Int, app: ID!): QueryTemplatePage!
         getQueryTemplateById(queryTemplateId: ID!): QueryTemplate!
         getQueryTemplateByName(name: String!): QueryTemplate!
+
     }
 `;
 
@@ -489,6 +500,12 @@ const resolvers = {
 
         generateSignedURLs: async (parent, values, context) =>
             deployments.generateSignedURLs(context.request, values.files),
+
+        createRoleModel: async (parent, values, context) =>
+            role.create(context.request, values),
+
+        updateRoleModel: async (parent, values, context) =>
+            role.update(context.request, values.name, values),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>

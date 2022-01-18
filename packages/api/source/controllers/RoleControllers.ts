@@ -64,4 +64,4 @@ const update = async (context, name, attributes): Promise<Role> => {
     return app;
 };
 
-export { create };
+export { create, update };
