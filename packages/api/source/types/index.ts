@@ -260,6 +260,11 @@ export interface ExternalQuery {
     updatedAt: Date;
 }
 
+export interface Role {
+    user: string;
+    priviledges: string[];
+}
+
 export type AppPage = ExternalListPage<ExternalApp>;
 
 export type QueryPage = ExternalListPage<ExternalQuery>;
