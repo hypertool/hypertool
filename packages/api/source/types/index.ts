@@ -10,6 +10,7 @@ import {
     groupStatuses,
     genders,
     queryStatuses,
+    componentOrigins,
 } from "../utils/constants";
 
 export interface MySQLConfiguration {
@@ -262,3 +263,16 @@ export interface ExternalQuery {
 export type AppPage = ExternalListPage<ExternalApp>;
 
 export type QueryPage = ExternalListPage<ExternalQuery>;
+
+export interface Context {
+    type?: string;
+    [x: string]: any;
+}
+export interface ActivityLog {
+    id: string;
+    component: typeof componentOrigins[number];
+    context: Context;
+    message: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
