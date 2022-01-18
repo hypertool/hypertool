@@ -21,5 +21,5 @@ beforeEach(async function () {
 afterEach(async function () {});
 
 after(async function () {
-    await this.mongo.disconnect();
+    await this.mongo.stop();
 });
