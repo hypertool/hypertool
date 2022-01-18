@@ -1,6 +1,6 @@
 import type { Document } from "mongoose";
 import joi from "joi";
-import type { Role } from "../types";
+import type { Role, RolePage } from "../types";
 
 import RoleModel from "../models/RoleModel";
 
@@ -19,6 +19,16 @@ const createSchema = joi.object({
 const updateSchema = joi.object({
     name: joi.string(),
     priviledges: joi.array().items(joi.string().max(512)),
+});
+
+const filterSchema = joi.object({
+    page: joi.number().integer().default(0),
+    limit: joi
+        .number()
+        .integer()
+        .min(constants.paginateMinLimit)
+        .max(constants.paginateMaxLimit)
+        .default(constants.paginateMinLimit),
 });
 
 const create = async (context, attributes): Promise<Role> => {
@@ -64,4 +74,49 @@ const update = async (context, name, attributes): Promise<Role> => {
     return app;
 };
 
-export { create, update };
+const list = async (context, parameters): Promise<RolePage> => {
+    const { error, value } = filterSchema.validate(parameters);
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const filters = {};
+    const { page, limit } = value;
+
+    const roles = await (RoleModel as any).paginate(filters, {
+        limit,
+        page: page + 1,
+        lean: true,
+        leanWithId: true,
+        pagination: true,
+        sort: {
+            updatedAt: -1,
+        },
+    });
+
+    return {
+        totalRecords: roles.totalDocs,
+        totalPages: roles.totalPages,
+        previousPage: roles.prevPage ? roles.prevPage - 1 : -1,
+        nextPage: roles.nextPage ? roles.nextPage - 1 : -1,
+        hasPreviousPage: roles.hasPrevPage,
+        hasNextPage: roles.hasNextPage,
+        records: roles,
+    };
+};
+
+const listById = async (context, name: String): Promise<Role> => {
+    const filters = {
+        name,
+    };
+
+    const app = await RoleModel.findOne(filters as any).exec();
+
+    if (!app) {
+        throw new NotFoundError("Cannot find an Role with the specified name.");
+    }
+
+    return app;
+};
+
+export { create, update, list, listById };

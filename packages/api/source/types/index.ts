@@ -268,7 +268,6 @@ export interface Role {
 export type AppPage = ExternalListPage<ExternalApp>;
 
 export type QueryPage = ExternalListPage<ExternalQuery>;
-
 export interface Context {
     type?: string;
     [x: string]: any;
@@ -281,3 +280,4 @@ export interface ActivityLog {
     createdAt: Date;
     updatedAt: Date;
 }
+export type RolePage = ExternalListPage<Role>;
