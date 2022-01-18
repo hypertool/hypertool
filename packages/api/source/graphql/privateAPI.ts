@@ -1,3 +1,4 @@
+import { Request } from "express";
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
 import {
@@ -35,7 +36,7 @@ const typeDefs = gql`
         hasNextPage: Int!
         records: [User!]!
     }
-
+    
     enum OrganizationStatus {
         ${organizationStatuses.join("\n")}
     }
@@ -204,6 +205,17 @@ const typeDefs = gql`
         name:String!
         priviledges:[String!]
     }
+
+    type RolePage{
+        totalRecords:Int!
+        totalPages:Int!
+        previousPage:Int!
+        nextPage:Int!
+        hasPreviousPage:Int!
+        hasNextPage:Int!
+        records:[Role!]!
+    }
+
 
     enum GroupType {
         ${groupTypes.join("\n")}
@@ -422,6 +434,9 @@ const typeDefs = gql`
         getQueryTemplateById(queryTemplateId: ID!): QueryTemplate!
         getQueryTemplateByName(name: String!): QueryTemplate!
 
+        getRoleModel(page:Int,limit:Int):RolePage!
+        getRoleById(name:String!):Role!
+
     }
 `;
 
@@ -552,6 +567,10 @@ const resolvers = {
 
         getQueryTemplateByName: async (parent, values, context) =>
             queryTemplates.getByName(context.request, values.name),
+        getRoleModel: async (parent, values, context) =>
+            role.list(context.request, values),
+        getRoleById: async (parent, values, context) =>
+            role.listById(context.request, values.name),
     },
 };
 
