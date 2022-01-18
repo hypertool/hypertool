@@ -271,7 +271,7 @@ const countryCodes = tuple(
     "YEM", // Yemen
     "ZMB", // Zambia
     "ZWE", // Zimbabwe
-    "ALA" // Åland Islands
+    "ALA", // Åland Islands
 );
 
 const identifierPattern = /^[a-z0-9]{24}$/;
@@ -334,7 +334,7 @@ const resourceTypes = tuple(
     "onesignal",
     "front",
     "google_maps",
-    "circleci"
+    "circleci",
 );
 
 const groupStatuses = tuple("enabled", "disabled", "deleted", "banned");
@@ -342,6 +342,16 @@ const groupStatuses = tuple("enabled", "disabled", "deleted", "banned");
 const queryStatuses = tuple("enabled", "disabled", "deleted", "banned");
 
 const googleClientTypes = tuple("web", "cli");
+
+const componentOrigins = tuple(
+    "query-engine",
+    "authentication",
+    "authorization",
+    "team-management",
+    "activity-logs",
+    "external-client",
+    "api",
+);
 
 export {
     paginateMaxLimit,
@@ -362,4 +372,5 @@ export {
     groupStatuses,
     queryStatuses,
     googleClientTypes,
+    componentOrigins,
 };
