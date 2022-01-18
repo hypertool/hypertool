@@ -1,0 +1,33 @@
+{
+    "name": "@hypertool/query-engine",
+    "version": "0.0.0",
+    "repository": "https://github.com/hypertool/hypertool",
+    "private": false,
+    "scripts": {
+        "watch": "tsc -w",
+        "build": "tsc",
+        "start": "nodemon --exec \"node ./dist/start.js\"",
+        "test": "mocha --config .mocharc.json ./test",
+        "test:watch": "mocha --config .mocharc.json --watch ./test"
+    },
+    "dependencies": {
+        "axios": "^0.24.0",
+        "cors": "^2.8.5",
+        "dotenv": "^10.0.0",
+        "express": "^4.17.1",
+        "joi": "^17.4.2",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^6.0.12",
+        "mysql": "^2.18.1"
+    },
+    "devDependencies": {
+        "@types/express": "^4.17.13",
+        "@types/mocha": "^9.0.0",
+        "@types/node": "^16.11.7",
+        "mocha": "^9.1.4",
+        "mongodb-memory-server": "^8.2.0",
+        "nodemon": "^2.0.15",
+        "ts-node": "^10.4.0",
+        "typescript": "^4.4.4"
+    }
+}
