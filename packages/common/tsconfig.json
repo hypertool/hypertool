@@ -6,7 +6,9 @@
         "moduleResolution": "node",
         "sourceMap": true,
         "outDir": "dist",
-        "allowJs": true
+        "allowJs": true,
+        "declaration": true,
+        "declarationMap": true
     },
     "include": ["./source/**/*.ts"],
     "lib": ["es2015"]
