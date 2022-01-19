@@ -5,7 +5,10 @@
     "repository": "https://github.com/hypertool/hypertool",
     "private": false,
     "main": "./build/index.js",
-    "scripts": {},
+    "scripts": {
+        "watch": "tsc -w",
+        "build": "tsc"
+    },
     "dependencies": {},
     "peerDependencies": {
         "mongoose": "^6.1.7"
