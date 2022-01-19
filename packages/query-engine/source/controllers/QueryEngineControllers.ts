@@ -1,5 +1,12 @@
 import mysql from "mysql2";
 
+import type {
+    MySQLConfiguration,
+    Resource,
+    Query,
+    QueryRequest,
+} from "../types";
+
 import { constants } from "../utils";
 import { QueryTemplateModel, ResourceModel } from "../models";
 
@@ -7,17 +14,17 @@ const { httpStatuses } = constants;
 
 const attachRoutes = (router: any): void => {
     router.post("/mysql", async (request, response) => {
-        const { name, variables } = request.body;
+        const queryRequest: QueryRequest = request.body;
 
-        const query = await QueryTemplateModel.findOne({
-            name,
+        const query: Query = await QueryTemplateModel.findOne({
+            name: queryRequest.name,
         }).exec();
 
-        const resource = await ResourceModel.findOne({
+        const resource: Resource = await ResourceModel.findOne({
             _id: query.resource,
         }).exec();
 
-        const mySQLConfig = resource.mysql;
+        const mySQLConfig: MySQLConfiguration = resource.mysql;
 
         const connection = mysql.createConnection({
             host: mySQLConfig.host,
@@ -25,12 +32,13 @@ const attachRoutes = (router: any): void => {
             user: mySQLConfig.databaseUserName,
             password: mySQLConfig.databasePassword,
             database: mySQLConfig.databaseName,
-            namedPlaceholders: typeof variables === "object" ? true : false,
+            namedPlaceholders:
+                typeof queryRequest.variables === "object" ? true : false,
         });
 
         connection.execute(
             query.content,
-            variables,
+            queryRequest.variables,
             (error, results, fields) => {
                 if (error) {
                     response.status(httpStatuses.UNAUTHORIZED).json({ error });
