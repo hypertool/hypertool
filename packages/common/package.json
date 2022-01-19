@@ -6,7 +6,9 @@
     "private": false,
     "main": "./build/index.js",
     "scripts": {},
-    "devDependencies": {},
     "dependencies": {},
-    "peerDependencies": {}
+    "peerDependencies": {},
+    "devDependencies": {
+        "typescript": "^4.5.4"
+    }
 }
