@@ -11,7 +11,9 @@
         "test": "mocha --config .mocharc.json ./test",
         "test:watch": "mocha --config .mocharc.json --watch ./test"
     },
-    "dependencies": {},
+    "dependencies": {
+        "iso-language-codes": "^1.1.0"
+    },
     "peerDependencies": {
         "mongoose": "^6.1.7"
     },
