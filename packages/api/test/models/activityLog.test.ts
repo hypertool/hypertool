@@ -1,0 +1,92 @@
+import { beforeEach } from "mocha";
+import { ActivityLogModel } from "../../source/models";
+import { assertThrowsAsync, activityLogs } from "../helper";
+import { assert } from "chai";
+
+describe("ActivityLog Model", function () {
+    let logTemplate = null;
+
+    beforeEach(function () {
+        [logTemplate] = activityLogs;
+    });
+
+    afterEach(function () {
+        logTemplate = null;
+    });
+
+    it("should be created with correct data", async () => {
+        const newLog = new ActivityLogModel({ ...logTemplate });
+        await newLog.save();
+        assert.isFalse(
+            newLog.isNew,
+            "The log should be persisted to the database.",
+        );
+    });
+
+    it("should not be created when message is undefined", async () => {
+        const newLog = new ActivityLogModel({
+            ...logTemplate,
+            message: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newLog.save(),
+            "The message attribute is required.",
+        );
+    });
+
+    it("should not be created when message is null", async () => {
+        const newLog = new ActivityLogModel({
+            ...logTemplate,
+            message: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newLog.save(),
+            "The message attribute is required.",
+        );
+    });
+
+    it("should not be created when message is empty", async () => {
+        const newLog = new ActivityLogModel({
+            ...logTemplate,
+            message: "",
+        });
+
+        await assertThrowsAsync(
+            async () => newLog.save(),
+            "The message attribute is required.",
+        );
+    });
+
+    it("should be created when message length is 1", async () => {
+        const newLog = new ActivityLogModel({
+            ...logTemplate,
+            message: "A",
+        });
+        await newLog.save();
+
+        assert.lengthOf(
+            newLog.message,
+            1,
+            "The message attribute should be of length 1.",
+        );
+    });
+
+    it("should not be created when message is too long", async () => {
+        const newLog = new ActivityLogModel({
+            ...logTemplate,
+            message:
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAA",
+        });
+        await assertThrowsAsync(
+            async () => newLog.save(),
+            "The message attribute should have a maximum of 512 characters.",
+        );
+    });
+});
