@@ -19,7 +19,7 @@
         "joi": "^17.4.2",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^6.0.12",
-        "mysql": "^2.18.1"
+        "mysql2": "^2.3.3"
     },
     "devDependencies": {
         "@types/express": "^4.17.13",
