@@ -2,6 +2,7 @@ import { beforeEach } from "mocha";
 import { ActivityLogModel } from "../../source/models";
 import { assertThrowsAsync, activityLogs } from "../helper";
 import { assert } from "chai";
+import { componentOrigins } from "../../source/utils/constants";
 
 const logTest = () => {
     describe("ActivityLog Model", function () {
@@ -124,6 +125,18 @@ const logTest = () => {
             await assertThrowsAsync(
                 async () => newLog.save(),
                 "The component attribute is required.",
+            );
+        });
+
+        it("should not be created when component is invalid", async () => {
+            const newLog = new ActivityLogModel({
+                ...logTemplate,
+                component: "no-api",
+            });
+
+            await assertThrowsAsync(
+                async () => newLog.save(),
+                "The component attribute is not from defined origins.",
             );
         });
     });
