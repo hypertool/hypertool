@@ -14013,6 +14013,22 @@ mongoose@^6.0.12:
     sift "13.5.2"
     sliced "1.0.1"
 
+mongoose@^6.1.7:
+  version "6.1.7"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-6.1.7.tgz#fc1dfb792e0d2df52aa86064eb1a620d57b1926e"
+  integrity sha512-GqU/G/5yu/CWBHdW24cfGPsW4rADER+eeXj+bwvb6mLjg6uAASl8GnE6pmEbafZJ4Uv9V7jf5LaBMJMNwvQEtg==
+  dependencies:
+    "@types/node" "< 17.0.6"
+    bson "^4.2.2"
+    kareem "2.3.3"
+    mongodb "4.2.2"
+    mpath "0.8.4"
+    mquery "4.0.0"
+    ms "2.1.2"
+    regexp-clone "1.0.0"
+    sift "13.5.2"
+    sliced "1.0.1"
+
 morgan@^1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.10.0.tgz#091778abc1fc47cd3509824653dae1faab6b17d7"
