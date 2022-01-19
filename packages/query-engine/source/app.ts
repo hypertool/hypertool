@@ -1,11 +1,14 @@
+import bodyParser from "body-parser";
 import express from "express";
 import logger from "morgan";
 import cors from "cors";
+
 import { queryEngine } from "./controllers";
 
 const initialize = async () => {
     const app = express();
     app.use(cors());
+    app.use(bodyParser.json());
 
     const router = express.Router();
     queryEngine.attachRoutes(router);
