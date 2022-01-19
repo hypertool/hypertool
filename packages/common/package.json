@@ -6,8 +6,8 @@
     "private": false,
     "main": "./build/index.js",
     "scripts": {
-        "watch": "tsc -w",
-        "build": "tsc",
+        "watch": "tsc --project tsconfig.json -w",
+        "build": "tsc --project tsconfig.json",
         "test": "mocha --config .mocharc.json ./test",
         "test:watch": "mocha --config .mocharc.json --watch ./test"
     },
