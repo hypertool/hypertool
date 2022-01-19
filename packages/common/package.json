@@ -1,0 +1,12 @@
+{
+    "name": "@hypertool/common",
+    "version": "0.0.0",
+    "license": "MIT",
+    "repository": "https://github.com/hypertool/hypertool",
+    "private": false,
+    "main": "./build/index.js",
+    "scripts": {},
+    "devDependencies": {},
+    "dependencies": {},
+    "peerDependencies": {}
+}
