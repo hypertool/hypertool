@@ -139,6 +139,18 @@ const logTest = () => {
                 "The component attribute is not from defined origins.",
             );
         });
+
+        it("should run when context is null", async () => {
+            const newLog = new ActivityLogModel({
+                ...logTemplate,
+                context: null,
+            });
+            await newLog.save();
+            assert.isFalse(
+                newLog.isNew,
+                "The log should be persisted to the database.",
+            );
+        });
     });
 };
 
