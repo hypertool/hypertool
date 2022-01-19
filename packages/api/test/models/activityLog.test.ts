@@ -102,6 +102,18 @@ const logTest = () => {
                 "The component attribute is required.",
             );
         });
+
+        it("should not be created when component is null", async () => {
+            const newLog = new ActivityLogModel({
+                ...logTemplate,
+                component: null,
+            });
+
+            await assertThrowsAsync(
+                async () => newLog.save(),
+                "The component attribute is required.",
+            );
+        });
     });
 };
 
