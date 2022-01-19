@@ -1,41 +1,46 @@
 import mysql from "mysql2";
 
-import type { Document } from "mongoose";
-
 import { constants } from "../utils";
 import { QueryTemplateModel, ResourceModel } from "../models";
 
 const { httpStatuses } = constants;
 
-function toExternal(result) {
-    return {};
-}
-
 const attachRoutes = (router: any): void => {
     router.post("/mysql", async (request, response) => {
-        const { name, variables, format } = request.body;
+        const { name, variables } = request.body;
 
         const query = await QueryTemplateModel.findOne({
             name,
         }).exec();
 
-        const { mysql: mySQLConfig } = await ResourceModel.findOne({
+        const resource = await ResourceModel.findOne({
             _id: query.resource,
         }).exec();
 
+        const mySQLConfig = resource.mysql;
+
         const connection = mysql.createConnection({
-            host: mySQLConfig.host + ":" + mySQLConfig.port,
+            host: mySQLConfig.host,
+            port: mySQLConfig.port,
             user: mySQLConfig.databaseUserName,
             password: mySQLConfig.databasePassword,
             database: mySQLConfig.databaseName,
+            namedPlaceholders: typeof variables === "object" ? true : false,
         });
 
-        connection.connect();
-        console.log(
-            " ✅ Client MySQL database connection successfully established",
+        connection.execute(
+            query.content,
+            variables,
+            (error, results, fields) => {
+                if (error) {
+                    response.status(httpStatuses.UNAUTHORIZED).json({ error });
+                } else {
+                    response.status(httpStatuses.OK).json({ results, fields });
+                }
+            },
         );
 
-        return response.status(httpStatuses.OK).json({ hello: "world" });
+        return response;
     });
 };
 
