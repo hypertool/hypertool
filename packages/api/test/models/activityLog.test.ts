@@ -151,6 +151,18 @@ const logTest = () => {
                 "The log should be persisted to the database.",
             );
         });
+
+        it("should run when context is undefined", async () => {
+            const newLog = new ActivityLogModel({
+                ...logTemplate,
+                context: undefined,
+            });
+            await newLog.save();
+            assert.isFalse(
+                newLog.isNew,
+                "The log should be persisted to the database.",
+            );
+        });
     });
 };
 
