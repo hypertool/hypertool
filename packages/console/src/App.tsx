@@ -12,6 +12,7 @@ import {
     NewResource,
     EditResource,
     SingleApp,
+    AuthenticationServices,
 } from "./screens";
 import { WorkspaceLayout } from "./layouts";
 
@@ -40,6 +41,10 @@ const App: FunctionComponent = (): ReactElement => {
                         element={<EditResource />}
                     />
                     <Route path="/app/:appId" element={<SingleApp />} />
+                    <Route
+                        path="/app/:appId/authentication"
+                        element={<AuthenticationServices />}
+                    />
                 </Route>
                 <Route
                     index={true}
