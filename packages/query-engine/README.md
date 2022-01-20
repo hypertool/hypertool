@@ -1,7 +1,7 @@
 # Hypertool Query Engine
 
-The Hypertool Query Engine package contains the query execuation and retrieval
-micro-service.
+The Hypertool Query Engine package contains the query execution and data
+retrieval micro-service.
 
 ## License
 
