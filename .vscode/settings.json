@@ -8,5 +8,8 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.rulers": [80],
     "editor.formatOnSave": true,
-    "editor.tabSize": 4
+    "editor.tabSize": 4,
+    "[yaml]": {
+        "editor.tabSize": 2
+    }
 }
