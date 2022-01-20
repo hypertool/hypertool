@@ -1,0 +1,43 @@
+name: Tests
+
+on:
+  push:
+    paths:
+      - "package.json"
+      - "packages/**/source/**.ts"
+      - "packages/**/source/**.tsx"
+      - "package/**/test/**.ts"
+      - "packages/**/source/**.jsx"
+      - "packages/**/package.json"
+      - "packages/**/tsconfig.json"
+      - ".github/workflows/**/*.yaml"
+
+jobs:
+  build:
+    name: Test @hypertool/common
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 17.x]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Compile package
+        run: |
+          cd packages/api
+          yarn build
+
+      - name: Execute tests
+        run: |
+          cd packages/api
+          yarn test
