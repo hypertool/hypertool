@@ -17,3 +17,13 @@ const createSchema = joi.object({
         })
         .unknown(true),
 });
+
+const filterSchema = joi.object({
+    page: joi.number().integer().default(0),
+    limit: joi
+        .number()
+        .integer()
+        .min(constants.paginateMinLimit)
+        .max(constants.paginateMaxLimit)
+        .default(constants.paginateMinLimit),
+});
