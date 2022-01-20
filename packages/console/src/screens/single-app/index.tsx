@@ -1,6 +1,9 @@
 import { FunctionComponent, ReactElement } from "react";
 import { styled } from "@mui/material/styles";
-import { Typography, Button } from "@mui/material";
+import { Button } from "@mui/material";
+
+import { useParams } from "react-router";
+import { useNavigate } from "react-router";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -22,9 +25,19 @@ const PrimaryAction = styled(Button)(({ theme }) => ({
 }));
 
 const SingleApp: FunctionComponent = (): ReactElement => {
+    const { appId } = useParams();
+    const navigate = useNavigate();
+    const handleClick = () => {
+        navigate(`/app/${appId}/authentication`);
+    };
+
     return (
         <Root>
-            <PrimaryAction variant="contained" color="primary" size="medium">
+            <PrimaryAction
+                onClick={handleClick}
+                variant="contained"
+                color="primary"
+                size="medium">
                 Authentication Services
             </PrimaryAction>
         </Root>
