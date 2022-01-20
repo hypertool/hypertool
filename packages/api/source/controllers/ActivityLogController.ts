@@ -27,3 +27,18 @@ const filterSchema = joi.object({
         .max(constants.paginateMaxLimit)
         .default(constants.paginateMinLimit),
 });
+
+const toExternal = (
+    activityLog: ActivityLog & Document<ActivityLog>,
+): ExternalActivityLog => {
+    const { _id, id, message, component, context, createdAt, updatedAt } =
+        activityLog;
+    return {
+        id: id || _id.toString(),
+        message,
+        component,
+        context,
+        createdAt,
+        updatedAt,
+    };
+};
