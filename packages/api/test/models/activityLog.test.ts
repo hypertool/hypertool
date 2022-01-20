@@ -89,4 +89,96 @@ describe("ActivityLog Model", function () {
             "The message attribute should have a maximum of 512 characters.",
         );
     });
+
+    it("should not be created when component is undefined", async () => {
+        const newLog = new ActivityLogModel({
+            ...logTemplate,
+            component: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newLog.save(),
+            "The component attribute is required.",
+        );
+    });
+
+    it("should not be created when component is null", async () => {
+        const newLog = new ActivityLogModel({
+            ...logTemplate,
+            component: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newLog.save(),
+            "The component attribute is required.",
+        );
+    });
+
+    it("should not be created when component is empty", async () => {
+        const newLog = new ActivityLogModel({
+            ...logTemplate,
+            component: "",
+        });
+
+        await assertThrowsAsync(
+            async () => newLog.save(),
+            "The component attribute is required.",
+        );
+    });
+
+    it("should not be created when component is invalid", async () => {
+        const newLog = new ActivityLogModel({
+            ...logTemplate,
+            component: "no-api",
+        });
+
+        await assertThrowsAsync(
+            async () => newLog.save(),
+            "The component attribute is not from defined origins.",
+        );
+    });
+
+    it("should be created when context is null", async () => {
+        const newLog = new ActivityLogModel({
+            ...logTemplate,
+            context: null,
+        });
+        await newLog.save();
+        assert.isFalse(
+            newLog.isNew,
+            "The log should be persisted to the database.",
+        );
+    });
+
+    it("should be created when context is undefined", async () => {
+        const newLog = new ActivityLogModel({
+            ...logTemplate,
+            context: undefined,
+        });
+        await newLog.save();
+        assert.isFalse(
+            newLog.isNew,
+            "The log should be persisted to the database.",
+        );
+    });
+
+    it("should be created with a default value for createdAt", async () => {
+        const newLog = new ActivityLogModel({ ...logTemplate });
+        await newLog.save();
+        assert.typeOf(
+            newLog.createdAt,
+            "date",
+            "The createdAt attribute should be assigned by default.",
+        );
+    });
+
+    it("should be created with a default value for updatedAt", async () => {
+        const newLog = new ActivityLogModel({ ...logTemplate });
+        await newLog.save();
+        assert.typeOf(
+            newLog.updatedAt,
+            "date",
+            "The updatedAt attribute should be assigned by default.",
+        );
+    });
 });

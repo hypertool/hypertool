@@ -19,6 +19,10 @@ const activityLogSchema = new Schema(
         context: {
             type: Object,
         },
+        createdAt: {
+            type: Date,
+            immutable: true,
+        },
     },
     {
         timestamps: true,
