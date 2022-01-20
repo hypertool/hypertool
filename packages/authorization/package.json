@@ -7,7 +7,9 @@
         "watch": "tsc -w",
         "start": "node ./build/index.js"
     },
-    "dependencies": {},
+    "dependencies": {
+        "dotenv": "^14.2.0"
+    },
     "devDependencies": {
         "@types/chai": "^4.3.0",
         "@types/mocha": "^9.1.0",
