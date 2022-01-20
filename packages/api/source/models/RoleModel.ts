@@ -9,7 +9,7 @@ const RoleSchema = new Schema(
             minlength: 1,
             maxlength: 512,
         },
-        privildges: [
+        priviledges: [
             {
                 type: String,
                 minlength: 1,
