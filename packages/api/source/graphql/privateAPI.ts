@@ -410,6 +410,8 @@ const typeDefs = gql`
         createRoleModel(name:String!,priviledges:String!):RoleModel!
 
         updateRoleModel(name:String!,priviledges:String!):RoleModel!
+
+        removeRoleModel(name:String!):RemoveResult!
     }
 
     type Query {
@@ -521,6 +523,9 @@ const resolvers = {
 
         updateRoleModel: async (parent, values, context) =>
             role.update(context.request, values.name, values),
+        removeRoleModel: async (parent, values, context) => {
+            role.remove(context.request, values.name);
+        },
     },
     Query: {
         getOrganizations: async (parent, values, context) =>

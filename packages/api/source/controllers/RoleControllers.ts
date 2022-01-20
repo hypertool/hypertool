@@ -113,10 +113,21 @@ const listById = async (context, name: String): Promise<Role> => {
     const app = await RoleModel.findOne(filters as any).exec();
 
     if (!app) {
-        throw new NotFoundError("Cannot find an Role with the specified name.");
+        throw new NotFoundError("Cannot find a Role with the specified name.");
     }
 
     return app;
 };
 
-export { create, update, list, listById };
+const remove = async (context, name: String): Promise<{ success: Boolean }> => {
+    const role = await RoleModel.findOne({ name });
+    if (!role) {
+        throw new NotFoundError("Cannot find a Role with the specified name");
+    }
+
+    await role.remove();
+
+    return { success: true };
+};
+
+export { create, update, list, listById, remove };
