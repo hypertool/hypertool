@@ -4,8 +4,11 @@
     "main": "build/index.js",
     "license": "MIT",
     "scripts": {
-        "watch": "tsc -w",
-        "start": "node ./build/index.js"
+        "watch": "tsc --project tsconfig.json -w",
+        "build": "tsc --project tsconfig.json",
+        "start": "node ./build/index.js",
+        "test": "mocha --config .mocharc.json ./test",
+        "test:watch": "mocha --config .mocharc.json --watch ./test"
     },
     "dependencies": {
         "dotenv": "^14.2.0"
