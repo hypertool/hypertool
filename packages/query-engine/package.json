@@ -25,5 +25,8 @@
     },
     "bugs": {
         "url": "https://github.com/hypertool/hypertool/issues"
+    },
+    "dependencies": {
+        "axios": "^0.25.0"
     }
 }
