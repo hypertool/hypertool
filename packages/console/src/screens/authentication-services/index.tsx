@@ -1,6 +1,5 @@
 import { FunctionComponent, ReactElement } from "react";
 import { styled } from "@mui/material/styles";
-import { Typography, Button } from "@mui/material";
 
 import Authentication from "./Authentication";
 import { AuthenticationServicesType } from "../../types";
@@ -20,17 +19,6 @@ const Root = styled("section")(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     padding: theme.spacing(5),
-}));
-
-const PrimaryAction = styled(Button)(({ theme }) => ({
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    borderRadius: theme.spacing(1),
-    textTransform: "none",
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-        width: 264,
-    },
 }));
 
 const Title = styled("div")(({ theme }) => ({
