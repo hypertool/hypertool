@@ -161,4 +161,16 @@ describe("ActivityLog Model", function () {
             "The log should be persisted to the database.",
         );
     });
+
+    it("should run if createdAt is valid", async () => {
+        const newLog = new ActivityLogModel({ ...logTemplate });
+        await newLog.save();
+        assert.typeOf(newLog.createdAt, "date", "This is a valid date");
+    });
+
+    it("should run if updatedAt is valid", async () => {
+        const newLog = new ActivityLogModel({ ...logTemplate });
+        await newLog.save();
+        assert.typeOf(newLog.updatedAt, "date", "This is a valid date");
+    });
 });
