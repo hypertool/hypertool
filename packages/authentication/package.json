@@ -21,6 +21,7 @@
         "chai": "^4.3.4",
         "eslint": "^8.7.0",
         "mocha": "^9.1.4",
+        "mongodb-memory-server": "^8.2.0",
         "nodemon": "^2.0.15",
         "ts-node": "^10.4.0",
         "typescript": "^4.5.4"
