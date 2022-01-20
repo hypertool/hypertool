@@ -59,4 +59,19 @@ const create = async (context, attributes): Promise<ExternalActivityLog> => {
     return toExternal(newActivityLog);
 };
 
-export { create };
+const getById = async (
+    context,
+    activityLogId: string,
+): Promise<ExternalActivityLog> => {
+    const activityLog = await ActivityLogModel.findById(activityLogId);
+
+    if (!activityLog) {
+        throw new NotFoundError(
+            "Cannot find an activityLog with the specified id.",
+        );
+    }
+
+    return toExternal(activityLog);
+};
+
+export { create, getById };
