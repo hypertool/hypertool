@@ -42,3 +42,21 @@ const toExternal = (
         updatedAt,
     };
 };
+
+const create = async (context, attributes): Promise<ExternalActivityLog> => {
+    const { error, value } = createSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const newActivityLog = new ActivityLogModel({ ...value });
+
+    await newActivityLog.save();
+
+    return toExternal(newActivityLog);
+};
+
+export { create };
