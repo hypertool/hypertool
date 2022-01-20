@@ -9,6 +9,7 @@
     },
     "dependencies": {},
     "devDependencies": {
+        "@types/mocha": "^9.1.0",
         "mocha": "^9.1.4"
     }
 }
