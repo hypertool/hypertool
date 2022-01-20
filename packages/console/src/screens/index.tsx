@@ -6,3 +6,4 @@ export { default as NewResource } from "./new-resource";
 export { default as EditResource } from "./edit-resource";
 export { default as NewOrganization } from "./new-organization";
 export { default as SingleApp } from "./single-app";
+export { default as AuthenticationServices } from "./authentication-services";
