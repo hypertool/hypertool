@@ -1,6 +1,10 @@
 import type { Document } from "mongoose";
 import joi from "joi";
-import type { ActivityLog, ExternalActivityLog, ResourcePage } from "../types";
+import type {
+    ActivityLog,
+    ExternalActivityLog,
+    ActivityLogPage,
+} from "../types";
 import { constants, BadRequestError, NotFoundError } from "../utils";
 import { ActivityLogModel } from "../models";
 const { componentOrigins } = constants;
@@ -74,4 +78,38 @@ const getById = async (
     return toExternal(activityLog);
 };
 
-export { create, getById };
+const list = async (context, parameters): Promise<ActivityLogPage> => {
+    const { error, value } = filterSchema.validate(parameters);
+
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const { page, limit } = value;
+
+    const activityLogs = await (ActivityLogModel as any).paginate(
+        {},
+        {
+            limit,
+            page: page + 1,
+            lean: true,
+            leanWithId: true,
+            pagination: true,
+            sort: {
+                updatedAt: -1,
+            },
+        },
+    );
+
+    return {
+        totalRecords: activityLogs.totalDocs,
+        totalPages: activityLogs.totalPages,
+        previousPage: activityLogs.prevPage ? activityLogs.prevPage - 1 : -1,
+        nextPage: activityLogs.nextPage ? activityLogs.nextPage - 1 : -1,
+        hasPreviousPage: activityLogs.hasPrevPage,
+        hasNextPage: activityLogs.hasNextPage,
+        records: activityLogs.docs.map(toExternal),
+    };
+};
+
+export { create, getById, list };
