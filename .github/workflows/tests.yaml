@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build:
-    name: Test @hypertool/common
+    name: Run unit tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -36,12 +36,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Compile package
-        run: |
-          cd packages/api
-          yarn build
+      - name: Build packages
+        run: yarn build
 
       - name: Execute tests
-        run: |
-          cd packages/api
-          yarn test
+        run: yarn test
