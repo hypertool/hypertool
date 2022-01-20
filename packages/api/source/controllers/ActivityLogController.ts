@@ -1,10 +1,13 @@
 import type { Document } from "mongoose";
+
 import joi from "joi";
+
 import type {
     ActivityLog,
     ExternalActivityLog,
     ActivityLogPage,
 } from "../types";
+
 import { constants, BadRequestError, NotFoundError } from "../utils";
 import { ActivityLogModel } from "../models";
 const { componentOrigins } = constants;
