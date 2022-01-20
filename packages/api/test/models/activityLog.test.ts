@@ -138,7 +138,7 @@ describe("ActivityLog Model", function () {
         );
     });
 
-    it("should run when context is null", async () => {
+    it("should be created when context is null", async () => {
         const newLog = new ActivityLogModel({
             ...logTemplate,
             context: null,
@@ -150,7 +150,7 @@ describe("ActivityLog Model", function () {
         );
     });
 
-    it("should run when context is undefined", async () => {
+    it("should be created when context is undefined", async () => {
         const newLog = new ActivityLogModel({
             ...logTemplate,
             context: undefined,
@@ -162,15 +162,23 @@ describe("ActivityLog Model", function () {
         );
     });
 
-    it("should run if createdAt is valid", async () => {
+    it("should be created with a default value for createdAt", async () => {
         const newLog = new ActivityLogModel({ ...logTemplate });
         await newLog.save();
-        assert.typeOf(newLog.createdAt, "date", "This is a valid date");
+        assert.typeOf(
+            newLog.createdAt,
+            "date",
+            "The createdAt attribute should be assigned by default.",
+        );
     });
 
-    it("should run if updatedAt is valid", async () => {
+    it("should be created with a default value for updatedAt", async () => {
         const newLog = new ActivityLogModel({ ...logTemplate });
         await newLog.save();
-        assert.typeOf(newLog.updatedAt, "date", "This is a valid date");
+        assert.typeOf(
+            newLog.updatedAt,
+            "date",
+            "The updatedAt attribute should be assigned by default.",
+        );
     });
 });
