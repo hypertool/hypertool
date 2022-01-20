@@ -10,7 +10,8 @@
         "cors": "^2.8.5",
         "dotenv": "^14.2.0",
         "express": "^4.17.2",
-        "joi": "^17.5.0"
+        "joi": "^17.5.0",
+        "mongoose": "^6.1.7"
     },
     "devDependencies": {}
 }
