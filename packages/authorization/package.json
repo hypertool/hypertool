@@ -8,5 +8,7 @@
         "start": "node ./build/index.js"
     },
     "dependencies": {},
-    "devDependencies": {}
+    "devDependencies": {
+        "mocha": "^9.1.4"
+    }
 }
