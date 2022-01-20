@@ -1,27 +1,13 @@
 {
     "name": "@hypertool/query-engine",
     "version": "0.0.0",
-    "description": "> TODO: description",
-    "author": "Joel E. Rego <joelerego@gmail.com>",
-    "homepage": "https://github.com/hypertool/hypertool#readme",
-    "license": "ISC",
-    "files": [
-        "lib"
-    ],
-    "publishConfig": {
-        "access": "public"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/hypertool/hypertool.git"
-    },
-    "scripts": {
-        "test": "echo \"Error: run tests from root\" && exit 1"
-    },
-    "bugs": {
-        "url": "https://github.com/hypertool/hypertool/issues"
-    },
+    "repository": "https://github.com/hypertool/hypertool",
+    "private": false,
+    "scripts": {},
     "dependencies": {
-        "axios": "^0.25.0"
-    }
+        "axios": "^0.25.0",
+        "body-parser": "^1.19.1",
+        "cors": "^2.8.5"
+    },
+    "devDependencies": {}
 }
