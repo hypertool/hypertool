@@ -21,5 +21,6 @@ beforeEach(async function () {
 afterEach(async function () {});
 
 after(async function () {
+    await mongoose.connection.close();
     await this.mongo.stop();
 });
