@@ -1,14 +1,15 @@
-import type {
-    MySQLConfiguration,
-    Resource,
-    Query,
-    QueryRequest,
-} from "@hypertool/common";
+import type { MySQLConfiguration, Resource, Query } from "@hypertool/common";
 
 import mysql from "mysql2/promise";
 import { QueryTemplateModel, ResourceModel } from "@hypertool/common";
+import { NextFunction } from "express";
 
-const execute = async (queryRequest: QueryRequest): Promise<any> => {
+import type { ExecuteParameters } from "../types";
+
+const execute = async (
+    queryRequest: ExecuteParameters,
+    next: NextFunction,
+): Promise<any> => {
     const query: Query = await QueryTemplateModel.findOne({
         name: queryRequest.name,
     }).exec();
@@ -37,7 +38,7 @@ const execute = async (queryRequest: QueryRequest): Promise<any> => {
         );
         queryResult = { results, fields };
     } catch (error) {
-        throw error;
+        next(error);
     }
 
     return queryResult;
