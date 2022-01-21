@@ -13,12 +13,16 @@ import {
 
 const createSchema = joi.object({
     name: joi.string().max(512).required(),
-    priviledges: joi.array().items(joi.string().max(512).required()),
+    privileges: joi.array().items(joi.string().max(512).required()),
+    enabled: joi.boolean().required(),
+    description: joi.string().max(512),
 });
 
 const updateSchema = joi.object({
     name: joi.string(),
-    priviledges: joi.array().items(joi.string().max(512)),
+    privileges: joi.array().items(joi.string().max(512)),
+    enabled: joi.boolean(),
+    description: joi.string(),
 });
 
 const filterSchema = joi.object({
@@ -58,20 +62,20 @@ const update = async (context, name, attributes): Promise<Role> => {
         throw new BadRequestError(error.message);
     }
 
-    const app = await RoleModel.findOneAndUpdate(
+    const role = await RoleModel.findOneAndUpdate(
         {
             name,
         },
         value,
     ).exec();
 
-    if (!app) {
+    if (!role) {
         throw new NotFoundError(
             "A Role Model with the specified identifier does not exist.",
         );
     }
 
-    return app;
+    return role;
 };
 
 const list = async (context, parameters): Promise<RolePage> => {
@@ -106,21 +110,17 @@ const list = async (context, parameters): Promise<RolePage> => {
 };
 
 const listById = async (context, name: String): Promise<Role> => {
-    const filters = {
-        name,
-    };
+    const role = await RoleModel.findOne({ name } as any).exec();
 
-    const app = await RoleModel.findOne(filters as any).exec();
-
-    if (!app) {
+    if (!role) {
         throw new NotFoundError("Cannot find a Role with the specified name.");
     }
 
-    return app;
+    return role;
 };
 
 const remove = async (context, name: String): Promise<{ success: Boolean }> => {
-    const role = await RoleModel.findOne({ name });
+    const role = await RoleModel.findOne({ name } as any).exec();
     if (!role) {
         throw new NotFoundError("Cannot find a Role with the specified name");
     }
