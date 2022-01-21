@@ -1,1 +1,1 @@
-export * as queryEngine from "./QueryEngineController";
+export { default as queryEngine } from "./QueryEngineController";
