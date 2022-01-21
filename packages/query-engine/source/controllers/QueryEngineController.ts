@@ -7,13 +7,7 @@ import type {
     QueryRequest,
 } from "@hypertool/common";
 
-import {
-    QueryTemplateModel,
-    ResourceModel,
-    constants,
-} from "@hypertool/common";
-
-const { httpStatuses } = constants;
+import { QueryTemplateModel, ResourceModel } from "@hypertool/common";
 
 const queryEngineController = async (queryRequest: QueryRequest) => {
     const query: Query = await QueryTemplateModel.findOne({
