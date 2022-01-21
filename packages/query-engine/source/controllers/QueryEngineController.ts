@@ -1,5 +1,3 @@
-import mysql from "mysql2";
-
 import type {
     MySQLConfiguration,
     Resource,
@@ -7,6 +5,7 @@ import type {
     QueryRequest,
 } from "@hypertool/common";
 
+import mysql from "mysql2";
 import { QueryTemplateModel, ResourceModel } from "@hypertool/common";
 
 const queryEngineController = async (queryRequest: QueryRequest) => {
