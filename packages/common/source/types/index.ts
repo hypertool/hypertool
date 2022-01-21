@@ -276,9 +276,3 @@ export interface ActivityLog {
     createdAt: Date;
     updatedAt: Date;
 }
-
-export interface QueryRequest {
-    name: string;
-    variables: any;
-    format: string;
-}

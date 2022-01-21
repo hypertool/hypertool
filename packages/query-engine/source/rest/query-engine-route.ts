@@ -1,6 +1,5 @@
-import { constants } from "@hypertool/common";
-
 import type { Router, Request, Response } from "express";
+import { constants } from "@hypertool/common";
 
 import { queryEngine } from "../controllers";
 
