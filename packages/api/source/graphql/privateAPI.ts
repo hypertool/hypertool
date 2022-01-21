@@ -413,6 +413,12 @@ const typeDefs = gql`
         deleteAllStaticQueryTemplates(appId: ID!): RemoveResult!
 
         generateSignedURLs(files: [String!]!): [String!]!
+
+        createActivityLog(
+            message: String!
+            context: Object!
+            component: ComponentOrigin!
+        ): ActivityLog!
     }
 
     type Query {
@@ -514,6 +520,9 @@ const resolvers = {
 
         generateSignedURLs: async (parent, values, context) =>
             deployments.generateSignedURLs(context.request, values.files),
+
+        createActivityLog: async (parent, values, context) =>
+            activityLogs.create(context.request, values),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>
