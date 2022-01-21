@@ -344,12 +344,12 @@ const queryStatuses = tuple("enabled", "disabled", "deleted", "banned");
 const googleClientTypes = tuple("web", "cli");
 
 const componentOrigins = tuple(
-    "query-engine",
+    "query_engine",
     "authentication",
     "authorization",
-    "team-management",
-    "activity-logs",
-    "external-client",
+    "team_management",
+    "activity_logs",
+    "external_client",
     "api",
 );
 
