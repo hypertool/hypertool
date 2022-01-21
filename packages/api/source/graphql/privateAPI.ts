@@ -8,6 +8,7 @@ import {
     resources,
     queryTemplates,
     deployments,
+    activityLogs,
 } from "../controllers";
 import { types } from "./typeDefinitions";
 import { jwtAuth } from "../middleware";
@@ -20,6 +21,7 @@ import {
     appStatuses,
     groupStatuses,
     queryStatuses,
+    componentOrigins,
 } from "../utils/constants";
 
 const typeDefs = gql`
