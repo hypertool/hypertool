@@ -19,6 +19,7 @@
         "mysql2": "^2.3.3"
     },
     "devDependencies": {
+        "@types/chai": "^4.3.0",
         "@types/express": "^4.17.13",
         "@types/mocha": "^9.1.0",
         "@types/node": "^17.0.10",
