@@ -1,5 +1,7 @@
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
+import GraphQLJSON from "graphql-type-json";
+
 import {
     organizations,
     users,
@@ -25,6 +27,9 @@ import {
 } from "../utils/constants";
 
 const typeDefs = gql`
+    scalar GraphQLJSON
+
+
     ${types}
 
     type UserPage {
@@ -273,7 +278,7 @@ const typeDefs = gql`
     type ActivityLog{
         message: String!
         component: ComponentOrigin!
-        context: Object!
+        context:GraphQLJSON
         createdAt: Date!
         updatedAt: Date!
     }
@@ -416,9 +421,9 @@ const typeDefs = gql`
 
         createActivityLog(
             message: String!
-            context: Object!
+            context: GraphQLJSON
             component: ComponentOrigin!
-        ): ActivityLog!
+        ): ActivityLog!    
     }
 
     type Query {
