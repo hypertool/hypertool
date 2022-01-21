@@ -442,6 +442,8 @@ const typeDefs = gql`
         getQueryTemplateByAppId(page: Int, limit: Int, app: ID!): QueryTemplatePage!
         getQueryTemplateById(queryTemplateId: ID!): QueryTemplate!
         getQueryTemplateByName(name: String!): QueryTemplate!
+
+        getActivityLogs(page: Int, limit: Int): ActivityLogPage!
     }
 `;
 
@@ -569,6 +571,9 @@ const resolvers = {
 
         getQueryTemplateByName: async (parent, values, context) =>
             queryTemplates.getByName(context.request, values.name),
+
+        getActivityLogs: async (parent, values, context) =>
+            activityLogs.list(context.request, values),
     },
 };
 
