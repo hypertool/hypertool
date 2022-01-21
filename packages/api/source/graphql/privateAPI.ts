@@ -265,6 +265,29 @@ const typeDefs = gql`
         success: Boolean!
     }
 
+
+    enum ComponentOrigin {
+        ${componentOrigins.join("\n")}
+    }
+
+    type ActivityLog{
+        message: String!
+        component: ComponentOrigin!
+        context: Object!
+        createdAt: Date!
+        updatedAt: Date!
+    }
+
+    type ActivityLogPage {
+        totalRecords: Int!
+        totalPages: Int!
+        previousPage: Int!
+        nextPage: Int!
+        hasPreviousPage: Int!
+        hasNextPage: Int!
+        records: [ActivityLog!]!
+    }
+
     type Mutation {
         createOrganization(
             name: String
