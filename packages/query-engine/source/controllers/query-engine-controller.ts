@@ -5,7 +5,7 @@ import type {
     QueryRequest,
 } from "@hypertool/common";
 
-import mysql from "mysql2";
+import mysql from "mysql2/promise";
 import { QueryTemplateModel, ResourceModel } from "@hypertool/common";
 
 const execute = async (queryRequest: QueryRequest): Promise<any> => {
@@ -19,7 +19,7 @@ const execute = async (queryRequest: QueryRequest): Promise<any> => {
 
     const mySQLConfig: MySQLConfiguration = resource.mysql;
 
-    const connection = mysql.createConnection({
+    const connection = await mysql.createConnection({
         host: mySQLConfig.host,
         port: mySQLConfig.port,
         user: mySQLConfig.databaseUserName,
@@ -30,17 +30,15 @@ const execute = async (queryRequest: QueryRequest): Promise<any> => {
     });
 
     let queryResult: any;
-    connection.execute(
-        query.content,
-        queryRequest.variables,
-        (error, results, fields) => {
-            if (error) {
-                queryResult = { error };
-            } else {
-                queryResult = { results, fields };
-            }
-        },
-    );
+    try {
+        const [results, fields] = await connection.execute(
+            query.content,
+            queryRequest.variables,
+        );
+        queryResult = { results, fields };
+    } catch (error) {
+        throw error;
+    }
 
     return queryResult;
 };
