@@ -9,7 +9,7 @@ const { httpStatuses } = constants;
 const attachRoutes = (router: Router): void => {
     router.post("/queries", async (request: Request, response: Response) => {
         const { body } = request;
-        const result = await queryEngine(body);
+        const result = await queryEngine.execute(body);
         response.status(httpStatuses.OK).json(result);
     });
 };

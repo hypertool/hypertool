@@ -8,7 +8,7 @@ import { initialize } from "./app";
 
 const { PORT, DATABASE_URL } = process.env;
 
-mongoose.set("debug", true);
+mongoose.set("debug", process.env.NODE_ENV !== "production");
 mongoose.connection.once("open", async () => {
     console.log(" ✅ Database connection successfully established");
     const app = await initialize();
