@@ -12,7 +12,7 @@ const initialize = async () => {
 
     const router = express.Router();
     queryEngine.attachRoutes(router);
-    app.use("/query-engine/v1", router);
+    app.use("/api/v1", router);
 
     if (process.env.NODE_ENV !== "production") {
         app.use(logger("dev"));
