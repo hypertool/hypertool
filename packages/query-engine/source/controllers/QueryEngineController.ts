@@ -8,7 +8,7 @@ import type {
 import mysql from "mysql2";
 import { QueryTemplateModel, ResourceModel } from "@hypertool/common";
 
-const queryEngineController = async (queryRequest: QueryRequest) => {
+const execute = async (queryRequest: QueryRequest) => {
     const query: Query = await QueryTemplateModel.findOne({
         name: queryRequest.name,
     }).exec();
@@ -45,4 +45,4 @@ const queryEngineController = async (queryRequest: QueryRequest) => {
     return queryResult;
 };
 
-export default queryEngineController;
+export default execute;
