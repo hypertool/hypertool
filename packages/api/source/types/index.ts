@@ -263,6 +263,8 @@ export interface ExternalQuery {
 export interface Role {
     user: string;
     priviledges: string[];
+    enabled: boolean;
+    description: string;
 }
 
 export type AppPage = ExternalListPage<ExternalApp>;

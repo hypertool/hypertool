@@ -109,8 +109,18 @@ const list = async (context, parameters): Promise<RolePage> => {
     };
 };
 
-const listById = async (context, name: String): Promise<Role> => {
+const getRole = async (context, name: String): Promise<Role> => {
     const role = await RoleModel.findOne({ name } as any).exec();
+
+    if (!role) {
+        throw new NotFoundError("Cannot find a Role with the specified name.");
+    }
+
+    return role;
+};
+
+const listByIds = async (context, names: String[]): Promise<Role[]> => {
+    const role = await RoleModel.find({ name: { $in: names } } as any).exec();
 
     if (!role) {
         throw new NotFoundError("Cannot find a Role with the specified name.");
@@ -130,4 +140,4 @@ const remove = async (context, name: String): Promise<{ success: Boolean }> => {
     return { success: true };
 };
 
-export { create, update, list, listById, remove };
+export { create, update, list, getRole, remove, listByIds };

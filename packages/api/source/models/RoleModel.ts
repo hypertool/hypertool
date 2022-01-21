@@ -9,13 +9,24 @@ const RoleSchema = new Schema(
             minlength: 1,
             maxlength: 512,
         },
-        priviledges: [
+        privileges: [
             {
                 type: String,
                 minlength: 1,
                 maxlength: 512,
             },
         ],
+        enabled: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
+        description: {
+            type: String,
+            default: "",
+            min: 1,
+            max: 512,
+        },
     },
     { timestamps: true },
 );

@@ -203,7 +203,9 @@ const typeDefs = gql`
 
     type RoleModel{
         name:String!
-        priviledges:[String!]
+        privileges:[String!]
+        enabled:Boolean!
+        description:String
     }
 
     type RolePage{
@@ -407,9 +409,9 @@ const typeDefs = gql`
 
         generateSignedURLs(files: [String!]!): [String!]!
 
-        createRoleModel(name:String!,priviledges:String!):RoleModel!
+        createRoleModel(name:String!,privileges:String!,enabled:Boolean!,description:String):RoleModel!
 
-        updateRoleModel(name:String!,priviledges:String!):RoleModel!
+        updateRoleModel(name:String!,privileges:String!,enabled:Boolean,description:String):RoleModel!
 
         removeRoleModel(name:String!):RemoveResult!
     }
@@ -437,7 +439,6 @@ const typeDefs = gql`
         getQueryTemplateByName(name: String!): QueryTemplate!
 
         getRoleModel(page:Int,limit:Int):RolePage!
-        getRoleById(name:String!):Role!
 
     }
 `;
@@ -574,8 +575,6 @@ const resolvers = {
             queryTemplates.getByName(context.request, values.name),
         getRoleModel: async (parent, values, context) =>
             role.list(context.request, values),
-        getRoleById: async (parent, values, context) =>
-            role.listById(context.request, values.name),
     },
 };
 
