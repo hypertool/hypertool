@@ -1,6 +1,7 @@
 name: Tests
 
 on:
+  workflow_dispatch: {}
   push:
     paths:
       - "package.json"
@@ -18,11 +19,11 @@ concurrency:
 
 jobs:
   build:
-    name: Test @hypertool/common
+    name: Run unit tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 17.x]
+        node-version: [14.x, 16.x]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -36,12 +37,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Compile package
-        run: |
-          cd packages/api
-          yarn build
+      - name: Build packages
+        run: yarn build
 
       - name: Execute tests
-        run: |
-          cd packages/api
-          yarn test
+        run: yarn test

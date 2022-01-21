@@ -24,7 +24,7 @@
         "react-dom": "^17.0.2",
         "react-google-login": "^5.2.2",
         "react-router-dom": "6",
-        "react-scripts": "^5.0.0",
+        "react-scripts": "4.0.3",
         "slugify": "^1.6.3",
         "styled-components": "^5.3.3",
         "typescript": "^4.1.2",
@@ -32,10 +32,11 @@
         "yup": "^0.32.11"
     },
     "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "start": "SKIP_PREFLIGHT_CHECK=true react-scripts start",
+        "build": "SKIP_PREFLIGHT_CHECK=true react-scripts build",
+        "test": "SKIP_PREFLIGHT_CHECK=true react-scripts test --watchAll=false --passWithNoTests",
+        "test:watch": "SKIP_PREFLIGHT_CHECK=true react-scripts test --watchAll=true --passWithNoTests",
+        "eject": "SKIP_PREFLIGHT_CHECK=true react-scripts eject"
     },
     "eslintConfig": {
         "extends": [
@@ -53,8 +54,5 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
-    },
-    "devDependencies": {
-        "@types/antlr4": "^4.7.2"
     }
 }

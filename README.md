@@ -14,6 +14,8 @@ tools. This repository includes the following open-source components of Hypertoo
 -   Query Assembler - Compiles queries to provide a safe data access layer
 -   HTX Compiler - Compiles Hypertool XML (HTX) to React components
 
+NOTE: As of now, Node.js 17.x is unsupported.
+
 ## License
 
 The open-source components of Hypertool are available under the [MIT license](https://opensource.org/licenses/MIT).
