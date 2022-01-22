@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-
+import paginate from "mongoose-paginate-v2";
 import type { ActivityLog } from "../types";
 import { componentOrigins } from "../utils/constants";
 
@@ -28,5 +28,7 @@ const activityLogSchema = new Schema(
         timestamps: true,
     },
 );
+
+activityLogSchema.plugin(paginate);
 
 export default model<ActivityLog>("ActivityLog", activityLogSchema);

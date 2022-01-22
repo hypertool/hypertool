@@ -1,5 +1,7 @@
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
+import GraphQLJSON from "graphql-type-json";
+
 import {
     organizations,
     users,
@@ -8,6 +10,7 @@ import {
     resources,
     queryTemplates,
     deployments,
+    activityLogs,
 } from "../controllers";
 import { types } from "./typeDefinitions";
 import { jwtAuth } from "../middleware";
@@ -20,9 +23,12 @@ import {
     appStatuses,
     groupStatuses,
     queryStatuses,
+    componentOrigins,
 } from "../utils/constants";
 
 const typeDefs = gql`
+    scalar GraphQLJSON
+
     ${types}
 
     type UserPage {
@@ -263,6 +269,29 @@ const typeDefs = gql`
         success: Boolean!
     }
 
+    enum ComponentOrigin {
+        ${componentOrigins.join("\n")}
+    }
+
+    type ActivityLog {
+        id: ID!
+        message: String!
+        component: ComponentOrigin!
+        context: GraphQLJSON
+        createdAt: Date!
+        updatedAt: Date!
+    }
+
+    type ActivityLogPage {
+        totalRecords: Int!
+        totalPages: Int!
+        previousPage: Int!
+        nextPage: Int!
+        hasPreviousPage: Int!
+        hasNextPage: Int!
+        records: [ActivityLog!]!
+    }
+
     type Mutation {
         createOrganization(
             name: String
@@ -388,6 +417,12 @@ const typeDefs = gql`
         deleteAllStaticQueryTemplates(appId: ID!): RemoveResult!
 
         generateSignedURLs(files: [String!]!): [String!]!
+
+        createActivityLog(
+            message: String!
+            context: GraphQLJSON
+            component: ComponentOrigin!
+        ): ActivityLog!    
     }
 
     type Query {
@@ -411,6 +446,9 @@ const typeDefs = gql`
         getQueryTemplateByAppId(page: Int, limit: Int, app: ID!): QueryTemplatePage!
         getQueryTemplateById(queryTemplateId: ID!): QueryTemplate!
         getQueryTemplateByName(name: String!): QueryTemplate!
+
+        getActivityLogs(page: Int, limit: Int): ActivityLogPage!
+        getActivityLogById(activityLogId: ID!): ActivityLog!
     }
 `;
 
@@ -489,6 +527,9 @@ const resolvers = {
 
         generateSignedURLs: async (parent, values, context) =>
             deployments.generateSignedURLs(context.request, values.files),
+
+        createActivityLog: async (parent, values, context) =>
+            activityLogs.create(context.request, values),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>
@@ -535,6 +576,12 @@ const resolvers = {
 
         getQueryTemplateByName: async (parent, values, context) =>
             queryTemplates.getByName(context.request, values.name),
+
+        getActivityLogs: async (parent, values, context) =>
+            activityLogs.list(context.request, values),
+
+        getActivityLogById: async (parent, values, context) =>
+            activityLogs.getById(context.request, values.activityLogId),
     },
 };
 

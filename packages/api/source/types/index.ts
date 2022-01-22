@@ -276,3 +276,14 @@ export interface ActivityLog {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface ExternalActivityLog {
+    id: string;
+    component: typeof componentOrigins[number];
+    context: Context;
+    message: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export type ActivityLogPage = ExternalListPage<ExternalActivityLog>;
