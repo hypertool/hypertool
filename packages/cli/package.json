@@ -1,12 +1,15 @@
 {
     "name": "@hypertool/cli",
     "version": "0.1.0",
-    "main": "index.js",
+    "main": "./build/source/index.js",
+    "bin": {
+        "hypertool": "./bin/hypertool"
+    },
     "license": "MIT",
     "scripts": {
         "watch": "tsc --project tsconfig.json -w",
         "build": "tsc --project tsconfig.json",
-        "start": "node ./build/index.js"
+        "start": "node ./build/source/index.js"
     },
     "dependencies": {
         "@apollo/client": "^3.5.6",
