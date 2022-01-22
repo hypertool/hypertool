@@ -30,4 +30,5 @@ const activityLogSchema = new Schema(
 );
 
 activityLogSchema.plugin(paginate);
+
 export default model<ActivityLog>("ActivityLog", activityLogSchema);

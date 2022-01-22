@@ -29,7 +29,6 @@ import {
 const typeDefs = gql`
     scalar GraphQLJSON
 
-
     ${types}
 
     type UserPage {
@@ -270,15 +269,15 @@ const typeDefs = gql`
         success: Boolean!
     }
 
-
     enum ComponentOrigin {
         ${componentOrigins.join("\n")}
     }
 
-    type ActivityLog{
+    type ActivityLog {
+        id: ID!
         message: String!
         component: ComponentOrigin!
-        context:GraphQLJSON
+        context: GraphQLJSON
         createdAt: Date!
         updatedAt: Date!
     }
