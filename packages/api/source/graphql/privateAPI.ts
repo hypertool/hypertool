@@ -15,7 +15,9 @@ import {
 import { types } from "./typeDefinitions";
 import { jwtAuth } from "../middleware";
 
-import {
+import { constants } from "@hypertool/common";
+
+const {
     resourceTypes,
     resourceStatuses,
     organizationStatuses,
@@ -24,7 +26,7 @@ import {
     groupStatuses,
     queryStatuses,
     componentOrigins,
-} from "../utils/constants";
+} = constants;
 
 const typeDefs = gql`
     scalar GraphQLJSON
