@@ -1,0 +1,6 @@
+{
+    "require": ["ts-node/register"],
+    "watch-files": ["./test/**/*.ts"],
+    "extension": ["ts"],
+    "recursive": true
+}
