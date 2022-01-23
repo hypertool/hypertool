@@ -6,17 +6,16 @@ import type {
     ActivityLog,
     ExternalActivityLog,
     ActivityLogPage,
-} from "../types";
+} from "@hypertool/common";
 
-import { constants, BadRequestError, NotFoundError } from "../utils";
-import { ActivityLogModel } from "../models";
-const { componentOrigins } = constants;
+import { constants, BadRequestError, NotFoundError } from "@hypertool/common";
+import { ActivityLogModel } from "@hypertool/common";
 
 const createSchema = joi.object({
     message: joi.string().max(512).min(1).required(),
     component: joi
         .string()
-        .valid(...componentOrigins)
+        .valid(...constants.componentOrigins)
         .required(),
     context: joi
         .object({
