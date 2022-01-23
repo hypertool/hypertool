@@ -1,5 +1,10 @@
 import fetch from "cross-fetch";
-import { gql, ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
+import {
+    gql,
+    ApolloClient,
+    InMemoryCache,
+    HttpLink,
+} from "@apollo/client/core";
 import { setContext } from "@apollo/client/link/context";
 import chalk from "chalk";
 import fs from "fs-extra";
