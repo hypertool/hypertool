@@ -1,15 +1,26 @@
 {
     "name": "@hypertool/cli",
-    "version": "0.1.0",
+    "license": "MIT",
+    "private": false,
+    "version": "0.1.1",
     "main": "./build/source/index.js",
     "bin": {
         "hypertool": "./bin/hypertool"
     },
-    "license": "MIT",
+    "files": [
+        "bin/**/**",
+        "build/**/*",
+        "public/**/*",
+        "package.json",
+        "README.md"
+    ],
     "scripts": {
-        "watch": "tsc --project tsconfig.json -w",
-        "build": "tsc --project tsconfig.json",
-        "start": "node ./build/source/index.js"
+        "clean": "rm -rf build ",
+        "watch": "yarn clean && tsc --project tsconfig.json -w",
+        "build": "yarn clean && tsc --project tsconfig.json",
+        "start": "node ./build/source/index.js",
+        "local": "yarn build && npm link",
+        "push": "yarn build && yarn publish --access public"
     },
     "dependencies": {
         "@apollo/client": "^3.5.6",
