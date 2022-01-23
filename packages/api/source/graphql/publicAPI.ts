@@ -2,7 +2,8 @@ import { ApolloServer, gql } from "apollo-server-express";
 
 import { types } from "./typeDefinitions";
 import { users } from "../controllers";
-import { googleClientTypes } from "../utils/constants";
+import { constants } from "@hypertool/common";
+const { googleClientTypes } = constants;
 
 const typeDefs = gql`
     ${types}
