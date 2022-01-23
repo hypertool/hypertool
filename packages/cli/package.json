@@ -1,11 +1,26 @@
 {
     "name": "@hypertool/cli",
-    "version": "0.0.0",
-    "main": "index.js",
     "license": "MIT",
+    "private": false,
+    "version": "0.1.2",
+    "main": "./build/source/index.js",
+    "bin": {
+        "hypertool": "./bin/hypertool"
+    },
+    "files": [
+        "bin/**/**",
+        "build/**/*",
+        "public/**/*",
+        "package.json",
+        "README.md"
+    ],
     "scripts": {
-        "watch": "tsc -w",
-        "start": "node ./build/index.js"
+        "clean": "rm -rf build ",
+        "watch": "yarn clean && tsc --project tsconfig.json -w",
+        "build": "yarn clean && tsc --project tsconfig.json",
+        "start": "node ./build/source/index.js",
+        "local": "yarn build && npm link",
+        "push": "yarn build && yarn publish --access public"
     },
     "dependencies": {
         "@apollo/client": "^3.5.6",
@@ -46,9 +61,11 @@
         "webpack-dev-server": "^4.6.0"
     },
     "devDependencies": {
+        "@types/case-sensitive-paths-webpack-plugin": "^2.1.6",
         "@types/fs-extra": "^9.0.13",
         "@types/js-yaml": "^4.0.5",
         "@types/listr": "^0.14.4",
+        "@types/loader-utils": "^2.0.3",
         "@types/lodash": "^4.14.178",
         "@types/mini-css-extract-plugin": "^2.4.0",
         "@types/node": "^16.11.11",

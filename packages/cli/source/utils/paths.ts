@@ -98,6 +98,8 @@ export const PACKAGE_DESCRIPTOR = path.join(APP_DIRECTORY, "package.json");
 
 export const DOT_ENV = path.join(APP_DIRECTORY, ".env");
 
+// TODO: Create a function to initialize path constants.
+
 /* We use `PUBLIC_URL` environment variable or "homepage" field to infer
  * "public path" at which the app is served.
  * Webpack needs to know it to put the right `<script>` hrefs into HTML even in
@@ -109,7 +111,9 @@ export const DOT_ENV = path.join(APP_DIRECTORY, ".env");
 export const PUBLIC_URL_OR_PATH = getPublicUrlOrPath(
     process.env.NODE_ENV === "development",
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require(PACKAGE_DESCRIPTOR).homepage,
+    (fs.existsSync(PACKAGE_DESCRIPTOR) &&
+        require(PACKAGE_DESCRIPTOR).homepage) ??
+        "",
     process.env.PUBLIC_URL,
 );
 

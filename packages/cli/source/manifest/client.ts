@@ -1,6 +1,6 @@
-import type { ApolloClient } from "@apollo/client";
+import type { ApolloClient } from "@apollo/client/core";
 
-import { gql, ApolloError } from "@apollo/client";
+import { gql, ApolloError } from "@apollo/client/core";
 import lodash from "lodash";
 
 import type { Manifest, App, Query as QueryTemplate, Resource } from "../types";
