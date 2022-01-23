@@ -6,9 +6,6 @@
     "author": "Hypertool <contact@hypertool.io>",
     "license": "MIT",
     "private": true,
-    "workspaces": [
-        "packages/*"
-    ],
     "scripts": {
         "format": "prettier --write .",
         "build": "lerna run build",
