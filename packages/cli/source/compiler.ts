@@ -171,6 +171,12 @@ export const prepare = (
         module: {
             strictExportPresence: true,
             rules: [
+                sourceMap && {
+                    enforce: "pre",
+                    exclude: /@babel(?:\/|\\{1,2})runtime/,
+                    test: /\.(js|mjs|jsx|ts|tsx|css)$/,
+                    loader: require.resolve("source-map-loader"),
+                },
                 {
                     oneOf: [
                         /* "url" loader works like "file" loader except that it embeds assets
@@ -291,7 +297,7 @@ export const prepare = (
                         },
                     ],
                 },
-            ],
+            ].filter(truthy) as any,
         },
         plugins: [
             new DefineHypertoolPlugin(),
