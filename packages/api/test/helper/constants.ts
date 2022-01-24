@@ -19,4 +19,14 @@ const activityLogs = [
     },
 ];
 
-export { activityLogs };
+const appData = {
+    name: "xyz",
+    title: "xyz",
+    slug: "xyz",
+    description: "xyz",
+    authServices: {
+        googleAuth: {},
+    },
+};
+
+export { activityLogs, appData };
