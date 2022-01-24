@@ -15,7 +15,9 @@
         "jsx": "react",
         "rootDir": "source",
         "noImplicitReturns": true,
-        "noImplicitThis": true
+        "noImplicitThis": true,
+        "declaration": true,
+        "declarationMap": true
     },
     "include": ["source"]
 }
