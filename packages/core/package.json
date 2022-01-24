@@ -5,6 +5,7 @@
     "version": "0.1.0",
     "repository": "https://github.com/hypertool/hypertool",
     "main": "./build/source/index.js",
+    "types": "./build/source/index.d.ts",
     "files": [
         "build/**/*",
         "package.json",
