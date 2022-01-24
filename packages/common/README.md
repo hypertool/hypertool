@@ -8,10 +8,10 @@ utilities, and other constructs that are used by all the other packages.
 The `@hypertool/common` package can be installed using NPM and Yarn. The `mongoose` package is a peer dependency.
 
 ```
-yarn install @hypertool/common mongoose
+yarn add @hypertool/common mongoose
 ```
 
-If you using `@hypertool/common` as a dependency in a hypertool microservice,
+If you using `@hypertool/common` as a dependency in a Hypertool package,
 you should use yarn workspaces to install the package.
 
 ```

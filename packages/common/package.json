@@ -5,9 +5,18 @@
     "repository": "https://github.com/hypertool/hypertool",
     "private": false,
     "main": "./dist/index.js",
+    "files": [
+        "dist/**/*",
+        "package.json",
+        "README.md"
+    ],
     "scripts": {
-        "watch": "tsc --project tsconfig.json -w",
-        "build": "tsc --project tsconfig.json",
+        "clean": "rm -rf dist",
+        "watch": "yarn clean && tsc --project tsconfig.json -w",
+        "build": "yarn clean && tsc --project tsconfig.json",
+        "start": "node ./dist/source/index.js",
+        "local": "yarn build && npm link",
+        "push": "yarn build && yarn publish --access public",
         "test": "mocha --config .mocharc.json ./test",
         "test:watch": "mocha --config .mocharc.json --watch ./test"
     },
