@@ -1,6 +1,6 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { lazy } from "react";
+import React from "react";
 
 export interface Props {
     path: string;
@@ -8,7 +8,7 @@ export interface Props {
 
 const Instantiate: FunctionComponent<Props> = (props: Props): ReactElement => {
     const { path } = props;
-    const Component = lazy(() => import("../../" + path.substr(7)));
+    const Component = React.lazy(() => import("../../" + path.substr(7)));
     return <Component />;
 };
 
