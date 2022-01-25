@@ -2,7 +2,7 @@
     "name": "@hypertool/core",
     "license": "MIT",
     "private": false,
-    "version": "0.1.0",
+    "version": "0.1.1",
     "repository": "https://github.com/hypertool/hypertool",
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
