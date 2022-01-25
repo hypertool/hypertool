@@ -42,7 +42,7 @@ export const prepare = (
         environment,
     );
     /* Source map is always enabled in development. */
-    const sourceMap = production ? enableSourceMap : development;
+    const sourceMap = true; // production ? enableSourceMap : development;
 
     /* PostCSS loader applies autoprefixer to our CSS.
      * CSS loader resolves paths in CSS and adds assets as dependencies.
@@ -127,6 +127,7 @@ export const prepare = (
     };
 
     return {
+        devtool: "source-map",
         mode: production ? "production" : "development",
         /* Stop compilation early when building for production. */
         bail: production,
@@ -174,7 +175,7 @@ export const prepare = (
                 sourceMap && {
                     enforce: "pre",
                     exclude: /@babel(?:\/|\\{1,2})runtime/,
-                    test: /\.(js|mjs|jsx|ts|tsx|css)$/,
+                    test: /\.(js|mjs|jsx|ts|tsx|css)\.map$/,
                     loader: require.resolve("source-map-loader"),
                 },
                 {
@@ -225,7 +226,7 @@ export const prepare = (
                             },
                         },
                         {
-                            test: /\.(js|ts|tsx|jsx)$/,
+                            test: /\.(js|mjs|ts|tsx|jsx)$/,
                             include: paths.APP_SOURCE_DIRECTORY,
                             loader: require.resolve("babel-loader"),
                             options: {
@@ -251,6 +252,35 @@ export const prepare = (
                                 cacheDirectory: true,
                                 cacheCompression: false,
                                 compact: production,
+                            },
+                        },
+
+                        // Process any JS outside of the app with Babel.
+                        // Unlike the application JS, we only compile the standard ES features.
+                        {
+                            test: /\.(js|mjs)$/,
+                            exclude: /@babel(?:\/|\\{1,2})runtime/,
+                            loader: require.resolve("babel-loader"),
+                            options: {
+                                babelrc: false,
+                                configFile: false,
+                                compact: false,
+                                presets: [
+                                    [
+                                        require.resolve(
+                                            "babel-preset-react-app/dependencies",
+                                        ),
+                                        { helpers: true },
+                                    ],
+                                ],
+                                cacheDirectory: true,
+                                // See #6846 for context on why cacheCompression is disabled
+                                cacheCompression: false,
+                                // Babel sourcemaps are needed for debugging into node_modules
+                                // code.  Without the options below, debuggers like VSCode
+                                // show incorrect code and set breakpoints on the wrong lines.
+                                sourceMaps: sourceMap,
+                                inputSourceMap: sourceMap,
                             },
                         },
                         /* In Hypertool, when a .css file is imported, it is
@@ -295,6 +325,27 @@ export const prepare = (
                              */
                             sideEffects: true,
                         },
+
+                        // "file" loader makes sure those assets get served by WebpackDevServer.
+                        // When you `import` an asset, you get its (virtual) filename.
+                        // In production, they would get copied to the `build` folder.
+                        // This loader doesn't use a "test" so it will catch all modules
+                        // that fall through the other loaders.
+                        {
+                            // Exclude `js` files to keep "css" loader working as it injects
+                            // its runtime that would otherwise be processed through "file" loader.
+                            // Also exclude `html` and `json` extensions so they get processed
+                            // by webpacks internal loaders.
+                            exclude: [
+                                /^$/,
+                                /\.(js|mjs|jsx)$/,
+                                /\.html$/,
+                                /\.json$/,
+                            ],
+                            type: "asset/resource",
+                        },
+                        // ** STOP ** Are you adding a new loader?
+                        // Make sure to add the new loader(s) before the "file" loader.
                     ],
                 },
             ].filter(truthy) as any,
