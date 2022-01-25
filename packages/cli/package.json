@@ -2,7 +2,7 @@
     "name": "@hypertool/cli",
     "license": "MIT",
     "private": false,
-    "version": "0.1.2",
+    "version": "0.2.0",
     "main": "./build/source/index.js",
     "bin": {
         "hypertool": "./bin/hypertool"
