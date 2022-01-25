@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactElement, ReactNode } from "react";
+import type { FunctionComponent, ReactElement } from "react";
 
 import React, { Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -13,7 +13,7 @@ export interface Props {
     };
     resolver: (path: string) => Promise<any>;
     layouts?: {
-        [key: string]: (element: ReactElement) => ReactNode;
+        [key: string]: (element: ReactElement) => ReactElement;
     };
 }
 
