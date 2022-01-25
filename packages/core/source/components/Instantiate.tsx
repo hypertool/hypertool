@@ -8,7 +8,10 @@ export interface Props {
 
 const Instantiate: FunctionComponent<Props> = (props: Props): ReactElement => {
     const { path } = props;
-    const Component = React.lazy(() => import("../../" + path.substr(7)));
+    // Traversing from `node_modules/@hypertool/core/build/components`
+    const actualPath = "../../../../../" + path;
+    console.log("Resolving " + actualPath);
+    const Component = React.lazy(() => import(actualPath));
     return <Component />;
 };
 
