@@ -1,20 +1,19 @@
 import type { Document } from "mongoose";
-
-import joi from "joi";
-
 import type {
     Organization,
     ExternalOrganization,
     OrganizationPage,
-} from "../types";
+} from "@hypertool/common";
+
+import joi from "joi";
 
 import {
     constants,
     BadRequestError,
     NotFoundError,
     extractIds,
-} from "../utils";
-import { OrganizationModel } from "../models";
+    OrganizationModel,
+} from "@hypertool/common";
 
 const createSchema = joi.object({
     name: joi.string().max(256).allow(""),
@@ -39,7 +38,7 @@ const updateSchema = joi.object({
 });
 
 const toExternal = (
-    organization: Organization & Document<Organization>
+    organization: Organization & Document<Organization>,
 ): ExternalOrganization => {
     const { id, _id, name, description, users, status, createdAt, updatedAt } =
         organization;
@@ -110,7 +109,7 @@ const list = async (context, parameters): Promise<OrganizationPage> => {
 
 const listByIds = async (
     context,
-    organizationIds: string[]
+    organizationIds: string[],
 ): Promise<ExternalOrganization[]> => {
     const unorderedOrganizations = await OrganizationModel.find({
         _id: { $in: organizationIds },
@@ -127,11 +126,11 @@ const listByIds = async (
 
 const getById = async (
     context,
-    organizationId: string
+    organizationId: string,
 ): Promise<ExternalOrganization> => {
     if (!constants.identifierPattern.test(organizationId)) {
         throw new BadRequestError(
-            "The specified organization identifier is invalid."
+            "The specified organization identifier is invalid.",
         );
     }
 
@@ -144,7 +143,7 @@ const getById = async (
     /* We return a 404 error, if we did not find the group. */
     if (!group) {
         throw new NotFoundError(
-            "Cannot find an organization with the specified identifier."
+            "Cannot find an organization with the specified identifier.",
         );
     }
 
@@ -154,11 +153,11 @@ const getById = async (
 const update = async (
     context,
     organizationId: string,
-    attributes
+    attributes,
 ): Promise<ExternalOrganization> => {
     if (!constants.identifierPattern.test(organizationId)) {
         throw new BadRequestError(
-            "The specified organization identifier is invalid."
+            "The specified organization identifier is invalid.",
         );
     }
 
@@ -179,12 +178,12 @@ const update = async (
         {
             new: true,
             lean: true,
-        }
+        },
     ).exec();
 
     if (!organization) {
         throw new NotFoundError(
-            "An organization with the specified identifier does not exist."
+            "An organization with the specified identifier does not exist.",
         );
     }
 
@@ -193,11 +192,11 @@ const update = async (
 
 const remove = async (
     context,
-    organizationId: string
+    organizationId: string,
 ): Promise<{ success: boolean }> => {
     if (!constants.identifierPattern.test(organizationId)) {
         throw new BadRequestError(
-            "The specified organization identifier is invalid."
+            "The specified organization identifier is invalid.",
         );
     }
 
@@ -213,12 +212,12 @@ const remove = async (
         {
             new: true,
             lean: true,
-        }
+        },
     );
 
     if (!organization) {
         throw new NotFoundError(
-            "An organization with the specified identifier does not exist."
+            "An organization with the specified identifier does not exist.",
         );
     }
 
