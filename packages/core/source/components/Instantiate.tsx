@@ -25,9 +25,8 @@ const Instantiate: FunctionComponent<Props> = (props: Props): ReactElement => {
         let mounted = true;
         (async () => {
             const result = await resolver(path);
-            console.log(result);
             if (mounted) {
-                setTarget(result as unknown as Screen);
+                setTarget(result.default as unknown as Screen);
             }
         })();
 
