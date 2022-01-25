@@ -224,6 +224,4 @@ const main = (): void => {
     program.parse(process.argv);
 };
 
-main();
-
 export { main };
