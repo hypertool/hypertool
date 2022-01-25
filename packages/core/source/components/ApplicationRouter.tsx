@@ -6,9 +6,18 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import type { Hypertool, Route as HypertoolRoute } from "../types";
 
 import Instantiate from "./Instantiate";
-import { Error404 } from "../screens";
 
-const ApplicationRouter: FunctionComponent = (): ReactElement => {
+export interface Props {
+    screens: {
+        error404: string;
+    };
+}
+
+const ApplicationRouter: FunctionComponent<Props> = (
+    props: Props,
+): ReactElement => {
+    const { screens } = props;
+
     const renderRoute = (route: HypertoolRoute) => {
         const { uri, path } = route;
         const sanitizedUri = uri.replace("@", ":");
@@ -32,12 +41,21 @@ const ApplicationRouter: FunctionComponent = (): ReactElement => {
             <BrowserRouter>
                 <Routes>
                     {renderRoutes()}
-                    <Route path="/error/404" element={<Error404 />} />
-                    <Route path="*" element={<Navigate to="/error/404" />} />
+                    <Route
+                        path="*"
+                        element={<Navigate to={screens.error404} />}
+                    />
                 </Routes>
             </BrowserRouter>
         </Suspense>
     );
+};
+
+ApplicationRouter.defaultProps = {
+    screens: {
+        error404: "/error/404",
+        error500: "/error/500",
+    },
 };
 
 export default ApplicationRouter;
