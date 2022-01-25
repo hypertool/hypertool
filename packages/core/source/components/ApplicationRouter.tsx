@@ -13,8 +13,6 @@ const ApplicationRouter: FunctionComponent = (): ReactElement => {
         const { uri, path } = route;
         const sanitizedUri = uri.replace("@", ":");
 
-        console.log(route, sanitizedUri);
-
         return (
             <Route
                 key={uri}
@@ -26,7 +24,6 @@ const ApplicationRouter: FunctionComponent = (): ReactElement => {
 
     const renderRoutes = () => {
         const hypertool = (window as any).hypertool as Hypertool;
-        console.log(hypertool);
         return hypertool.routes.map(renderRoute);
     };
 
