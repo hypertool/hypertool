@@ -2,7 +2,6 @@ import type { Document } from "mongoose";
 import type { Group, GroupPage, ExternalGroup } from "@hypertool/common";
 
 import joi from "joi";
-
 import {
     constants,
     BadRequestError,
