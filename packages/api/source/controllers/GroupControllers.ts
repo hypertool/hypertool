@@ -1,16 +1,15 @@
 import type { Document } from "mongoose";
+import type { Group, GroupPage, ExternalGroup } from "@hypertool/common";
 
 import joi from "joi";
-
-import type { Group, GroupPage, ExternalGroup } from "../types";
 
 import {
     constants,
     BadRequestError,
     NotFoundError,
     extractIds,
-} from "../utils";
-import { GroupModel } from "../models";
+    GroupModel,
+} from "@hypertool/common";
 
 const createSchema = joi.object({
     name: joi.string().max(256).allow(""),
@@ -119,7 +118,7 @@ const list = async (context, parameters): Promise<GroupPage> => {
 
 const listByIds = async (
     context,
-    groupIds: string[]
+    groupIds: string[],
 ): Promise<ExternalGroup[]> => {
     const unorderedGroups = await GroupModel.find({
         _id: { $in: groupIds },
@@ -148,7 +147,7 @@ const getById = async (context, groupId: string): Promise<ExternalGroup> => {
     /* We return a 404 error, if we did not find the group. */
     if (!group) {
         throw new NotFoundError(
-            "Cannot find a group with the specified identifier."
+            "Cannot find a group with the specified identifier.",
         );
     }
 
@@ -158,7 +157,7 @@ const getById = async (context, groupId: string): Promise<ExternalGroup> => {
 const update = async (
     context,
     groupId: string,
-    attributes
+    attributes,
 ): Promise<ExternalGroup> => {
     if (!constants.identifierPattern.test(groupId)) {
         throw new BadRequestError("The specified group identifier is invalid.");
@@ -180,12 +179,12 @@ const update = async (
         {
             new: true,
             lean: true,
-        }
+        },
     ).exec();
 
     if (!group) {
         throw new NotFoundError(
-            "A group with the specified identifier does not exist."
+            "A group with the specified identifier does not exist.",
         );
     }
 
@@ -194,7 +193,7 @@ const update = async (
 
 const remove = async (
     context,
-    groupId: string
+    groupId: string,
 ): Promise<{ success: boolean }> => {
     if (!constants.identifierPattern.test(groupId)) {
         throw new BadRequestError("The specified group identifier is invalid.");
@@ -212,12 +211,12 @@ const remove = async (
         {
             new: true,
             lean: true,
-        }
+        },
     );
 
     if (!group) {
         throw new NotFoundError(
-            "A group with the specified identifier does not exist."
+            "A group with the specified identifier does not exist.",
         );
     }
 
