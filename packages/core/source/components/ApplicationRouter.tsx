@@ -54,7 +54,6 @@ const ApplicationRouter: FunctionComponent<Props> = (
 ApplicationRouter.defaultProps = {
     screens: {
         error404: "/error/404",
-        error500: "/error/500",
     },
 };
 
