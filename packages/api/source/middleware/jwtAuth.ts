@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-import { UserModel } from "../models";
-import { constants } from "../utils";
+import { UserModel, constants } from "@hypertool/common";
 
 const jwtAuth = async (
     request: Request,
     response: Response,
-    next: NextFunction
+    next: NextFunction,
 ) => {
     const { authorization } = request.headers;
     if (!authorization) {
@@ -22,7 +21,7 @@ const jwtAuth = async (
     try {
         const { emailAddress } = jwt.verify(
             token,
-            process.env.JWT_SIGNATURE_KEY
+            process.env.JWT_SIGNATURE_KEY,
         );
         const user = await UserModel.findOne({
             emailAddress,

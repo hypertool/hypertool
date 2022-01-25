@@ -1,11 +1,17 @@
 import type { Document } from "mongoose";
+import type {
+    Resource,
+    ExternalResource,
+    ResourcePage,
+} from "@hypertool/common";
 
 import joi from "joi";
-
-import type { Resource, ExternalResource, ResourcePage } from "../types";
-
-import { constants, BadRequestError, NotFoundError } from "../utils";
-import { ResourceModel } from "../models";
+import {
+    constants,
+    BadRequestError,
+    NotFoundError,
+    ResourceModel,
+} from "@hypertool/common";
 
 // TODO: Add limits to database configurations!
 const createSchema = joi.object({
@@ -87,7 +93,7 @@ const updateSchema = joi.object({
 });
 
 const toExternal = (
-    resource: Resource & Document<Resource>
+    resource: Resource & Document<Resource>,
 ): ExternalResource => {
     const { id, _id, name, description, type, status, createdAt, updatedAt } =
         resource;
@@ -197,7 +203,7 @@ const list = async (context, parameters): Promise<ResourcePage> => {
 
 const listByIds = async (
     context,
-    resourceIds: string[]
+    resourceIds: string[],
 ): Promise<ExternalResource[]> => {
     const unorderedResources = await ResourceModel.find({
         _id: { $in: resourceIds },
@@ -214,11 +220,11 @@ const listByIds = async (
 
 const getById = async (
     context,
-    resourceId: string
+    resourceId: string,
 ): Promise<ExternalResource> => {
     if (!constants.identifierPattern.test(resourceId)) {
         throw new BadRequestError(
-            "The specified resource identifier is invalid."
+            "The specified resource identifier is invalid.",
         );
     }
 
@@ -232,7 +238,7 @@ const getById = async (
     /* We return a 404 error, if we did not find the resource. */
     if (!resource) {
         throw new NotFoundError(
-            "Cannot find a resource with the specified identifier."
+            "Cannot find a resource with the specified identifier.",
         );
     }
 
@@ -254,7 +260,7 @@ const getByName = async (context, name: string): Promise<ExternalResource> => {
     /* We return a 404 error, if we did not find the resource. */
     if (!resource) {
         throw new NotFoundError(
-            "Cannot find a resource with the specified name."
+            "Cannot find a resource with the specified name.",
         );
     }
 
@@ -264,11 +270,11 @@ const getByName = async (context, name: string): Promise<ExternalResource> => {
 const update = async (
     context,
     resourceId: string,
-    attributes
+    attributes,
 ): Promise<ExternalResource> => {
     if (!constants.identifierPattern.test(resourceId)) {
         throw new BadRequestError(
-            "The specified resource identifier is invalid."
+            "The specified resource identifier is invalid.",
         );
     }
 
@@ -289,12 +295,12 @@ const update = async (
         {
             new: true,
             lean: true,
-        }
+        },
     ).exec();
 
     if (!resource) {
         throw new NotFoundError(
-            "A resource with the specified identifier does not exist."
+            "A resource with the specified identifier does not exist.",
         );
     }
 
@@ -303,11 +309,11 @@ const update = async (
 
 const enable = async (
     context,
-    resourceId: string
+    resourceId: string,
 ): Promise<ExternalResource> => {
     if (!constants.identifierPattern.test(resourceId)) {
         throw new BadRequestError(
-            "The specified resource identifier is invalid."
+            "The specified resource identifier is invalid.",
         );
     }
 
@@ -323,12 +329,12 @@ const enable = async (
         {
             new: true,
             lean: true,
-        }
+        },
     );
 
     if (!resource) {
         throw new NotFoundError(
-            "A resource with the specified identifier does not exist."
+            "A resource with the specified identifier does not exist.",
         );
     }
 
@@ -337,11 +343,11 @@ const enable = async (
 
 const disable = async (
     context,
-    resourceId: string
+    resourceId: string,
 ): Promise<ExternalResource> => {
     if (!constants.identifierPattern.test(resourceId)) {
         throw new BadRequestError(
-            "The specified resource identifier is invalid."
+            "The specified resource identifier is invalid.",
         );
     }
 
@@ -357,12 +363,12 @@ const disable = async (
         {
             new: true,
             lean: true,
-        }
+        },
     );
 
     if (!resource) {
         throw new NotFoundError(
-            "A resource with the specified identifier does not exist."
+            "A resource with the specified identifier does not exist.",
         );
     }
 
@@ -376,11 +382,11 @@ const disable = async (
  */
 const remove = async (
     context,
-    resourceId: string
+    resourceId: string,
 ): Promise<{ success: boolean }> => {
     if (!constants.identifierPattern.test(resourceId)) {
         throw new BadRequestError(
-            "The specified resource identifier is invalid."
+            "The specified resource identifier is invalid.",
         );
     }
 
@@ -396,12 +402,12 @@ const remove = async (
         {
             new: true,
             lean: true,
-        }
+        },
     );
 
     if (!resource) {
         throw new NotFoundError(
-            "A resource with the specified identifier does not exist."
+            "A resource with the specified identifier does not exist.",
         );
     }
 

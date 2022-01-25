@@ -1,11 +1,9 @@
 import type { Document } from "mongoose";
+import type { User, UserPage, ExternalUser, Session } from "@hypertool/common";
 
 import joi from "joi";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-
-import type { User, UserPage, ExternalUser, Session } from "../types";
-
 import {
     constants,
     google,
@@ -13,8 +11,8 @@ import {
     NotFoundError,
     UnauthorizedError,
     extractIds,
-} from "../utils";
-import { UserModel } from "../models";
+    UserModel,
+} from "@hypertool/common";
 
 const createSchema = joi.object({
     firstName: joi.string().min(1).max(256).required(),
@@ -152,7 +150,7 @@ const list = async (context, parameters): Promise<UserPage> => {
 
 const listByIds = async (
     context,
-    userIds: string[]
+    userIds: string[],
 ): Promise<ExternalUser[]> => {
     const unorderedUsers = await UserModel.find({
         _id: { $in: userIds },
@@ -182,7 +180,7 @@ const getById = async (context, userId: string): Promise<ExternalUser> => {
     /* We return a 404 error, if we did not find the user. */
     if (!user) {
         throw new NotFoundError(
-            "Cannot find a user with the specified identifier."
+            "Cannot find a user with the specified identifier.",
         );
     }
 
@@ -192,7 +190,7 @@ const getById = async (context, userId: string): Promise<ExternalUser> => {
 const update = async (
     context,
     userId: string,
-    attributes
+    attributes,
 ): Promise<ExternalUser> => {
     if (!constants.identifierPattern.test(userId)) {
         throw new BadRequestError("The specified user identifier is invalid.");
@@ -215,12 +213,12 @@ const update = async (
         {
             new: true,
             lean: true,
-        }
+        },
     ).exec();
 
     if (!user) {
         throw new NotFoundError(
-            "A user with the specified identifier does not exist."
+            "A user with the specified identifier does not exist.",
         );
     }
 
@@ -229,7 +227,7 @@ const update = async (
 
 const remove = async (
     context,
-    userId: string
+    userId: string,
 ): Promise<{ success: boolean }> => {
     if (!constants.identifierPattern.test(userId)) {
         throw new BadRequestError("The specified user identifier is invalid.");
@@ -247,12 +245,12 @@ const remove = async (
         {
             new: true,
             lean: true,
-        }
+        },
     );
 
     if (!user) {
         throw new NotFoundError(
-            "A user with the specified identifier does not exist."
+            "A user with the specified identifier does not exist.",
         );
     }
 
@@ -262,13 +260,13 @@ const remove = async (
 const loginWithGoogle = async (
     context: any,
     authorizationToken: string,
-    client: typeof constants.googleClientTypes[number]
+    client: typeof constants.googleClientTypes[number],
 ): Promise<Session> => {
     const payload = await google.getUserInfo(authorizationToken, client);
 
     if (!payload) {
         throw new UnauthorizedError(
-            "The specified Google authorization token is invalid."
+            "The specified Google authorization token is invalid.",
         );
     }
 

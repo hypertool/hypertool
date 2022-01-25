@@ -1,16 +1,14 @@
 import type { Document } from "mongoose";
+import type { App, ExternalApp, AppPage, User } from "@hypertool/common";
 
 import joi from "joi";
-
-import type { App, ExternalApp, AppPage, User } from "../types";
-
 import {
+    AppModel,
     constants,
     BadRequestError,
     NotFoundError,
     extractIds,
-} from "../utils";
-import { AppModel } from "../models";
+} from "@hypertool/common";
 
 const createSchema = joi.object({
     name: joi.string().max(128).required(),

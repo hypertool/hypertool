@@ -1,9 +1,6 @@
-import {
-    genders,
-    countryCodes,
-    userStatuses,
-    userRoles,
-} from "../utils/constants";
+import { constants } from "@hypertool/common";
+
+const { genders, countryCodes, userStatuses, userRoles } = constants;
 
 const types = `
     scalar Date

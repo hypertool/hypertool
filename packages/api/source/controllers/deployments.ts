@@ -1,13 +1,12 @@
 import joi from "joi";
 import { Types } from "mongoose";
-
-import { google, BadRequestError } from "../utils";
+import { google, BadRequestError } from "@hypertool/common";
 
 const generateSchema = joi.array().items(joi.string());
 
 export const generateSignedURLs = async (
     context,
-    files: string[]
+    files: string[],
 ): Promise<string[]> => {
     const { error, value: files0 } = generateSchema.validate(files);
 
@@ -22,7 +21,7 @@ export const generateSignedURLs = async (
     for (const file of files0) {
         const promise = google.generateUploadSignedURL(
             "hypertool-client-builds-asia",
-            `organizationId/${deploymentId.toString()}/${file}`
+            `organizationId/${deploymentId.toString()}/${file}`,
         );
         promises.push(promise);
     }
