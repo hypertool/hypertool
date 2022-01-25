@@ -10,23 +10,27 @@ export interface Props {
     };
 }
 
+type GetLayout = (element: ReactElement) => ReactElement;
+
 interface Screen {
     layout?: string;
-
     /* `getLayout` has higher priority. */
-    getLayout?: (element: ReactElement) => ReactElement;
+    getLayout?: GetLayout;
 }
 
 const Instantiate: FunctionComponent<Props> = (props: Props): ReactElement => {
     const { path, resolver, layouts } = props;
-    const [target, setTarget] = useState<Screen | null>(null);
+    const [getLayout, setGetLayout] = useState<GetLayout | null>(null);
+    const [layout, setLayout] = useState<string | null>(null);
 
     useEffect(() => {
         let mounted = true;
         (async () => {
             const result = await resolver(path);
             if (mounted) {
-                setTarget(result.default as unknown as Screen);
+                const screen = result.default as unknown as Screen;
+                setGetLayout((screen.getLayout as GetLayout) || null);
+                setLayout((screen.layout as string) || null);
             }
         })();
 
@@ -36,9 +40,7 @@ const Instantiate: FunctionComponent<Props> = (props: Props): ReactElement => {
     }, []);
 
     const Component = React.lazy(() => resolver(path));
-    const { getLayout, layout } = target || {};
-    let renderLayout = getLayout || (layouts && layout && layouts[layout]);
-
+    const renderLayout = getLayout || (layouts && layout && layouts[layout]);
     return renderLayout ? renderLayout(<Component />) : <Component />;
 };
 
