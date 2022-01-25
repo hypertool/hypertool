@@ -1,23 +1,33 @@
-import type { FunctionComponent, ReactElement } from "react";
+import type { FunctionComponent, ReactElement, ReactNode } from "react";
 
 import React, { Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import type { Hypertool, Route as HypertoolRoute } from "../types";
 
-import Instantiate, { Props as InstantiateProps } from "./Instantiate";
+import Instantiate from "./Instantiate";
 
 export interface Props {
-    screens: {
+    screens?: {
         error404: string;
     };
     resolver: (path: string) => Promise<any>;
+    layouts?: {
+        [key: string]: (element: ReactElement) => ReactNode;
+    };
 }
+
+const defaultProps = {
+    screens: {
+        error404: "/error/404",
+    },
+    layouts: {},
+};
 
 const ApplicationRouter: FunctionComponent<Props> = (
     props: Props,
 ): ReactElement => {
-    const { screens, resolver } = props;
+    const { screens, resolver, layouts } = props;
 
     const renderRoute = (route: HypertoolRoute) => {
         const { uri, path } = route;
@@ -27,7 +37,13 @@ const ApplicationRouter: FunctionComponent<Props> = (
             <Route
                 key={uri}
                 path={sanitizedUri}
-                element={<Instantiate path={path} resolver={resolver} />}
+                element={
+                    <Instantiate
+                        path={path}
+                        resolver={resolver}
+                        layouts={layouts}
+                    />
+                }
             />
         );
     };
@@ -44,7 +60,14 @@ const ApplicationRouter: FunctionComponent<Props> = (
                     {renderRoutes()}
                     <Route
                         path="*"
-                        element={<Navigate to={screens.error404} />}
+                        element={
+                            <Navigate
+                                to={
+                                    screens?.error404 ??
+                                    defaultProps.screens.error404
+                                }
+                            />
+                        }
                     />
                 </Routes>
             </BrowserRouter>
@@ -52,10 +75,6 @@ const ApplicationRouter: FunctionComponent<Props> = (
     );
 };
 
-ApplicationRouter.defaultProps = {
-    screens: {
-        error404: "/error/404",
-    },
-};
+ApplicationRouter.defaultProps = defaultProps;
 
 export default ApplicationRouter;
