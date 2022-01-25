@@ -4,14 +4,12 @@ import React from "react";
 
 export interface Props {
     path: string;
+    resolver: (path: string) => Promise<any>;
 }
 
 const Instantiate: FunctionComponent<Props> = (props: Props): ReactElement => {
-    const { path } = props;
-    // Traversing from `node_modules/@hypertool/core/build/components`
-    const actualPath = "../../../../../" + path;
-    console.log("Resolving " + actualPath);
-    const Component = React.lazy(() => import(actualPath));
+    const { path, resolver } = props;
+    const Component = React.lazy(() => resolver(path));
     return <Component />;
 };
 
