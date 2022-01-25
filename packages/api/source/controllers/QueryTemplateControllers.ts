@@ -1,11 +1,14 @@
 import type { Document } from "mongoose";
+import type { Query, ExternalQuery, QueryPage } from "@hypertool/common";
 
 import joi from "joi";
 
-import type { Query, ExternalQuery, QueryPage } from "../types";
-
-import { constants, BadRequestError, NotFoundError } from "../utils";
-import { QueryTemplateModel } from "../models";
+import {
+    constants,
+    BadRequestError,
+    NotFoundError,
+    QueryTemplateModel,
+} from "@hypertool/common";
 
 const createSchema = joi.object({
     name: joi.string().max(128).required(),
@@ -116,7 +119,7 @@ const listByAppId = async (context, parameters): Promise<QueryPage> => {
 
 const listByIds = async (
     context,
-    queryTemplateIds: string[]
+    queryTemplateIds: string[],
 ): Promise<ExternalQuery[]> => {
     const unorderedQueries = await QueryTemplateModel.find({
         _id: { $in: queryTemplateIds },
@@ -133,7 +136,7 @@ const listByIds = async (
 
 const getById = async (
     context,
-    queryTemplateId: string
+    queryTemplateId: string,
 ): Promise<ExternalQuery> => {
     if (!constants.identifierPattern.test(queryTemplateId)) {
         throw new BadRequestError("The specified query identifier is invalid.");
@@ -149,7 +152,7 @@ const getById = async (
     /* We return a 404 error, if we did not find the query. */
     if (!query) {
         throw new NotFoundError(
-            "Cannot find a query with the specified identifier."
+            "Cannot find a query with the specified identifier.",
         );
     }
 
@@ -179,7 +182,7 @@ const getByName = async (context, name: string): Promise<ExternalQuery> => {
 const update = async (
     context,
     queryTemplateId: string,
-    attributes
+    attributes,
 ): Promise<ExternalQuery> => {
     if (!constants.identifierPattern.test(queryTemplateId)) {
         throw new BadRequestError("The specified query identifier is invalid.");
@@ -201,12 +204,12 @@ const update = async (
         {
             new: true,
             lean: true,
-        }
+        },
     ).exec();
 
     if (!query) {
         throw new NotFoundError(
-            "A query with the specified identifier does not exist."
+            "A query with the specified identifier does not exist.",
         );
     }
 
@@ -215,7 +218,7 @@ const update = async (
 
 const remove = async (
     context,
-    queryTemplateId: string
+    queryTemplateId: string,
 ): Promise<{ success: boolean }> => {
     if (!constants.identifierPattern.test(queryTemplateId)) {
         throw new BadRequestError("The specified query identifier is invalid.");
@@ -233,12 +236,12 @@ const remove = async (
         {
             new: true,
             lean: true,
-        }
+        },
     );
 
     if (!query) {
         throw new NotFoundError(
-            "A query with the specified identifier does not exist."
+            "A query with the specified identifier does not exist.",
         );
     }
 
