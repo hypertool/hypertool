@@ -1,10 +1,4 @@
-import {
-    Table,
-    Column,
-    ForeignKey,
-    MySQLRawTable,
-    MySQLRawColumn,
-} from "../types";
+import { Column, MySQLRawColumn } from "../types";
 
 const parseDefaultValue = (value: any) => {
     return /null|NULL/.test(value) ? null : value;
@@ -20,13 +14,13 @@ const rawColumnToColumn = (rawColumn: MySQLRawColumn): Column => {
         name: rawColumn.columnName,
         table: rawColumn.tableName,
         dataType: dataType,
-        defaultValue: rawColumn.columnDefault,
+        defaultValue: parseDefaultValue(rawColumn.columnDefault),
         generationExpression: rawColumn.generationExpression || null,
         maxLength: rawColumn.characterMaximumLength,
         numericPrecision: rawColumn.numericPrecision,
         numericScale: rawColumn.numericScale,
         isGenerated: rawColumn.extra?.endsWith("GENERATED"),
-        isNullable: rawColumn.isNullable === "YES",
+        isNullable: rawColumn.isNullable === true,
         isUnique: rawColumn.columnKey === "UNI",
         isPrimaryKey:
             rawColumn.constraintName === "PRIMARY" ||

@@ -4,29 +4,29 @@ export interface ExecuteParameters {
     format: string;
 }
 
-// This is a generic Table type that is used by all the databases
+/**
+ * This is a generic Table type that is used by all the databases.
+ */
 export interface Table {
     name: string;
 
-    // Not supported in SQLite + comment in mssql
     comment?: string | null;
     schema?: string;
 
-    // MySQL Only
+    // MySQL only
     collation?: string;
     engine?: string;
 
-    // Postgres Only
+    // Postgres only
     owner?: string;
 
-    // SQLite Only
-    sql?: string;
-
-    //MSSQL only
+    // MSSQL only
     catalog?: string;
 }
 
-// This is a generic Column type that is used by all the databases
+/**
+ * This is a generic Column type that is used by all the databases.
+ */
 export interface Column {
     name: string;
     table: string;
@@ -44,16 +44,14 @@ export interface Column {
     hasAutoIncrement: boolean;
     foreignKeyTable: string | null;
     foreignKeyColumn: string | null;
-
-    // Not supported in SQLite or MSSQL
     comment?: string | null;
 
-    // Postgres Only
+    // Postgres only
     schema?: string;
     foreignKeySchema?: string | null;
 }
 
-export type ForeignKey = {
+export interface ForeignKey {
     table: string;
     column: string;
     foreignKeyTable: string;
@@ -74,17 +72,17 @@ export type ForeignKey = {
         | "CASCADE"
         | "SET NULL"
         | "SET DEFAULT";
-};
+}
 
-export type MySQLRawTable = {
+export interface MySQLRawTable extends Table {
     tableName: string;
     tableSchema: string;
     tableComment: string | null;
     engine: string;
     tableCollation: string;
-};
+}
 
-export type MySQLRawColumn = {
+export interface MySQLRawColumn extends Column {
     tableName: string;
     columnName: string;
     columnDefault: any | null;
@@ -92,7 +90,7 @@ export type MySQLRawColumn = {
     characterMaximumLength: number | null;
     numericPrecision: number | null;
     numericScale: number | null;
-    isNullable: "YES" | "NO";
+    isNullable: boolean;
     collationName: string | null;
     columnComment: string | null;
     referencedTableName: string | null;
@@ -103,4 +101,4 @@ export type MySQLRawColumn = {
     extra: "auto_increment" | "STORED GENERATED" | "VIRTUAL GENERATED" | null;
     constraintName: "PRIMARY" | null;
     generationExpression: string;
-};
+}
