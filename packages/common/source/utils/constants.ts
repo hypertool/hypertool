@@ -341,6 +341,8 @@ const groupStatuses = tuple("enabled", "disabled", "deleted", "banned");
 
 const queryStatuses = tuple("enabled", "disabled", "deleted", "banned");
 
+const queryResultFormats = tuple("row", "column", "object");
+
 const googleClientTypes = tuple("web", "cli");
 
 const componentOrigins = tuple(
@@ -373,4 +375,5 @@ export {
     queryStatuses,
     googleClientTypes,
     componentOrigins,
+    queryResultFormats,
 };
