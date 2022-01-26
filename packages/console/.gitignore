@@ -26,3 +26,5 @@ yarn-error.log*
 
 /src/antlr-gen
 .antlr
+
+.env
