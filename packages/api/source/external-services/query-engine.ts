@@ -1,17 +1,20 @@
 import joi from "joi";
 import { constants, BadRequestError } from "@hypertool/common";
 
-const querySchema = joi.object({
+const executeSchema = joi.object({
     name: joi.string().max(128).required(),
-    variables: joi.any(),
-    format: joi.string(),
+    variables: joi.any().required(),
+    format: joi
+        .string()
+        .valid(...constants.queryResultFormats)
+        .required(),
 });
 
 const getQueryResult = async (
     context,
     attributes,
 ): Promise<{ result: any; error: any; meta: any }> => {
-    const { error, value } = querySchema.validate(attributes, {
+    const { error, value } = executeSchema.validate(attributes, {
         stripUnknown: true,
     });
 
