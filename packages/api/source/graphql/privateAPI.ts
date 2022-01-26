@@ -294,6 +294,11 @@ const typeDefs = gql`
         records: [ActivityLog!]!
     }
 
+    type QueryResult {
+        result: GraphQLJSON,
+        error: GraphQLJSON,
+    }
+
     type Mutation {
         createOrganization(
             name: String
@@ -451,6 +456,8 @@ const typeDefs = gql`
 
         getActivityLogs(page: Int, limit: Int): ActivityLogPage!
         getActivityLogById(activityLogId: ID!): ActivityLog!
+
+        getQueryResult(name: String!, variables: GraphQLJSON!, format: String!): QueryResult!
     }
 `;
 
@@ -584,6 +591,10 @@ const resolvers = {
 
         getActivityLogById: async (parent, values, context) =>
             activityLogs.getById(context.request, values.activityLogId),
+
+        getQueryResult: async (parent, values, context) =>
+            activityLogs.getById(context.request, values.activityLogId),
+        //externalServices.getQueryResult(context.request, values),
     },
 };
 
