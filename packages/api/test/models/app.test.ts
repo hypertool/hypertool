@@ -214,27 +214,29 @@ describe("App Model", function () {
         );
     });
 
-    it("should not be created when description is undefined", async () => {
+    it("should be created when description is undefined", async () => {
         const newApp = new AppModel({
             ...appTemplate,
             description: undefined,
         });
 
-        await assertThrowsAsync(
-            async () => newApp.save(),
-            "The description attribute is required.",
+        await newApp.save();
+        assert.isFalse(
+            newApp.isNew,
+            "The app should be persisted to the database.",
         );
     });
 
-    it("should not be created when description is null", async () => {
+    it("should be created when description is null", async () => {
         const newApp = new AppModel({
             ...appTemplate,
             description: null,
         });
 
-        await assertThrowsAsync(
-            async () => newApp.save(),
-            "The description attribute is required.",
+        await newApp.save();
+        assert.isFalse(
+            newApp.isNew,
+            "The app should be persisted to the database.",
         );
     });
 
@@ -269,27 +271,29 @@ describe("App Model", function () {
         );
     });
 
-    it("should not be created when groups is undefined", async () => {
+    it("should be created when groups is undefined", async () => {
         const newApp = new AppModel({
             ...appTemplate,
             groups: undefined,
         });
 
-        await assertThrowsAsync(
-            async () => newApp.save(),
-            "The groups attribute is required.",
+        await newApp.save();
+        assert.isFalse(
+            newApp.isNew,
+            "The app should be persisted to the database.",
         );
     });
 
-    it("should not be created when groups is null", async () => {
+    it("should be created when groups is null", async () => {
         const newApp = new AppModel({
             ...appTemplate,
             groups: null,
         });
 
-        await assertThrowsAsync(
-            async () => newApp.save(),
-            "The groups attribute is required.",
+        await newApp.save();
+        assert.isFalse(
+            newApp.isNew,
+            "The app should be persisted to the database.",
         );
     });
 
@@ -307,27 +311,29 @@ describe("App Model", function () {
         );
     });
 
-    it("should not be created when resources is undefined", async () => {
+    it("should be created when resources is undefined", async () => {
         const newApp = new AppModel({
             ...appTemplate,
             resources: undefined,
         });
 
-        await assertThrowsAsync(
-            async () => newApp.save(),
-            "The resources attribute is required.",
+        await newApp.save();
+        assert.isFalse(
+            newApp.isNew,
+            "The app should be persisted to the database.",
         );
     });
 
-    it("should not be created when resources is null", async () => {
+    it("should be created when resources is null", async () => {
         const newApp = new AppModel({
             ...appTemplate,
             resources: null,
         });
 
-        await assertThrowsAsync(
-            async () => newApp.save(),
-            "The resources attribute is required.",
+        await newApp.save();
+        assert.isFalse(
+            newApp.isNew,
+            "The app should be persisted to the database.",
         );
     });
 
@@ -345,15 +351,16 @@ describe("App Model", function () {
         );
     });
 
-    it("should not be created when status is undefined", async () => {
+    it("should be created when status is undefined", async () => {
         const newApp = new AppModel({
             ...appTemplate,
             status: undefined,
         });
 
-        await assertThrowsAsync(
-            async () => newApp.save(),
-            "The status attribute is required.",
+        await newApp.save();
+        assert.isFalse(
+            newApp.isNew,
+            "The app should be persisted to the database.",
         );
     });
 
