@@ -6,6 +6,10 @@ import {
     MySQLRawColumn,
 } from "../types";
 
+const parseDefaultValue = (value: any) => {
+    return /null|NULL/.test(value) ? null : value;
+};
+
 const rawColumnToColumn = (rawColumn: MySQLRawColumn): Column => {
     let dataType = rawColumn.columnType.replace(/\(.*?\)/, "");
     if (rawColumn.columnType.startsWith("tinyint(1)")) {
@@ -36,4 +40,4 @@ const rawColumnToColumn = (rawColumn: MySQLRawColumn): Column => {
     return column;
 };
 
-export { rawColumnToColumn };
+export { rawColumnToColumn, parseDefaultValue };
