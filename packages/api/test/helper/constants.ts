@@ -21,12 +21,12 @@ const activityLogs = [
 
 const appData = {
     name: "xyz",
-    title: "xyz",
+    title: "XYZ",
     slug: "xyz",
-    description: "xyz",
-    authServices: {
-        googleAuth: {},
-    },
+    description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ante risus, dapibus vitae ultrices a, placerat id augue. Ut at tellus nec dui hendrerit scelerisque. Donec lacinia, ex et congue fermentum, lectus enim hendrerit enim, ac sodales nisl est sed risus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce.",
+    groups: [],
+    resources: [],
 };
 
 export { activityLogs, appData };

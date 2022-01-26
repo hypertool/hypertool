@@ -11,6 +11,7 @@ import {
     queryTemplates,
     deployments,
     activityLogs,
+    queries,
 } from "../controllers";
 import { types } from "./typeDefinitions";
 import { jwtAuth } from "../middleware";
@@ -26,6 +27,7 @@ const {
     groupStatuses,
     queryStatuses,
     componentOrigins,
+    queryResultFormats,
 } = constants;
 
 const typeDefs = gql`
@@ -176,6 +178,10 @@ const typeDefs = gql`
         ${appStatuses.join("\n")}
     }
 
+    enum QueryResultFormats {
+        ${queryResultFormats.join("\n")}
+    }
+
     # TODO: Add slug, title
     type App {
         id: ID!
@@ -292,6 +298,11 @@ const typeDefs = gql`
         hasPreviousPage: Int!
         hasNextPage: Int!
         records: [ActivityLog!]!
+    }
+
+    type QueryResult {
+        result: GraphQLJSON,
+        error: GraphQLJSON,
     }
 
     type Mutation {
@@ -451,6 +462,8 @@ const typeDefs = gql`
 
         getActivityLogs(page: Int, limit: Int): ActivityLogPage!
         getActivityLogById(activityLogId: ID!): ActivityLog!
+
+        getQueryResult(name: String!, variables: GraphQLJSON!, format: QueryResultFormats!): QueryResult!
     }
 `;
 
@@ -584,6 +597,9 @@ const resolvers = {
 
         getActivityLogById: async (parent, values, context) =>
             activityLogs.getById(context.request, values.activityLogId),
+
+        getQueryResult: async (parent, values, context) =>
+            queries.getQueryResult(context.request, values),
     },
 };
 
