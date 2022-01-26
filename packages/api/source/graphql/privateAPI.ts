@@ -11,8 +11,8 @@ import {
     queryTemplates,
     deployments,
     activityLogs,
+    queries,
 } from "../controllers";
-import { queries } from "../external-services";
 import { types } from "./typeDefinitions";
 import { jwtAuth } from "../middleware";
 

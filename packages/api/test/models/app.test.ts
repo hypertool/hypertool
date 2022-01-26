@@ -3,7 +3,7 @@ import { AppModel } from "@hypertool/common";
 import { assertThrowsAsync, appData } from "../helper";
 import { assert } from "chai";
 
-describe("App Model", function () {
+describe("App model", function () {
     let appTemplate = null;
 
     beforeEach(function () {
