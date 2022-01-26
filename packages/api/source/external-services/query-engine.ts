@@ -26,8 +26,7 @@ const getQueryResult = async (
     }
 
     const result = await axios.get(QUERY_ENGINE_URL, value);
-    console.log("result", result);
-    return null;
+    return result.data;
 };
 
 const getMetaData = async (context, appId: string): Promise<{ meta: any }> => {
