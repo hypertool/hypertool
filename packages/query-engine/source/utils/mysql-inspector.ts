@@ -6,7 +6,7 @@ import {
     MySQLRawColumn,
 } from "../types";
 
-function rawColumnToColumn(rawColumn: MySQLRawColumn): Column {
+const rawColumnToColumn = (rawColumn: MySQLRawColumn): Column => {
     let dataType = rawColumn.columnType.replace(/\(.*?\)/, "");
     if (rawColumn.columnType.startsWith("tinyint(1)")) {
         dataType = "boolean";
@@ -21,7 +21,7 @@ function rawColumnToColumn(rawColumn: MySQLRawColumn): Column {
         maxLength: rawColumn.characterMaximumLength,
         numericPrecision: rawColumn.numericPrecision,
         numericScale: rawColumn.numericScale,
-        isGenerated: !!rawColumn.extra?.endsWith("GENERATED"),
+        isGenerated: rawColumn.extra?.endsWith("GENERATED"),
         isNullable: rawColumn.isNullable === "YES",
         isUnique: rawColumn.columnKey === "UNI",
         isPrimaryKey:
@@ -34,6 +34,6 @@ function rawColumnToColumn(rawColumn: MySQLRawColumn): Column {
     };
 
     return column;
-}
+};
 
 export { rawColumnToColumn };
