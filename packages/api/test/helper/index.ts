@@ -1,4 +1,4 @@
-import { activityLogs } from "./constants";
+import { activityLogs, appData } from "./constants";
 import { assert } from "chai";
 
 const assertThrowsAsync = async (
@@ -28,4 +28,4 @@ const assertThrowsAsync = async (
     assert.fail(assertMessage || "Expected an exception to be thrown");
 };
 
-export { assertThrowsAsync, activityLogs };
+export { assertThrowsAsync, activityLogs, appData };
