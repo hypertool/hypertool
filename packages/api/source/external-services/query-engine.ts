@@ -33,4 +33,4 @@ const getMetaData = async (context, appId: string): Promise<{ meta: any }> => {
     return null;
 };
 
-export { getQueryResult };
+export { getQueryResult, getMetaData };
