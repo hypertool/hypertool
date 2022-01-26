@@ -1,5 +1,8 @@
 import joi from "joi";
 import { constants, BadRequestError } from "@hypertool/common";
+import axios from "axios";
+
+const { QUERY_ENGINE_URL } = process.env;
 
 const executeSchema = joi.object({
     name: joi.string().max(128).required(),
@@ -14,16 +17,16 @@ const getQueryResult = async (
     context,
     attributes,
 ): Promise<{ result: any; error: any; meta: any }> => {
-    const { error, value } = executeSchema.validate(attributes, {
+    const { error: requestError, value } = executeSchema.validate(attributes, {
         stripUnknown: true,
     });
 
-    if (error) {
-        throw new BadRequestError(error.message);
+    if (requestError) {
+        throw new BadRequestError(requestError.message);
     }
 
-    // TODO: Check if value.members and value.resources are correct.
-    // const result = // TODO: Get result from external service.
+    const result = await axios.get(QUERY_ENGINE_URL, value);
+    console.log("result", result);
     return null;
 };
 

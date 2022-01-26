@@ -12,6 +12,7 @@ import {
     deployments,
     activityLogs,
 } from "../controllers";
+import { queries } from "../external-services";
 import { types } from "./typeDefinitions";
 import { jwtAuth } from "../middleware";
 
@@ -26,6 +27,7 @@ const {
     groupStatuses,
     queryStatuses,
     componentOrigins,
+    queryResultFormats,
 } = constants;
 
 const typeDefs = gql`
@@ -174,6 +176,10 @@ const typeDefs = gql`
 
     enum AppStatus {
         ${appStatuses.join("\n")}
+    }
+
+    enum QueryResultFormats {
+        ${queryResultFormats.join("\n")}
     }
 
     # TODO: Add slug, title
@@ -457,7 +463,7 @@ const typeDefs = gql`
         getActivityLogs(page: Int, limit: Int): ActivityLogPage!
         getActivityLogById(activityLogId: ID!): ActivityLog!
 
-        getQueryResult(name: String!, variables: GraphQLJSON!, format: String!): QueryResult!
+        getQueryResult(name: String!, variables: GraphQLJSON!, format: QueryResultFormats!): QueryResult!
     }
 `;
 
@@ -593,8 +599,7 @@ const resolvers = {
             activityLogs.getById(context.request, values.activityLogId),
 
         getQueryResult: async (parent, values, context) =>
-            activityLogs.getById(context.request, values.activityLogId),
-        //externalServices.getQueryResult(context.request, values),
+            queries.getQueryResult(context.request, values),
     },
 };
 
