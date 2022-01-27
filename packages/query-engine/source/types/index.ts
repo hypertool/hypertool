@@ -35,7 +35,6 @@ export interface Column {
     maxLength: number | null;
     numericPrecision: number | null;
     numericScale: number | null;
-
     isNullable: boolean;
     isUnique: boolean;
     isPrimaryKey: boolean;
@@ -74,7 +73,7 @@ export interface ForeignKey {
         | "SET DEFAULT";
 }
 
-export interface MySQLRawTable extends Table {
+export interface MySQLRawTable {
     tableName: string;
     tableSchema: string;
     tableComment: string | null;
@@ -82,7 +81,7 @@ export interface MySQLRawTable extends Table {
     tableCollation: string;
 }
 
-export interface MySQLRawColumn extends Column {
+export interface MySQLRawColumn {
     tableName: string;
     columnName: string;
     columnDefault: any | null;
