@@ -56,6 +56,7 @@ export interface Resource {
     status: typeof resourceStatuses[number];
     createdAt: Date;
     updatedAt: Date;
+    connection?: string;
 }
 
 export interface ExternalMySQLConfiguration {

@@ -349,7 +349,7 @@ export default class Client<T> {
                 name: queryTemplate.name,
                 description: queryTemplate.description,
                 resource: await this.convertNameToId(
-                    queryTemplate.resource,
+                    <string>queryTemplate.resource,
                     "resource",
                 ),
                 app: await this.convertNameToId(appName, "app"),
@@ -431,7 +431,7 @@ export default class Client<T> {
          * comparing.
          */
         newAppPicked.groups = await Promise.all(
-            (newAppPicked as App).groups.map((group: string) =>
+            (newAppPicked as App).groups.map((group) =>
                 this.convertNameToId(group, "group"),
             ),
         );

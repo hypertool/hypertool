@@ -24,4 +24,5 @@ export const extractIds = (items: ObjectWithID[] | string[]): string[] => {
 
 export * as constants from "./constants";
 export * as google from "./google";
+export * as client from "./client";
 export * from "./errors";
