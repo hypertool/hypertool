@@ -167,7 +167,7 @@ const configureCommands = (): Command => {
         .alias("c")
         .description("creates a new app")
         .argument("<name>", "name of the new app")
-        .option("-t, --template <name>", "the template to use", "javascript")
+        .option("-t, --template <name>", "the template to use", "starter")
         .action((name) => {
             const configuration = {
                 ...program.opts(),

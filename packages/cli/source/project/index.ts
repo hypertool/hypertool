@@ -3,10 +3,12 @@ import * as path from "path";
 import * as fsExtra from "fs-extra";
 import TaskList from "listr";
 import chalk from "chalk";
+import { chdir } from "process";
+const util = require("util");
+const exec = util.promisify(require("child_process").exec);
 
 const repositoryByTemplate = {
-    javascript: "https://github.com/hypertool/js-template",
-    typescript: "https://github.com/hypertool/ts-template",
+    starter: "https://github.com/hypertool/hypertool-starter",
 };
 
 export const createProject = async (
@@ -59,6 +61,17 @@ export const createProject = async (
                 task.title = `Repository initialized at ${chalk.bold(
                     localRepository,
                 )}`;
+            },
+        },
+        {
+            title: `Installing dependencies`,
+            task: async (context, task) => {
+                try {
+                    chdir(name);
+                    const { stdout, stderr } = await exec(`yarn install`);
+                } catch (error) {
+                    console.error(`error: {error.message}`);
+                }
             },
         },
         {
