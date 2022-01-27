@@ -287,3 +287,10 @@ export interface ExternalActivityLog {
 }
 
 export type ActivityLogPage = ExternalListPage<ExternalActivityLog>;
+
+export interface Manifest {
+    queries: Query[];
+    resources: Resource[];
+    app: App;
+    file?: string;
+}
