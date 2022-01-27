@@ -208,6 +208,30 @@ const GENERATE_SIGNED_URLS = gql`
     }
 `;
 
+const LOGIN_WITH_GOOGLE = gql`
+    mutation LoginWithGoogle($token: String!, $client: ClientType!) {
+        loginWithGoogle(token: $token, client: $client) {
+            jwtToken
+            user {
+                id
+                firstName
+                lastName
+                description
+                gender
+                countryCode
+                pictureURL
+                emailAddress
+                emailVerified
+                birthday
+                status
+                createdAt
+                updatedAt
+            }
+            createdAt
+        }
+    }
+`;
+
 const isNotFoundError = (error0: unknown): boolean => {
     if (error0 instanceof ApolloError) {
         const error = error0 as ApolloError;
