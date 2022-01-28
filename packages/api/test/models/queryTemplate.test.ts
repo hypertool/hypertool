@@ -62,4 +62,16 @@ describe("QueryTemplate Model", function () {
             "The name attribute is required.",
         );
     });
+
+    it("should not be created when name is null", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            name: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newQuery.save(),
+            "The name attribute is required.",
+        );
+    });
 });
