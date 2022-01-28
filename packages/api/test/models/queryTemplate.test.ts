@@ -86,4 +86,69 @@ describe("QueryTemplate Model", function () {
             "The name attribute is required.",
         );
     });
+
+    it("should not be created when description is too long", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            description:
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAA",
+        });
+        await assertThrowsAsync(
+            async () => newQuery.save(),
+            "The description attribute should have a maximum of 128 characters.",
+        );
+    });
+
+    it("should be created when description is undefined", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            description: undefined,
+        });
+
+        await newQuery.save();
+        assert.isFalse(
+            newQuery.isNew,
+            "The query should be persisted to the database.",
+        );
+    });
+
+    it("should be created when description is null", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            description: null,
+        });
+
+        await newQuery.save();
+        assert.isFalse(
+            newQuery.isNew,
+            "The query should be persisted to the database.",
+        );
+    });
+
+    it("should be created when description is empty", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            description: "",
+        });
+
+        await newQuery.save();
+
+        assert.lengthOf(
+            newQuery.description,
+            0,
+            "The name attribute should be of length 0.",
+        );
+    });
 });
