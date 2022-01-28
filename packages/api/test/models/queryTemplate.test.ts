@@ -248,4 +248,24 @@ describe("QueryTemplate Model", function () {
             "The content attribute is required.",
         );
     });
+
+    it("should be created with a default value for createdAt", async () => {
+        const newLog = new QueryTemplateModel({ ...queryTemplate });
+        await newLog.save();
+        assert.typeOf(
+            newLog.createdAt,
+            "date",
+            "The createdAt attribute should be assigned by default.",
+        );
+    });
+
+    it("should be created with a default value for updatedAt", async () => {
+        const newLog = new QueryTemplateModel({ ...queryTemplate });
+        await newLog.save();
+        assert.typeOf(
+            newLog.updatedAt,
+            "date",
+            "The updatedAt attribute should be assigned by default.",
+        );
+    });
 });
