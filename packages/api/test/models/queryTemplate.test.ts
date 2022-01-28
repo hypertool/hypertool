@@ -161,4 +161,30 @@ describe("QueryTemplate Model", function () {
             "The query should be persisted to the database.",
         );
     });
+
+    it("should be created when app is undefined", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            app: undefined,
+        });
+
+        await newQuery.save();
+        assert.isFalse(
+            newQuery.isNew,
+            "The query should be persisted to the database.",
+        );
+    });
+
+    it("should be created when app is null", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            app: null,
+        });
+
+        await newQuery.save();
+        assert.isFalse(
+            newQuery.isNew,
+            "The query should be persisted to the database.",
+        );
+    });
 });
