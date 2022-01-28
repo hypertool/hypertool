@@ -50,4 +50,16 @@ describe("QueryTemplate Model", function () {
             "The name attribute should have a maximum of 128 characters.",
         );
     });
+
+    it("should not be created when name is undefined", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            name: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newQuery.save(),
+            "The name attribute is required.",
+        );
+    });
 });
