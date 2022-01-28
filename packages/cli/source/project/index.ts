@@ -74,7 +74,7 @@ export const createProject = async (
                         `yarn install`,
                     );
                 } catch (err) {
-                    error(err.message);
+                    error((err as Error).message);
                 }
             },
         },
