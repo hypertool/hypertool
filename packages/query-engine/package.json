@@ -19,6 +19,7 @@
         "graphql": "^16.3.0",
         "joi": "^17.5.0",
         "mongoose": "^6.0.12",
+        "morgan": "^1.10.0",
         "mysql2": "^2.3.3"
     },
     "devDependencies": {
