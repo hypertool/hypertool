@@ -34,7 +34,7 @@ const filterSchema = joi.object({
     app: joi.string().regex(constants.identifierPattern),
 });
 
-const toExternal = (query: Query & Document<Query>): ExternalQuery => {
+const toExternal = (query: any): ExternalQuery => {
     const {
         id,
         _id,
@@ -127,7 +127,7 @@ const listByIds = async (
     const object = {};
     // eslint-disable-next-line no-restricted-syntax
     for (const query of unorderedQueries) {
-        object[query._id] = query;
+        object[query._id.toString()] = query;
     }
     // eslint-disable-next-line security/detect-object-injection
     return queryTemplateIds.map((key) => toExternal(object[key]));

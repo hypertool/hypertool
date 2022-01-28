@@ -34,7 +34,7 @@ const updateSchema = joi.object({
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const toExternal = (group: Group & Document<Group>): ExternalGroup => {
+const toExternal = (group: any): ExternalGroup => {
     const {
         id,
         _id,
@@ -126,7 +126,7 @@ const listByIds = async (
     const object = {};
     // eslint-disable-next-line no-restricted-syntax
     for (const group of unorderedGroups) {
-        object[group._id] = group;
+        object[group._id.toString()] = group;
     }
     // eslint-disable-next-line security/detect-object-injection
     return groupIds.map((key) => toExternal(object[key]));

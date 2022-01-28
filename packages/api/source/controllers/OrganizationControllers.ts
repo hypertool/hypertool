@@ -36,9 +36,7 @@ const updateSchema = joi.object({
     users: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const toExternal = (
-    organization: Organization & Document<Organization>,
-): ExternalOrganization => {
+const toExternal = (organization: any): ExternalOrganization => {
     const { id, _id, name, description, users, status, createdAt, updatedAt } =
         organization;
 
@@ -117,7 +115,7 @@ const listByIds = async (
     const object = {};
     // eslint-disable-next-line no-restricted-syntax
     for (const organization of unorderedOrganizations) {
-        object[organization._id] = organization;
+        object[organization._id.toString()] = organization;
     }
     // eslint-disable-next-line security/detect-object-injection
     return organizationIds.map((key) => toExternal(object[key]));
