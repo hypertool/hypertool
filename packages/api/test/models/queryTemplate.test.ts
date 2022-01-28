@@ -187,4 +187,65 @@ describe("QueryTemplate Model", function () {
             "The query should be persisted to the database.",
         );
     });
+
+    it("should be created when content length is 1", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            content: "A",
+        });
+        await newQuery.save();
+
+        assert.lengthOf(
+            newQuery.content,
+            1,
+            "The content attribute should be of length 1.",
+        );
+    });
+
+    it("should not be created when content is too long", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            content: new Array(10241 + 1).join("a"),
+        });
+        await assertThrowsAsync(
+            async () => newQuery.save(),
+            "The content attribute should have a maximum of 128 characters.",
+        );
+    });
+
+    it("should not be created when content is undefined", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            content: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newQuery.save(),
+            "The content attribute is required.",
+        );
+    });
+
+    it("should not be created when content is null", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            content: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newQuery.save(),
+            "The content attribute is required.",
+        );
+    });
+
+    it("should not be created when content is empty", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            content: "",
+        });
+
+        await assertThrowsAsync(
+            async () => newQuery.save(),
+            "The content attribute is required.",
+        );
+    });
 });
