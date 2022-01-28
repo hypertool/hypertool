@@ -19,6 +19,17 @@ const activityLogs = [
     },
 ];
 
+const queryTemplates = [
+    {
+        name: "abc",
+        description: "lorem ipsum dolor amet",
+        resource: "61c9483bcd1cf99c3a211977",
+        app: "61c93a931da4a79d3a109947",
+        content: "abcd",
+        status: "enabled",
+    },
+];
+
 const appData = {
     name: "xyz",
     title: "XYZ",
@@ -29,4 +40,4 @@ const appData = {
     resources: [],
 };
 
-export { activityLogs, appData };
+export { activityLogs, queryTemplates, appData };
