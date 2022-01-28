@@ -22,4 +22,18 @@ describe("QueryTemplate Model", function () {
             "The query should be persisted to the database.",
         );
     });
+
+    it("should be created when name length is 1", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            name: "A",
+        });
+        await newQuery.save();
+
+        assert.lengthOf(
+            newQuery.name,
+            1,
+            "The name attribute should be of length 1.",
+        );
+    });
 });
