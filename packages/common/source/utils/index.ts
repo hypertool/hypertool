@@ -26,4 +26,5 @@ export * as constants from "./constants";
 export * as google from "./google";
 export * as session from "./session";
 export { default as Client } from "./client";
+export { default as PublicClient } from "./public-client";
 export * from "./errors";
