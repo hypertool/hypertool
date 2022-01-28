@@ -3,7 +3,7 @@ import * as path from "path";
 import * as fsExtra from "fs-extra";
 import TaskList from "listr";
 import chalk from "chalk";
-import { chdir } from "process";
+import process from "process";
 import { promisify } from "util";
 import { exec } from "child_process";
 import { error } from "../utils/logger";
@@ -69,7 +69,7 @@ export const createProject = async (
             title: `Installing dependencies`,
             task: async (context, task) => {
                 try {
-                    chdir(name);
+                    process.chdir(name);
                     const { stdout, stderr } = await execPromisify(
                         `yarn install`,
                     );
