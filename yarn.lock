@@ -14559,7 +14559,7 @@ mongoose-paginate-v2@^1.4.2, mongoose-paginate-v2@^1.5.0:
   resolved "https://registry.yarnpkg.com/mongoose-paginate-v2/-/mongoose-paginate-v2-1.5.0.tgz#c2caa7a09a1725053c72cf7331791dcbca6e65a5"
   integrity sha512-+r/M/gYfR98s1ooXoSH3aD3bMopjXKR6UpzQZSDWI22uNtoIpxia4/b80X99ho3g8AMzl0uLuQFuPL06mXHyyg==
 
-mongoose@^6.0.12:
+mongoose@^6.0.12, mongoose@^6.1.8:
   version "6.1.8"
   resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-6.1.8.tgz#8565c7610ceb81a9b0416ceb4bf0b709c8b83f6a"
   integrity sha512-/voqwU2dtet3zAR73r8jdPhqluU1VzIAnk7ecXPJBgyXKREnwQrz40lfW7fLpaqhmMhsAbA+JQ7ICUn2vAVFLw==
