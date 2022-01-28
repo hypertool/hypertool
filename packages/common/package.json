@@ -23,6 +23,7 @@
     "dependencies": {
         "@apollo/client": "^3.5.8",
         "apollo-server-errors": "^3.3.1",
+        "google-auth-library": "^7.11.0",
         "iso-language-codes": "^1.1.0",
         "mongoose": "^6.1.8",
         "mongoose-paginate-v2": "^1.5.0"
