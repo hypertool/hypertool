@@ -1,12 +1,21 @@
 import simpleGit, { SimpleGit } from "simple-git";
+
 import * as path from "path";
+
 import * as fsExtra from "fs-extra";
+
 import TaskList from "listr";
+
 import chalk from "chalk";
+
 import process from "process";
+
 import { promisify } from "util";
+
 import { exec } from "child_process";
+
 import { logger } from "../utils";
+
 const execPromisify = promisify(exec);
 
 const repositoryByTemplate = {
@@ -73,6 +82,7 @@ export const createProject = async (
                     const { stdout, stderr } = await execPromisify(
                         `yarn install`,
                     );
+                    task.title = "Installed dependencies";
                 } catch (error) {
                     logger.error((error as Error).message);
                 }
