@@ -10,7 +10,7 @@
         "start": "nodemon --exec \"node ./dist/start.js\""
     },
     "dependencies": {
-        "@hypertool/common": "^0.2.6",
+        "@hypertool/common": "^0.2.7",
         "axios": "^0.25.0",
         "body-parser": "^1.19.1",
         "cors": "^2.8.5",
