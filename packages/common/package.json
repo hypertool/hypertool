@@ -28,6 +28,7 @@
         "cross-fetch": "^3.1.5",
         "google-auth-library": "^7.11.0",
         "iso-language-codes": "^1.1.0",
+        "lodash": "^4.17.21",
         "mongoose": "^6.1.8",
         "mongoose-paginate-v2": "^1.5.0"
     },
