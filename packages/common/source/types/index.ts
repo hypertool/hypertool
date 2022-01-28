@@ -295,3 +295,11 @@ export interface Manifest {
     app: App;
     file?: string;
 }
+
+export interface GoogleUser {
+    firstName: string;
+    lastName: string;
+    pictureURL: string;
+    emailAddress: string;
+    emailVerified: boolean;
+}
