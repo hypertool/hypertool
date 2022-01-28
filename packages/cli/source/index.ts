@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import { Command } from "commander";
 import TaskList from "listr";
+import { session } from "@hypertool/common";
 
 import { createServer } from "./server";
 import { createCompiler } from "./compiler";
@@ -23,16 +24,16 @@ const deploy = async (): Promise<void> => {
             task: async (context, task) => {
                 task.title = "Checking authentication status...";
 
-                const session = await authUtils.loadSession();
-                const client = authUtils.createPrivateClient(session);
+                const deploySession = await authUtils.loadSession();
+                const client = session.createPrivateClient(deploySession);
 
                 /* Forward reference to the session and client objects to other
                  * tasks.
                  */
-                context.session = session;
+                context.session = deploySession;
                 context.client = client;
 
-                task.title = `Authenticated as ${session.user.firstName} ${session.user.lastName} <${session.user.emailAddress}>`;
+                task.title = `Authenticated as ${deploySession.user.firstName} ${deploySession.user.lastName} <${deploySession.user.emailAddress}>`;
             },
         },
         {
