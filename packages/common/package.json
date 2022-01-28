@@ -1,6 +1,6 @@
 {
     "name": "@hypertool/common",
-    "version": "0.2.4",
+    "version": "0.2.10",
     "license": "MIT",
     "repository": "https://github.com/hypertool/hypertool",
     "private": false,
@@ -22,11 +22,15 @@
     },
     "dependencies": {
         "@apollo/client": "^3.5.8",
+        "@google-cloud/storage": "^5.18.1",
         "apollo-server-errors": "^3.3.1",
-        "iso-language-codes": "^1.1.0"
-    },
-    "peerDependencies": {
-        "mongoose": "^6.0.12"
+        "axios": "^0.25.0",
+        "cross-fetch": "^3.1.5",
+        "google-auth-library": "^7.11.0",
+        "iso-language-codes": "^1.1.0",
+        "lodash": "^4.17.21",
+        "mongoose": "^6.1.8",
+        "mongoose-paginate-v2": "^1.5.0"
     },
     "devDependencies": {
         "@types/chai": "^4.3.0",
@@ -35,7 +39,6 @@
         "chai": "^4.3.4",
         "mocha": "^9.1.4",
         "mongodb-memory-server": "^8.2.0",
-        "mongoose": "^6.0.12",
         "ts-node": "^10.4.0",
         "typescript": "^4.5.4"
     }

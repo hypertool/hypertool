@@ -46,7 +46,7 @@ const filterSchema = joi.object({
         .default(constants.paginateMinLimit),
 });
 
-const toExternal = (app: App & Document<App>): ExternalApp => {
+const toExternal = (app: any): ExternalApp => {
     const {
         id,
         _id,
@@ -146,7 +146,7 @@ const listByIds = async (context, appIds: string[]): Promise<ExternalApp[]> => {
     const object = {};
     // eslint-disable-next-line no-restricted-syntax
     for (const app of unorderedApps) {
-        object[app._id] = app;
+        object[app._id.toString()] = app;
     }
     // eslint-disable-next-line security/detect-object-injection
     return appIds.map((key) => toExternal(object[key]));

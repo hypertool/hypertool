@@ -53,7 +53,7 @@ const updateSchema = joi.object({
     groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const toExternal = (user: User & Document<User>): ExternalUser => {
+const toExternal = (user: any): ExternalUser => {
     const {
         id,
         _id,
@@ -159,7 +159,7 @@ const listByIds = async (
     const object = {};
     // eslint-disable-next-line no-restricted-syntax
     for (const user of unorderedUsers) {
-        object[user._id] = user;
+        object[user._id.toString()] = user;
     }
     // eslint-disable-next-line security/detect-object-injection
     return userIds.map((key) => toExternal(object[key]));

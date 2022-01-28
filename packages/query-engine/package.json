@@ -1,6 +1,7 @@
 {
     "name": "@hypertool/query-engine",
     "version": "0.0.0",
+    "license": "MIT",
     "repository": "https://github.com/hypertool/hypertool",
     "private": false,
     "scripts": {
@@ -9,14 +10,16 @@
         "start": "nodemon --exec \"node ./dist/start.js\""
     },
     "dependencies": {
+        "@hypertool/common": "^0.2.10",
         "axios": "^0.25.0",
         "body-parser": "^1.19.1",
-        "@hypertool/common": "^0.2.1",
         "cors": "^2.8.5",
         "dotenv": "^14.2.0",
         "express": "^4.17.2",
+        "graphql": "^16.3.0",
         "joi": "^17.5.0",
         "mongoose": "^6.0.12",
+        "morgan": "^1.10.0",
         "mysql2": "^2.3.3"
     },
     "devDependencies": {

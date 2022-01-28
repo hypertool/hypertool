@@ -92,9 +92,7 @@ const updateSchema = joi.object({
     }),
 });
 
-const toExternal = (
-    resource: Resource & Document<Resource>,
-): ExternalResource => {
+const toExternal = (resource: any): ExternalResource => {
     const { id, _id, name, description, type, status, createdAt, updatedAt } =
         resource;
     let sanitizedConfiguration = null;
@@ -212,7 +210,7 @@ const listByIds = async (
     const object = {};
     // eslint-disable-next-line no-restricted-syntax
     for (const resource of unorderedResources) {
-        object[resource._id] = resource;
+        object[resource._id.toString()] = resource;
     }
     // eslint-disable-next-line security/detect-object-injection
     return resourceIds.map((key) => toExternal(object[key]));
