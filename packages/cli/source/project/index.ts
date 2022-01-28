@@ -6,7 +6,7 @@ import chalk from "chalk";
 import process from "process";
 import { promisify } from "util";
 import { exec } from "child_process";
-import { error } from "../utils/logger";
+import { logger } from "../utils";
 const execPromisify = promisify(exec);
 
 const repositoryByTemplate = {
@@ -73,8 +73,8 @@ export const createProject = async (
                     const { stdout, stderr } = await execPromisify(
                         `yarn install`,
                     );
-                } catch (err) {
-                    error((err as Error).message);
+                } catch (error) {
+                    logger.error((error as Error).message);
                 }
             },
         },
