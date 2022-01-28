@@ -36,4 +36,18 @@ describe("QueryTemplate Model", function () {
             "The name attribute should be of length 1.",
         );
     });
+
+    it("should not be created when name is too long", async () => {
+        const newQuery = new QueryTemplateModel({
+            ...queryTemplate,
+            name:
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAAAA",
+        });
+        await assertThrowsAsync(
+            async () => newQuery.save(),
+            "The name attribute should have a maximum of 128 characters.",
+        );
+    });
 });
