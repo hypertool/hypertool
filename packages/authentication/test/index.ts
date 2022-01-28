@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
-import "chai/register-assert";
 
 dotenv.config({
     path: `${__dirname}/../.env.test`,
