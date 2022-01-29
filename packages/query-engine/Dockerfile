@@ -1,7 +1,7 @@
 # Command to build the container:
 # docker build . -f ./packages/query-engine/Dockerfile -t hypertool/query-engine:latest
 #
-# You can run this container with the following command:
+# Command to run the container:
 # docker run -p 5000:5000 -d --env-file=./packages/query-engine/.env hypertool/query-engine:latest
 
 # --- Builder ---
