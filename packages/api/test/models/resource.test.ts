@@ -485,4 +485,136 @@ describe("Resource Model", function () {
             "The postgres.connectUsingSSL attribute is required.",
         );
     });
+
+    it("should not be created when mongodb.host is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mongodb = resource.mysql;
+        newResource.mongodb.host = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mongodb.host attribute is required.",
+        );
+    });
+
+    it("should not be created when mongodb.port is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mongodb = resource.mysql;
+        newResource.mongodb.port = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mongodb.port attribute is required.",
+        );
+    });
+
+    it("should not be created when mongodb.databaseName is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mongodb = resource.mysql;
+        newResource.mongodb.databaseName = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mongodb.databaseName attribute is required.",
+        );
+    });
+
+    it("should not be created when mongodb.databaseUserName is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mongodb = resource.mysql;
+        newResource.mongodb.databaseUserName = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mongodb.databaseUserName attribute is required.",
+        );
+    });
+
+    it("should not be created when mongodb.databasePassword is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mongodb = resource.mysql;
+        newResource.mongodb.databasePassword = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mongodb.databasePassword attribute is required.",
+        );
+    });
+
+    it("should not be created when mongodb.connectUsingSSL is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mongodb = resource.mysql;
+        newResource.mongodb.connectUsingSSL = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mongodb.connectUsingSSL attribute is required.",
+        );
+    });
+
+    it("should not be created when mongodb.host is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mongodb = resource.mysql;
+        newResource.mongodb.host = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mongodb.host attribute is required.",
+        );
+    });
+
+    it("should not be created when mongodb.port is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mongodb = resource.mysql;
+        newResource.mongodb.port = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mongodb.port attribute is required.",
+        );
+    });
+
+    it("should not be created when mongodb.databaseName is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mongodb = resource.mysql;
+        newResource.mongodb.databaseName = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mongodb.databaseName attribute is required.",
+        );
+    });
+
+    it("should not be created when mongodb.databaseUserName is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mongodb = resource.mysql;
+        newResource.mongodb.databaseUserName = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mongodb.databaseUserName attribute is required.",
+        );
+    });
+
+    it("should not be created when mongodb.databasePassword is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mongodb = resource.mysql;
+        newResource.mongodb.databasePassword = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mongodb.databasePassword attribute is required.",
+        );
+    });
+
+    it("should not be created when mongodb.connectUsingSSL is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mongodb = resource.mysql;
+        newResource.mongodb.connectUsingSSL = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mongodb.connectUsingSSL attribute is required.",
+        );
+    });
 });
