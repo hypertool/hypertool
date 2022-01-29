@@ -224,6 +224,7 @@ describe("Resource Model", function () {
 
     it("should not be created when mysql.host is null", async () => {
         const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
         newResource.mysql.host = null;
 
         await assertThrowsAsync(
@@ -234,6 +235,7 @@ describe("Resource Model", function () {
 
     it("should not be created when mysql.port is null", async () => {
         const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
         newResource.mysql.port = null;
 
         await assertThrowsAsync(
@@ -244,6 +246,7 @@ describe("Resource Model", function () {
 
     it("should not be created when mysql.databaseName is null", async () => {
         const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
         newResource.mysql.databaseName = null;
 
         await assertThrowsAsync(
@@ -254,6 +257,7 @@ describe("Resource Model", function () {
 
     it("should not be created when mysql.databaseUserName is null", async () => {
         const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
         newResource.mysql.databaseUserName = null;
 
         await assertThrowsAsync(
@@ -264,6 +268,7 @@ describe("Resource Model", function () {
 
     it("should not be created when mysql.databasePassword is null", async () => {
         const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
         newResource.mysql.databasePassword = null;
 
         await assertThrowsAsync(
@@ -274,6 +279,7 @@ describe("Resource Model", function () {
 
     it("should not be created when mysql.connectUsingSSL is null", async () => {
         const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
         newResource.mysql.connectUsingSSL = null;
 
         await assertThrowsAsync(
@@ -284,6 +290,7 @@ describe("Resource Model", function () {
 
     it("should not be created when mysql.host is undefined", async () => {
         const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
         newResource.mysql.host = undefined;
 
         await assertThrowsAsync(
@@ -294,6 +301,7 @@ describe("Resource Model", function () {
 
     it("should not be created when mysql.port is undefined", async () => {
         const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
         newResource.mysql.port = undefined;
 
         await assertThrowsAsync(
@@ -304,6 +312,7 @@ describe("Resource Model", function () {
 
     it("should not be created when mysql.databaseName is undefined", async () => {
         const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
         newResource.mysql.databaseName = undefined;
 
         await assertThrowsAsync(
@@ -314,6 +323,7 @@ describe("Resource Model", function () {
 
     it("should not be created when mysql.databaseUserName is undefined", async () => {
         const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
         newResource.mysql.databaseUserName = undefined;
 
         await assertThrowsAsync(
@@ -324,6 +334,7 @@ describe("Resource Model", function () {
 
     it("should not be created when mysql.databasePassword is undefined", async () => {
         const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
         newResource.mysql.databasePassword = undefined;
 
         await assertThrowsAsync(
@@ -334,11 +345,144 @@ describe("Resource Model", function () {
 
     it("should not be created when mysql.connectUsingSSL is undefined", async () => {
         const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
         newResource.mysql.connectUsingSSL = undefined;
 
         await assertThrowsAsync(
             async () => newResource.save(),
             "The mysql.connectUsingSSL attribute is required.",
+        );
+    });
+
+    it("should not be created when postgres.host is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
+        newResource.postgres.host = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The postgres.host attribute is required.",
+        );
+    });
+
+    it("should not be created when postgres.port is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
+        newResource.postgres.port = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The postgres.port attribute is required.",
+        );
+    });
+
+    it("should not be created when postgres.databaseName is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
+        newResource.postgres.databaseName = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The postgres.databaseName attribute is required.",
+        );
+    });
+
+    it("should not be created when postgres.databaseUserName is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
+        newResource.postgres.databaseUserName = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The postgres.databaseUserName attribute is required.",
+        );
+    });
+
+    it("should not be created when postgres.databasePassword is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
+        newResource.postgres.databasePassword = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The postgres.databasePassword attribute is required.",
+        );
+    });
+
+    it("should not be created when postgres.connectUsingSSL is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
+        newResource.postgres.connectUsingSSL = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The postgres.connectUsingSSL attribute is required.",
+        );
+    });
+
+    it("should not be created when postgres.host is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
+        newResource.postgres.host = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The postgres.host attribute is required.",
+        );
+    });
+
+    it("should not be created when postgres.port is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
+        newResource.postgres.port = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The postgres.port attribute is required.",
+        );
+    });
+
+    it("should not be created when postgres.databaseName is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
+        newResource.postgres.databaseName = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The postgres.databaseName attribute is required.",
+        );
+    });
+
+    it("should not be created when postgres.databaseUserName is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
+        newResource.postgres.databaseUserName = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The postgres.databaseUserName attribute is required.",
+        );
+    });
+
+    it("should not be created when postgres.databasePassword is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
+        newResource.postgres.databasePassword = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The postgres.databasePassword attribute is required.",
+        );
+    });
+
+    it("should not be created when postgres.connectUsingSSL is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.postgres = resource.mysql;
+        newResource.postgres.connectUsingSSL = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The postgres.connectUsingSSL attribute is required.",
         );
     });
 });
