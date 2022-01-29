@@ -221,4 +221,40 @@ describe("User Model", function () {
             "The query should be persisted to the database.",
         );
     });
+
+    it("should not be created when gender is invalid", async () => {
+        const newUser = new UserModel({
+            ...user,
+            gender: "lorem",
+        });
+
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The gender attribute is not from defined options.",
+        );
+    });
+
+    it("should not be created when gender is undefined", async () => {
+        const newQuery = new UserModel({
+            ...user,
+            gender: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newQuery.save(),
+            "The gender attribute is required.",
+        );
+    });
+
+    it("should not be created when gender is null", async () => {
+        const newQuery = new UserModel({
+            ...user,
+            gender: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newQuery.save(),
+            "The gender attribute is required.",
+        );
+    });
 });
