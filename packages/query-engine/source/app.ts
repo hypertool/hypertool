@@ -4,6 +4,7 @@ import logger from "morgan";
 import cors from "cors";
 
 import { queryEngine } from "./rest";
+import { BadRequestError, NotFoundError, UnauthorizedError } from "./utils";
 
 const initialize = async () => {
     const app = express();
@@ -13,6 +14,11 @@ const initialize = async () => {
     const router = express.Router();
     queryEngine.attachRoutes(router);
     app.use("/api/v1", router);
+
+    // Attach error handlers
+    app.use(BadRequestError);
+    app.use(NotFoundError);
+    app.use(UnauthorizedError);
 
     if (process.env.NODE_ENV !== "production") {
         app.use(logger("dev"));
