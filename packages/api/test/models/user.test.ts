@@ -21,4 +21,65 @@ describe("User Model", function () {
             "The query should be persisted to the database.",
         );
     });
+
+    it("should be created when firstName length is 1", async () => {
+        const newUser = new UserModel({
+            ...user,
+            firstName: "A",
+        });
+        await newUser.save();
+
+        assert.lengthOf(
+            newUser.firstName,
+            1,
+            "The firstName attribute should be of length 1.",
+        );
+    });
+
+    it("should not be created when firstName is too long", async () => {
+        const newUser = new UserModel({
+            ...user,
+            firstName: new Array(31 + 1).join("a"),
+        });
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The name attribute should have a maximum of 30 characters.",
+        );
+    });
+
+    it("should not be created when firstName is undefined", async () => {
+        const newUser = new UserModel({
+            ...user,
+            firstName: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The firstName attribute is required.",
+        );
+    });
+
+    it("should not be created when firstName is null", async () => {
+        const newUser = new UserModel({
+            ...user,
+            firstName: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The firstName attribute is required.",
+        );
+    });
+
+    it("should not be created when firstName is empty", async () => {
+        const newUser = new UserModel({
+            ...user,
+            firstName: "",
+        });
+
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The firstName attribute is required.",
+        );
+    });
 });
