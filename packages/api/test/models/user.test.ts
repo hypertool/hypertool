@@ -293,4 +293,32 @@ describe("User Model", function () {
             "The countryCode attribute is required.",
         );
     });
+
+    it("should be created when pictureURL is undefined", async () => {
+        const newUser = new UserModel({
+            ...user,
+            pictureURL: undefined,
+        });
+
+        await newUser.save();
+
+        assert.isFalse(
+            newUser.isNew,
+            "The query should be persisted to the database.",
+        );
+    });
+
+    it("should be created when pictureURL is null", async () => {
+        const newUser = new UserModel({
+            ...user,
+            pictureURL: null,
+        });
+
+        await newUser.save();
+
+        assert.isFalse(
+            newUser.isNew,
+            "The query should be persisted to the database.",
+        );
+    });
 });
