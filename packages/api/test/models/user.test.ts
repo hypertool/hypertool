@@ -469,4 +469,46 @@ describe("User Model", function () {
             "The user should be persisted to the database.",
         );
     });
+
+    it("should be created when groups is undefined", async () => {
+        const newUser = new UserModel({
+            ...user,
+            groups: undefined,
+        });
+
+        await newUser.save();
+
+        assert.isFalse(
+            newUser.isNew,
+            "The user should be persisted to the database.",
+        );
+    });
+
+    it("should be created when groups is null", async () => {
+        const newUser = new UserModel({
+            ...user,
+            groups: null,
+        });
+
+        await newUser.save();
+
+        assert.isFalse(
+            newUser.isNew,
+            "The user should be persisted to the database.",
+        );
+    });
+
+    it("should be created when groups is empty", async () => {
+        const newUser = new UserModel({
+            ...user,
+            groups: [],
+        });
+
+        await newUser.save();
+
+        assert.isFalse(
+            newUser.isNew,
+            "The user should be persisted to the database.",
+        );
+    });
 });
