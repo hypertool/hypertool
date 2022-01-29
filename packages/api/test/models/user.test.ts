@@ -357,4 +357,40 @@ describe("User Model", function () {
             "The status attribute is required.",
         );
     });
+
+    it("should not be created when role is invalid", async () => {
+        const newUser = new UserModel({
+            ...user,
+            role: "lorem",
+        });
+
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The role attribute is not from defined options.",
+        );
+    });
+
+    it("should not be created when role is undefined", async () => {
+        const newUser = new UserModel({
+            ...user,
+            role: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The role attribute is required.",
+        );
+    });
+
+    it("should not be created when role is null", async () => {
+        const newUser = new UserModel({
+            ...user,
+            role: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The role attribute is required.",
+        );
+    });
 });
