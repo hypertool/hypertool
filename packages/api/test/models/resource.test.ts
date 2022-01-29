@@ -121,4 +121,30 @@ describe("Resource Model", function () {
             "The resource should be persisted to the database.",
         );
     });
+
+    it("should be created when creator is null", async () => {
+        const newResource = new ResourceModel({
+            ...resource,
+            creator: null,
+        });
+
+        await newResource.save();
+        assert.isFalse(
+            newResource.isNew,
+            "The resource should be persisted to the database.",
+        );
+    });
+
+    it("should be created when creator is undefined", async () => {
+        const newResource = new ResourceModel({
+            ...resource,
+            creator: undefined,
+        });
+
+        await newResource.save();
+        assert.isFalse(
+            newResource.isNew,
+            "The resource should be persisted to the database.",
+        );
+    });
 });
