@@ -18,7 +18,7 @@ describe("User Model", function () {
         await newUser.save();
         assert.isFalse(
             newUser.isNew,
-            "The query should be persisted to the database.",
+            "The user should be persisted to the database.",
         );
     });
 
@@ -141,6 +141,58 @@ describe("User Model", function () {
         await assertThrowsAsync(
             async () => newUser.save(),
             "The lastName attribute is required.",
+        );
+    });
+
+    it("should be created when description is empty", async () => {
+        const newUser = new UserModel({
+            ...user,
+            description: "",
+        });
+        await newUser.save();
+
+        assert.isFalse(
+            newUser.isNew,
+            "The query should be persisted to the database.",
+        );
+    });
+
+    it("should not be created when description is too long", async () => {
+        const newUser = new UserModel({
+            ...user,
+            description: new Array(513 + 1).join("a"),
+        });
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The name attribute should have a maximum of 30 characters.",
+        );
+    });
+
+    it("should be created when description is undefined", async () => {
+        const newUser = new UserModel({
+            ...user,
+            description: undefined,
+        });
+
+        await newUser.save();
+
+        assert.isFalse(
+            newUser.isNew,
+            "The query should be persisted to the database.",
+        );
+    });
+
+    it("should be created when description is null", async () => {
+        const newUser = new UserModel({
+            ...user,
+            description: null,
+        });
+
+        await newUser.save();
+
+        assert.isFalse(
+            newUser.isNew,
+            "The query should be persisted to the database.",
         );
     });
 });
