@@ -413,4 +413,32 @@ describe("User Model", function () {
             "The updatedAt attribute should be assigned by default.",
         );
     });
+
+    it("should be created when emailVerified is undefined", async () => {
+        const newUser = new UserModel({
+            ...user,
+            emailVerified: undefined,
+        });
+
+        await newUser.save();
+
+        assert.isFalse(
+            newUser.isNew,
+            "The user should be persisted to the database.",
+        );
+    });
+
+    it("should be created when emailVerified is null", async () => {
+        const newUser = new UserModel({
+            ...user,
+            emailVerified: null,
+        });
+
+        await newUser.save();
+
+        assert.isFalse(
+            newUser.isNew,
+            "The user should be persisted to the database.",
+        );
+    });
 });
