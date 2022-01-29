@@ -393,4 +393,24 @@ describe("User Model", function () {
             "The role attribute is required.",
         );
     });
+
+    it("should be created with a default value for createdAt", async () => {
+        const newUser = new UserModel({ ...user });
+        await newUser.save();
+        assert.typeOf(
+            newUser.createdAt,
+            "date",
+            "The createdAt attribute should be assigned by default.",
+        );
+    });
+
+    it("should be created with a default value for updatedAt", async () => {
+        const newUser = new UserModel({ ...user });
+        await newUser.save();
+        assert.typeOf(
+            newUser.updatedAt,
+            "date",
+            "The updatedAt attribute should be assigned by default.",
+        );
+    });
 });
