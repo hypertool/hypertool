@@ -59,4 +59,23 @@ const users = [
     },
 ];
 
-export { activityLogs, queryTemplates, appData, users };
+const resources = [
+    {
+        name: "ecommerce",
+        description:
+            "This database contains all the ecommerce related information.\nThis is a new line. New update.",
+        type: "mysql",
+        creator: "61b34f2706fe01480acc6583",
+        status: "enabled",
+        mysql: {
+            host: "localhost",
+            port: 3306,
+            databaseName: "test",
+            databaseUserName: "root",
+            databasePassword: "12345",
+            connectUsingSSL: false,
+        },
+    },
+];
+
+export { activityLogs, queryTemplates, appData, users, resources };
