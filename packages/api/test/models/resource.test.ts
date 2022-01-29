@@ -70,4 +70,55 @@ describe("Resource Model", function () {
             "The name attribute is required.",
         );
     });
+
+    it("should be created when description is empty", async () => {
+        const newResource = new ResourceModel({
+            ...resource,
+            description: "",
+        });
+        await newResource.save();
+
+        assert.lengthOf(
+            newResource.description,
+            0,
+            "The description attribute should be of length 0.",
+        );
+    });
+
+    it("should not be created when description is too long", async () => {
+        const newResource = new ResourceModel({
+            ...resource,
+            description: new Array(513 + 1).join("a"),
+        });
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The description attribute should have a maximum of 512 characters.",
+        );
+    });
+
+    it("should be created when description is undefined", async () => {
+        const newResource = new ResourceModel({
+            ...resource,
+            description: undefined,
+        });
+
+        await newResource.save();
+        assert.isFalse(
+            newResource.isNew,
+            "The resource should be persisted to the database.",
+        );
+    });
+
+    it("should be created when description is null", async () => {
+        const newResource = new ResourceModel({
+            ...resource,
+            description: null,
+        });
+
+        await newResource.save();
+        assert.isFalse(
+            newResource.isNew,
+            "The resource should be persisted to the database.",
+        );
+    });
 });
