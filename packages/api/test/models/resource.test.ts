@@ -147,4 +147,40 @@ describe("Resource Model", function () {
             "The resource should be persisted to the database.",
         );
     });
+
+    it("should not be created when type is invalid", async () => {
+        const newResource = new ResourceModel({
+            ...resource,
+            type: "lorem",
+        });
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The type attribute is not from defined options.",
+        );
+    });
+
+    it("should not be created when type is undefined", async () => {
+        const newResource = new ResourceModel({
+            ...resource,
+            type: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The type attribute is required.",
+        );
+    });
+
+    it("should not be created when type is null", async () => {
+        const newResource = new ResourceModel({
+            ...resource,
+            type: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The type attribute is required.",
+        );
+    });
 });
