@@ -1,6 +1,7 @@
 import { assert } from "chai";
 import { assertThrowsAsync, resources } from "../helper";
 import { ResourceModel } from "@hypertool/common";
+import * as lodash from "lodash";
 
 describe("Resource Model", function () {
     let resource = null;
@@ -181,6 +182,163 @@ describe("Resource Model", function () {
         await assertThrowsAsync(
             async () => newResource.save(),
             "The type attribute is required.",
+        );
+    });
+
+    it("should not be created when status is invalid", async () => {
+        const newResource = new ResourceModel({
+            ...resource,
+            status: "lorem",
+        });
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The status attribute is not from defined options.",
+        );
+    });
+
+    it("should be created when status is null", async () => {
+        const newResource = new ResourceModel({
+            ...resource,
+            status: null,
+        });
+
+        await newResource.save();
+        assert.isFalse(
+            newResource.isNew,
+            "The resource should be persisted to the database.",
+        );
+    });
+
+    it("should be created when status is undefined", async () => {
+        const newResource = new ResourceModel({
+            ...resource,
+            status: undefined,
+        });
+        await newResource.save();
+        assert.isFalse(
+            newResource.isNew,
+            "The resource should be persisted to the database.",
+        );
+    });
+
+    it("should not be created when mysql.host is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mysql.host = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mysql.host attribute is required.",
+        );
+    });
+
+    it("should not be created when mysql.port is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mysql.port = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mysql.port attribute is required.",
+        );
+    });
+
+    it("should not be created when mysql.databaseName is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mysql.databaseName = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mysql.databaseName attribute is required.",
+        );
+    });
+
+    it("should not be created when mysql.databaseUserName is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mysql.databaseUserName = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mysql.databaseUserName attribute is required.",
+        );
+    });
+
+    it("should not be created when mysql.databasePassword is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mysql.databasePassword = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mysql.databasePassword attribute is required.",
+        );
+    });
+
+    it("should not be created when mysql.connectUsingSSL is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mysql.connectUsingSSL = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mysql.connectUsingSSL attribute is required.",
+        );
+    });
+
+    it("should not be created when mysql.host is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mysql.host = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mysql.host attribute is required.",
+        );
+    });
+
+    it("should not be created when mysql.port is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mysql.port = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mysql.port attribute is required.",
+        );
+    });
+
+    it("should not be created when mysql.databaseName is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mysql.databaseName = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mysql.databaseName attribute is required.",
+        );
+    });
+
+    it("should not be created when mysql.databaseUserName is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mysql.databaseUserName = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mysql.databaseUserName attribute is required.",
+        );
+    });
+
+    it("should not be created when mysql.databasePassword is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mysql.databasePassword = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mysql.databasePassword attribute is required.",
+        );
+    });
+
+    it("should not be created when mysql.connectUsingSSL is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.mysql.connectUsingSSL = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The mysql.connectUsingSSL attribute is required.",
         );
     });
 });
