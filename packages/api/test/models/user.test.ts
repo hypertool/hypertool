@@ -195,4 +195,30 @@ describe("User Model", function () {
             "The query should be persisted to the database.",
         );
     });
+
+    it("should be created when organization is null", async () => {
+        const newUser = new UserModel({
+            ...user,
+            organization: null,
+        });
+
+        await newUser.save();
+        assert.isFalse(
+            newUser.isNew,
+            "The query should be persisted to the database.",
+        );
+    });
+
+    it("should be created when organization is undefined", async () => {
+        const newUser = new UserModel({
+            ...user,
+            organization: undefined,
+        });
+
+        await newUser.save();
+        assert.isFalse(
+            newUser.isNew,
+            "The query should be persisted to the database.",
+        );
+    });
 });
