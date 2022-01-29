@@ -257,4 +257,40 @@ describe("User Model", function () {
             "The gender attribute is required.",
         );
     });
+
+    it("should not be created when countryCode is invalid", async () => {
+        const newUser = new UserModel({
+            ...user,
+            countryCode: "lorem",
+        });
+
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The countryCode attribute is not from defined options.",
+        );
+    });
+
+    it("should not be created when countryCode is undefined", async () => {
+        const newQuery = new UserModel({
+            ...user,
+            countryCode: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newQuery.save(),
+            "The countryCode attribute is required.",
+        );
+    });
+
+    it("should not be created when countryCode is null", async () => {
+        const newQuery = new UserModel({
+            ...user,
+            countryCode: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newQuery.save(),
+            "The countryCode attribute is required.",
+        );
+    });
 });
