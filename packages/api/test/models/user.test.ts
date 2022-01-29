@@ -511,4 +511,54 @@ describe("User Model", function () {
             "The user should be persisted to the database.",
         );
     });
+
+    it("should not be created when emailAddress is too long", async () => {
+        const newUser = new UserModel({
+            ...user,
+            emailAddress: new Array(256 + 1).join("a"),
+        });
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The name attribute should have a maximum of 30 characters.",
+        );
+    });
+
+    it("should not be created when emailAddress is undefined", async () => {
+        const newUser = new UserModel({
+            ...user,
+            emailAddress: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The emailAddress attribute is required.",
+        );
+    });
+
+    it("should not be created when emailAddress is null", async () => {
+        const newUser = new UserModel({
+            ...user,
+            emailAddress: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The emailAddress attribute is required.",
+        );
+    });
+
+    it("should not be created when emailAddress is not unique", async () => {
+        const newUser1 = new UserModel({
+            ...user,
+        });
+        await newUser1.save();
+
+        const newUser2 = new UserModel({
+            ...user,
+        });
+        await assertThrowsAsync(
+            async () => newUser2.save(),
+            "The emailAddress attribute has to be unique.",
+        );
+    });
 });
