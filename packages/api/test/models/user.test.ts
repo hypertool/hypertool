@@ -153,7 +153,7 @@ describe("User Model", function () {
 
         assert.isFalse(
             newUser.isNew,
-            "The query should be persisted to the database.",
+            "The user should be persisted to the database.",
         );
     });
 
@@ -178,7 +178,7 @@ describe("User Model", function () {
 
         assert.isFalse(
             newUser.isNew,
-            "The query should be persisted to the database.",
+            "The user should be persisted to the database.",
         );
     });
 
@@ -192,7 +192,7 @@ describe("User Model", function () {
 
         assert.isFalse(
             newUser.isNew,
-            "The query should be persisted to the database.",
+            "The user should be persisted to the database.",
         );
     });
 
@@ -205,7 +205,7 @@ describe("User Model", function () {
         await newUser.save();
         assert.isFalse(
             newUser.isNew,
-            "The query should be persisted to the database.",
+            "The user should be persisted to the database.",
         );
     });
 
@@ -218,7 +218,7 @@ describe("User Model", function () {
         await newUser.save();
         assert.isFalse(
             newUser.isNew,
-            "The query should be persisted to the database.",
+            "The user should be persisted to the database.",
         );
     });
 
@@ -235,25 +235,25 @@ describe("User Model", function () {
     });
 
     it("should not be created when gender is undefined", async () => {
-        const newQuery = new UserModel({
+        const newUser = new UserModel({
             ...user,
             gender: undefined,
         });
 
         await assertThrowsAsync(
-            async () => newQuery.save(),
+            async () => newUser.save(),
             "The gender attribute is required.",
         );
     });
 
     it("should not be created when gender is null", async () => {
-        const newQuery = new UserModel({
+        const newUser = new UserModel({
             ...user,
             gender: null,
         });
 
         await assertThrowsAsync(
-            async () => newQuery.save(),
+            async () => newUser.save(),
             "The gender attribute is required.",
         );
     });
@@ -271,25 +271,25 @@ describe("User Model", function () {
     });
 
     it("should not be created when countryCode is undefined", async () => {
-        const newQuery = new UserModel({
+        const newUser = new UserModel({
             ...user,
             countryCode: undefined,
         });
 
         await assertThrowsAsync(
-            async () => newQuery.save(),
+            async () => newUser.save(),
             "The countryCode attribute is required.",
         );
     });
 
     it("should not be created when countryCode is null", async () => {
-        const newQuery = new UserModel({
+        const newUser = new UserModel({
             ...user,
             countryCode: null,
         });
 
         await assertThrowsAsync(
-            async () => newQuery.save(),
+            async () => newUser.save(),
             "The countryCode attribute is required.",
         );
     });
@@ -304,7 +304,7 @@ describe("User Model", function () {
 
         assert.isFalse(
             newUser.isNew,
-            "The query should be persisted to the database.",
+            "The user should be persisted to the database.",
         );
     });
 
@@ -318,7 +318,43 @@ describe("User Model", function () {
 
         assert.isFalse(
             newUser.isNew,
-            "The query should be persisted to the database.",
+            "The user should be persisted to the database.",
+        );
+    });
+
+    it("should not be created when status is invalid", async () => {
+        const newUser = new UserModel({
+            ...user,
+            status: "lorem",
+        });
+
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The status attribute is not from defined options.",
+        );
+    });
+
+    it("should not be created when status is undefined", async () => {
+        const newUser = new UserModel({
+            ...user,
+            status: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The status attribute is required.",
+        );
+    });
+
+    it("should not be created when status is null", async () => {
+        const newUser = new UserModel({
+            ...user,
+            status: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The status attribute is required.",
         );
     });
 });
