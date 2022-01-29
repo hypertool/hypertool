@@ -1,19 +1,11 @@
 import simpleGit, { SimpleGit } from "simple-git";
-
 import * as path from "path";
-
 import * as fsExtra from "fs-extra";
-
 import TaskList from "listr";
-
 import chalk from "chalk";
-
 import process from "process";
-
 import { promisify } from "util";
-
 import { exec } from "child_process";
-
 import { logger } from "../utils";
 
 const execPromisify = promisify(exec);
