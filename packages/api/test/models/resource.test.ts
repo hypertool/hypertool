@@ -617,4 +617,34 @@ describe("Resource Model", function () {
             "The mongodb.connectUsingSSL attribute is required.",
         );
     });
+
+    it("should not be created when bigquery.key is undefined", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.bigquery = undefined;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The bigquery.key attribute is required.",
+        );
+    });
+
+    it("should not be created when bigquery.key is null", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.bigquery = null;
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The bigquery.key attribute is required.",
+        );
+    });
+
+    it("should not be created when bigquery.key is empty", async () => {
+        const newResource = lodash.clone(resource);
+        newResource.bigquery = {};
+
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The bigquery.key attribute is required.",
+        );
+    });
 });
