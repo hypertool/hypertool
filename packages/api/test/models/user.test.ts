@@ -441,4 +441,32 @@ describe("User Model", function () {
             "The user should be persisted to the database.",
         );
     });
+
+    it("should be created when birthday is undefined", async () => {
+        const newUser = new UserModel({
+            ...user,
+            birthday: undefined,
+        });
+
+        await newUser.save();
+
+        assert.isFalse(
+            newUser.isNew,
+            "The user should be persisted to the database.",
+        );
+    });
+
+    it("should be created when birthday is null", async () => {
+        const newUser = new UserModel({
+            ...user,
+            birthday: null,
+        });
+
+        await newUser.save();
+
+        assert.isFalse(
+            newUser.isNew,
+            "The user should be persisted to the database.",
+        );
+    });
 });
