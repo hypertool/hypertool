@@ -281,18 +281,6 @@ describe("QueryTemplate model", function () {
         );
     });
 
-    it("should not be created when status is undefined", async () => {
-        const newQuery = new QueryTemplateModel({
-            ...queryTemplate,
-            status: undefined,
-        });
-
-        await assertThrowsAsync(
-            async () => newQuery.save(),
-            "The status attribute is required.",
-        );
-    });
-
     it("should not be created when status is null", async () => {
         const newQuery = new QueryTemplateModel({
             ...queryTemplate,
