@@ -2,7 +2,7 @@ import { UserModel } from "@hypertool/common";
 import { assert } from "chai";
 import { assertThrowsAsync, users } from "../helper";
 
-describe("User Model", function () {
+describe("User model", function () {
     let user = null;
 
     beforeEach(function () {

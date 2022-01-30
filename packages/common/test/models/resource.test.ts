@@ -3,7 +3,7 @@ import { assertThrowsAsync, resources } from "../helper";
 import { ResourceModel } from "@hypertool/common";
 import * as lodash from "lodash";
 
-describe("Resource Model", function () {
+describe("Resource model", function () {
     let resource = null;
 
     beforeEach(function () {

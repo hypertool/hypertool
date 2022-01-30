@@ -3,7 +3,7 @@ import { QueryTemplateModel } from "@hypertool/common";
 import { assert } from "chai";
 import { assertThrowsAsync, queryTemplates } from "../helper";
 
-describe("QueryTemplate Model", function () {
+describe("QueryTemplate model", function () {
     let queryTemplate = null;
 
     beforeEach(function () {

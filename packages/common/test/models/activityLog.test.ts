@@ -4,7 +4,7 @@ import { assert } from "chai";
 
 import { assertThrowsAsync, activityLogs } from "../helper";
 
-describe("ActivityLog Model", function () {
+describe("ActivityLog model", function () {
     let logTemplate = null;
 
     beforeEach(function () {

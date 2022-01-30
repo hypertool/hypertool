@@ -21,11 +21,12 @@ const activityLogs = [
 
 const queryTemplates = [
     {
-        name: "abc",
-        description: "lorem ipsum dolor amet",
+        name: "getUsers",
+        description: "Gets the list of users who have placed an order.",
         resource: "61c9483bcd1cf99c3a211977",
         app: "61c93a931da4a79d3a109947",
-        content: "abcd",
+        content:
+            "SELECT * FROM users as u LEFT JOIN orders as o ON u.id=o.userId",
         status: "enabled",
     },
 ];
