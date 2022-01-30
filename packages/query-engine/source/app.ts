@@ -11,6 +11,7 @@ const initialize = async () => {
     app.use(cors());
     app.use(bodyParser.json());
 
+    // Attach router
     const router = express.Router();
     queryEngine.attachRoutes(router);
     app.use("/api/v1", router);

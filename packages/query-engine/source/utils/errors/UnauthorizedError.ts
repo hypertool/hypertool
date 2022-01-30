@@ -9,11 +9,14 @@ const UnauthorizedError = (
     response: Response,
     next: NextFunction,
 ): void => {
-    response.status(httpStatuses.UNAUTHORIZED).json({
-        error: "Unauthorized",
-        message: error.message,
-    });
-    next(error);
+    if (error.code === "ER_ACCESS_DENIED_ERROR") {
+        response.status(httpStatuses.UNAUTHORIZED).json({
+            error: "Unauthorized",
+            message: error.message,
+        });
+    } else {
+        next(error);
+    }
 };
 
 export default UnauthorizedError;

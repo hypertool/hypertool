@@ -9,11 +9,18 @@ const NotFoundError = (
     response: Response,
     next: NextFunction,
 ): void => {
-    response.status(httpStatuses.NOT_FOUND).json({
-        error: "Not Found",
-        message: error.message,
-    });
-    next(error);
+    if (
+        error.code === "ER_BAD_DB_ERROR" ||
+        error.code === "ER_BAD_TABLE_ERROR" ||
+        error.code === "ER_NO_SUCH_TABLE"
+    ) {
+        response.status(httpStatuses.NOT_FOUND).json({
+            error: "Not Found",
+            message: error.message,
+        });
+    } else {
+        next(error);
+    }
 };
 
 export default NotFoundError;

@@ -2,17 +2,54 @@ import type { MySQLConfiguration, Resource, Query } from "@hypertool/common";
 
 import mysql from "mysql2/promise";
 import { QueryTemplateModel, ResourceModel } from "@hypertool/common";
-import { NextFunction } from "express";
-import { knex } from "knex";
+import { Knex, knex } from "knex";
 
 import type { ExecuteParameters } from "../types";
 
-const execute = async (
+const executeMySQL = async (
     queryRequest: ExecuteParameters,
-    next: NextFunction,
+    query: Query,
+    resource: Resource,
 ): Promise<any> => {
-    let queryResult: any;
+    const mySQLConfig: MySQLConfiguration = resource.mysql;
+    if (typeof query.content === "object") {
+        const config: Knex.Config = {
+            client: "mongodb",
+            connection: {
+                host: mySQLConfig.host,
+                port: mySQLConfig.port,
+                user: mySQLConfig.databaseUserName,
+                password: mySQLConfig.databasePassword,
+                database: mySQLConfig.databaseName,
+            },
+        };
+        knex(config);
+    }
 
+    /**
+     * Setting `namedPlaceholders to true when `variables` is an
+     * object automatically makes the `execute` function handle
+     * named parameters.
+     */
+    const connection = await mysql.createConnection({
+        host: mySQLConfig.host,
+        port: mySQLConfig.port,
+        user: mySQLConfig.databaseUserName,
+        // password: mySQLConfig.databasePassword,
+        database: mySQLConfig.databaseName,
+        namedPlaceholders:
+            typeof queryRequest.variables === "object" ? true : false,
+    });
+
+    const [results, fields] = await connection.execute(
+        query.content,
+        queryRequest.variables,
+    );
+
+    return { results, fields };
+};
+
+const execute = async (queryRequest: ExecuteParameters): Promise<any> => {
     try {
         const query: Query = await QueryTemplateModel.findOne({
             name: queryRequest.name,
@@ -22,30 +59,19 @@ const execute = async (
             _id: query.resource,
         }).exec();
 
-        console.log("resource", resource);
-
-        const mySQLConfig: MySQLConfiguration = resource.mysql;
-
-        const connection = await mysql.createConnection({
-            host: mySQLConfig.host,
-            port: mySQLConfig.port,
-            user: mySQLConfig.databaseUserName,
-            password: mySQLConfig.databasePassword,
-            database: mySQLConfig.databaseName,
-            namedPlaceholders:
-                typeof queryRequest.variables === "object" ? true : false,
-        });
-
-        const [results, fields] = await connection.execute(
-            query.content,
-            queryRequest.variables,
-        );
-        queryResult = { results, fields };
+        switch (resource.type) {
+            case "mysql": {
+                const queryResult = await executeMySQL(
+                    queryRequest,
+                    query,
+                    resource,
+                );
+                return queryResult;
+            }
+        }
     } catch (error) {
-        next(error);
+        throw error;
     }
-
-    return queryResult;
 };
 
 export { execute };

@@ -9,11 +9,14 @@ const BadRequestError = (
     response: Response,
     next: NextFunction,
 ): void => {
-    response.status(httpStatuses.BAD_REQUEST).json({
-        error: "Bad Request",
-        message: error.message,
-    });
-    next(error);
+    if (error.code === "ER_BAD_HOST_ERROR") {
+        response.status(httpStatuses.BAD_REQUEST).json({
+            error: "Bad Host Request",
+            message: error.message,
+        });
+    } else {
+        next(error);
+    }
 };
 
 export default BadRequestError;
