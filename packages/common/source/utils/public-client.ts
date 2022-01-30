@@ -75,4 +75,30 @@ export default class PublicClient {
         delete session.user.__typename;
         return session;
     };
+
+    getGoogleAuthServices = async (
+        name: string,
+        code: string,
+    ): Promise<any> => {
+        try {
+            const { data } = await this.client.query({
+                query: GET_GOOGLE_AUTH_SERVICES,
+                variables: { name },
+            });
+
+            const clientId = data.getAppByName.authServices.googleAuth.clientId;
+            const secret = data.getAppByName.authServices.googleAuth.secret;
+
+            const googleClient = new OAuth2Client({
+                clientId: clientId,
+                clientSecret: secret,
+            });
+
+            const credentials = await googleClient.getToken(code);
+
+            return credentials.tokens.access_token;
+        } catch (error) {
+            return null;
+        }
+    };
 }
