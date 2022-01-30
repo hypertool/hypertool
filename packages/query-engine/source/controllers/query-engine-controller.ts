@@ -5,14 +5,14 @@ import { Knex, knex } from "knex";
 
 import type { ExecuteParameters } from "../types";
 
-const executeMySQL = async (
+const executeSQL = async (
     queryRequest: ExecuteParameters,
     query: Query,
     resource: Resource,
 ): Promise<any> => {
     const mySQLConfig: MySQLConfiguration = resource.mysql;
     const config: Knex.Config = {
-        client: "mysql",
+        client: resource.type,
         connection: {
             host: mySQLConfig.host,
             port: mySQLConfig.port,
@@ -66,16 +66,18 @@ const execute = async (queryRequest: ExecuteParameters): Promise<any> => {
             _id: query.resource,
         }).exec();
 
-        console.log(query);
-
         switch (resource.type) {
-            case "mysql": {
-                const queryResult = await executeMySQL(
+            case "mysql":
+            case "postgres": {
+                const queryResult = await executeSQL(
                     queryRequest,
                     query,
                     resource,
                 );
                 return { result: queryResult };
+            }
+            default: {
+                throw new Error("Unknown resource type");
             }
         }
     } catch (error) {
