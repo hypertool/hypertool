@@ -21,9 +21,14 @@ const executeMySQL = async (
             database: mySQLConfig.databaseName,
         },
     };
-    knex(config);
-    // const knexQuery = knex.raw(query.query);
-    return null;
+    const knexInstance = knex(config);
+
+    const queryResult = await knexInstance.raw(
+        query.content,
+        queryRequest.variables,
+    );
+
+    return queryResult[0];
 };
 
 const execute = async (queryRequest: ExecuteParameters): Promise<any> => {
@@ -43,7 +48,7 @@ const execute = async (queryRequest: ExecuteParameters): Promise<any> => {
                     query,
                     resource,
                 );
-                return queryResult;
+                return { result: queryResult };
             }
         }
     } catch (error) {
