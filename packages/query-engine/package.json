@@ -21,7 +21,7 @@
         "knex": "^1.0.1",
         "mongoose": "^6.0.12",
         "morgan": "^1.10.0",
-        "mysql2": "^2.3.3"
+        "mysql": "^2.18.1"
     },
     "devDependencies": {
         "@types/chai": "^4.3.0",

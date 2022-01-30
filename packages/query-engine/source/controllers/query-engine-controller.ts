@@ -1,6 +1,5 @@
 import type { MySQLConfiguration, Resource, Query } from "@hypertool/common";
 
-import mysql from "mysql2/promise";
 import { QueryTemplateModel, ResourceModel } from "@hypertool/common";
 import { Knex, knex } from "knex";
 
@@ -12,41 +11,19 @@ const executeMySQL = async (
     resource: Resource,
 ): Promise<any> => {
     const mySQLConfig: MySQLConfiguration = resource.mysql;
-    if (typeof query.content === "object") {
-        const config: Knex.Config = {
-            client: "mongodb",
-            connection: {
-                host: mySQLConfig.host,
-                port: mySQLConfig.port,
-                user: mySQLConfig.databaseUserName,
-                password: mySQLConfig.databasePassword,
-                database: mySQLConfig.databaseName,
-            },
-        };
-        knex(config);
-    }
-
-    /**
-     * Setting `namedPlaceholders to true when `variables` is an
-     * object automatically makes the `execute` function handle
-     * named parameters.
-     */
-    const connection = await mysql.createConnection({
-        host: mySQLConfig.host,
-        port: mySQLConfig.port,
-        user: mySQLConfig.databaseUserName,
-        // password: mySQLConfig.databasePassword,
-        database: mySQLConfig.databaseName,
-        namedPlaceholders:
-            typeof queryRequest.variables === "object" ? true : false,
-    });
-
-    const [results, fields] = await connection.execute(
-        query.content,
-        queryRequest.variables,
-    );
-
-    return { results, fields };
+    const config: Knex.Config = {
+        client: "mysql",
+        connection: {
+            host: mySQLConfig.host,
+            port: mySQLConfig.port,
+            user: mySQLConfig.databaseUserName,
+            password: mySQLConfig.databasePassword,
+            database: mySQLConfig.databaseName,
+        },
+    };
+    knex(config);
+    // const knexQuery = knex.raw(query.query);
+    return null;
 };
 
 const execute = async (queryRequest: ExecuteParameters): Promise<any> => {
