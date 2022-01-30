@@ -7,6 +7,7 @@ import {
     InMemoryCache,
     HttpLink,
 } from "@apollo/client/core";
+import { OAuth2Client } from "google-auth-library";
 
 const LOGIN_WITH_GOOGLE = gql`
     mutation LoginWithGoogle($token: String!, $client: ClientType!) {
@@ -28,6 +29,19 @@ const LOGIN_WITH_GOOGLE = gql`
                 updatedAt
             }
             createdAt
+        }
+    }
+`;
+
+const GET_GOOGLE_AUTH_SERVICES = gql`
+    query GetAppByName($name: String) {
+        getAppByName(name: $name) {
+            authServices {
+                googleAuth {
+                    clientId
+                    secret
+                }
+            }
         }
     }
 `;
