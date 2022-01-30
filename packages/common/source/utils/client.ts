@@ -259,6 +259,20 @@ const GET_ACTIVITY_LOG_BY_ID = gql`
     }
 `;
 
+const GET_ACTIVITY_LOGS = gql`
+    query GetActivityLogs($page: Int!, $limit: Int!) {
+        getActivityLogs(page: $page, limit: $limit) {
+            totalRecords
+            totalPages
+            previousPage
+            nextPage
+            hasPreviousPage
+            hasNextPage
+            records
+        }
+    }
+`;
+
 const isNotFoundError = (error0: unknown): boolean => {
     if (error0 instanceof ApolloError) {
         const error = error0 as ApolloError;
@@ -690,6 +704,28 @@ export default class Client<T> {
             });
 
             return activityLog.data.getActivityLogById;
+        } catch (error: unknown) {
+            if (isNotFoundError(error)) {
+                return null;
+            }
+            throw error;
+        }
+    }
+
+    async getActivityLogs(
+        page: Number,
+        limit: Number,
+    ): Promise<ActivityLogPage | null> {
+        try {
+            const activityLog = await this.client.query({
+                query: GET_ACTIVITY_LOGS,
+                variables: {
+                    page,
+                    limit,
+                },
+            });
+
+            return activityLog.data.getActivityLogs;
         } catch (error: unknown) {
             if (isNotFoundError(error)) {
                 return null;
