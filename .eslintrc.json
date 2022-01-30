@@ -70,7 +70,7 @@
         // Require destructuring from arrays and/or objects
         "prefer-destructuring": ["warn", { "object": true, "array": false }],
         // Disallows the use of with statements and function expressions.
-        "no-restricted-syntax": ["warn", "WithStatement", "FunctionExpression"],
+        "no-restricted-syntax": ["warn", "WithStatement"],
         // Disallows using this/super inside methods.
         "object-shorthand": "off",
         // Enforces using this/super inside methods.
@@ -85,7 +85,7 @@
          */
 
         // Prettier integration with ESLint
-        "prettier/prettier": "error",
+        "prettier/prettier": "off",
         // Disallows multiple newlines in a row.
         "no-multiple-empty-lines": "error",
         // Enforces consistent spacing inside braces.
