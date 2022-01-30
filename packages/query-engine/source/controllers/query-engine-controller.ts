@@ -23,12 +23,37 @@ const executeMySQL = async (
     };
     const knexInstance = knex(config);
 
-    const queryResult = await knexInstance.raw(
-        query.content,
-        queryRequest.variables,
-    );
+    if (typeof query.content === "object") {
+        const queryContent: any = query.content;
 
-    return queryResult[0];
+        let queryResult;
+        if (queryContent.hasOwnProperty("select") && queryContent.select) {
+            queryResult = await knexInstance
+                .select(queryContent.select)
+                .from(queryContent.from)
+                .where(queryContent.where);
+        }
+
+        if (queryContent.hasOwnProperty("insert") && queryContent.insert) {
+            queryResult = await knexInstance(queryContent.table)
+                .insert(queryContent.insert)
+                .where(queryContent.where);
+        }
+
+        if (queryContent.hasOwnProperty("update") && queryContent.update) {
+            queryResult = await knexInstance(queryContent.table)
+                .update(queryContent.update)
+                .where(queryContent.where);
+        }
+
+        return queryResult[0];
+    } else {
+        const queryResult = await knexInstance.raw(
+            query.content,
+            queryRequest.variables,
+        );
+        return queryResult[0];
+    }
 };
 
 const execute = async (queryRequest: ExecuteParameters): Promise<any> => {
@@ -40,6 +65,8 @@ const execute = async (queryRequest: ExecuteParameters): Promise<any> => {
         const resource: Resource = await ResourceModel.findOne({
             _id: query.resource,
         }).exec();
+
+        console.log(query);
 
         switch (resource.type) {
             case "mysql": {
