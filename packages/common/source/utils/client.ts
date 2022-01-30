@@ -248,6 +248,17 @@ const CREATE_ACTIVITY_LOG = gql`
     }
 `;
 
+const GET_ACTIVITY_LOG_BY_ID = gql`
+    query GetActivityLogById($activityLogId: String!) {
+        getActivityLogById(activityLogId: $activityLogId) {
+            id
+            message
+            context
+            component
+        }
+    }
+`;
+
 const isNotFoundError = (error0: unknown): boolean => {
     if (error0 instanceof ApolloError) {
         const error = error0 as ApolloError;
@@ -665,5 +676,25 @@ export default class Client<T> {
                 context: activityLog.context,
             },
         });
-    };
+    }
+
+    async getActivityLogById(
+        activityLogId: string,
+    ): Promise<ActivityLog | null> {
+        try {
+            const activityLog = await this.client.query({
+                query: GET_ACTIVITY_LOG_BY_ID,
+                variables: {
+                    activityLogId: activityLogId,
+                },
+            });
+
+            return activityLog.data.getActivityLogById;
+        } catch (error: unknown) {
+            if (isNotFoundError(error)) {
+                return null;
+            }
+            throw error;
+        }
+    }
 }
