@@ -99,6 +99,7 @@ const resourceSchema = new Schema(
             minlength: 0,
             maxlength: 256,
             trim: true,
+            required: true,
         },
         description: {
             type: String,
@@ -137,7 +138,7 @@ const resourceSchema = new Schema(
     },
     {
         timestamps: true,
-    }
+    },
 );
 
 resourceSchema.plugin(paginate);
