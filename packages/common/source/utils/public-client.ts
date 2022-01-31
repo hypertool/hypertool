@@ -35,21 +35,17 @@ const LOGIN_WITH_GOOGLE = gql`
 const GET_GOOGLE_AUTH_SERVICES = gql`
     query GetAppByName($name: String) {
         getAppByName(name: $name) {
-            authServices {
-                googleAuth {
-                    clientId
-                }
-            }
+            authServices
         }
     }
 `;
 
 export default class PublicClient {
-    appIdentifier: string;
+    appName: string;
     client: ApolloClient<any>;
 
-    constructor(appIdentifier: string) {
-        this.appIdentifier = appIdentifier;
+    constructor(appName: string) {
+        this.appName = appName;
         this.client = new ApolloClient({
             link: new HttpLink({
                 uri: `http://localhost:3001/graphql/v1/public`,
@@ -78,7 +74,7 @@ export default class PublicClient {
         try {
             const { data } = await this.client.query({
                 query: GET_GOOGLE_AUTH_SERVICES,
-                variables: { name: this.appIdentifier },
+                variables: { name: this.appName },
             });
 
             const clientId = data.getAppByName.authServices.googleAuth.clientId;
