@@ -9,14 +9,45 @@ const { googleClientTypes } = constants;
 const typeDefs = gql`
     ${types}
 
-    type Query {
-        dummy: String!
+    input GoogleAuthInput {
+        enabled: Boolean!
+        clientId: String!
+        secret: String!
+    }
 
-        getAppByName(name: String!): App!
+    input AuthServicesInput {
+        googleAuth: GoogleAuthInput
+    }
+
+    type App {
+        id: ID!
+        name: String!
+        title: String!
+        slug: String!
+        description: String!
+        # Group points to App directly, making each other mutually recursive.
+        # Therefore, we flatten the data structure here.
+        groups: [ID!]!
+        # Resource points to App directly, making each other mutually recursive.
+        # Therefore, we flatten the data structure here.
+        resources: [ID!]!
+        # User points to App indirectly via groups attribute. Since groups is flattened
+        # in User, we can use an aggregate type here.
+        creator: User!
+        status: AppStatus!
+        createdAt: Date!
+        updatedAt: Date!
+        authServices: AuthServicesInput
     }
 
     enum ClientType {
         ${googleClientTypes.join("\n")}
+    }
+
+    type Query {
+        dummy: String!
+
+        getAppByName(name: String!): App!
     }
 
     type Mutation {
