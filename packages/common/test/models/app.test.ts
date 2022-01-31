@@ -1,7 +1,8 @@
 import { beforeEach } from "mocha";
-import { AppModel } from "@hypertool/common";
-import { assertThrowsAsync, appData } from "../helper";
 import { assert } from "chai";
+
+import { AppModel } from "../../source/models";
+import { assertThrowsAsync, appData } from "../helper";
 
 describe("App model", function () {
     let appTemplate = null;

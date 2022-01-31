@@ -1,7 +1,8 @@
 import { assert } from "chai";
-import { assertThrowsAsync, resources } from "../helper";
-import { ResourceModel } from "@hypertool/common";
 import * as lodash from "lodash";
+
+import { assertThrowsAsync, resources } from "../helper";
+import { ResourceModel } from "../../source/models";
 
 describe("Resource model", function () {
     let resource = null;
@@ -46,29 +47,29 @@ describe("Resource model", function () {
         );
     });
 
-    // it("should not be created when name is undefined", async () => {
-    //     const newResource = new ResourceModel({
-    //         ...resource,
-    //         name: undefined,
-    //     });
+    it("should not be created when name is undefined", async () => {
+        const newResource = new ResourceModel({
+            ...resource,
+            name: undefined,
+        });
 
-    //     await assertThrowsAsync(
-    //         async () => newResource.save(),
-    //         "The name attribute is required.",
-    //     );
-    // });
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The name attribute is required.",
+        );
+    });
 
-    // it("should not be created when name is null", async () => {
-    //     const newResource = new ResourceModel({
-    //         ...resource,
-    //         name: null,
-    //     });
+    it("should not be created when name is null", async () => {
+        const newResource = new ResourceModel({
+            ...resource,
+            name: null,
+        });
 
-    //     await assertThrowsAsync(
-    //         async () => newResource.save(),
-    //         "The name attribute is required.",
-    //     );
-    // });
+        await assertThrowsAsync(
+            async () => newResource.save(),
+            "The name attribute is required.",
+        );
+    });
 
     it("should be created when description is empty", async () => {
         const newResource = new ResourceModel({

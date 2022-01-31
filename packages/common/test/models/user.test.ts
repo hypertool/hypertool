@@ -1,5 +1,6 @@
-import { UserModel } from "@hypertool/common";
 import { assert } from "chai";
+
+import { UserModel } from "../../source/models";
 import { assertThrowsAsync, users } from "../helper";
 
 describe("User model", function () {

@@ -1,6 +1,7 @@
 import { beforeEach } from "mocha";
-import { QueryTemplateModel } from "@hypertool/common";
 import { assert } from "chai";
+
+import { QueryTemplateModel } from "../../source/models";
 import { assertThrowsAsync, queryTemplates } from "../helper";
 
 describe("QueryTemplate model", function () {
