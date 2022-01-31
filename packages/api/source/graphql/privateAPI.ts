@@ -451,7 +451,6 @@ const typeDefs = gql`
 
         getApps(page: Int, limit: Int): AppPage!
         getAppById(appId: ID!): App!
-        getAppByName(name: String!): App!
 
         getResources(page: Int, limit: Int): ResourcePage!
         getResourceById(resourceId: ID!): Resource!

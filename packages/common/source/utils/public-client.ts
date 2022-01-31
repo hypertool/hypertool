@@ -32,7 +32,7 @@ const LOGIN_WITH_GOOGLE = gql`
     }
 `;
 
-const GET_GOOGLE_AUTH_SERVICES = gql`
+const GET_AUTH_SERVICES = gql`
     query GetAppByName($name: String) {
         getAppByName(name: $name) {
             authServices
@@ -73,13 +73,11 @@ export default class PublicClient {
     getAuthInfo = async (): Promise<any> => {
         try {
             const { data } = await this.client.query({
-                query: GET_GOOGLE_AUTH_SERVICES,
+                query: GET_AUTH_SERVICES,
                 variables: { name: this.appName },
             });
-
             const clientId = data.getAppByName.authServices.googleAuth.clientId;
-
-            const returnData = [
+            const authData = [
                 {
                     type: "google-oauth",
                     payload: {
@@ -87,8 +85,7 @@ export default class PublicClient {
                     },
                 },
             ];
-
-            return returnData;
+            return authData;
         } catch (error) {
             return null;
         }
