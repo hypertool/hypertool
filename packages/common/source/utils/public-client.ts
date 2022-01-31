@@ -7,7 +7,6 @@ import {
     InMemoryCache,
     HttpLink,
 } from "@apollo/client/core";
-import { OAuth2Client } from "google-auth-library";
 
 const LOGIN_WITH_GOOGLE = gql`
     mutation LoginWithGoogle($token: String!, $client: ClientType!) {
@@ -39,7 +38,6 @@ const GET_GOOGLE_AUTH_SERVICES = gql`
             authServices {
                 googleAuth {
                     clientId
-                    secret
                 }
             }
         }
@@ -76,27 +74,25 @@ export default class PublicClient {
         return session;
     };
 
-    getGoogleAuthServices = async (
-        name: string,
-        code: string,
-    ): Promise<any> => {
+    getAuthInfo = async (): Promise<any> => {
         try {
             const { data } = await this.client.query({
                 query: GET_GOOGLE_AUTH_SERVICES,
-                variables: { name },
+                variables: { name: this.appIdentifier },
             });
 
             const clientId = data.getAppByName.authServices.googleAuth.clientId;
-            const secret = data.getAppByName.authServices.googleAuth.secret;
 
-            const googleClient = new OAuth2Client({
-                clientId: clientId,
-                clientSecret: secret,
-            });
+            const returnData = [
+                {
+                    type: "google-oauth",
+                    payload: {
+                        clientId,
+                    },
+                },
+            ];
 
-            const credentials = await googleClient.getToken(code);
-
-            return credentials.tokens.access_token;
+            return returnData;
         } catch (error) {
             return null;
         }
