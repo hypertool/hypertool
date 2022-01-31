@@ -3,7 +3,7 @@ import { ApolloServer, gql } from "apollo-server-express";
 import { constants } from "@hypertool/common";
 
 import { types } from "./typeDefinitions";
-import { users } from "../controllers";
+import { users, apps } from "../controllers";
 const { googleClientTypes } = constants;
 
 const typeDefs = gql`
@@ -11,6 +11,8 @@ const typeDefs = gql`
 
     type Query {
         dummy: String!
+
+        getAppByName(name: String!): App!
     }
 
     enum ClientType {
@@ -25,6 +27,9 @@ const typeDefs = gql`
 const resolvers = {
     Query: {
         dummy: async () => "Hello",
+
+        getAppByName: async (parent, values, context) =>
+            apps.getByName(context.request, values.name),
     },
     Mutation: {
         loginWithGoogle: async (parent, values, context) =>
