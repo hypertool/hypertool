@@ -23,17 +23,15 @@ describe("Resource model", function () {
         );
     });
 
-    it("should be created when name is empty", async () => {
+    it("should not be created when name is empty", async () => {
         const newResource = new ResourceModel({
             ...resource,
             name: "",
         });
-        await newResource.save();
 
-        assert.lengthOf(
-            newResource.name,
-            0,
-            "The name attribute should be of length 0.",
+        await assertThrowsAsync(
+            async () => await newResource.save(),
+            "The name attribute should have at least 1 character.",
         );
     });
 
@@ -48,29 +46,29 @@ describe("Resource model", function () {
         );
     });
 
-    it("should not be created when name is undefined", async () => {
-        const newResource = new ResourceModel({
-            ...resource,
-            name: undefined,
-        });
+    // it("should not be created when name is undefined", async () => {
+    //     const newResource = new ResourceModel({
+    //         ...resource,
+    //         name: undefined,
+    //     });
 
-        await assertThrowsAsync(
-            async () => newResource.save(),
-            "The name attribute is required.",
-        );
-    });
+    //     await assertThrowsAsync(
+    //         async () => newResource.save(),
+    //         "The name attribute is required.",
+    //     );
+    // });
 
-    it("should not be created when name is null", async () => {
-        const newResource = new ResourceModel({
-            ...resource,
-            name: null,
-        });
+    // it("should not be created when name is null", async () => {
+    //     const newResource = new ResourceModel({
+    //         ...resource,
+    //         name: null,
+    //     });
 
-        await assertThrowsAsync(
-            async () => newResource.save(),
-            "The name attribute is required.",
-        );
-    });
+    //     await assertThrowsAsync(
+    //         async () => newResource.save(),
+    //         "The name attribute is required.",
+    //     );
+    // });
 
     it("should be created when description is empty", async () => {
         const newResource = new ResourceModel({

@@ -247,16 +247,15 @@ describe("User model", function () {
         );
     });
 
-    it("should be created when gender is null", async () => {
+    it("should not be created when gender is null", async () => {
         const newUser = new UserModel({
             ...user,
             gender: null,
         });
 
-        await newUser.save();
-        assert.isFalse(
-            newUser.isNew,
-            "The user should be persisted to the database.",
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The gender attribute cannot be saved as null.",
         );
     });
 
@@ -291,10 +290,9 @@ describe("User model", function () {
             countryCode: null,
         });
 
-        await newUser.save();
-        assert.isFalse(
-            newUser.isNew,
-            "The user should be persisted to the database.",
+        await assertThrowsAsync(
+            async () => newUser.save(),
+            "The countryCode attribute cannot be saved as null.",
         );
     });
 

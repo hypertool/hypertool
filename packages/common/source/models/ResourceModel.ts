@@ -96,7 +96,7 @@ const resourceSchema = new Schema(
     {
         name: {
             type: String,
-            minlength: 0,
+            minlength: 1,
             maxlength: 256,
             trim: true,
             required: true,
