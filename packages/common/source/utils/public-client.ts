@@ -35,7 +35,11 @@ const LOGIN_WITH_GOOGLE = gql`
 const GET_AUTH_SERVICES = gql`
     query GetAppByName($name: String) {
         getAppByName(name: $name) {
-            authServices
+            authServices {
+                googleAuth {
+                    clientId
+                }
+            }
         }
     }
 `;

@@ -9,14 +9,14 @@ const { googleClientTypes } = constants;
 const typeDefs = gql`
     ${types}
 
-    input GoogleAuthInput {
+    type GoogleAuth {
         enabled: Boolean!
         clientId: String!
         secret: String!
     }
 
-    input AuthServicesInput {
-        googleAuth: GoogleAuthInput
+    type AuthServices {
+        googleAuth: GoogleAuth
     }
 
     type App {
@@ -37,7 +37,7 @@ const typeDefs = gql`
         status: AppStatus!
         createdAt: Date!
         updatedAt: Date!
-        authServices: AuthServicesInput
+        authServices: AuthServices
     }
 
     enum ClientType {
