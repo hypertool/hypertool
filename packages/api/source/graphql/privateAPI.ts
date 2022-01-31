@@ -572,9 +572,6 @@ const resolvers = {
         getAppById: async (parent, values, context) =>
             apps.getById(context.request, values.appId),
 
-        getAppByName: async (parent, values, context) =>
-            apps.getByName(context.request, values.name),
-
         getResources: async (parent, values, context) =>
             resources.list(context.request, values),
 
