@@ -201,6 +201,7 @@ const typeDefs = gql`
         status: AppStatus!
         createdAt: Date!
         updatedAt: Date!
+        authServices: AuthServicesInput
     }
 
     type AppPage {
