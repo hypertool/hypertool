@@ -1,10 +1,10 @@
 import { beforeEach } from "mocha";
-import { ActivityLogModel } from "@hypertool/common";
 import { assert } from "chai";
 
+import { ActivityLogModel } from "../../source/models";
 import { assertThrowsAsync, activityLogs } from "../helper";
 
-describe("ActivityLog Model", function () {
+describe("ActivityLog model", function () {
     let logTemplate = null;
 
     beforeEach(function () {
