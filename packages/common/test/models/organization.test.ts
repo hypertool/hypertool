@@ -240,4 +240,40 @@ describe("Organization model", function () {
             "The log should be persisted to the database.",
         );
     });
+
+    it("should not be created when members is undefined", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            members: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newOrganization.save(),
+            "The members attribute is required.",
+        );
+    });
+
+    it("should not be created when members is null", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            members: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newOrganization.save(),
+            "The members attribute is required.",
+        );
+    });
+
+    it("should not be created when members is empty", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            members: [],
+        });
+
+        await assertThrowsAsync(
+            async () => newOrganization.save(),
+            "The members attribute is required.",
+        );
+    });
 });
