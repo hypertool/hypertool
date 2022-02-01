@@ -144,4 +144,55 @@ describe("Organization model", function () {
             "The title attribute should have a maximum of 256 characters.",
         );
     });
+
+    it("should be created when description is undefined", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            description: undefined,
+        });
+
+        await newOrganization.save();
+        assert.isFalse(
+            newOrganization.isNew,
+            "The log should be persisted to the database.",
+        );
+    });
+
+    it("should be created when description is null", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            description: null,
+        });
+
+        await newOrganization.save();
+        assert.isFalse(
+            newOrganization.isNew,
+            "The log should be persisted to the database.",
+        );
+    });
+
+    it("should be created when description is empty", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            description: "",
+        });
+        await newOrganization.save();
+
+        assert.lengthOf(
+            newOrganization.description,
+            0,
+            "The description attribute should be of length 1.",
+        );
+    });
+
+    it("should not be created when description is too long", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            description: new Array(513 + 1).join("A"),
+        });
+        await assertThrowsAsync(
+            async () => newOrganization.save(),
+            "The description attribute should have a maximum of 512 characters.",
+        );
+    });
 });
