@@ -215,4 +215,29 @@ describe("Organization model", function () {
             "The updatedAt attribute should be assigned by default.",
         );
     });
+
+    it("should not be created when status is invalid", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            status: "lorem",
+        });
+
+        await assertThrowsAsync(
+            async () => newOrganization.save(),
+            "The status attribute is not from defined options.",
+        );
+    });
+
+    it("should be created when status is undefined", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            status: undefined,
+        });
+
+        await newOrganization.save();
+        assert.isFalse(
+            newOrganization.isNew,
+            "The log should be persisted to the database.",
+        );
+    });
 });
