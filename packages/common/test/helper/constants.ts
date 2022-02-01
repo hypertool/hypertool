@@ -95,4 +95,22 @@ const resources = [
     },
 ];
 
-export { activityLogs, queryTemplates, appData, users, resources };
+const organizations = [
+    {
+        name: "Google",
+        title: "google",
+        description: "",
+        members: ["61b34f2706fe01480acc6583"],
+        apps: ["61c93a931da4a79d3a109947"],
+        status: "active",
+    },
+];
+
+export {
+    activityLogs,
+    queryTemplates,
+    appData,
+    users,
+    resources,
+    organizations,
+};
