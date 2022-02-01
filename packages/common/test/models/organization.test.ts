@@ -276,4 +276,40 @@ describe("Organization model", function () {
             "The members attribute is required.",
         );
     });
+
+    it("should not be created when apps is undefined", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            apps: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newOrganization.save(),
+            "The apps attribute is required.",
+        );
+    });
+
+    it("should not be created when apps is null", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            apps: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newOrganization.save(),
+            "The apps attribute is required.",
+        );
+    });
+
+    it("should not be created when apps is empty", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            apps: [],
+        });
+
+        await assertThrowsAsync(
+            async () => newOrganization.save(),
+            "The apps attribute is required.",
+        );
+    });
 });
