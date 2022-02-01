@@ -195,4 +195,24 @@ describe("Organization model", function () {
             "The description attribute should have a maximum of 512 characters.",
         );
     });
+
+    it("should be created with a default value for createdAt", async () => {
+        const newOrganization = new OrganizationModel({ ...organization });
+        await newOrganization.save();
+        assert.typeOf(
+            newOrganization.createdAt,
+            "date",
+            "The createdAt attribute should be assigned by default.",
+        );
+    });
+
+    it("should be created with a default value for updatedAt", async () => {
+        const newOrganization = new OrganizationModel({ ...organization });
+        await newOrganization.save();
+        assert.typeOf(
+            newOrganization.updatedAt,
+            "date",
+            "The updatedAt attribute should be assigned by default.",
+        );
+    });
 });
