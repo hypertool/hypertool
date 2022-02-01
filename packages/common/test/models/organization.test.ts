@@ -83,4 +83,65 @@ describe("Organization model", function () {
             "The name attribute should have a maximum of 256 characters.",
         );
     });
+
+    it("should not be created when title is undefined", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            title: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newOrganization.save(),
+            "The title attribute is required.",
+        );
+    });
+
+    it("should not be created when title is null", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            title: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newOrganization.save(),
+            "The title attribute is required.",
+        );
+    });
+
+    it("should not be created when title is empty", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            title: "",
+        });
+
+        await assertThrowsAsync(
+            async () => newOrganization.save(),
+            "The title attribute is required.",
+        );
+    });
+
+    it("should be created when title length is 1", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            title: "A",
+        });
+        await newOrganization.save();
+
+        assert.lengthOf(
+            newOrganization.title,
+            1,
+            "The title attribute should be of length 1.",
+        );
+    });
+
+    it("should not be created when title is too long", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            title: new Array(257 + 1).join("A"),
+        });
+        await assertThrowsAsync(
+            async () => newOrganization.save(),
+            "The title attribute should have a maximum of 256 characters.",
+        );
+    });
 });
