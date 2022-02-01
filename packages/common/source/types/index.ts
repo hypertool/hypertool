@@ -182,8 +182,6 @@ export interface ExternalOrganization {
     updatedAt: Date;
 }
 
-export type OrganizationPage = ExternalListPage<ExternalOrganization>;
-
 export interface Group {
     _id: ObjectId;
     name: string;
@@ -314,6 +312,15 @@ export interface Manifest {
 export interface Deployment {
     _id: ObjectId;
     app: ObjectId | App;
+}
+export interface Organization {
+    id: string;
+    name: string;
+    title: string;
+    description: string;
+    members: string[] | User[];
+    status: typeof organizationStatuses[number];
+    apps: string[] | App[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -324,3 +331,16 @@ export interface ExternalDeployment {
     createdAt: Date;
     updatedAt: Date;
 }
+export interface ExternalOrganization {
+    id: string;
+    name: string;
+    title: string;
+    description: string;
+    members: string[] | User[];
+    status: typeof organizationStatuses[number];
+    apps: string[] | App[];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export type OrganizationPage = ExternalListPage<ExternalOrganization>;
