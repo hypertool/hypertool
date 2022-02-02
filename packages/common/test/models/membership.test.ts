@@ -23,4 +23,24 @@ describe("Membership model", function () {
             "The membership should be persisted to the database.",
         );
     });
+
+    it("should be created with a default value for createdAt", async () => {
+        const newMembership = new MembershipModel({ ...membership });
+        await newMembership.save();
+        assert.typeOf(
+            newMembership.createdAt,
+            "date",
+            "The createdAt attribute should be assigned by default.",
+        );
+    });
+
+    it("should be created with a default value for updatedAt", async () => {
+        const newMembership = new MembershipModel({ ...membership });
+        await newMembership.save();
+        assert.typeOf(
+            newMembership.updatedAt,
+            "date",
+            "The updatedAt attribute should be assigned by default.",
+        );
+    });
 });
