@@ -187,4 +187,40 @@ describe("Membership model", function () {
             "The type attribute is required.",
         );
     });
+
+    it("should not be created when status is invalid", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            status: "lorem",
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The status attribute is not from defined options.",
+        );
+    });
+
+    it("should not be created when status is null", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            status: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The status attribute is required.",
+        );
+    });
+
+    it("should not be created when status is undefined", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            status: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The status attribute is required.",
+        );
+    });
 });
