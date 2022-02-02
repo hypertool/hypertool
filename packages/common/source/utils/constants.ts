@@ -355,6 +355,10 @@ const componentOrigins = tuple(
     "api",
 );
 
+const membershipStatuses = tuple("accepted", "invited", "deleted", "banned");
+
+const membershipTypes = tuple("group", "organization");
+
 export {
     paginateMaxLimit,
     paginateMinLimit,
@@ -376,4 +380,6 @@ export {
     googleClientTypes,
     componentOrigins,
     queryResultFormats,
+    membershipStatuses,
+    membershipTypes,
 };
