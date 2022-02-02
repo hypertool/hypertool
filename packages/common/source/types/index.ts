@@ -12,6 +12,8 @@ import {
     genders,
     queryStatuses,
     componentOrigins,
+    membershipStatuses,
+    membershipTypes,
 } from "../utils/constants";
 
 /* General guidelines to keep in mind when writing interfaces for models.
@@ -344,3 +346,14 @@ export interface ExternalOrganization {
 }
 
 export type OrganizationPage = ExternalListPage<ExternalOrganization>;
+
+export interface Membership {
+    id: string;
+    member: string | User;
+    inviter: string | User;
+    division: string | Group | Organization;
+    type: typeof membershipTypes[number];
+    status: typeof membershipStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
