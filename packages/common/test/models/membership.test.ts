@@ -151,4 +151,40 @@ describe("Membership model", function () {
             "The division attribute is required.",
         );
     });
+
+    it("should not be created when type is invalid", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            type: "lorem",
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The type attribute is not from defined options.",
+        );
+    });
+
+    it("should not be created when type is null", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            type: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The type attribute is required.",
+        );
+    });
+
+    it("should not be created when type is undefined", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            type: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The type attribute is required.",
+        );
+    });
 });
