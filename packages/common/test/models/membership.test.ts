@@ -43,4 +43,40 @@ describe("Membership model", function () {
             "The updatedAt attribute should be assigned by default.",
         );
     });
+
+    it("should not be created when member is undefined", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            member: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The member attribute is required.",
+        );
+    });
+
+    it("should not be created when member is null", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            member: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The member attribute is required.",
+        );
+    });
+
+    it("should not be created when member is empty", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            member: "",
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The member attribute is required.",
+        );
+    });
 });
