@@ -106,6 +106,16 @@ const organizations = [
     },
 ];
 
+const memberships = [
+    {
+        member: "61b34f2706fe01480acc6583",
+        inviter: "61c62df2065114babd37158e",
+        division: "61fa92567ff5b295c6fde20f",
+        type: "group",
+        status: "invited",
+    },
+];
+
 export {
     activityLogs,
     queryTemplates,
@@ -113,4 +123,5 @@ export {
     users,
     resources,
     organizations,
+    memberships,
 };
