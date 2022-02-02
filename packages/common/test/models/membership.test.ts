@@ -115,4 +115,40 @@ describe("Membership model", function () {
             "The inviter attribute is required.",
         );
     });
+
+    it("should not be created when division is undefined", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            division: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The division attribute is required.",
+        );
+    });
+
+    it("should not be created when division is null", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            division: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The division attribute is required.",
+        );
+    });
+
+    it("should not be created when division is empty", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            division: "",
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The division attribute is required.",
+        );
+    });
 });
