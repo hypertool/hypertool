@@ -79,4 +79,40 @@ describe("Membership model", function () {
             "The member attribute is required.",
         );
     });
+
+    it("should not be created when inviter is undefined", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            inviter: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The inviter attribute is required.",
+        );
+    });
+
+    it("should not be created when inviter is null", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            inviter: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The inviter attribute is required.",
+        );
+    });
+
+    it("should not be created when inviter is empty", async () => {
+        const newMembership = new MembershipModel({
+            ...membership,
+            inviter: "",
+        });
+
+        await assertThrowsAsync(
+            async () => newMembership.save(),
+            "The inviter attribute is required.",
+        );
+    });
 });
