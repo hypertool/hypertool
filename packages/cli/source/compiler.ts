@@ -7,6 +7,7 @@
  */
 
 import type { Configuration, Compiler } from "webpack";
+import type { Manifest, Session } from "@hypertool/common";
 
 import webpack from "webpack";
 import crypto from "crypto";
@@ -30,6 +31,8 @@ const hash = (data: any) => {
 const IMAGE_INLINE_SIZE_LIMIT = 10000;
 
 export const prepare = (
+    manifest: Manifest,
+    session: Session,
     environment: "production" | "development" | "test",
 ): Configuration => {
     const production = environment === "production";
@@ -351,7 +354,7 @@ export const prepare = (
             ].filter(truthy) as any,
         },
         plugins: [
-            new DefineHypertoolPlugin(),
+            new DefineHypertoolPlugin(manifest, session),
             /* Generate an index file and inject a script loader. */
             new HtmlWebpackPlugin({
                 inject: true,
@@ -414,9 +417,11 @@ export const prepare = (
 };
 
 export const createCompiler = (
+    manifest: Manifest,
+    session: Session,
     environment: "production" | "development" | "test",
 ): Compiler => {
-    const configuration = prepare(environment);
+    const configuration = prepare(manifest, session, environment);
     try {
         const compiler = webpack(configuration);
         return compiler;

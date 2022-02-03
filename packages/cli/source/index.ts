@@ -1,3 +1,5 @@
+import type { Manifest } from "@hypertool/common";
+
 import chalk from "chalk";
 import { Command } from "commander";
 import TaskList from "listr";
@@ -56,7 +58,11 @@ const deploy = async (): Promise<void> => {
                  * Therefore, we hard code the value where the command is handled.
                  */
                 process.env.NODE_ENV = "production";
-                const compiler = createCompiler("production");
+                const compiler = createCompiler(
+                    context.manifest,
+                    context.session,
+                    "production",
+                );
                 compiler.run((error, stats) => {
                     compiler.close((error) => {
                         if (error) {
@@ -141,7 +147,13 @@ const start = async (configuration: any): Promise<void> => {
     process.env.NODE_ENV = "development";
     env.loadEnv();
 
-    const compiler = createCompiler("development");
+    const devManifest = await manifest.compile();
+    const devSession = await authUtils.loadSession();
+    const compiler = createCompiler(
+        <Manifest>devManifest,
+        devSession,
+        "development",
+    );
     const server = await createServer(
         configuration.port,
         configuration.autoPort,
