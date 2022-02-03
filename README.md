@@ -6,13 +6,14 @@
 Hypertool is a low-code platform for building internal tools quickly.
 
 Hypertool combines multiple components to provide a simple interface for building
-tools. This repository includes the following open-source components of Hypertool:
+tools. Here are a few highlights:
 
--   Hypertool CLI - Allows you to manage your apps from the command-line
--   UI Components - A collection of lightweight components for building aesthetic interfaces
--   Router - A file-system based router designed for client-side rendering
--   Query Assembler - Compiles queries to provide a safe data access layer
--   HTX Compiler - Compiles Hypertool XML (HTX) to React components
+-   File-system based router designed for client-side rendering
+-   Safe data access layer for clients via query engine
+-   Automated deployments to Kubernetes clusters
+-   Authorization via Role-Based Access Control (RBAC)
+-   Google OAuth2 and basic authentication mechanisms
+-   Team Management
 
 NOTE: As of now, Node.js 17.x is unsupported.
 
