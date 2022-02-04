@@ -1,3 +1,6 @@
+export interface Object {
+    [key: string]: any;
+}
 export interface Query {
     id?: string;
     name: string;
@@ -32,6 +35,7 @@ export interface Manifest {
     resources: Resource[];
     app: App;
     file?: string;
+    values?: Object;
 }
 
 export interface User {
