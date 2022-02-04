@@ -1,6 +1,7 @@
 import { constants } from "@hypertool/common";
 
-const { genders, countryCodes, userStatuses, userRoles } = constants;
+const { genders, countryCodes, userStatuses, userRoles, appStatuses } =
+    constants;
 
 const types = `
     scalar Date
@@ -19,6 +20,10 @@ const types = `
 
     enum UserRole {
         ${userRoles.join("\n")}
+    }
+
+    enum AppStatus {
+        ${appStatuses.join("\n")}
     }
 
     type User {

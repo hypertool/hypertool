@@ -118,6 +118,16 @@ const typeDefs = gql`
         googleAuth: GoogleAuthInput
     }
 
+    type GoogleAuth {
+        enabled: Boolean!
+        clientId: String!
+        secret: String!
+    }
+
+    type AuthServices {
+        googleAuth: GoogleAuth
+    }
+
     type MySQLConfiguration {
         host: String!
         port: Int!
@@ -174,10 +184,6 @@ const typeDefs = gql`
         records: [Resource!]!
     }
 
-    enum AppStatus {
-        ${appStatuses.join("\n")}
-    }
-
     enum QueryResultFormats {
         ${queryResultFormats.join("\n")}
     }
@@ -201,7 +207,7 @@ const typeDefs = gql`
         status: AppStatus!
         createdAt: Date!
         updatedAt: Date!
-        authServices: AuthServicesInput
+        authServices: AuthServices
     }
 
     type AppPage {
