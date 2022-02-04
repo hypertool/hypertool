@@ -44,6 +44,7 @@
         "glob": "^7.2.0",
         "graphql": "^16.2.0",
         "html-webpack-plugin": "^5.5.0",
+        "joi": "^17.6.0",
         "js-yaml": "^4.1.0",
         "listr": "^0.14.3",
         "loader-utils": "^3.2.0",
