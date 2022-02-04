@@ -1,157 +1,60 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Manifest, App, Query, Resource } from "@hypertool/common";
 
 import yaml from "js-yaml";
 import fs from "fs";
 import path from "path";
+import joi from "joi";
+import chalk from "chalk";
 
-import { paths, getMissingKeys, constants } from "../utils";
-import type { Manifest, App, Query, Resource } from "../types";
+import { paths } from "../utils";
+
+let errorCount = 0;
 
 const IDENTIFIER_REGEX = /^[a-zA-Z_][a-zA-Z_0-9-]+[a-zA-Z_0-9]$/;
 
-const parseApp = (app: App, path = "<anonymous>"): App => {
-    const result: App = {
-        name: "",
-        slug: "",
-        title: "",
-        description: "",
-        groups: ["default"],
-    };
+const appSchema = joi.object({
+    name: joi.string().max(128).required(),
+    title: joi.string().max(256).required(),
+    slug: joi.string().max(128).required(),
+});
 
-    const missingKeys = getMissingKeys(constants.appKeys, app);
+const querySchema = joi.object({
+    name: joi.string().max(128).required(),
+    resource: joi.string().max(256).required(),
+    content: joi.string().max(128).required(),
+});
 
-    for (const key in app) {
-        const value = (app as any)[key];
-        switch (key) {
-            case "name": {
-                if (!IDENTIFIER_REGEX.test(value)) {
-                    logSemanticError(`App name "${value}" is invalid.`, path);
-                }
-                result.name = value.trim();
-                break;
-            }
+const resourceSchema = joi.object({
+    name: joi.string().max(128).required(),
+    type: joi.string().max(256).required(),
+    connection: joi.string().max(128).required(),
+});
 
-            case "slug": {
-                if (!IDENTIFIER_REGEX.test(value)) {
-                    logSemanticError(`App slug "${value}" is invalid.`, path);
-                }
-                result.slug = value.trim();
-                break;
-            }
+const manifestSchema = joi.object({
+    app: joi.string().max(128).required(),
+    queries: joi.string().max(256).required(),
+    resources: joi.string().max(128).required(),
+});
 
-            case "title": {
-                const trimmed = value.trim();
-
-                if (trimmed.indexOf("\n") > 0) {
-                    logSemanticError("App title cannot contain newlines", path);
-                }
-
-                if (trimmed.length === 0) {
-                    logSemanticError("App title cannot be empty", path);
-                }
-
-                result.title = trimmed;
-                break;
-            }
-
-            case "description": {
-                result.description = value.trim();
-                break;
-            }
-
-            case "groups": {
-                result.groups = value.length === 0 ? ["default"] : value;
-                break;
-            }
-        }
-    }
-    return result;
-};
-
-const parseQuery = (query: Query, path = "<anonymous>"): Query => {
-    const result: Query = {
-        name: "",
-        description: "",
-        resource: "",
-        content: "",
-    };
-
-    const missingKeys = getMissingKeys(constants.queryKeys, query);
-
-    for (const key in query) {
-        const value = (query as any)[key];
-
-        switch (key) {
-            case "name": {
-                result.name = value.trim();
-                break;
-            }
-
-            case "description": {
-                result.description = value.trim();
-                break;
-            }
-
-            case "resource": {
-                result.resource = value.trim();
-                break;
-            }
-
-            case "content": {
-                result.content =
-                    typeof value === "string" ? value.trim() : value;
-                break;
-            }
-        }
-    }
-    return result;
-};
-
-const parseResource = (resource: Resource, path: string): Resource => {
-    const result: Resource = {
-        name: "",
-        description: "",
-        type: "",
-        connection: "",
-    };
-
-    const missingKeys = getMissingKeys(constants.resourceKeys, resource);
-
-    for (const key in resource) {
-        const value = (resource as any)[key];
-
-        switch (key) {
-            case "name": {
-                result.name = value.trim();
-                break;
-            }
-
-            case "description": {
-                result.description = value.trim();
-                break;
-            }
-
-            case "type": {
-                result.type = value.trim();
-                break;
-            }
-
-            // TODO: Implement parseConnection()
-            case "connection": {
-                result.connection =
-                    typeof value === "string" ? value.trim() : value;
-                break;
-            }
-        }
-    }
-    return result;
+export const logDuplicateError = (
+    duplicate: string,
+    filePath = "<anonymous>",
+) => {
+    errorCount++;
+    console.log(
+        `${chalk.red(
+            "[error]",
+        )} ${filePath}: Duplicate symbol "${duplicate}" found.\n`,
+    );
 };
 
 const parseQueries = (queries: any, path = "<anonymous>") => {
     const result: any = {};
     for (const query of queries) {
-        result[query.name] = parseQuery(query, path);
+        if (result[query.name]) {
+            logDuplicateError(query.name, path);
+        }
+        // result[query.name] = parseQuery(query, path);
     }
     return result;
 };
@@ -159,7 +62,10 @@ const parseQueries = (queries: any, path = "<anonymous>") => {
 const parseResources = (resources: any, path = "<anonymous>") => {
     const result: any = {};
     for (const resource of resources) {
-        result[resource.name] = parseResource(resource, path);
+        if (result[resource.name]) {
+            logDuplicateError(resource.name, path);
+        }
+        // result[resource.name] = parseResource(resource, path);
     }
     return result;
 };
@@ -191,7 +97,7 @@ const compile = async (): Promise<Manifest> => {
         for (const key in manifest) {
             switch (key) {
                 case "app": {
-                    app = parseApp(manifest.app, manifest.file);
+                    // app = parseApp(manifest.app, manifest.file);
                     break;
                 }
 
@@ -219,7 +125,7 @@ const compile = async (): Promise<Manifest> => {
         (item) => item[1],
     );
 
-    return { app: app as App, queries: queryList, resources: resourceList };
+    return { app: app, queries: queryList, resources: resourceList };
 };
 
 export default compile;
