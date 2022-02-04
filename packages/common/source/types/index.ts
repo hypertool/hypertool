@@ -299,11 +299,16 @@ export interface ExternalActivityLog {
 
 export type ActivityLogPage = ExternalListPage<ExternalActivityLog>;
 
+interface Object {
+    [key: string]: any;
+}
+
 export interface Manifest {
     queries: Query[];
     resources: Resource[];
     app: App;
     file?: string;
+    values?: Object;
 }
 
 export interface Deployment {
