@@ -25,3 +25,5 @@ export const sendEmail = async (params) => {
 };
 
 export { invitationTemplate };
+export { default as createToken } from "./createToken";
+export { default as hashPassword } from "./hashPassword";
