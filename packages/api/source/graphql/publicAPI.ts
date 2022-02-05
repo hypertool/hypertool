@@ -52,6 +52,19 @@ const typeDefs = gql`
 
     type Mutation {
         loginWithGoogle(token: String!, client: ClientType!): Session!
+
+        signupWithEmail(
+            firstName: String!
+            lastName: String!
+            pictureURL: String
+            emailAddress: String!
+            password: String!
+        ): Session!
+
+        loginWithEmail(
+            emailAddress: String!
+            password: String!
+        ): Session!
     }
 `;
 
@@ -65,6 +78,12 @@ const resolvers = {
     Mutation: {
         loginWithGoogle: async (parent, values, context) =>
             users.loginWithGoogle(context.request, values.token, values.client),
+
+        signupWithEmail: async (parent, values, context) =>
+            users.signupWithEmail(context.request, values),
+
+        loginWithEmail: async (parent, values, context) =>
+            users.loginWithEmail(context.request, values),
     },
 };
 
