@@ -375,6 +375,30 @@ const signupWithEmail = async (context: any, values: any): Promise<Session> => {
     return user;
 };
 
+const loginWithEmail = async (context: any, values: any): Promise<Session> => {
+    const { emailAddress, password } = values;
+
+    let user = await UserModel.findOne({ emailAddress }).exec();
+
+    if (!user) {
+        throw new NotFoundError("User is not signed up");
+    }
+
+    if (!user.emailVerified) {
+        throw new UnauthorizedError("User email is not verified");
+    }
+
+    const passwordMatched = bcrypt.compare(password, user.password);
+
+    if (!passwordMatched) {
+        throw new UnauthorizedError("Email and Password not matched");
+    }
+
+    const jwtToken = createToken(emailAddress, "30d");
+
+    return { jwtToken, user, createdAt: new Date() };
+};
+
 export {
     create,
     list,
@@ -384,4 +408,5 @@ export {
     remove,
     loginWithGoogle,
     signupWithEmail,
+    loginWithEmail,
 };
