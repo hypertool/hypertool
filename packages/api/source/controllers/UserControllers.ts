@@ -2,8 +2,9 @@ import type { Document } from "mongoose";
 import type { User, UserPage, ExternalUser, Session } from "@hypertool/common";
 
 import joi from "joi";
-import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+
 import {
     constants,
     google,
@@ -13,6 +14,7 @@ import {
     extractIds,
     UserModel,
 } from "@hypertool/common";
+import { createToken, hashPassword } from "../utils";
 
 const createSchema = joi.object({
     firstName: joi.string().min(1).max(256).required(),
@@ -43,6 +45,7 @@ const filterSchema = joi.object({
 const updateSchema = joi.object({
     firstName: joi.string().min(1).max(256),
     lastName: joi.string().min(1).max(256),
+    password: joi.string().min(8).max(128),
     description: joi.string().max(512).allow(""),
     organization: joi.string().regex(constants.identifierPattern),
     gender: joi.string().valid(...constants.genders),
@@ -51,6 +54,22 @@ const updateSchema = joi.object({
     birthday: joi.date().allow(null),
     role: joi.string().valid(...constants.userRoles),
     groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
+});
+
+const signUpWithPasswordInput = joi.object({
+    firstName: joi.string().min(1).max(256).required(),
+    lastName: joi.string().min(1).max(256).required(),
+    emailAddress: joi.string().max(256).required(),
+    password: joi
+        .string()
+        .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+            "password",
+        )
+        .min(8)
+        .max(128)
+        .required(),
+    role: joi.string().valid(constants.userRoles).required(),
 });
 
 const toExternal = (user: any): ExternalUser => {
@@ -312,11 +331,57 @@ const loginWithGoogle = async (
     }
 
     /* Create token */
-    const jwtToken = jwt.sign({ emailAddress }, process.env.JWT_SIGNATURE_KEY, {
-        expiresIn: "30d",
-    });
+    const jwtToken = createToken(emailAddress, "30d");
 
     return { jwtToken, user: toExternal(user), createdAt: new Date() };
 };
 
-export { create, list, listByIds, getById, update, remove, loginWithGoogle };
+const signupWithEmail = async (context: any, values: any): Promise<Session> => {
+    const { error, value } = signUpWithPasswordInput.validate(values, {
+        stripUnknown: true,
+    });
+
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const { firstName, lastName, emailAddress, role, password } = values;
+
+    let user = await UserModel.findOne({ emailAddress }).exec();
+
+    if (user) {
+        throw BadRequestError("User is already signed up");
+    }
+
+    user = new UserModel({
+        firstName,
+        lastName,
+        password: hashPassword(password),
+        gender: undefined,
+        countryCode: undefined,
+        pictureURL: undefined,
+        emailAddress,
+        emailVerified: false,
+        role,
+        birthday: null,
+        status: "activated",
+    });
+    await user.save();
+
+    const jwtToken = createToken(emailAddress, "7d");
+
+    // Have to call the utility function to send email
+
+    return user;
+};
+
+export {
+    create,
+    list,
+    listByIds,
+    getById,
+    update,
+    remove,
+    loginWithGoogle,
+    signupWithEmail,
+};
