@@ -357,3 +357,14 @@ export interface Membership {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface ExternalMembership {
+    id: string;
+    member: string | User;
+    inviter: string | User;
+    division: string | Group | Organization;
+    type: typeof membershipTypes[number];
+    status: typeof membershipStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
