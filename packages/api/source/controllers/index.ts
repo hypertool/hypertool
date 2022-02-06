@@ -6,4 +6,5 @@ export * as groups from "./GroupControllers";
 export * as queryTemplates from "./QueryTemplateControllers";
 export * as deployments from "./deployments";
 export * as activityLogs from "./ActivityLogController";
+export * as memberships from "./MembershipController";
 export * as queries from "./query-engine";
