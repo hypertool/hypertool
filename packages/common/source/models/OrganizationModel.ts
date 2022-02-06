@@ -30,7 +30,7 @@ const organizationSchema = new Schema(
             type: [
                 {
                     type: Schema.Types.ObjectId,
-                    ref: "User",
+                    ref: "Membership",
                 },
             ],
             required: true,
