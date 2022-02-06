@@ -320,7 +320,7 @@ export interface Organization {
     name: string;
     title: string;
     description: string;
-    members: string[] | User[];
+    members: string[] | Membership[];
     status: typeof organizationStatuses[number];
     apps: string[] | App[];
     createdAt: Date;
@@ -338,7 +338,7 @@ export interface ExternalOrganization {
     name: string;
     title: string;
     description: string;
-    members: string[] | User[];
+    members: string[] | Membership[];
     status: typeof organizationStatuses[number];
     apps: string[] | App[];
     createdAt: Date;
