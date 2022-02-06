@@ -12,6 +12,7 @@ import {
     deployments,
     activityLogs,
     queries,
+    memberships,
 } from "../controllers";
 import { types } from "./typeDefinitions";
 import { jwtAuth } from "../middleware";
@@ -28,6 +29,8 @@ const {
     queryStatuses,
     componentOrigins,
     queryResultFormats,
+    membershipTypes,
+    membershipStatuses,
 } = constants;
 
 const typeDefs = gql`
@@ -272,7 +275,7 @@ const typeDefs = gql`
 
     type QueryTemplatePage {
         totalRecords: Int!
-        totalPages: Int!
+        totalPages: Int!  
         previousPage: Int!
         nextPage: Int!
         hasPreviousPage: Int!
@@ -322,6 +325,23 @@ const typeDefs = gql`
     type GenerateSignedURLsResult {
         signedURLs: [String!]!
         deployment: Deployment!
+    enum MembershipTypes{
+        ${membershipTypes.join("\n")}
+    }
+
+    enum MembershipStatuses{
+        ${membershipStatuses.join("\n")}
+    }
+
+    type Membership {
+        id: String!
+        member: String!
+        inviter: String!
+        division: String!
+        type: MembershipTypes!
+        status: MembershipStatuses!
+        createdAt: Date!
+        updatedAt: Date!
     }
 
     type Mutation {
@@ -455,6 +475,11 @@ const typeDefs = gql`
             context: GraphQLJSON
             component: ComponentOrigin!
         ): ActivityLog!    
+
+        createMembership(
+            emailAddress: String,
+            organizationId: ID!
+        ): Membership!
     }
 
     type Query {
@@ -564,6 +589,9 @@ const resolvers = {
 
         createActivityLog: async (parent, values, context) =>
             activityLogs.create(context.request, values),
+
+        createMembership: async (parent, values, context) =>
+            memberships.create(context.request, values),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>
