@@ -99,7 +99,7 @@ const organizations = [
     {
         name: "Google",
         title: "google",
-        description: "",
+        description: "Let's not leave the description empty.",
         members: ["61b34f2706fe01480acc6583"],
         apps: ["61c93a931da4a79d3a109947"],
         status: "active",
