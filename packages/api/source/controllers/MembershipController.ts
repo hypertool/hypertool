@@ -9,20 +9,17 @@ import {
     OrganizationModel,
     ExternalMembership,
     runAsTransaction,
-    sendEmail,
 } from "@hypertool/common";
 import jwt from "jsonwebtoken";
-import sgMail from "@sendgrid/mail";
 
-import { invitationTemplate } from "../utils";
+import { invitationTemplate, sendEmail } from "../utils";
 
-const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
-const INVITATION_JWT_SIGNATURE = process.env.INVITATION_JWT_SIGNATURE;
-sgMail.setApiKey(SENDGRID_API_KEY);
+const { INVITATION_JWT_SIGNATURE } = process.env;
 
 const createSchema = joi.object({
     emailAddress: joi.string().email().required(),
     organizationId: joi.string().regex(constants.identifierPattern),
+    inviterId: joi.string().regex(constants.identifierPattern),
 });
 
 const toExternal = (membership: any): ExternalMembership => {
@@ -58,11 +55,11 @@ const create = async (context, attributes): Promise<ExternalMembership> => {
         throw new BadRequestError(error.message);
     }
 
-    const { emailAddress, organizationId } = value;
+    const { emailAddress, organizationId, inviterId } = value;
     let member = await UserModel.findOne({ emailAddress });
 
     if (!member) {
-        const newUser = new UserModel({
+        member = new UserModel({
             firstName: "<unavailable>",
             lastName: "<unavailable>",
             description: "<unavailable>",
@@ -74,8 +71,7 @@ const create = async (context, attributes): Promise<ExternalMembership> => {
             role: "viewer",
         });
 
-        await newUser.save();
-        member = newUser;
+        await member.save();
     }
 
     let membership = await MembershipModel.findOne({
@@ -84,15 +80,14 @@ const create = async (context, attributes): Promise<ExternalMembership> => {
     });
 
     if (!membership) {
-        const newMembership = new MembershipModel({
+        membership = new MembershipModel({
             member: member.id,
-            inviter: "61fcf3cd1ca8c8033509f728",
+            inviter: inviterId,
             division: organizationId,
             type: "organization",
             status: "invited",
         });
-        await newMembership.save();
-        membership = newMembership;
+        await membership.save();
     }
 
     if (membership.status === "invited") {
@@ -100,13 +95,20 @@ const create = async (context, attributes): Promise<ExternalMembership> => {
             { emailAddress, organizationId },
             INVITATION_JWT_SIGNATURE,
             {
-                expiresIn: 60 * 60,
+                expiresIn: 60 * 60, // 1 hour
             },
         );
-        const subject = "";
-        const text = "";
-        const html = invitationTemplate(token);
-        sendEmail(emailAddress, subject, text, html);
+        const subject = "Invitation to join organization";
+        const text = "Text";
+        const html = invitationTemplate({ token });
+        const params = {
+            from: { name: "Hypertool", email: "noreply@hypertool.io" },
+            to: emailAddress,
+            subject,
+            text,
+            html,
+        };
+        sendEmail(params);
     }
 
     return toExternal(membership);
@@ -141,7 +143,7 @@ const verify = async (context, token): Promise<Boolean> => {
             await OrganizationModel.findByIdAndUpdate(
                 organizationId,
                 { $push: { members: user.id } },
-                { safe: true, upsert: true },
+                { safe: true },
             );
         });
 
