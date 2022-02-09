@@ -479,6 +479,7 @@ const typeDefs = gql`
         createMembership(
             emailAddress: String,
             organizationId: ID!
+            inviterId: ID!
         ): Membership!
     }
 
