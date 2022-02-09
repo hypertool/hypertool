@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 import {
     resourceTypes,
     resourceStatuses,
@@ -45,7 +46,7 @@ export interface BigQueryConfiguration {
 }
 
 export interface Resource {
-    id: string;
+    _id: ObjectId;
     name: string;
     description: string;
     type: typeof resourceTypes[number];
@@ -117,7 +118,7 @@ export interface ExternalListPage<T> {
 export type ResourcePage = ExternalListPage<ExternalResource>;
 
 export interface User {
-    id: string;
+    _id: ObjectId;
     firstName: string;
     lastName: string;
     description: string;
@@ -156,7 +157,7 @@ export interface ExternalUser {
 export type UserPage = ExternalListPage<ExternalUser>;
 
 export interface Organization {
-    id: string;
+    _id: ObjectId;
     name: string;
     description: string;
     users: string[] | User[];
@@ -178,7 +179,7 @@ export interface ExternalOrganization {
 export type OrganizationPage = ExternalListPage<ExternalOrganization>;
 
 export interface Group {
-    id: string;
+    _id: ObjectId;
     name: string;
     type: typeof groupTypes[number];
     description: string;
@@ -204,11 +205,12 @@ export interface ExternalGroup {
 export type GroupPage = ExternalListPage<ExternalGroup>;
 
 export interface App {
-    id: string;
+    _id: ObjectId;
     name: string;
     title: string;
     slug: string;
     description: string;
+    organization: string | Organization;
     groups: string[] | Group[];
     resources: string[] | Resource[];
     creator: string[] | User;
@@ -238,7 +240,7 @@ export interface Session {
 }
 
 export interface Query {
-    id: string;
+    _id: ObjectId;
     name: string;
     description: string;
     resource: string | Resource;
@@ -270,7 +272,7 @@ export interface Context {
     [x: string]: any;
 }
 export interface ActivityLog {
-    id: string;
+    _id: ObjectId;
     component: typeof componentOrigins[number];
     context: Context;
     message: string;
