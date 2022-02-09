@@ -12,14 +12,15 @@ const attachRoutes = (router: Router): void => {
             const { jwt } = request.params;
             const result = await memberships.verify(null, jwt);
 
-            if (result)
+            if (result) {
                 return response
                     .status(httpStatuses.OK)
-                    .json({ message: "Invitation Accepted." });
-            else
+                    .json({ message: "Invitation acepted." });
+            } else {
                 return response
                     .status(httpStatuses.BAD_REQUEST)
                     .json({ message: "Invitation link has expired." });
+            }
         },
     );
 };
