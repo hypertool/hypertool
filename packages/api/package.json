@@ -30,6 +30,7 @@
         "mongoose": "^6.0.12",
         "mongoose-paginate-v2": "^1.4.2",
         "morgan": "^1.10.0",
+        "mustache": "^4.2.0",
         "passport": "^0.5.0",
         "passport-google-token": "^0.1.2"
     },
