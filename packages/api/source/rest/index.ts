@@ -1,1 +1,1 @@
-export * as memberships from "./membership.routes";
+export * as memberships from "./membership-routes";
