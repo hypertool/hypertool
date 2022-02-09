@@ -14,6 +14,12 @@ import {
     componentOrigins,
 } from "../utils/constants";
 
+/* General guidelines to keep in mind when writing interfaces for models.
+ * 1. All identifiers must be of type `ObjectId`. Do not use strings.
+ * 2. The identifier attribute in external types must be `id`.
+ * 3. The identifier attribute in internal types must be `_id`.
+ */
+
 export interface MySQLConfiguration {
     host: string;
     port: number;
@@ -296,4 +302,11 @@ export interface Manifest {
     resources: Resource[];
     app: App;
     file?: string;
+}
+
+export interface Deployment {
+    _id: ObjectId;
+    app: ObjectId | App;
+    createdAt: Date;
+    updatedAt: Date;
 }
