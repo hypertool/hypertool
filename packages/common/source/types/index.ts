@@ -310,3 +310,10 @@ export interface Deployment {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface ExternalDeployment {
+    id: string;
+    app: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
