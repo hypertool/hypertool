@@ -85,11 +85,20 @@ const LOGIN_WITH_GOOGLE = gql`
     }
 `;
 
+const LOGIN_WITH_EMAIL = gql`
+    mutation LoginWithEmail($emailAddress: String!, $password: String!) {
+        loginWithEmail(emailAddress: $emailAddress, password: $password) {
+            id
+        }
+    }
+`;
+
 const client = new ApolloClient({
     uri: `${process.env.REACT_APP_API_URL}/graphql/v1/public`,
     cache: new InMemoryCache(),
 });
 
+<<<<<<< HEAD
 interface FormValues {
     email: string;
     password: string;
@@ -105,6 +114,8 @@ const validationSchema = yup.object({
     password: yup.string().required("Password is required"),
 });
 
+=======
+>>>>>>> 224508a (feat: creatd `handleEmailLogin` function and mutation)
 const Login: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
 
@@ -140,9 +151,28 @@ const Login: FunctionComponent = (): ReactElement => {
         signIn();
     }, [signIn]);
 
+<<<<<<< HEAD
     const handleBasicAuthSubmit = useCallback(() => {
         return null;
     }, []);
+=======
+    const navigateToSignUp = () => {
+        navigate("/sign-up");
+    };
+
+    const handleEmailLogin = async (values: FormValues) => {
+        const result = await client.mutate({
+            mutation: LOGIN_WITH_EMAIL,
+            variables: {
+                emailAddress: values.emailAddress,
+                password: values.password,
+            },
+        });
+
+        localStorage.setItem("session", JSON.stringify(result.data.jwtToken));
+        navigate("/organizations/new");
+    };
+>>>>>>> 224508a (feat: creatd `handleEmailLogin` function and mutation)
 
     return (
         <Root>
