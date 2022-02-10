@@ -92,7 +92,18 @@ const deploy = async (): Promise<void> => {
                 );
 
                 task.title = "Generating signed URL to upload...";
-                const signedURLs = await context.client.generateSignedURLs(
+
+                const deployedApp = await context.client.getAppByName(
+                    context.manifest.app.name,
+                );
+                if (!deployedApp) {
+                    throw new Error(
+                        `Failed to resolve deployed app for name "${context.manifest.app.name}". Please report this bug.`,
+                    );
+                }
+
+                const { signedURLs } = await context.client.generateSignedURLs(
+                    deployedApp.id,
                     virtualFileNames,
                 );
 
