@@ -153,8 +153,7 @@ const Login: FunctionComponent = (): ReactElement => {
                         <Formik
                             initialValues={initialValues}
                             onSubmit={handleBasicAuthSubmit as any}
-                            validationSchema={validationSchema}
-                        >
+                            validationSchema={validationSchema}>
                             {(formik) => (
                                 <>
                                     <InputField
@@ -178,8 +177,7 @@ const Login: FunctionComponent = (): ReactElement => {
                                     <PrimaryAction
                                         onClick={() => formik.submitForm()}
                                         variant="contained"
-                                        size="medium"
-                                    >
+                                        size="medium">
                                         Login
                                     </PrimaryAction>
                                 </>
@@ -202,8 +200,7 @@ const Login: FunctionComponent = (): ReactElement => {
                         variant="contained"
                         color="primary"
                         size="medium"
-                        onClick={handleContinueWithGoogle}
-                    >
+                        onClick={handleContinueWithGoogle}>
                         Continue with Google
                     </PrimaryAction>
                 </CardContent>
