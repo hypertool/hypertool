@@ -372,7 +372,7 @@ const signupWithEmail = async (context: any, values: any): Promise<Session> => {
 
     // Have to call the utility function to send email
 
-    return user;
+    return user._id;
 };
 
 const loginWithEmail = async (context: any, values: any): Promise<Session> => {

@@ -59,8 +59,8 @@ const typeDefs = gql`
             pictureURL: String
             emailAddress: String!
             password: String!
-        ): Session!
-
+        ): ID!
+        # ID is the id of the user created after signup
         loginWithEmail(
             emailAddress: String!
             password: String!
