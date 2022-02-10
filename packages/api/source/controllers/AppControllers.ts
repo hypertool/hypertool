@@ -60,6 +60,7 @@ const toExternal = (app: any): ExternalApp => {
         status,
         createdAt,
         updatedAt,
+        deployments,
     } = app;
 
     const result = {
@@ -74,12 +75,13 @@ const toExternal = (app: any): ExternalApp => {
         creator:
             typeof creator === "string"
                 ? creator
-                : "<todo>" || (creator as User).id,
+                : "<todo>" || (creator as User)._id.toString(),
         status,
         createdAt,
         updatedAt,
+        deployments,
     };
-    console.log(result);
+
     return result;
 };
 
