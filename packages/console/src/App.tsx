@@ -13,7 +13,12 @@ import {
     NewResource,
     ResourceLibrary,
     SingleApp,
+<<<<<<< HEAD
     ViewApps,
+=======
+    AuthenticationServices,
+    SignUp,
+>>>>>>> 777ea3d (feat: created routes for `Sign-up` page)
 } from "./screens";
 
 const Root = styled("div")(({ theme }) => ({
@@ -26,9 +31,14 @@ const App: FunctionComponent = (): ReactElement => {
     return (
         <Root>
             <Routes>
+<<<<<<< HEAD
                 <Route path="/" element={<VisitorLayout />}>
                     <Route path="/login" element={<Login />} />
                 </Route>
+=======
+                <Route path="/login" element={<Login />} />
+                <Route path="/sign-up" element={<SignUp />} />
+>>>>>>> 777ea3d (feat: created routes for `Sign-up` page)
                 <Route path="/" element={<WorkspaceLayout />}>
                     <Route
                         path="/organizations/new"
