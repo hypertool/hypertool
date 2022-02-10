@@ -3,7 +3,13 @@ import type { ApolloClient } from "@apollo/client/core";
 import { gql, ApolloError } from "@apollo/client/core";
 import lodash from "lodash";
 
-import type { Manifest, App, Query as QueryTemplate, Resource } from "../types";
+import type {
+    Manifest,
+    App,
+    Query as QueryTemplate,
+    ExternalResource,
+    Resource,
+} from "../types";
 
 const GET_APP_BY_NAME = gql`
     query GetAppByName($name: String!) {
@@ -203,8 +209,10 @@ const UPDATE_RESOURCE = gql`
 `;
 
 const GENERATE_SIGNED_URLS = gql`
-    mutation GenerateSignedURLs($files: [String!]!) {
-        generateSignedURLs(files: $files)
+    mutation GenerateSignedURLs($appId: ID!, $files: [String!]!) {
+        generateSignedURLs(appId: $appId, files: $files) {
+            signedURLs
+        }
     }
 `;
 
@@ -259,7 +267,7 @@ export default class Client<T> {
                 if (!app) {
                     throw new Error(`Cannot resolve unknown app ${name}`);
                 }
-                return app.id as string;
+                return (app as any).id as string;
             }
 
             case "resource": {
@@ -373,7 +381,7 @@ export default class Client<T> {
         });
     }
 
-    async getResourceByName(name: string): Promise<Resource | null> {
+    async getResourceByName(name: string): Promise<ExternalResource | null> {
         try {
             const resource = await this.client.query({
                 query: GET_RESOURCE_BY_NAME,
@@ -440,7 +448,7 @@ export default class Client<T> {
             return false;
         }
 
-        await this.updateApp(oldApp.id as string, newApp);
+        await this.updateApp((oldApp as any).id as string, newApp);
 
         return true;
     }
@@ -462,7 +470,7 @@ export default class Client<T> {
         }
 
         await this.updateQueryTemplate(
-            oldQueryTemplate.id as string,
+            (oldQueryTemplate as any).id as string,
             newQueryTemplate,
         );
         return true;
@@ -530,7 +538,10 @@ export default class Client<T> {
             return false;
         }
 
-        await this.updateResource(oldResource.id as string, newResource);
+        await this.updateResource(
+            (oldResource as any).id as string,
+            newResource,
+        );
 
         return true;
     }
@@ -553,7 +564,7 @@ export default class Client<T> {
             if (!deployedResource) {
                 await this.createResource(resource, app.name);
             } else {
-                await this.patchResource(deployedResource, resource);
+                await this.patchResource(deployedResource as any, resource);
             }
         }
 
@@ -573,10 +584,14 @@ export default class Client<T> {
         }
     }
 
-    async generateSignedURLs(files: string[]): Promise<string[]> {
+    async generateSignedURLs(
+        appId: string,
+        files: string[],
+    ): Promise<string[]> {
         const app = await this.client.mutate({
             mutation: GENERATE_SIGNED_URLS,
             variables: {
+                appId,
                 files,
             },
         });
