@@ -312,6 +312,18 @@ const typeDefs = gql`
         error: GraphQLJSON,
     }
 
+    type Deployment {
+        id: ID!
+        app: App!
+        createdAt: Date!
+        updatedAt: Date!
+    }
+
+    type GenerateSignedURLsResult {
+        signedURLs: [String!]!
+        deployment: Deployment!
+    }
+
     type Mutation {
         createOrganization(
             name: String
@@ -436,7 +448,7 @@ const typeDefs = gql`
 
         deleteAllStaticQueryTemplates(appId: ID!): RemoveResult!
 
-        generateSignedURLs(files: [String!]!): [String!]!
+        generateSignedURLs(appId: ID!, files: [String!]!): GenerateSignedURLsResult!
 
         createActivityLog(
             message: String!
@@ -457,6 +469,7 @@ const typeDefs = gql`
 
         getApps(page: Int, limit: Int): AppPage!
         getAppById(appId: ID!): App!
+        getAppByName(name: String!): App!
 
         getResources(page: Int, limit: Int): ResourcePage!
         getResourceById(resourceId: ID!): Resource!
@@ -547,7 +560,7 @@ const resolvers = {
             queryTemplates.remove(context.request, context.queryTemplateId),
 
         generateSignedURLs: async (parent, values, context) =>
-            deployments.generateSignedURLs(context.request, values.files),
+            deployments.generateSignedURLs(context.request, values),
 
         createActivityLog: async (parent, values, context) =>
             activityLogs.create(context.request, values),
@@ -576,6 +589,9 @@ const resolvers = {
 
         getAppById: async (parent, values, context) =>
             apps.getById(context.request, values.appId),
+
+        getAppByName: async (parent, values, context) =>
+            apps.getByName(context.request, values.name),
 
         getResources: async (parent, values, context) =>
             resources.list(context.request, values),

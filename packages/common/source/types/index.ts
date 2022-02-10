@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 import {
     resourceTypes,
     resourceStatuses,
@@ -12,6 +13,12 @@ import {
     queryStatuses,
     componentOrigins,
 } from "../utils/constants";
+
+/* General guidelines to keep in mind when writing interfaces for models.
+ * 1. All identifiers must be of type `ObjectId`. Do not use strings.
+ * 2. The identifier attribute in external types must be `id`.
+ * 3. The identifier attribute in internal types must be `_id`.
+ */
 
 export interface MySQLConfiguration {
     host: string;
@@ -45,7 +52,7 @@ export interface BigQueryConfiguration {
 }
 
 export interface Resource {
-    id: string;
+    _id: ObjectId;
     name: string;
     description: string;
     type: typeof resourceTypes[number];
@@ -117,7 +124,7 @@ export interface ExternalListPage<T> {
 export type ResourcePage = ExternalListPage<ExternalResource>;
 
 export interface User {
-    id: string;
+    _id: ObjectId;
     firstName: string;
     lastName: string;
     description: string;
@@ -156,7 +163,7 @@ export interface ExternalUser {
 export type UserPage = ExternalListPage<ExternalUser>;
 
 export interface Organization {
-    id: string;
+    _id: ObjectId;
     name: string;
     description: string;
     users: string[] | User[];
@@ -178,7 +185,7 @@ export interface ExternalOrganization {
 export type OrganizationPage = ExternalListPage<ExternalOrganization>;
 
 export interface Group {
-    id: string;
+    _id: ObjectId;
     name: string;
     type: typeof groupTypes[number];
     description: string;
@@ -204,11 +211,13 @@ export interface ExternalGroup {
 export type GroupPage = ExternalListPage<ExternalGroup>;
 
 export interface App {
-    id: string;
+    _id: ObjectId;
     name: string;
     title: string;
     slug: string;
     description: string;
+    organization: string | Organization;
+    deployments: ObjectId[] | Deployment[];
     groups: string[] | Group[];
     resources: string[] | Resource[];
     creator: string[] | User;
@@ -224,6 +233,7 @@ export interface ExternalApp {
     slug: string;
     description: string;
     resources: string[];
+    deployments: string[];
     groups: string[];
     creator: string;
     status: typeof appStatuses[number];
@@ -238,7 +248,7 @@ export interface Session {
 }
 
 export interface Query {
-    id: string;
+    _id: ObjectId;
     name: string;
     description: string;
     resource: string | Resource;
@@ -270,7 +280,7 @@ export interface Context {
     [x: string]: any;
 }
 export interface ActivityLog {
-    id: string;
+    _id: ObjectId;
     component: typeof componentOrigins[number];
     context: Context;
     message: string;
@@ -294,4 +304,18 @@ export interface Manifest {
     resources: Resource[];
     app: App;
     file?: string;
+}
+
+export interface Deployment {
+    _id: ObjectId;
+    app: ObjectId | App;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface ExternalDeployment {
+    id: string;
+    app: string;
+    createdAt: Date;
+    updatedAt: Date;
 }

@@ -79,6 +79,15 @@ const appSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "User",
         },
+        deployments: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "Deployment",
+                },
+            ],
+            default: [],
+        },
         status: {
             type: String,
             enum: appStatuses,

@@ -3,6 +3,7 @@ import type { GetSignedUrlConfig } from "@google-cloud/storage";
 import { OAuth2Client } from "google-auth-library";
 import { Storage } from "@google-cloud/storage";
 import axios from "axios";
+import mimeTypes from "mime-types";
 
 import * as constants from "./constants";
 
@@ -91,7 +92,7 @@ export const generateUploadSignedURL = async (
         version: "v4",
         action: "write",
         expires: Date.now() + 10 * 60 * 1000, // 10 minutes
-        contentType: "application/octet-stream",
+        contentType: mimeTypes.lookup(fileName) || "application/octet-stream",
     };
 
     const [url] = await storage

@@ -316,7 +316,7 @@ const loginWithGoogle = async (
         expiresIn: "30d",
     });
 
-    return { jwtToken, user, createdAt: new Date() };
+    return { jwtToken, user: toExternal(user), createdAt: new Date() };
 };
 
 export { create, list, listByIds, getById, update, remove, loginWithGoogle };
