@@ -7,7 +7,7 @@
         "@apollo/client": "^3.5.5",
         "@emotion/react": "^11.6.0",
         "@emotion/styled": "^11.6.0",
-        "@hypertool/common": "^0.2.2",
+        "@hypertool/common": "^0.2.17",
         "@mui/icons-material": "^5.1.0",
         "@mui/material": "^5.1.0",
         "@mui/styled-engine-sc": "^5.1.0",
