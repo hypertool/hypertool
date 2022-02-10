@@ -217,6 +217,7 @@ export interface App {
     slug: string;
     description: string;
     organization: string | Organization;
+    deployments: ObjectId[] | Deployment[];
     groups: string[] | Group[];
     resources: string[] | Resource[];
     creator: string[] | User;
@@ -232,6 +233,7 @@ export interface ExternalApp {
     slug: string;
     description: string;
     resources: string[];
+    deployments: string[];
     groups: string[];
     creator: string;
     status: typeof appStatuses[number];
