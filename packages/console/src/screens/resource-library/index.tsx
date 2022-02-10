@@ -1,5 +1,4 @@
 import type { FunctionComponent, ReactElement } from "react";
-import type { Resource } from "@hypertool/common";
 
 import { useCallback } from "react";
 import { styled } from "@mui/material/styles";
@@ -85,7 +84,7 @@ const ResourceLibrary: FunctionComponent = (): ReactElement => {
     } = data?.getResources || {};
 
     const handleRowClick = useCallback(
-        (resource: Resource) => {
+        (resource: any) => {
             navigate(`/resources/${resource.id}/edit`);
         },
         [navigate],
