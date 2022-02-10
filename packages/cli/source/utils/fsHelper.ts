@@ -1,5 +1,6 @@
 import axios from "axios";
 import fs from "fs";
+import mimeTypes from "mime-types";
 
 export const uploadFiles = async (
     files: string[],
@@ -18,7 +19,8 @@ export const uploadFiles = async (
         const stream = fs.createReadStream(file);
         const promise = axios.put(signedURL, stream, {
             headers: {
-                "Content-Type": "application/octet-stream",
+                "Content-Type":
+                    mimeTypes.lookup(file) || "application/octet-stream",
             },
         });
         promises.push(promise);
