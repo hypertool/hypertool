@@ -88,6 +88,18 @@ const LOGIN_WITH_GOOGLE = gql`
     }
 `;
 
+const LOGIN_WITH_EMAIL = gql`
+    mutation LoginWithEmail($emailAddress: String!, $password: String!) {
+        loginWithEmail(emailAddress: $emailAddress, password: $password) {
+            jwtToken
+            user {
+                id
+            }
+            createdAt
+        }
+    }
+`;
+
 const client = new ApolloClient({
     uri: `${process.env.REACT_APP_API_URL}/graphql/v1/public`,
     cache: new InMemoryCache(),
@@ -104,7 +116,10 @@ const initialValues: FormValues = {
 };
 
 const validationSchema = yup.object({
-    email: yup.string().required("Email is required"),
+    email: yup
+        .string()
+        .email("Must be a valid Email")
+        .required("Email is required"),
     password: yup.string().required("Password is required"),
 });
 
@@ -143,7 +158,8 @@ const Login: FunctionComponent = (): ReactElement => {
         signIn();
     }, [signIn]);
 
-    const handleBasicAuthSubmit = useCallback(() => {
+    const handleBasicAuthSubmit = useCallback((values: FormValues) => {
+        console.log(values);
         return null;
     }, []);
 
@@ -156,8 +172,7 @@ const Login: FunctionComponent = (): ReactElement => {
                         <Formik
                             initialValues={initialValues}
                             onSubmit={handleBasicAuthSubmit as any}
-                            validationSchema={validationSchema}
-                        >
+                            validationSchema={validationSchema}>
                             {(formik) => (
                                 <>
                                     <InputField
@@ -181,8 +196,7 @@ const Login: FunctionComponent = (): ReactElement => {
                                     <PrimaryAction
                                         onClick={() => formik.submitForm()}
                                         variant="contained"
-                                        size="medium"
-                                    >
+                                        size="medium">
                                         Login
                                     </PrimaryAction>
                                 </>
@@ -205,8 +219,7 @@ const Login: FunctionComponent = (): ReactElement => {
                         variant="contained"
                         color="primary"
                         size="medium"
-                        onClick={handleContinueWithGoogle}
-                    >
+                        onClick={handleContinueWithGoogle}>
                         Continue with Google
                     </PrimaryAction>
                 </CardContent>

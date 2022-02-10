@@ -244,6 +244,14 @@ const CREATE_ACTIVITY_LOG = gql`
             context: $context
             component: $component
         ) {
+
+        }
+    }
+`;
+
+const UPDATE_PASSWORD = gql`
+    mutation UpdatePassword($oldPassword: String!, $newPassword: String!) {
+        updatePassword(oldPassword: $emailAddress, newPassword: $password) {
             id
         }
     }
@@ -733,5 +741,15 @@ export default class Client<T> {
             }
             throw error;
         }
+    }
+
+    async updatePassword({ oldPassword, newPassword }): Promise<void> {
+        await this.client.mutate({
+            mutation: UPDATE_PASSWORD,
+            variables: {
+                oldPassword,
+                newPassword
+            }
+        })
     }
 }

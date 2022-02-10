@@ -45,6 +45,38 @@ const GET_AUTH_SERVICES = gql`
     }
 `;
 
+const CREATE_ACCOUNT = gql`
+    mutation SignUpWithEmail(
+        $firstName: String!
+        $lastName: String!
+        $role: String
+        $emailAddress: String!
+        $password: String!
+    ) {
+        signupWithEmail(
+            firstName: $firstName
+            lastName: $lastName
+            role: $role
+            emailAddress: $emailAddress
+            password: $password
+        ) {
+            id
+        }
+    }
+`;
+
+const COMPLETE_PASSWORD_RESET = gql`
+    mutation CompletePasswordReset($token: String!, $newPassword: String!) {
+        completePasswordReset(token: $token, newPassword: $newPassword) {
+            jwtToken
+            user {
+                id
+            }
+            createdAt
+        }
+    }
+`;
+
 export default class PublicClient {
     appName: string;
     client: ApolloClient<any>;
@@ -94,5 +126,39 @@ export default class PublicClient {
         } catch (error) {
             return null;
         }
+    };
+
+    createAccount = async ({
+        firstName,
+        lastName,
+        role,
+        emailAddress,
+        password,
+    }): Promise<any> => {
+        await this.client.mutate({
+            mutation: CREATE_ACCOUNT,
+            variables: {
+                firstName,
+                lastName,
+                role,
+                emailAddress,
+                password,
+            },
+        });
+    };
+
+    completePasswordReset = async ({
+        token,
+        newPassword,
+    }): Promise<Session> => {
+        const { data } = await this.client.mutate({
+            mutation: COMPLETE_PASSWORD_RESET,
+            variables: {
+                token,
+                newPassword,
+            },
+        });
+
+        return data;
     };
 }

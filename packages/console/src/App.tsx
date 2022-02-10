@@ -8,13 +8,17 @@ import { VisitorLayout, WorkspaceLayout } from "./layouts";
 import {
     AppBuilder,
     AuthenticationServices,
+    CreateAccount,
     EditResource,
     Login,
     NewApp,
     NewOrganization,
+    NewPassword,
     NewResource,
     ResourceLibrary,
     SingleApp,
+    SignUp,
+    UpdatePassword,
     ViewApps,
 } from "./screens";
 
@@ -31,7 +35,10 @@ const App: FunctionComponent = (): ReactElement => {
                 <Route path="/" element={<VisitorLayout />}>
                     <Route path="/login" element={<Login />} />
                 </Route>
-
+                <Route path="/login" element={<Login />} />
+                <Route path="/sign-up" element={<SignUp />} />
+                <Route path="/create-account" element={<CreateAccount />} />
+                <Route path="/new-password" element={<NewPassword />} />
                 <Route path="/" element={<WorkspaceLayout />}>
                     <Route
                         path="/organizations/new"
@@ -50,6 +57,10 @@ const App: FunctionComponent = (): ReactElement => {
                         path="/apps/:appId/authentication"
                         element={<AuthenticationServices />}
                     />
+                    <Route
+                        path="/update-password"
+                        element={<UpdatePassword />}
+                    />
                 </Route>
 
                 <Route path="/apps/:appId/builder" element={<AppBuilder />} />
@@ -58,8 +69,8 @@ const App: FunctionComponent = (): ReactElement => {
                     index={true}
                     element={<Navigate to={session ? "/apps" : "/login"} />}
                 />
-            </Routes>
-        </Root>
+            </Routes >
+        </Root >
     );
 };
 
