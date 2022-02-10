@@ -87,7 +87,7 @@ const LOGIN_WITH_GOOGLE = gql`
 
 const LOGIN_WITH_EMAIL = gql`
     mutation LoginWithEmail($emailAddress: String!, $password: String!) {
-        loginWithEmail(emailAddress: $emailAddress, password: $password) {
+        loginWithEmail(emailAddress: $emailAddress!, password: $password!) {
             id
         }
     }

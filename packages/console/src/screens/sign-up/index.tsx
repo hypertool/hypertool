@@ -1,6 +1,5 @@
 import { FunctionComponent, ReactElement, useCallback } from "react";
 import { Typography, Button, TextField } from "@mui/material";
-import { useGoogleLogin } from "react-google-login";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router";
 
@@ -97,8 +96,50 @@ const validationSchema = yup.object({
     password: yup.string().required("Password is required"),
 });
 
+const SIGH_UP_WITH_EMAIL = gql`
+    mutation SignUpWithEmail(
+        $firstName: String!
+        $lastName: String!
+        $role: String
+        $emailAddress: String!
+        $password: String!
+    ) {
+        signupWithEmail(
+            firstName: $firstName
+            lastName: $lastName
+            role: $role
+            emailAddress: $emailAddress
+            password: $password
+        ) {
+            id
+        }
+    }
+`;
+
+const client = new ApolloClient({
+    uri: `${process.env.REACT_APP_API_URL}/graphql/v1/public`,
+    cache: new InMemoryCache(),
+});
+
 const SignUp: FunctionComponent = (): ReactElement => {
-    const handleSubmit = (values: FormValues) => {};
+    const navigate = useNavigate();
+
+    const handleSubmit = async (values: FormValues) => {
+        const result = await client.mutate({
+            mutation: SIGH_UP_WITH_EMAIL,
+            variables: {
+                firstName: values.firstName,
+                lastName: values.lastName,
+                role: "developer",
+                emailAddress: values.emailAddress,
+                password: values.password,
+            },
+        });
+
+        if (result.data) {
+            navigate("/login");
+        }
+    };
 
     return (
         <Root>
