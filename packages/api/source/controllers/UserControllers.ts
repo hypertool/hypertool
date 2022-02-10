@@ -350,7 +350,7 @@ const signupWithEmail = async (context: any, values: any): Promise<Session> => {
     let user = await UserModel.findOne({ emailAddress }).exec();
 
     if (user) {
-        throw BadRequestError("User is already signed up");
+        throw new BadRequestError("User is already signed up");
     }
 
     user = new UserModel({
