@@ -216,6 +216,22 @@ const GENERATE_SIGNED_URLS = gql`
     }
 `;
 
+const CREATE_MEMBERSHIP = gql`
+    mutation CreateMembership(
+        $emailAddress: String!
+        $organizationId: ID!
+        $inviterId: ID!
+    ) {
+        createMembership(
+            emailAddress: $emailAddress
+            organizationId: $organizationId
+            inviterId: $inviterId
+        ) {
+            id
+        }
+    }
+`;
+
 const isNotFoundError = (error0: unknown): boolean => {
     if (error0 instanceof ApolloError) {
         const error = error0 as ApolloError;
@@ -596,5 +612,16 @@ export default class Client<T> {
             },
         });
         return app.data.generateSignedURLs;
+    }
+
+    async createMembership(data: any): Promise<void> {
+        await this.client.mutate({
+            mutation: CREATE_MEMBERSHIP,
+            variables: {
+                emailAddress: data.emailAddress,
+                inviterId: data.inviterId,
+                organizationId: data.organizationId,
+            },
+        });
     }
 }
