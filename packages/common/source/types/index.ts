@@ -294,6 +294,8 @@ export interface Manifest {
 export interface Deployment {
     _id: ObjectId;
     app: ObjectId | App;
+    createdAt: Date;
+    updatedAt: Date;
 }
 export interface Organization {
     id: string;
