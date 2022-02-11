@@ -164,26 +164,6 @@ export interface ExternalUser {
 
 export type UserPage = ExternalListPage<ExternalUser>;
 
-export interface Organization {
-    _id: ObjectId;
-    name: string;
-    description: string;
-    users: string[] | User[];
-    status: typeof organizationStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export interface ExternalOrganization {
-    id: string;
-    name: string;
-    description: string;
-    users: string[];
-    status: typeof organizationStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
 export interface Group {
     _id: ObjectId;
     name: string;
