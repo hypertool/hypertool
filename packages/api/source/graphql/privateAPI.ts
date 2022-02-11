@@ -325,19 +325,21 @@ const typeDefs = gql`
     type GenerateSignedURLsResult {
         signedURLs: [String!]!
         deployment: Deployment!
-    enum MembershipTypes{
+    }
+
+    enum MembershipTypes {
         ${membershipTypes.join("\n")}
     }
 
-    enum MembershipStatuses{
+    enum MembershipStatuses {
         ${membershipStatuses.join("\n")}
     }
 
     type Membership {
-        id: String!
-        member: String!
-        inviter: String!
-        division: String!
+        id: ID!
+        member: ID!
+        inviter: ID!
+        division: ID!
         type: MembershipTypes!
         status: MembershipStatuses!
         createdAt: Date!
@@ -477,7 +479,7 @@ const typeDefs = gql`
         ): ActivityLog!    
 
         createMembership(
-            emailAddress: String,
+            emailAddress: String!,
             organizationId: ID!
             inviterId: ID!
         ): Membership!
