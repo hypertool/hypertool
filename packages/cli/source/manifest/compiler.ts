@@ -42,7 +42,7 @@ const resourceSchema = joi.object({
         .string()
         .valid(...constants.resourceTypes)
         .required(),
-    connection: joi.string().required(),
+    connection: joi.any().required(),
 });
 
 const manifestSchema = joi.object({
