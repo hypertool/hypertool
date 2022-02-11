@@ -1,5 +1,6 @@
 import { BadRequestError } from "@hypertool/common";
 import sgMail from "@sendgrid/mail";
+
 import { invitationTemplate } from "./templates";
 
 const { SENDGRID_API_KEY } = process.env;

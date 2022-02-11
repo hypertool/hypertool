@@ -275,7 +275,7 @@ const typeDefs = gql`
 
     type QueryTemplatePage {
         totalRecords: Int!
-        totalPages: Int!  
+        totalPages: Int!
         previousPage: Int!
         nextPage: Int!
         hasPreviousPage: Int!
