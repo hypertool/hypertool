@@ -75,43 +75,48 @@ const create = async (context, attributes): Promise<ExternalMembership> => {
     }
 
     let membership = await MembershipModel.findOne({
-        member: member.id,
-        organizationId,
+        member: member._id,
+        division: organizationId,
     });
 
-    if (!membership) {
-        membership = new MembershipModel({
-            member: member.id,
-            inviter: inviterId,
-            division: organizationId,
-            type: "organization",
-            status: "invited",
-        });
-        await membership.save();
+    if (membership) {
+        await invite(emailAddress, organizationId);
+        throw new BadRequestError(
+            "User is trying to create duplicate invitation.",
+        );
     }
 
-    if (membership.status === "invited") {
-        const token = jwt.sign(
-            { emailAddress, organizationId },
-            INVITATION_JWT_SIGNATURE,
-            {
-                expiresIn: 60 * 60, // 1 hour
-            },
-        );
-        const subject = "Invitation to join organization";
-        const text = "Text";
-        const html = invitationTemplate({ token });
-        const params = {
-            from: { name: "Hypertool", email: "noreply@hypertool.io" },
-            to: emailAddress,
-            subject,
-            text,
-            html,
-        };
-        sendEmail(params);
-    }
+    membership = new MembershipModel({
+        member: member._id,
+        inviter: inviterId,
+        division: organizationId,
+        type: "organization",
+        status: "invited",
+    });
+
+    await membership.save();
+
+    await invite(emailAddress, organizationId);
 
     return toExternal(membership);
+};
+
+const invite = async (emailAddress, organizationId) => {
+    const token = jwt.sign(
+        { emailAddress, organizationId },
+        INVITATION_JWT_SIGNATURE,
+        {
+            expiresIn: 60 * 60, // 1 hour
+        },
+    );
+    const params = {
+        from: { name: "Hypertool", email: "noreply@hypertool.io" },
+        to: emailAddress,
+        subject: "Invitation to join organization",
+        text: "Text",
+        html: invitationTemplate({ token }),
+    };
+    await sendEmail(params);
 };
 
 const verify = async (context, token): Promise<Boolean> => {
@@ -132,8 +137,8 @@ const verify = async (context, token): Promise<Boolean> => {
 
             await MembershipModel.findOneAndUpdate(
                 {
-                    member: user.id,
-                    organizationId,
+                    member: user._id,
+                    division: organizationId,
                 },
                 {
                     status: "accepted",
@@ -142,14 +147,13 @@ const verify = async (context, token): Promise<Boolean> => {
 
             await OrganizationModel.findByIdAndUpdate(
                 organizationId,
-                { $push: { members: user.id } },
+                { $push: { members: user._id } },
                 { safe: true },
             );
         });
 
         return true;
     } catch (error) {
-        //throw new BadRequestError(error.message);
         return false;
     }
 };
