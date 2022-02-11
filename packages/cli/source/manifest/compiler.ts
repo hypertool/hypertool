@@ -1,4 +1,10 @@
-import type { Manifest, App, Query, Resource } from "@hypertool/common";
+import {
+    Manifest,
+    App,
+    Query,
+    Resource,
+    ResourceModel,
+} from "@hypertool/common";
 
 import yaml from "js-yaml";
 import fs from "fs";
@@ -59,13 +65,24 @@ export const logDuplicateError = (
     );
 };
 
+export const logSemanticError = (message: string, filePath = "<anonymous>") => {
+    errorCount++;
+    console.log(`${chalk.red("[error]")} ${filePath}: ${message}\n`);
+};
+
 const parseQueries = (queries: any, path = "<anonymous>") => {
     const result: any = {};
     for (const query of queries) {
         if (result[query.name]) {
             logDuplicateError(query.name, path);
         }
-        // result[query.name] = parseQuery(query, path);
+        const { error, value } = querySchema.validate(query, {
+            stripUnknown: true,
+        });
+        if (error) {
+            logSemanticError(error.message);
+        }
+        result[query.name] = value;
     }
     return result;
 };
@@ -76,7 +93,13 @@ const parseResources = (resources: any, path = "<anonymous>") => {
         if (result[resource.name]) {
             logDuplicateError(resource.name, path);
         }
-        // result[resource.name] = parseResource(resource, path);
+        const { error, value } = resourceSchema.validate(resource, {
+            stripUnknown: true,
+        });
+        if (error) {
+            logSemanticError(error.message);
+        }
+        result[resource.name] = value;
     }
     return result;
 };
@@ -97,18 +120,28 @@ const compile = async (): Promise<Manifest> => {
         return manifest;
     });
 
-    let app: App | null = null;
-    let queries: {
-        [key: string]: Query;
-    } = {};
-    let resources: {
-        [key: string]: Resource;
-    } = {};
+    let manifestResult = {
+        app: {},
+        queries: {},
+        resources: {},
+    };
+
+    let queries: Query[] = [];
+    let resources: Resource[] = [];
+
     for (const manifest of manifests) {
         for (const key in manifest) {
             switch (key) {
                 case "app": {
-                    // app = parseApp(manifest.app, manifest.file);
+                    const { error, value } = appSchema.validate(manifest.app, {
+                        stripUnknown: true,
+                    });
+
+                    if (error) {
+                        logSemanticError(error.message);
+                        break;
+                    }
+                    manifestResult.app = value;
                     break;
                 }
 
@@ -131,12 +164,10 @@ const compile = async (): Promise<Manifest> => {
         }
     }
 
-    const queryList: Query[] = Object.entries(queries).map((item) => item[1]);
-    const resourceList: Resource[] = Object.entries(resources).map(
-        (item) => item[1],
-    );
+    manifestResult.queries = Object.entries(queries).map((item) => item[1]);
+    manifestResult.resources = Object.entries(resources).map((item) => item[1]);
 
-    return { app: app, queries: queryList, resources: resourceList };
+    return <Manifest>manifestResult;
 };
 
 export default compile;
