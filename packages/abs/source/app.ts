@@ -7,6 +7,8 @@ import cors from "cors";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { AppModel, NotFoundError, BadRequestError } from "@hypertool/common";
 
+import { abs } from "./rest";
+
 const { APP_BUNDLES_BUCKET_NAME, PROVIDER_DOMAIN } = process.env;
 
 const initialize = async () => {
@@ -62,6 +64,11 @@ const initialize = async () => {
             },
         }),
     );
+
+    const router = express.Router();
+    abs.attachRoutes(router);
+
+    app.use("/api/v1", router);
 
     return app;
 };
