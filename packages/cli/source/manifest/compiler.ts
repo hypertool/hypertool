@@ -137,7 +137,7 @@ const compile = async (): Promise<Manifest> => {
         app: object;
         queries: object;
         resources: object;
-        values: object | string;
+        values: object;
         file: string;
     } = {
         app: {},
@@ -195,12 +195,12 @@ const compile = async (): Promise<Manifest> => {
                 }
 
                 case "file": {
-                    manifestResult.file = <string>manifest.file;
+                    manifestResult.file = <string>manifest.file?.trim();
                     break;
                 }
 
                 case "values": {
-                    manifestResult.values = <object | string>manifest.values;
+                    manifestResult.values = <object>manifest.values;
                     break;
                 }
             }
