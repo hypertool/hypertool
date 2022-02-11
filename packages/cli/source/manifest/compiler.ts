@@ -80,13 +80,7 @@ const validateQueries = (queries: any, path = "<anonymous>") => {
         if (result[query.name]) {
             logDuplicateError(query.name, path);
         }
-        const { error, value } = querySchema.validate(query, {
-            stripUnknown: true,
-        });
-        if (error) {
-            logSemanticError(error.message);
-        }
-        result[query.name] = value;
+        result[query.name] = query;
     }
     return result;
 };
@@ -97,13 +91,7 @@ const validateResources = (resources: any, path = "<anonymous>") => {
         if (result[resource.name]) {
             logDuplicateError(resource.name, path);
         }
-        const { error, value } = resourceSchema.validate(resource, {
-            stripUnknown: true,
-        });
-        if (error) {
-            logSemanticError(error.message);
-        }
-        result[resource.name] = value;
+        result[resource.name] = resource;
     }
     return result;
 };
