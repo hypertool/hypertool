@@ -17,7 +17,7 @@ import {
 const createSchema = joi.object({
     name: joi.string().max(256).allow(""),
     description: joi.string().max(512).allow(""),
-    users: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    members: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
 const filterSchema = joi.object({
@@ -33,18 +33,30 @@ const filterSchema = joi.object({
 const updateSchema = joi.object({
     name: joi.string().max(256).allow(""),
     description: joi.string().max(512).allow(""),
-    users: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    members: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
 const toExternal = (organization: any): ExternalOrganization => {
-    const { id, _id, name, description, users, status, createdAt, updatedAt } =
-        organization;
+    const {
+        id,
+        _id,
+        name,
+        description,
+        members,
+        status,
+        createdAt,
+        updatedAt,
+        title,
+        apps,
+    } = organization;
 
     return {
         id: id || _id.toString(),
         name,
         description,
-        users: extractIds(users),
+        title,
+        apps,
+        members: extractIds(members),
         status,
         createdAt,
         updatedAt,
