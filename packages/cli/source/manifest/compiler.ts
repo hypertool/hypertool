@@ -19,6 +19,9 @@ let errorCount = 0;
 
 const IDENTIFIER_REGEX = /^[a-zA-Z_][a-zA-Z_0-9-]+[a-zA-Z_0-9]$/;
 
+/**
+ * Joi Validation Schema for App, Query, Resource and Manifest
+ */
 const appSchema = joi.object({
     name: joi.string().max(128).regex(IDENTIFIER_REGEX).required(),
     title: joi.string().max(256).regex(IDENTIFIER_REGEX).required(),
@@ -53,6 +56,10 @@ const manifestSchema = joi.object({
     resources: joi.array().items(resourceSchema),
 });
 
+/**
+ * Logs a duplicate error. Compiler specific function, hence not in the file with
+ * other error logging functions.
+ */
 export const logDuplicateError = (
     duplicate: string,
     filePath = "<anonymous>",
@@ -65,6 +72,10 @@ export const logDuplicateError = (
     );
 };
 
+/**
+ * Logs a semantic error. Compiler specific function, hence not in the file with
+ * other error logging functions.
+ */
 export const logSemanticError = (message: string, filePath = "<anonymous>") => {
     errorCount++;
     console.log(`${chalk.red("[error]")} ${filePath}: ${message}\n`);
@@ -167,7 +178,15 @@ const compile = async (): Promise<Manifest> => {
     manifestResult.queries = Object.entries(queries).map((item) => item[1]);
     manifestResult.resources = Object.entries(resources).map((item) => item[1]);
 
-    return <Manifest>manifestResult;
+    const { error, value } = manifestSchema.validate(manifestResult, {
+        stripUnknown: true,
+    });
+
+    if (error) {
+        logSemanticError(error.message);
+    }
+
+    return <Manifest>value;
 };
 
 export default compile;
