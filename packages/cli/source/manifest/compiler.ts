@@ -1,4 +1,4 @@
-import { App, Manifest, Query, Resource } from "@hypertool/common";
+import type { Manifest, Query, Resource } from "@hypertool/common";
 
 import yaml from "js-yaml";
 import fs from "fs";
