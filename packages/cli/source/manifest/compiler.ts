@@ -30,7 +30,7 @@ const appSchema = joi.object({
 
 const querySchema = joi.object({
     name: joi.string().max(128).regex(IDENTIFIER_REGEX).required(),
-    description: joi.string().max(1024).allow(""),
+    description: joi.string().max(1024).allow("").default(""),
     resource: joi.string().regex(IDENTIFIER_REGEX).required(),
     content: joi.string().max(10240).required(),
 });
