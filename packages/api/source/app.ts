@@ -3,6 +3,7 @@ import logger from "morgan";
 import cors from "cors";
 
 import * as graphql from "./graphql";
+import { api } from "./rest";
 
 const initialize = async () => {
     const app = express();
@@ -13,13 +14,13 @@ const initialize = async () => {
     }
 
     graphql.attachRoutes(app);
+    const router = express.Router();
+    api.attachRoutes(router);
+    app.use("/api/v1", router);
 
     return app;
 };
 
 const destroy = () => {};
 
-export {
-    initialize,
-    destroy,
-};
+export { initialize, destroy };
