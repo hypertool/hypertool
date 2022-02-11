@@ -6,7 +6,8 @@ import { organizationStatuses } from "../utils/constants";
 
 const organizationSchema = new Schema(
     {
-        // An identifier that helps humans identify the organization across Hypertool.
+        /*An identifier that helps humans identify the organization across Hypertool.
+         */
         name: {
             type: String,
             minlength: 1,
@@ -14,7 +15,8 @@ const organizationSchema = new Schema(
             required: true,
             trim: true,
         },
-        // The display name of the organization.
+        /*The display name of the organization.
+         */
         title: {
             type: String,
             minlength: 1,
@@ -22,14 +24,16 @@ const organizationSchema = new Schema(
             required: true,
             trim: true,
         },
-        // A brief description of the organization.
+        /* A brief description of the organization.
+         */
         description: {
             type: String,
             minlength: 0,
             maxlength: 512,
             default: "",
         },
-        // The list of users that are part of the organization.
+        /* The list of users that are part of the organization.
+         */
         members: {
             type: [
                 {
@@ -39,7 +43,8 @@ const organizationSchema = new Schema(
             ],
             required: true,
         },
-        // The list of apps that are part of the organization.
+        /* The list of apps that are part of the organization.
+         */
         apps: {
             type: [
                 {
@@ -49,7 +54,8 @@ const organizationSchema = new Schema(
             ],
             required: true,
         },
-        // The list of apps that are part of the organization.
+        /* The list of apps that are part of the organization.
+         */
         status: {
             type: String,
             enum: organizationStatuses,
