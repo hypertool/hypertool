@@ -614,13 +614,17 @@ export default class Client<T> {
         return app.data.generateSignedURLs;
     }
 
-    async createMembership(data: any): Promise<void> {
+    async createMembership(
+        emailAddress,
+        inviterId,
+        organizationId,
+    ): Promise<void> {
         await this.client.mutate({
             mutation: CREATE_MEMBERSHIP,
             variables: {
-                emailAddress: data.emailAddress,
-                inviterId: data.inviterId,
-                organizationId: data.organizationId,
+                emailAddress,
+                inviterId,
+                organizationId,
             },
         });
     }
