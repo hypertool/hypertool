@@ -13,13 +13,19 @@ let errorCount = 0;
 const IDENTIFIER_REGEX = /^[a-zA-Z_][a-zA-Z_0-9-]+[a-zA-Z_0-9]$/;
 
 const appSchema = joi.object({
-    name: joi.string().max(128).required(),
-    title: joi.string().max(256).required(),
-    slug: joi.string().max(128).required(),
+    name: joi.string().max(128).regex(IDENTIFIER_REGEX).required(),
+    title: joi.string().max(256).regex(IDENTIFIER_REGEX).required(),
+    slug: joi.string().max(128).regex(IDENTIFIER_REGEX).required(),
+    description: joi.string().max(512).allow("").default(""),
+    groups: joi
+        .array()
+        .items(joi.string().regex(IDENTIFIER_REGEX))
+        .default(["default"]),
 });
 
 const querySchema = joi.object({
     name: joi.string().max(128).required(),
+    description: joi.string().max(512).allow("").default(""),
     resource: joi.string().max(256).required(),
     content: joi.string().max(128).required(),
 });
