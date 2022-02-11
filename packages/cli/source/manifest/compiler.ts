@@ -3,7 +3,7 @@ import type { Manifest, Query, Resource } from "@hypertool/common";
 import yaml from "js-yaml";
 import fs from "fs";
 import path from "path";
-import joi from "joi";
+import joi, { string } from "joi";
 import chalk from "chalk";
 import { constants } from "@hypertool/common";
 import lodash from "lodash";
@@ -47,6 +47,8 @@ const manifestSchema = joi.object({
     app: joi.object(appSchema),
     queries: joi.array().items(querySchema),
     resources: joi.array().items(resourceSchema),
+    file: joi.string(),
+    values: joi.alternatives(joi.string(), joi.object()),
 });
 
 /**
@@ -85,10 +87,14 @@ export const logAllErrors = (details: any, filePath = "<anonymous>") => {
     });
 };
 
-const validateQueries = (queries: any, path = "<anonymous>") => {
+const validateQueries = (
+    queries: any,
+    externalQueries: any,
+    path = "<anonymous>",
+) => {
     const result: any = {};
     for (const query of queries) {
-        if (result[query.name]) {
+        if (result[query.name] || externalQueries[query.name]) {
             logDuplicateError(query.name, path);
         }
         result[query.name] = query;
@@ -96,10 +102,14 @@ const validateQueries = (queries: any, path = "<anonymous>") => {
     return result;
 };
 
-const validateResources = (resources: any, path = "<anonymous>") => {
+const validateResources = (
+    resources: any,
+    externalResources: any,
+    path = "<anonymous>",
+) => {
     const result: any = {};
     for (const resource of resources) {
-        if (result[resource.name]) {
+        if (result[resource.name] || externalResources[resource.name]) {
             logDuplicateError(resource.name, path);
         }
         result[resource.name] = resource;
@@ -123,10 +133,18 @@ const compile = async (): Promise<Manifest> => {
         return manifest;
     });
 
-    let manifestResult = {
+    let manifestResult: {
+        app: object;
+        queries: object;
+        resources: object;
+        values: object | string;
+        file: string;
+    } = {
         app: {},
         queries: {},
         resources: {},
+        values: {},
+        file: "",
     };
 
     let queries: Query[] = [];
@@ -155,7 +173,11 @@ const compile = async (): Promise<Manifest> => {
                 case "queries": {
                     lodash.merge(
                         queries,
-                        validateQueries(manifest.queries, manifest.file),
+                        validateQueries(
+                            manifest.queries,
+                            queries,
+                            manifest.file,
+                        ),
                     );
                     break;
                 }
@@ -163,8 +185,22 @@ const compile = async (): Promise<Manifest> => {
                 case "resources": {
                     lodash.merge(
                         resources,
-                        validateResources(manifest.resources, manifest.file),
+                        validateResources(
+                            manifest.resources,
+                            resources,
+                            manifest.file,
+                        ),
                     );
+                    break;
+                }
+
+                case "file": {
+                    manifestResult.file = <string>manifest.file;
+                    break;
+                }
+
+                case "values": {
+                    manifestResult.values = <object | string>manifest.values;
                     break;
                 }
             }
