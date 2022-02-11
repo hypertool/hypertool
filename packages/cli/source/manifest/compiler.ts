@@ -24,10 +24,10 @@ const appSchema = joi.object({
 });
 
 const querySchema = joi.object({
-    name: joi.string().max(128).required(),
-    description: joi.string().max(512).allow("").default(""),
-    resource: joi.string().max(256).required(),
-    content: joi.string().max(128).required(),
+    name: joi.string().max(128).regex(IDENTIFIER_REGEX).required(),
+    description: joi.string().max(1024).allow(""),
+    resource: joi.string().regex(IDENTIFIER_REGEX).required(),
+    content: joi.string().max(10240).required(),
 });
 
 const resourceSchema = joi.object({
