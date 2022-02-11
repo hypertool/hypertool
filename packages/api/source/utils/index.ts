@@ -18,9 +18,7 @@ export const sendEmail = async (params) => {
         };
 
         await sgMail.send(message);
-        //console.log(res);
     } catch (error) {
-        console.log(error.message);
         throw new BadRequestError(error.message);
     }
 };
