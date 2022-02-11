@@ -139,6 +139,10 @@ const compile = async (): Promise<Manifest> => {
         for (const key in manifest) {
             switch (key) {
                 case "app": {
+                    if (!lodash.isEmpty(manifestResult.app)) {
+                        logDuplicateError("app", manifest.file);
+                    }
+
                     const { error, value } = appSchema.validate(manifest.app, {
                         stripUnknown: true,
                     });
