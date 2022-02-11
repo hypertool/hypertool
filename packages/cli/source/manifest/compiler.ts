@@ -74,6 +74,17 @@ export const logSemanticError = (message: string, filePath = "<anonymous>") => {
     console.log(`${chalk.red("[error]")} ${filePath}: ${message}\n`);
 };
 
+/**
+ * Logs multiple errors. Compiler specific function, hence not in the file with
+ * other error logging functions.
+ */
+export const logAllErrors = (details: any, filePath = "<anonymous>") => {
+    details.map((error: any) => {
+        errorCount++;
+        console.log(`${chalk.red("[error]")} ${filePath}: ${error.message}\n`);
+    });
+};
+
 const validateQueries = (queries: any, path = "<anonymous>") => {
     const result: any = {};
     for (const query of queries) {
@@ -165,10 +176,11 @@ const compile = async (): Promise<Manifest> => {
 
     const { error, value } = manifestSchema.validate(manifestResult, {
         stripUnknown: true,
+        abortEarly: false,
     });
 
     if (error) {
-        logSemanticError(error.message);
+        logAllErrors(error.details);
     }
 
     return <Manifest>value;
