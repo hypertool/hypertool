@@ -114,7 +114,7 @@ const invite = async (emailAddress, organizationId) => {
         to: emailAddress,
         subject: "Invitation to join organization",
         text: "Text",
-        html: invitationTemplate({ token }),
+        html: await invitationTemplate({ token }),
     };
     await sendEmail(params);
 };
