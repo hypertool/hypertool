@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import joi from "joi";
 import chalk from "chalk";
+import { constants } from "@hypertool/common";
 
 import { paths } from "../utils";
 
@@ -31,15 +32,19 @@ const querySchema = joi.object({
 });
 
 const resourceSchema = joi.object({
-    name: joi.string().max(128).required(),
-    type: joi.string().max(256).required(),
-    connection: joi.string().max(128).required(),
+    name: joi.string().max(256).required(),
+    description: joi.string().max(512).allow("").default(""),
+    type: joi
+        .string()
+        .valid(...constants.resourceTypes)
+        .required(),
+    connection: joi.string().required(),
 });
 
 const manifestSchema = joi.object({
-    app: joi.string().max(128).required(),
-    queries: joi.string().max(256).required(),
-    resources: joi.string().max(128).required(),
+    app: joi.object(appSchema),
+    queries: joi.array().items(querySchema),
+    resources: joi.array().items(resourceSchema),
 });
 
 export const logDuplicateError = (
