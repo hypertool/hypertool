@@ -241,10 +241,10 @@ describe("Organization model", function () {
         );
     });
 
-    it("should not be created when members is undefined", async () => {
+    it("should not be created when members is null", async () => {
         const newOrganization = new OrganizationModel({
             ...organization,
-            members: undefined,
+            members: null,
         });
 
         await assertThrowsAsync(
@@ -253,10 +253,23 @@ describe("Organization model", function () {
         );
     });
 
-    it("should not be created when members is null", async () => {
+    it("should not be created when apps is null", async () => {
         const newOrganization = new OrganizationModel({
             ...organization,
-            members: null,
+            apps: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newOrganization.save(),
+            "The apps attribute is required.",
+        );
+    });
+
+    /*
+    it("should not be created when members is undefined", async () => {
+        const newOrganization = new OrganizationModel({
+            ...organization,
+            members: undefined,
         });
 
         await assertThrowsAsync(
@@ -289,18 +302,6 @@ describe("Organization model", function () {
         );
     });
 
-    it("should not be created when apps is null", async () => {
-        const newOrganization = new OrganizationModel({
-            ...organization,
-            apps: null,
-        });
-
-        await assertThrowsAsync(
-            async () => newOrganization.save(),
-            "The apps attribute is required.",
-        );
-    });
-
     it("should not be created when apps is empty", async () => {
         const newOrganization = new OrganizationModel({
             ...organization,
@@ -312,4 +313,5 @@ describe("Organization model", function () {
             "The apps attribute is required.",
         );
     });
+    */
 });
