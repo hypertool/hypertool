@@ -12,31 +12,29 @@ import { paths } from "../utils";
 
 let errorCount = 0;
 
-const IDENTIFIER_REGEX = /^[a-zA-Z_][a-zA-Z_0-9-]+[a-zA-Z_0-9]$/;
-
 /**
  * Joi Validation Schema for App, Query, Resource and Manifest
  */
 const appSchema = joi.object({
-    name: joi.string().max(128).regex(IDENTIFIER_REGEX).required(),
-    title: joi.string().max(256).regex(IDENTIFIER_REGEX).required(),
-    slug: joi.string().max(128).regex(IDENTIFIER_REGEX).required(),
+    name: joi.string().max(128).regex(constants.namePattern).required(),
+    title: joi.string().max(256).regex(constants.namePattern).required(),
+    slug: joi.string().max(128).regex(constants.namePattern).required(),
     description: joi.string().max(512).allow("").default(""),
     groups: joi
         .array()
-        .items(joi.string().regex(IDENTIFIER_REGEX))
+        .items(joi.string().regex(constants.namePattern))
         .default(["default"]),
 });
 
 const querySchema = joi.object({
-    name: joi.string().max(128).regex(IDENTIFIER_REGEX).required(),
+    name: joi.string().max(128).regex(constants.namePattern).required(),
     description: joi.string().max(1024).allow("").default(""),
-    resource: joi.string().regex(IDENTIFIER_REGEX).required(),
+    resource: joi.string().regex(constants.namePattern).required(),
     content: joi.string().max(10240).required(),
 });
 
 const resourceSchema = joi.object({
-    name: joi.string().max(256).regex(IDENTIFIER_REGEX).required(),
+    name: joi.string().max(256).regex(constants.namePattern).required(),
     description: joi.string().max(512).allow("").default(""),
     type: joi
         .string()
