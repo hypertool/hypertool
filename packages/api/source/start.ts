@@ -1,20 +1,22 @@
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({
+    path: `${__dirname}/../../../.env`,
+});
 
 import http from "http";
 import mongoose from "mongoose";
 
 import { initialize } from "./app";
 
-const { PORT, DATABASE_URL } = process.env;
+const { API_PORT, DATABASE_URL } = process.env;
 
 mongoose.set("debug", true);
 mongoose.connection.once("open", async () => {
     console.log(" ✅ Database connection successfully established");
     const app = await initialize();
-    http.createServer(app).listen(PORT, () => {
+    http.createServer(app).listen(API_PORT, () => {
         console.log(
-            ` 🎉 You can access the server at http://localhost:${PORT}`
+            ` 🎉 You can access the server at http://localhost:${API_PORT}`,
         );
     });
 });
