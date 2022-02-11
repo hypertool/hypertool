@@ -1,10 +1,4 @@
-import {
-    Manifest,
-    App,
-    Query,
-    Resource,
-    ResourceModel,
-} from "@hypertool/common";
+import { App, Manifest, Query, Resource } from "@hypertool/common";
 
 import yaml from "js-yaml";
 import fs from "fs";
@@ -12,6 +6,7 @@ import path from "path";
 import joi from "joi";
 import chalk from "chalk";
 import { constants } from "@hypertool/common";
+import lodash from "lodash";
 
 import { paths } from "../utils";
 
@@ -41,7 +36,7 @@ const querySchema = joi.object({
 });
 
 const resourceSchema = joi.object({
-    name: joi.string().max(256).required(),
+    name: joi.string().max(256).regex(IDENTIFIER_REGEX).required(),
     description: joi.string().max(512).allow("").default(""),
     type: joi
         .string()
@@ -81,7 +76,7 @@ export const logSemanticError = (message: string, filePath = "<anonymous>") => {
     console.log(`${chalk.red("[error]")} ${filePath}: ${message}\n`);
 };
 
-const parseQueries = (queries: any, path = "<anonymous>") => {
+const validateQueries = (queries: any, path = "<anonymous>") => {
     const result: any = {};
     for (const query of queries) {
         if (result[query.name]) {
@@ -98,7 +93,7 @@ const parseQueries = (queries: any, path = "<anonymous>") => {
     return result;
 };
 
-const parseResources = (resources: any, path = "<anonymous>") => {
+const validateResources = (resources: any, path = "<anonymous>") => {
     const result: any = {};
     for (const resource of resources) {
         if (result[resource.name]) {
@@ -157,18 +152,18 @@ const compile = async (): Promise<Manifest> => {
                 }
 
                 case "queries": {
-                    queries = {
-                        ...queries,
-                        ...parseQueries(manifest.queries, manifest.file),
-                    };
+                    lodash.merge(
+                        queries,
+                        validateQueries(manifest.queries, manifest.file),
+                    );
                     break;
                 }
 
                 case "resources": {
-                    resources = {
-                        ...resources,
-                        ...parseResources(manifest.resources, manifest.file),
-                    };
+                    lodash.merge(
+                        resources,
+                        validateResources(manifest.resources, manifest.file),
+                    );
                     break;
                 }
             }
