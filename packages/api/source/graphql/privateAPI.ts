@@ -337,8 +337,8 @@ const typeDefs = gql`
 
     type Membership {
         id: ID!
-        member: ID!
-        inviter: ID!
+        member: User!
+        inviter: User!
         division: ID!
         type: MembershipTypes!
         status: MembershipStatuses!

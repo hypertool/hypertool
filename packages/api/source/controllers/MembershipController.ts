@@ -80,10 +80,7 @@ const create = async (context, attributes): Promise<ExternalMembership> => {
     });
 
     if (membership) {
-        await invite(emailAddress, organizationId);
-        throw new BadRequestError(
-            "User is trying to create duplicate invitation.",
-        );
+        throw new BadRequestError("Cannot create a duplicate invitation.");
     }
 
     membership = new MembershipModel({
@@ -93,15 +90,8 @@ const create = async (context, attributes): Promise<ExternalMembership> => {
         type: "organization",
         status: "invited",
     });
-
     await membership.save();
 
-    await invite(emailAddress, organizationId);
-
-    return toExternal(membership);
-};
-
-const invite = async (emailAddress, organizationId) => {
     const token = jwt.sign(
         { emailAddress, organizationId },
         INVITATION_JWT_SIGNATURE,
@@ -117,9 +107,11 @@ const invite = async (emailAddress, organizationId) => {
         html: await invitationTemplate({ token }),
     };
     await sendEmail(params);
+
+    return toExternal(membership);
 };
 
-const verify = async (context, token): Promise<Boolean> => {
+const verify = async (context, token: string): Promise<Boolean> => {
     try {
         const { emailAddress, organizationId } = jwt.verify(
             token,

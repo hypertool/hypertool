@@ -55,7 +55,7 @@ const toExternal = (organization: any): ExternalOrganization => {
         name,
         description,
         title,
-        apps,
+        apps: extractIds(apps),
         members: extractIds(members),
         status,
         createdAt,
