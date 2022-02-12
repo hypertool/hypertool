@@ -299,12 +299,27 @@ export interface Deployment {
 }
 export interface Organization {
     id: string;
+
+    /* An identifier that helps humans identify the organization across
+     * Hypertool. */
     name: string;
+
+    /* The display name of the organization. */
     title: string;
+
+    /* A brief description of the organization. */
     description: string;
+
+    /* The list of users that are part of the organization. */
     members: string[] | Membership[];
+
+    /* The status of the organization. Valid values are as follows: active,
+     * deleted, banned. */
     status: typeof organizationStatuses[number];
+
+    /* The list of apps that are part of the organization. */
     apps: string[] | App[];
+
     createdAt: Date;
     updatedAt: Date;
 }
@@ -331,10 +346,28 @@ export type OrganizationPage = ExternalListPage<ExternalOrganization>;
 
 export interface Membership {
     id: string;
+    /* An identifier that points to the User whose membership is being
+     * defined by the current document. */
     member: string | User;
+
+    /* An identifier that points to the User that invited the member to the
+     * class specified by division. */
     inviter: string | User;
+
+    /* An identifier that points to the division.
+     * This attribute is polymorphic, that is, its meaning is defined based
+     * on the value of type attribute. For example, if type is organization,
+     * then the identifier points to an organization document. On the other
+     * hand, if type is group, then the identifier points to a group document.
+     */
     division: string | Group | Organization;
+
+    /* The type of membership. Valid values are as follows: organization and
+     *group. */
     type: typeof membershipTypes[number];
+
+    /* The status of the membership. Valid values are as follows: accepted,
+     * deleted, banned, and invited.*/
     status: typeof membershipStatuses[number];
     createdAt: Date;
     updatedAt: Date;
