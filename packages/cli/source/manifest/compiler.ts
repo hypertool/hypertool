@@ -1,33 +1,60 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Manifest, Query, Resource } from "@hypertool/common";
 
 import yaml from "js-yaml";
 import fs from "fs";
 import path from "path";
+import joi, { string } from "joi";
 import chalk from "chalk";
+import { constants } from "@hypertool/common";
+import lodash from "lodash";
 
-import { paths, getMissingKeys, constants } from "../utils";
-import type { Manifest, App, Query, Resource } from "../types";
-
-const IDENTIFIER_REGEX = /^[a-zA-Z_][a-zA-Z_0-9-]+[a-zA-Z_0-9]$/;
+import { paths } from "../utils";
 
 let errorCount = 0;
 
-export const logMissingKeys = (
-    regsitryType: string,
-    keys: string[],
-    filePath = "<anonymous>",
-) => {
-    errorCount++;
-    console.log(
-        `${chalk.red(
-            "[error]",
-        )} ${filePath}: The following keys are missing in ${regsitryType}: ${keys.join(
-            ", ",
-        )}\n`,
-    );
-};
+/**
+ * Joi Validation Schema for App, Query, Resource and Manifest
+ */
+const appSchema = joi.object({
+    name: joi.string().max(128).regex(constants.namePattern).required(),
+    title: joi.string().max(256).regex(constants.namePattern).required(),
+    slug: joi.string().max(128).regex(constants.namePattern).required(),
+    description: joi.string().max(512).allow("").default(""),
+    groups: joi
+        .array()
+        .items(joi.string().regex(constants.namePattern))
+        .default(["default"]),
+});
 
+const querySchema = joi.object({
+    name: joi.string().max(128).regex(constants.namePattern).required(),
+    description: joi.string().max(1024).allow("").default(""),
+    resource: joi.string().regex(constants.namePattern).required(),
+    content: joi.string().max(10240).required(),
+});
+
+const resourceSchema = joi.object({
+    name: joi.string().max(256).regex(constants.namePattern).required(),
+    description: joi.string().max(512).allow("").default(""),
+    type: joi
+        .string()
+        .valid(...constants.resourceTypes)
+        .required(),
+    connection: joi.alternatives(joi.string(), joi.object()).required(),
+});
+
+const manifestSchema = joi.object({
+    app: joi.object(appSchema),
+    queries: joi.array().items(querySchema),
+    resources: joi.array().items(resourceSchema),
+    file: joi.string(),
+    values: joi.alternatives(joi.string(), joi.object()),
+});
+
+/**
+ * Logs a duplicate error. Compiler specific function, hence not in the file with
+ * other error logging functions.
+ */
 export const logDuplicateError = (
     duplicate: string,
     filePath = "<anonymous>",
@@ -40,188 +67,52 @@ export const logDuplicateError = (
     );
 };
 
+/**
+ * Logs a semantic error. Compiler specific function, hence not in the file with
+ * other error logging functions.
+ */
 export const logSemanticError = (message: string, filePath = "<anonymous>") => {
     errorCount++;
     console.log(`${chalk.red("[error]")} ${filePath}: ${message}\n`);
 };
 
-const parseApp = (app: App, path = "<anonymous>"): App => {
-    const result: App = {
-        name: "",
-        slug: "",
-        title: "",
-        description: "",
-        groups: ["default"],
-    };
-
-    const missingKeys = getMissingKeys(constants.appKeys, app);
-
-    if (missingKeys) {
-        logMissingKeys("app", missingKeys, path);
-    }
-
-    for (const key in app) {
-        const value = (app as any)[key];
-        switch (key) {
-            case "name": {
-                if (!IDENTIFIER_REGEX.test(value)) {
-                    logSemanticError(`App name "${value}" is invalid.`, path);
-                }
-                result.name = value.trim();
-                break;
-            }
-
-            case "slug": {
-                if (!IDENTIFIER_REGEX.test(value)) {
-                    logSemanticError(`App slug "${value}" is invalid.`, path);
-                }
-                result.slug = value.trim();
-                break;
-            }
-
-            case "title": {
-                const trimmed = value.trim();
-
-                if (trimmed.indexOf("\n") > 0) {
-                    logSemanticError("App title cannot contain newlines", path);
-                }
-
-                if (trimmed.length === 0) {
-                    logSemanticError("App title cannot be empty", path);
-                }
-
-                result.title = trimmed;
-                break;
-            }
-
-            case "description": {
-                result.description = value.trim();
-                break;
-            }
-
-            case "groups": {
-                result.groups = value.length === 0 ? ["default"] : value;
-                break;
-            }
-        }
-    }
-    return result;
+/**
+ * Logs multiple errors. Compiler specific function, hence not in the file with
+ * other error logging functions.
+ */
+export const logAllErrors = (details: any, filePath = "<anonymous>") => {
+    details.map((error: any) => {
+        errorCount++;
+        console.log(`${chalk.red("[error]")} ${filePath}: ${error.message}\n`);
+    });
 };
 
-const parseQuery = (query: Query, path = "<anonymous>"): Query => {
-    const result: Query = {
-        name: "",
-        description: "",
-        resource: "",
-        content: "",
-    };
-
-    const missingKeys = getMissingKeys(constants.queryKeys, query);
-
-    if (missingKeys) {
-        logMissingKeys("queries", missingKeys, path);
-    }
-
-    for (const key in query) {
-        const value = (query as any)[key];
-
-        switch (key) {
-            case "name": {
-                if (!IDENTIFIER_REGEX.test(value)) {
-                    logSemanticError("Query name is invalid.", path);
-                }
-                result.name = value.trim();
-                break;
-            }
-
-            case "description": {
-                result.description = value.trim();
-                break;
-            }
-
-            case "resource": {
-                if (!IDENTIFIER_REGEX.test(value)) {
-                    logSemanticError("Query resource is invalid.", path);
-                }
-                result.resource = value.trim();
-                break;
-            }
-
-            case "content": {
-                result.content =
-                    typeof value === "string" ? value.trim() : value;
-                break;
-            }
-        }
-    }
-    return result;
-};
-
-const parseResource = (resource: Resource, path: string): Resource => {
-    const result: Resource = {
-        name: "",
-        description: "",
-        type: "",
-        connection: "",
-    };
-
-    const missingKeys = getMissingKeys(constants.resourceKeys, resource);
-
-    if (missingKeys) {
-        logMissingKeys("resources", missingKeys, path);
-    }
-
-    for (const key in resource) {
-        const value = (resource as any)[key];
-
-        switch (key) {
-            case "name": {
-                if (!IDENTIFIER_REGEX.test(value)) {
-                    logSemanticError("Resource name is invalid.", path);
-                }
-                result.name = value.trim();
-                break;
-            }
-
-            case "description": {
-                result.description = value.trim();
-                break;
-            }
-
-            case "type": {
-                result.type = value.trim();
-                break;
-            }
-
-            // TODO: Implement parseConnection()
-            case "connection": {
-                result.connection =
-                    typeof value === "string" ? value.trim() : value;
-                break;
-            }
-        }
-    }
-    return result;
-};
-
-const parseQueries = (queries: any, path = "<anonymous>") => {
+const validateQueries = (
+    queries: any,
+    externalQueries: any,
+    path = "<anonymous>",
+) => {
     const result: any = {};
     for (const query of queries) {
-        if (result[query.name]) {
+        if (result[query.name] || externalQueries[query.name]) {
             logDuplicateError(query.name, path);
         }
-        result[query.name] = parseQuery(query, path);
+        result[query.name] = query;
     }
     return result;
 };
 
-const parseResources = (resources: any, path = "<anonymous>") => {
+const validateResources = (
+    resources: any,
+    externalResources: any,
+    path = "<anonymous>",
+) => {
     const result: any = {};
     for (const resource of resources) {
-        if (result[resource.name]) {
+        if (result[resource.name] || externalResources[resource.name]) {
             logDuplicateError(resource.name, path);
         }
-        result[resource.name] = parseResource(resource, path);
+        result[resource.name] = resource;
     }
     return result;
 };
@@ -242,61 +133,79 @@ const compile = async (): Promise<Manifest> => {
         return manifest;
     });
 
-    let app: App | null = null;
-    let queries: {
-        [key: string]: Query;
-    } = {};
-    let resources: {
-        [key: string]: Resource;
-    } = {};
+    let manifestResult: {
+        app: object;
+        queries: object;
+        resources: object;
+        values: object;
+        file: string;
+    } = {
+        app: {},
+        queries: {},
+        resources: {},
+        values: {},
+        file: "",
+    };
+
+    let queries: Query[] = [];
+    let resources: Resource[] = [];
+
     for (const manifest of manifests) {
         for (const key in manifest) {
             switch (key) {
                 case "app": {
-                    if (app) {
+                    if (!lodash.isEmpty(manifestResult.app)) {
                         logDuplicateError("app", manifest.file);
                     }
-                    app = parseApp(manifest.app, manifest.file);
+                    manifestResult.app = manifest.app;
                     break;
                 }
 
                 case "queries": {
-                    queries = {
-                        ...queries,
-                        ...parseQueries(manifest.queries, manifest.file),
-                    };
+                    lodash.merge(
+                        queries,
+                        validateQueries(
+                            manifest.queries,
+                            queries,
+                            manifest.file,
+                        ),
+                    );
                     break;
                 }
 
                 case "resources": {
-                    resources = {
-                        ...resources,
-                        ...parseResources(manifest.resources, manifest.file),
-                    };
+                    lodash.merge(
+                        resources,
+                        validateResources(
+                            manifest.resources,
+                            resources,
+                            manifest.file,
+                        ),
+                    );
+                    break;
+                }
+
+                case "values": {
+                    manifestResult.values = <object>manifest.values;
                     break;
                 }
             }
         }
     }
 
-    const queryList: Query[] = Object.entries(queries).map((item) => item[1]);
-    const resourceList: Resource[] = Object.entries(resources).map(
-        (item) => item[1],
-    );
+    manifestResult.queries = Object.entries(queries).map((item) => item[1]);
+    manifestResult.resources = Object.entries(resources).map((item) => item[1]);
 
-    if (!app) {
-        logSemanticError("App manifest is missing", "<global>");
+    const { error, value } = manifestSchema.validate(manifestResult, {
+        stripUnknown: true,
+        abortEarly: false,
+    });
+
+    if (error) {
+        logAllErrors(error.details);
     }
 
-    if (errorCount > 0) {
-        throw new Error(
-            `The compilation failed with ${errorCount} error${
-                errorCount === 1 ? "" : "s"
-            }.`,
-        );
-    }
-
-    return { app: app as App, queries: queryList, resources: resourceList };
+    return <Manifest>value;
 };
 
 export default compile;
