@@ -157,16 +157,7 @@ const compile = async (): Promise<Manifest> => {
                     if (!lodash.isEmpty(manifestResult.app)) {
                         logDuplicateError("app", manifest.file);
                     }
-
-                    const { error, value } = appSchema.validate(manifest.app, {
-                        stripUnknown: true,
-                    });
-
-                    if (error) {
-                        logSemanticError(error.message);
-                        break;
-                    }
-                    manifestResult.app = value;
+                    manifestResult.app = manifest.app;
                     break;
                 }
 
@@ -191,11 +182,6 @@ const compile = async (): Promise<Manifest> => {
                             manifest.file,
                         ),
                     );
-                    break;
-                }
-
-                case "file": {
-                    manifestResult.file = <string>manifest.file?.trim();
                     break;
                 }
 
