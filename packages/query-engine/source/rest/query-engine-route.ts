@@ -23,7 +23,8 @@ const attachRoutes = (router: Router): void => {
 
     router.get("/statuses/ready", (request: Request, response: Response) => {
         response.status(httpStatuses.OK).json({
-            message: "The  service is ready to accept requests.",
+            message:
+                "The @hypertool/query-engine service is ready to accept requests.",
         });
     });
 };

@@ -13,9 +13,10 @@ const attachRoutes = (router: Router): void => {
     router.get(
         "/statuses/ready",
         async (request: Request, response: Response) => {
-            response
-                .status(200)
-                .json({ message: "The  service is ready to accept requests." });
+            response.status(200).json({
+                message:
+                    "The @hypertool/api service is ready to accept requests.",
+            });
         },
     );
 };
