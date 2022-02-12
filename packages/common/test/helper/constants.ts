@@ -95,4 +95,33 @@ const resources = [
     },
 ];
 
-export { activityLogs, queryTemplates, appData, users, resources };
+const organizations = [
+    {
+        name: "Google",
+        title: "google",
+        description: "Let's not leave the description empty.",
+        members: ["61b34f2706fe01480acc6583"],
+        apps: ["61c93a931da4a79d3a109947"],
+        status: "active",
+    },
+];
+
+const memberships = [
+    {
+        member: "61b34f2706fe01480acc6583",
+        inviter: "61c62df2065114babd37158e",
+        division: "61fa92567ff5b295c6fde20f",
+        type: "group",
+        status: "invited",
+    },
+];
+
+export {
+    activityLogs,
+    queryTemplates,
+    appData,
+    users,
+    resources,
+    organizations,
+    memberships,
+};

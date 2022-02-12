@@ -6,3 +6,4 @@ export { default as UserModel } from "./UserModel";
 export { default as QueryTemplateModel } from "./QueryTemplateModel";
 export { default as ActivityLogModel } from "./ActivityLogModel";
 export { default as DeploymentModel } from "./DeploymentModel";
+export { default as MembershipModel } from "./MembershipModel";

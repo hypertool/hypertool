@@ -4,6 +4,8 @@ import {
     queryTemplates,
     users,
     resources,
+    organizations,
+    memberships,
 } from "./constants";
 import { assert } from "chai";
 
@@ -41,4 +43,6 @@ export {
     queryTemplates,
     users,
     resources,
+    organizations,
+    memberships,
 };

@@ -14,6 +14,7 @@
     "dependencies": {
         "@google-cloud/storage": "^5.16.1",
         "@hypertool/common": "^0.2.17",
+        "@sendgrid/mail": "^7.6.0",
         "apollo-server-express": "^3.5.0",
         "axios": "^0.24.0",
         "cors": "^2.8.5",
@@ -29,6 +30,7 @@
         "mongoose": "^6.0.12",
         "mongoose-paginate-v2": "^1.4.2",
         "morgan": "^1.10.0",
+        "mustache": "^4.2.0",
         "passport": "^0.5.0",
         "passport-google-token": "^0.1.2"
     },
