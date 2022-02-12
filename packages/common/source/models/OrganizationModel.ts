@@ -7,7 +7,8 @@ import { organizationStatuses } from "../utils/constants";
 const organizationSchema = new Schema(
     {
         /* An identifier that helps humans identify the organization across
-         * Hypertool. */
+         * Hypertool.
+         */
         name: {
             type: String,
             minlength: 1,
@@ -51,7 +52,8 @@ const organizationSchema = new Schema(
             required: true,
         },
         /* The status of the organization. Valid values are as follows: active,
-         * deleted, banned. */
+         * deleted, banned.
+         */
         status: {
             type: String,
             enum: organizationStatuses,

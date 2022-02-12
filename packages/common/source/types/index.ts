@@ -301,7 +301,8 @@ export interface Organization {
     id: string;
 
     /* An identifier that helps humans identify the organization across
-     * Hypertool. */
+     * Hypertool.
+     */
     name: string;
 
     /* The display name of the organization. */
@@ -314,7 +315,8 @@ export interface Organization {
     members: string[] | Membership[];
 
     /* The status of the organization. Valid values are as follows: active,
-     * deleted, banned. */
+     * deleted, banned.
+     */
     status: typeof organizationStatuses[number];
 
     /* The list of apps that are part of the organization. */
@@ -347,11 +349,13 @@ export type OrganizationPage = ExternalListPage<ExternalOrganization>;
 export interface Membership {
     id: string;
     /* An identifier that points to the User whose membership is being
-     * defined by the current document. */
+     * defined by the current document.
+     */
     member: string | User;
 
     /* An identifier that points to the User that invited the member to the
-     * class specified by division. */
+     * class specified by division.
+     */
     inviter: string | User;
 
     /* An identifier that points to the division.
@@ -363,11 +367,13 @@ export interface Membership {
     division: string | Group | Organization;
 
     /* The type of membership. Valid values are as follows: organization and
-     *group. */
+     * group.
+     */
     type: typeof membershipTypes[number];
 
     /* The status of the membership. Valid values are as follows: accepted,
-     * deleted, banned, and invited.*/
+     * deleted, banned, and invited.
+     */
     status: typeof membershipStatuses[number];
     createdAt: Date;
     updatedAt: Date;
