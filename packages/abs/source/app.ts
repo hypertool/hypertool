@@ -67,7 +67,6 @@ const initialize = async () => {
 
     const router = express.Router();
     abs.attachRoutes(router);
-
     app.use("/api/v1", router);
 
     return app;

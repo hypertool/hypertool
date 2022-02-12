@@ -14,6 +14,7 @@ const initialize = async () => {
     }
 
     graphql.attachRoutes(app);
+
     const router = express.Router();
     api.attachRoutes(router);
     app.use("/api/v1", router);
