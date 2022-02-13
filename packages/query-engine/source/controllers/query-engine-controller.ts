@@ -27,24 +27,41 @@ const executeSQL = async (
         const queryContent: any = query.content;
 
         let queryResult;
+
         if (queryContent.hasOwnProperty("select") && queryContent.select) {
-            queryResult = await knexInstance
-                .select(queryContent.select)
-                .from(queryContent.from)
-                .where(queryContent.where);
+            queryResult = knexInstance.select(queryContent.select);
+        } else if (
+            queryContent.hasOwnProperty("insert") &&
+            queryContent.insert
+        ) {
+            queryResult = knexInstance(queryContent.table).insert(
+                queryContent.insert,
+            );
+        } else if (
+            queryContent.hasOwnProperty("update") &&
+            queryContent.update
+        ) {
+            queryResult = knexInstance(queryContent.table).update(
+                queryContent.update,
+            );
+        } else if (
+            queryContent.hasOwnProperty("delete") &&
+            queryContent.delete
+        ) {
+            queryResult = knexInstance(queryContent.table).del(
+                queryContent.delete,
+            );
         }
 
-        if (queryContent.hasOwnProperty("insert") && queryContent.insert) {
-            queryResult = await knexInstance(queryContent.table)
-                .insert(queryContent.insert)
-                .where(queryContent.where);
+        if (queryContent.hasOwnProperty("from") && queryContent.from) {
+            queryResult = queryResult.from(queryContent.from);
         }
 
-        if (queryContent.hasOwnProperty("update") && queryContent.update) {
-            queryResult = await knexInstance(queryContent.table)
-                .update(queryContent.update)
-                .where(queryContent.where);
+        if (queryContent.hasOwnProperty("where") && queryContent.where) {
+            queryResult = queryResult.where(queryContent.where);
         }
+
+        await queryResult();
 
         return queryResult[0];
     } else {
