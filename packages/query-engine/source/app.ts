@@ -5,9 +5,9 @@ import cors from "cors";
 
 import { queryEngine } from "./rest";
 import {
-    BadRequestError,
-    NotFoundError,
-    UnauthorizedError,
+    QueryBadRequestError,
+    QueryNotFoundError,
+    QueryUnauthorizedError,
 } from "./middleware";
 
 const initialize = async () => {
@@ -21,9 +21,9 @@ const initialize = async () => {
     app.use("/api/v1", router);
 
     // Attach error handlers
-    app.use(BadRequestError);
-    app.use(NotFoundError);
-    app.use(UnauthorizedError);
+    app.use(QueryBadRequestError);
+    app.use(QueryNotFoundError);
+    app.use(QueryUnauthorizedError);
 
     if (process.env.NODE_ENV !== "production") {
         app.use(logger("dev"));

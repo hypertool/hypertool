@@ -1,3 +1,3 @@
-export { default as BadRequestError } from "./BadRequestError";
-export { default as NotFoundError } from "./NotFoundError";
-export { default as UnauthorizedError } from "./UnauthorizedError";
+export { default as QueryBadRequestError } from "./bad-request-error";
+export { default as QueryNotFoundError } from "./not-found-error";
+export { default as QueryUnauthorizedError } from "./unauthorized-error";
