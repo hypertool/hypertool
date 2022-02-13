@@ -4,7 +4,11 @@ import logger from "morgan";
 import cors from "cors";
 
 import { queryEngine } from "./rest";
-import { BadRequestError, NotFoundError, UnauthorizedError } from "./utils";
+import {
+    BadRequestError,
+    NotFoundError,
+    UnauthorizedError,
+} from "./middleware";
 
 const initialize = async () => {
     const app = express();
