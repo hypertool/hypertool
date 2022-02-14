@@ -182,4 +182,44 @@ describe("Conversation model", function () {
             "The coordinates.y attribute is required.",
         );
     });
+
+    it("should be created when taggedUsers is empty", async () => {
+        const newConversation = new ConversationModel({
+            ...conversation,
+            taggedUsers: [],
+        });
+        await newConversation.save();
+
+        assert.lengthOf(
+            newConversation.taggedUsers,
+            0,
+            "The taggedUsers attribute should be of length 0.",
+        );
+    });
+
+    it("should be created when taggedUsers is undefined", async () => {
+        const newConversation = new ConversationModel({
+            ...conversation,
+            taggedUsers: undefined,
+        });
+
+        await newConversation.save();
+        assert.isFalse(
+            newConversation.isNew,
+            "The conversation should be persisted to the database.",
+        );
+    });
+
+    it("should be created when taggedUsers is null", async () => {
+        const newConversation = new ConversationModel({
+            ...conversation,
+            taggedUsers: null,
+        });
+
+        await newConversation.save();
+        assert.isFalse(
+            newConversation.isNew,
+            "The conversation should be persisted to the database.",
+        );
+    });
 });
