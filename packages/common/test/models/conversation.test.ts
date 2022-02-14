@@ -94,4 +94,24 @@ describe("Conversation model", function () {
             "The page attribute is required.",
         );
     });
+
+    it("should be created with a default value for createdAt", async () => {
+        const newConversation = new ConversationModel({ ...conversation });
+        await newConversation.save();
+        assert.typeOf(
+            newConversation.createdAt,
+            "date",
+            "The createdAt attribute should be assigned by default.",
+        );
+    });
+
+    it("should be created with a default value for updatedAt", async () => {
+        const newConversation = new ConversationModel({ ...conversation });
+        await newConversation.save();
+        assert.typeOf(
+            newConversation.updatedAt,
+            "date",
+            "The updatedAt attribute should be assigned by default.",
+        );
+    });
 });
