@@ -17,7 +17,7 @@ let errorCount = 0;
  */
 const appSchema = joi.object({
     name: joi.string().max(128).regex(constants.namePattern).required(),
-    title: joi.string().max(256).regex(constants.namePattern).required(),
+    title: joi.string().max(256).required(),
     slug: joi.string().max(128).regex(constants.namePattern).required(),
     description: joi.string().max(512).allow("").default(""),
     groups: joi
@@ -44,11 +44,11 @@ const resourceSchema = joi.object({
 });
 
 const manifestSchema = joi.object({
-    app: joi.object(appSchema),
+    app: appSchema,
     queries: joi.array().items(querySchema),
     resources: joi.array().items(resourceSchema),
     file: joi.string(),
-    values: joi.alternatives(joi.string(), joi.object()),
+    values: joi.alternatives(joi.string(), joi.object().unknown(true)),
 });
 
 /**
