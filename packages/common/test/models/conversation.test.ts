@@ -23,4 +23,28 @@ describe("Conversation model", function () {
             "The conversation should be persisted to the database.",
         );
     });
+
+    it("should not be created when app is undefined", async () => {
+        const newConversation = new ConversationModel({
+            ...conversation,
+            app: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newConversation.save(),
+            "The app attribute is required.",
+        );
+    });
+
+    it("should not be created when app is null", async () => {
+        const newConversation = new ConversationModel({
+            ...conversation,
+            app: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newConversation.save(),
+            "The app attribute is required.",
+        );
+    });
 });
