@@ -389,3 +389,37 @@ export interface ExternalMembership {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface Comment {
+    author: string | User;
+    commentText: string;
+    edited: Boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface Coordinates {
+    x: Number;
+    y: Number;
+}
+export interface Conversation {
+    id: string;
+    app: App;
+    page: string;
+    coordinates: Coordinates;
+    taggedUsers: string[] | [User];
+    comments: [Comment];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface ExternalConversation {
+    id: string;
+    app: App;
+    page: string;
+    coordinates: Coordinates;
+    taggedUsers: string[] | [User];
+    comments: [Comment];
+    createdAt: Date;
+    updatedAt: Date;
+}
