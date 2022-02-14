@@ -13,8 +13,9 @@ import {
     EditResource,
     SingleApp,
     AuthenticationServices,
+    AppBuilder,
 } from "./screens";
-import { WorkspaceLayout } from "./layouts";
+import { WorkspaceLayout, AppBuilderLayout } from "./layouts";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -40,10 +41,16 @@ const App: FunctionComponent = (): ReactElement => {
                         path="/resources/:resourceId/edit"
                         element={<EditResource />}
                     />
-                    <Route path="/app/:appId" element={<SingleApp />} />
+                    <Route path="/apps/:appId" element={<SingleApp />} />
                     <Route
-                        path="/app/:appId/authentication"
+                        path="/apps/:appId/authentication"
                         element={<AuthenticationServices />}
+                    />
+                </Route>
+                <Route path="/" element={<AppBuilderLayout />}>
+                    <Route
+                        path="/apps/:appId/builder"
+                        element={<AppBuilder />}
                     />
                 </Route>
                 <Route
