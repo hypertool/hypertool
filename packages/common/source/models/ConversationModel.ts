@@ -37,7 +37,7 @@ const conversationSchema = new Schema(
             maxlength: 128,
             required: true,
         },
-        coordinates: { type: Object },
+        coordinates: { type: Object, required: true },
         taggedUsers: [
             {
                 type: Schema.Types.ObjectId,
