@@ -6,6 +6,7 @@ import {
     resources,
     organizations,
     memberships,
+    conversations,
 } from "./constants";
 import { assert } from "chai";
 
@@ -45,4 +46,5 @@ export {
     resources,
     organizations,
     memberships,
+    conversations,
 };
