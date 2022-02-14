@@ -114,4 +114,72 @@ describe("Conversation model", function () {
             "The updatedAt attribute should be assigned by default.",
         );
     });
+
+    it("should not be created when coordinates is undefined", async () => {
+        const newConversation = new ConversationModel({
+            ...conversation,
+            coordinates: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newConversation.save(),
+            "The coordinates attribute is required.",
+        );
+    });
+
+    it("should not be created when coordinates is null", async () => {
+        const newConversation = new ConversationModel({
+            ...conversation,
+            coordinates: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newConversation.save(),
+            "The coordinates attribute is required.",
+        );
+    });
+
+    it("should not be created when coordinates.x is undefined", async () => {
+        const newConversation = lodash.clone(conversation);
+        newConversation.coordinates = conversation.coordinates;
+        newConversation.coordinates.x = undefined;
+
+        await assertThrowsAsync(
+            async () => newConversation.save(),
+            "The coordinates.x attribute is required.",
+        );
+    });
+
+    it("should not be created when coordinates.x is null", async () => {
+        const newConversation = lodash.clone(conversation);
+        newConversation.coordinates = conversation.coordinates;
+        newConversation.coordinates.x = null;
+
+        await assertThrowsAsync(
+            async () => newConversation.save(),
+            "The coordinates.x attribute is required.",
+        );
+    });
+
+    it("should not be created when coordinates.y is undefined", async () => {
+        const newConversation = lodash.clone(conversation);
+        newConversation.coordinates = conversation.coordinates;
+        newConversation.coordinates.y = undefined;
+
+        await assertThrowsAsync(
+            async () => newConversation.save(),
+            "The coordinates.y attribute is required.",
+        );
+    });
+
+    it("should not be created when coordinates.y is null", async () => {
+        const newConversation = lodash.clone(conversation);
+        newConversation.coordinates = conversation.coordinates;
+        newConversation.coordinates.y = null;
+
+        await assertThrowsAsync(
+            async () => newConversation.save(),
+            "The coordinates.y attribute is required.",
+        );
+    });
 });
