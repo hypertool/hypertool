@@ -1,8 +1,8 @@
 import type { FunctionComponent, ReactElement } from "react";
 
+import { useState, useCallback } from "react";
 import { styled, Theme, CSSObject } from "@mui/material/styles";
-import MuiDrawer from "@mui/material/Drawer";
-import { Divider } from "@mui/material";
+import { Divider, Drawer as MuiDrawer, Tabs, Tab } from "@mui/material";
 
 const drawerWidth = 304;
 
@@ -27,10 +27,6 @@ const closedMixin = (theme: Theme): CSSObject => ({
 const Root = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
-    height: "100vh",
-
-    /* Necessary for content to be below app bar */
-    ...theme.mixins.toolbar,
 }));
 
 const DrawerHeader = styled("div")(({ theme }) => ({
@@ -65,8 +61,16 @@ interface Props {
     onDrawerClose: () => void;
 }
 
+type TabIdentifier = "properties" | "comments";
+
 const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
     const { open, onDrawerClose } = props;
+    const [active, setActive] = useState<TabIdentifier>("properties");
+
+    const handleChange = useCallback((event, newValue) => {
+        setActive(newValue);
+    }, []);
+
     return (
         <Drawer
             variant="permanent"
@@ -76,7 +80,18 @@ const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
         >
             <DrawerHeader></DrawerHeader>
             <Divider />
-            <Root></Root>
+            <Root>
+                <div>
+                    <Tabs
+                        value={active}
+                        onChange={handleChange}
+                        variant="fullWidth"
+                    >
+                        <Tab value="properties" label="Properties" />
+                        <Tab value="comments" label="Comments" />
+                    </Tabs>
+                </div>
+            </Root>
         </Drawer>
     );
 };
