@@ -3,7 +3,7 @@ import { constants } from "@hypertool/common";
 
 const { httpStatuses } = constants;
 
-const UnauthorizedError = (
+const unauthorizedError = (
     error: any,
     request: Request,
     response: Response,
@@ -19,4 +19,4 @@ const UnauthorizedError = (
     }
 };
 
-export default UnauthorizedError;
+export default unauthorizedError;

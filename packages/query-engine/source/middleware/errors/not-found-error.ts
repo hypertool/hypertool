@@ -3,7 +3,7 @@ import { constants } from "@hypertool/common";
 
 const { httpStatuses } = constants;
 
-const NotFoundError = (
+const notFoundError = (
     error: any,
     request: Request,
     response: Response,
@@ -23,4 +23,4 @@ const NotFoundError = (
     }
 };
 
-export default NotFoundError;
+export default notFoundError;

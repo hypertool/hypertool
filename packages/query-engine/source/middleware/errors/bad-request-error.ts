@@ -3,7 +3,7 @@ import { constants } from "@hypertool/common";
 
 const { httpStatuses } = constants;
 
-const BadRequestError = (
+const badRequestError = (
     error: any,
     request: Request,
     response: Response,
@@ -19,4 +19,4 @@ const BadRequestError = (
     }
 };
 
-export default BadRequestError;
+export default badRequestError;
