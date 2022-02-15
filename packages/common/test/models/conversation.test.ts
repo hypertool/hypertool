@@ -258,4 +258,40 @@ describe("Conversation model", function () {
             "The status attribute is required.",
         );
     });
+
+    it("should not be created when comments is empty", async () => {
+        const newConversation = new ConversationModel({
+            ...conversation,
+            comments: [],
+        });
+
+        await assertThrowsAsync(
+            async () => await newConversation.save(),
+            "The comments attribute should have at least 1 element.",
+        );
+    });
+
+    it("should not be created when comments is undefined", async () => {
+        const newConversation = new ConversationModel({
+            ...conversation,
+            comments: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newConversation.save(),
+            "The comments attribute is required.",
+        );
+    });
+
+    it("should not be created when comments is null", async () => {
+        const newConversation = new ConversationModel({
+            ...conversation,
+            comments: null,
+        });
+
+        await assertThrowsAsync(
+            async () => newConversation.save(),
+            "The comments attribute is required.",
+        );
+    });
 });
