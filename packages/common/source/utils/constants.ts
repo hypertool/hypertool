@@ -359,6 +359,10 @@ const membershipStatuses = tuple("accepted", "invited", "deleted", "banned");
 
 const membershipTypes = tuple("group", "organization");
 
+const conversationStatuses = tuple("pending", "resolved", "banned", "deleted");
+
+const commentStatuses = tuple("created", "banned", "deleted");
+
 export {
     paginateMaxLimit,
     paginateMinLimit,
@@ -382,4 +386,6 @@ export {
     queryResultFormats,
     membershipStatuses,
     membershipTypes,
+    conversationStatuses,
+    commentStatuses,
 };
