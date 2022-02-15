@@ -1,14 +1,16 @@
+import { assert } from "chai";
+
 import {
     activityLogs,
     appData,
-    queryTemplates,
-    users,
-    resources,
-    organizations,
-    memberships,
+    comments,
     conversations,
+    memberships,
+    organizations,
+    queryTemplates,
+    resources,
+    users,
 } from "./constants";
-import { assert } from "chai";
 
 const assertThrowsAsync = async (
     callback,
@@ -47,4 +49,5 @@ export {
     organizations,
     memberships,
     conversations,
+    comments,
 };

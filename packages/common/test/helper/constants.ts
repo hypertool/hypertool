@@ -127,6 +127,16 @@ const conversations = [
     },
 ];
 
+const comments = [
+    {
+        author: "61c93a931da4a79d3a109947",
+        content: "I think we can improve this feature by caching",
+        edited: false,
+        status: "created",
+        conversation: "61c93a931da4a79d3a109947",
+    },
+];
+
 export {
     activityLogs,
     queryTemplates,
@@ -136,4 +146,5 @@ export {
     organizations,
     memberships,
     conversations,
+    comments,
 };
