@@ -1,26 +1,26 @@
 import { Knex, knex } from "knex";
 
 export class QueryBuilder {
-    knexInstance: Knex;
+    instance: Knex;
 
-    constructor(knexInstance: Knex) {
-        this.knexInstance = knexInstance;
+    constructor(instance: Knex) {
+        this.instance = instance;
     }
 
     /* TODO: Add the following contructors in if clause of the current
      * constructor to support constructor overloading. Not required right now
      * as the current implementation is not using any other constructor.
      *
-     * constructor(knexInstance: Knex, tableName: string) {
-     *    this.knexInstance = knexInstance.table(tableName);
+     * constructor(instance: Knex, tableName: string) {
+     *    this.instance = instance.table(tableName);
      * }
      *
-     * constructor(knexInstance: Knex, tableName: string, alias: string) {
-     *   this.knexInstance = knexInstance.table(tableName).as(alias);
+     * constructor(instance: Knex, tableName: string, alias: string) {
+     *   this.instance = instance.table(tableName).as(alias);
      * }
      *
      * constructor(config: Knex.Config) {
-     *   this.knexInstance = knex(config);
+     *   this.instance = knex(config);
      * }
      */
 
@@ -33,7 +33,7 @@ export class QueryBuilder {
      * represents it. Once a leaf node is reached, the query is built.
      *
      * Example:
-     * const queryBuilder = new QueryBuilder(knexInstance);
+     * const queryBuilder = new QueryBuilder(instance);
      * const queryExec = queryBuilder.parse(query);
      * const result = await queryExec;
      */
@@ -56,28 +56,28 @@ export class QueryBuilder {
     };
 
     selectStatement = (query: any) => {
-        this.knexInstance(query.table).select(query.select);
+        this.instance(query.table).select(query.select);
         this.whereClause(query);
     };
 
     insertStatement = (query: any) => {
-        this.knexInstance(query.table).insert(query.insert);
+        this.instance(query.table).insert(query.insert);
         this.whereClause(query);
     };
 
     updateStatement = (query: any) => {
-        this.knexInstance(query.table).update(query.update);
+        this.instance(query.table).update(query.update);
         this.whereClause(query);
     };
 
     deleteStatement = (query: any) => {
-        this.knexInstance(query.table).del(query.delete);
+        this.instance(query.table).del(query.delete);
         this.whereClause(query);
     };
 
     whereClause = (query: any) => {
         if (query.where) {
-            this.knexInstance.where(query.where);
+            this.instance.where(query.where);
         }
     };
 }
