@@ -23,15 +23,15 @@ const executeSQL = async (
             database: mySQLConfig.databaseName,
         },
     };
-    const knexInstance = knex(config);
+    const instance = knex(config);
 
     if (typeof query.content === "object") {
-        const queryBuilder = new QueryBuilder(knexInstance);
+        const queryBuilder = new QueryBuilder(instance);
         queryBuilder.parse(query.content);
-        const queryResult = await queryBuilder.knexInstance();
+        const queryResult = await queryBuilder.instance();
         return queryResult[0];
     } else {
-        const queryResult = await knexInstance.raw(
+        const queryResult = await instance.raw(
             query.content,
             queryRequest.variables,
         );
@@ -39,9 +39,9 @@ const executeSQL = async (
     }
 };
 
-const execute = async (queryRequest: ExecuteParameters): Promise<any> => {
+const execute = async (parameters: ExecuteParameters): Promise<any> => {
     const query: Query = await QueryTemplateModel.findOne({
-        name: queryRequest.name,
+        name: parameters.name,
     }).exec();
 
     const resource: Resource = await ResourceModel.findOne({
@@ -51,7 +51,7 @@ const execute = async (queryRequest: ExecuteParameters): Promise<any> => {
     switch (resource.type) {
         case "mysql":
         case "postgres": {
-            const queryResult = await executeSQL(queryRequest, query, resource);
+            const queryResult = await executeSQL(parameters, query, resource);
             return { result: queryResult };
         }
         default: {
