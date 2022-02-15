@@ -24,19 +24,6 @@ export class QueryBuilder {
      * }
      */
 
-    /**
-     * `parse()`
-     *
-     * The parse() methods triggers a call sequence (a tree) to build the query
-     * tree, which will parse down the query tree. The query tree is an abstract
-     * concept that is not represented in memory, instead  the call sequence
-     * represents it. Once a leaf node is reached, the query is built.
-     *
-     * Example:
-     * const queryBuilder = new QueryBuilder(instance);
-     * const queryExec = queryBuilder.parse(query);
-     * const result = await queryExec;
-     */
     parse = (query: any) => {
         if (query.hasOwnProperty("select") && query.select) {
             this.selectStatement(query);
