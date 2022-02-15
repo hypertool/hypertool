@@ -4,7 +4,7 @@ import { useState } from "react";
 import { styled } from "@mui/material/styles";
 import { Outlet } from "react-router-dom";
 
-import { MiniDrawer, AppBar } from "./navigation";
+import { NavigationDrawer, AppBar } from "./navigation";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -33,7 +33,7 @@ const AppBuilderLayout: FunctionComponent = (): ReactElement => {
     return (
         <Root>
             <AppBar open={open} />
-            <MiniDrawer
+            <NavigationDrawer
                 open={open}
                 onDrawerOpen={handleDrawerOpen}
                 onDrawerClose={handleDrawerClose}

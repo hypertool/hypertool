@@ -1,2 +1,2 @@
-export { default as MiniDrawer } from "./MiniDrawer";
+export { default as NavigationDrawer } from "./NavigationDrawer";
 export { default as AppBar } from "./AppBar";

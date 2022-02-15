@@ -6,7 +6,7 @@ import MuiDrawer from "@mui/material/Drawer";
 import { List, Divider } from "@mui/material";
 import { useNavigate } from "react-router";
 
-import MiniDrawerItem from "./MiniDrawerItem";
+import NavigationDrawerItem from "./NavigationDrawerItem";
 import Explorer from "./Explorer";
 import Components from "./Components";
 import Resources from "./Resources";
@@ -53,7 +53,7 @@ const Navigation = styled("div")(({ theme }) => ({
     ...theme.mixins.toolbar,
 }));
 
-const Panel = styled("div")(({ theme }) => ({
+const NavigationContainer = styled("div")(({ theme }) => ({
     backgroundColor: "#212121",
     width: panelWidth,
 }));
@@ -158,7 +158,9 @@ const groups: Group[] = [
     },
 ];
 
-const MiniDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
+const NavigationDrawer: FunctionComponent<Props> = (
+    props: Props,
+): ReactElement => {
     const { open, onDrawerOpen, onDrawerClose } = props;
     const [active, setActive] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -199,7 +201,7 @@ const MiniDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                         <Fragment key={group.title}>
                             <List>
                                 {group.items.map((item) => (
-                                    <MiniDrawerItem
+                                    <NavigationDrawerItem
                                         open={open}
                                         title={item.title}
                                         id={item.id}
@@ -215,17 +217,17 @@ const MiniDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                     ))}
                 </Navigation>
                 {active && (
-                    <Panel>
+                    <NavigationContainer>
                         {active === "explorer" && <Explorer />}
                         {active === "components" && <Components />}
                         {active === "resources" && <Resources />}
                         {active === "teams" && <Teams />}
                         {active === "deployment" && <Deployment />}
-                    </Panel>
+                    </NavigationContainer>
                 )}
             </Root>
         </Drawer>
     );
 };
 
-export default MiniDrawer;
+export default NavigationDrawer;
