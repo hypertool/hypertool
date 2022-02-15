@@ -5,6 +5,8 @@ import { Knex, knex } from "knex";
 
 import type { ExecuteParameters } from "../types";
 
+import { QueryBuilder } from "../utils/query-builder";
+
 const executeSQL = async (
     queryRequest: ExecuteParameters,
     query: Query,
@@ -24,45 +26,9 @@ const executeSQL = async (
     const knexInstance = knex(config);
 
     if (typeof query.content === "object") {
-        const queryContent: any = query.content;
-
-        let queryResult;
-
-        if (queryContent.hasOwnProperty("select") && queryContent.select) {
-            queryResult = knexInstance.select(queryContent.select);
-        } else if (
-            queryContent.hasOwnProperty("insert") &&
-            queryContent.insert
-        ) {
-            queryResult = knexInstance(queryContent.table).insert(
-                queryContent.insert,
-            );
-        } else if (
-            queryContent.hasOwnProperty("update") &&
-            queryContent.update
-        ) {
-            queryResult = knexInstance(queryContent.table).update(
-                queryContent.update,
-            );
-        } else if (
-            queryContent.hasOwnProperty("delete") &&
-            queryContent.delete
-        ) {
-            queryResult = knexInstance(queryContent.table).del(
-                queryContent.delete,
-            );
-        }
-
-        if (queryContent.hasOwnProperty("from") && queryContent.from) {
-            queryResult = queryResult.from(queryContent.from);
-        }
-
-        if (queryContent.hasOwnProperty("where") && queryContent.where) {
-            queryResult = queryResult.where(queryContent.where);
-        }
-
-        await queryResult();
-
+        const queryBuilder = new QueryBuilder(knexInstance);
+        queryBuilder.parse(query.content);
+        const queryResult = await queryBuilder.knexInstance();
         return queryResult[0];
     } else {
         const queryResult = await knexInstance.raw(
