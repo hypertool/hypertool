@@ -4,7 +4,7 @@ import { useState } from "react";
 import { styled } from "@mui/material/styles";
 import { Outlet } from "react-router-dom";
 
-import { MiniDrawer, PrimaryAppBar } from "../../components";
+import { MiniDrawer, AppBar } from "./navigation";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -32,7 +32,7 @@ const WorkspaceLayout: FunctionComponent = (): ReactElement => {
 
     return (
         <Root>
-            <PrimaryAppBar open={open} onDrawerOpen={handleDrawerOpen} />
+            <AppBar open={open} onDrawerOpen={handleDrawerOpen} />
             <MiniDrawer open={open} onDrawerClose={handleDrawerClose} />
             <Main>
                 <Outlet />
