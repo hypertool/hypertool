@@ -40,31 +40,23 @@ const executeSQL = async (
 };
 
 const execute = async (queryRequest: ExecuteParameters): Promise<any> => {
-    try {
-        const query: Query = await QueryTemplateModel.findOne({
-            name: queryRequest.name,
-        }).exec();
+    const query: Query = await QueryTemplateModel.findOne({
+        name: queryRequest.name,
+    }).exec();
 
-        const resource: Resource = await ResourceModel.findOne({
-            _id: query.resource,
-        }).exec();
+    const resource: Resource = await ResourceModel.findOne({
+        _id: query.resource,
+    }).exec();
 
-        switch (resource.type) {
-            case "mysql":
-            case "postgres": {
-                const queryResult = await executeSQL(
-                    queryRequest,
-                    query,
-                    resource,
-                );
-                return { result: queryResult };
-            }
-            default: {
-                throw new Error("Unknown resource type");
-            }
+    switch (resource.type) {
+        case "mysql":
+        case "postgres": {
+            const queryResult = await executeSQL(queryRequest, query, resource);
+            return { result: queryResult };
         }
-    } catch (error) {
-        throw error;
+        default: {
+            throw new Error("Unknown resource type");
+        }
     }
 };
 
