@@ -1,6 +1,8 @@
 import { FunctionComponent, ReactElement } from "react";
 import { styled } from "@mui/material/styles";
 
+import EditorDrawer from "./editor";
+
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
     width: "100%",
@@ -13,9 +15,12 @@ const Root = styled("section")(({ theme }) => ({
 
 const AppBuilder: FunctionComponent = (): ReactElement => {
     return (
-        <Root>
-            <p style={{ color: "white" }}>AppBuilder</p>
-        </Root>
+        <>
+            <Root>
+                <p style={{ color: "white" }}>AppBuilder</p>
+            </Root>
+            <EditorDrawer open={true} onDrawerClose={() => null} />
+        </>
     );
 };
 
