@@ -59,12 +59,18 @@ const typeDefs = gql`
             role: String
             emailAddress: String!
             password: String!
-        ): ID!
-        # ID is the id of the user created after signup
+        ): User!
+
         loginWithEmail(
             emailAddress: String!
             password: String!
         ): Session!
+
+        updatePassword(
+            emailAddress: String!
+            newPassword: String!
+            newPassword: String!
+        ): User!
     }
 `;
 
@@ -84,6 +90,9 @@ const resolvers = {
 
         loginWithEmail: async (parent, values, context) =>
             users.loginWithEmail(context.request, values),
+
+        updatePassword: async (parent, values, context) =>
+            users.updatePassword(context.request, values),
     },
 };
 
