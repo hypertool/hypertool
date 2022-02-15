@@ -4,7 +4,7 @@ import { useState } from "react";
 import { styled } from "@mui/material/styles";
 import { Outlet } from "react-router-dom";
 
-import { NavigationDrawer, AppBar } from "./navigation";
+import { MiniDrawer, AppBar } from "./navigation";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -19,7 +19,7 @@ const Main = styled("main")(({ theme }) => ({
     width: "100%",
 }));
 
-const AppBuilderLayout: FunctionComponent = (): ReactElement => {
+const WorkspaceLayout: FunctionComponent = (): ReactElement => {
     const [open, setOpen] = useState(false);
 
     const handleDrawerOpen = () => {
@@ -32,12 +32,8 @@ const AppBuilderLayout: FunctionComponent = (): ReactElement => {
 
     return (
         <Root>
-            <AppBar open={open} />
-            <NavigationDrawer
-                open={open}
-                onDrawerOpen={handleDrawerOpen}
-                onDrawerClose={handleDrawerClose}
-            />
+            <AppBar open={open} onDrawerOpen={handleDrawerOpen} />
+            <MiniDrawer open={open} onDrawerClose={handleDrawerClose} />
             <Main>
                 <Outlet />
             </Main>
@@ -45,4 +41,4 @@ const AppBuilderLayout: FunctionComponent = (): ReactElement => {
     );
 };
 
-export default AppBuilderLayout;
+export default WorkspaceLayout;

@@ -15,7 +15,7 @@ interface Props {
     onClick: (id: string, url?: string) => void;
 }
 
-const MiniDrawerItem: FunctionComponent<Props> = (
+const NavigationDrawerItem: FunctionComponent<Props> = (
     props: Props,
 ): ReactElement => {
     const { open, title, id, url, icon, onClick, selected } = props;
@@ -39,4 +39,4 @@ const MiniDrawerItem: FunctionComponent<Props> = (
     );
 };
 
-export default MiniDrawerItem;
+export default NavigationDrawerItem;
