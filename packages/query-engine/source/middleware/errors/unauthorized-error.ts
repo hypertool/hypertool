@@ -11,7 +11,7 @@ const unauthorizedError = (
 ): void => {
     if (error.code === "ER_ACCESS_DENIED_ERROR") {
         response.status(httpStatuses.UNAUTHORIZED).json({
-            error: "Unauthorized",
+            error: "ACCESS_DENIED_ERROR",
             message: error.message,
         });
     } else {
