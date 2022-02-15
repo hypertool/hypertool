@@ -23,12 +23,12 @@ const executeSQL = async (
             database: mySQLConfig.databaseName,
         },
     };
-    const instance = knex(config);
+    let instance = knex(config);
 
     if (typeof query.content === "object") {
         const queryBuilder = new QueryBuilder(instance);
-        queryBuilder.parse(query.content);
-        const queryResult = await queryBuilder.instance();
+        instance = queryBuilder.parse(query.content);
+        const queryResult = await instance();
         return queryResult[0];
     } else {
         const queryResult = await instance.raw(
@@ -42,11 +42,10 @@ const executeSQL = async (
 const execute = async (parameters: ExecuteParameters): Promise<any> => {
     const query: Query = await QueryTemplateModel.findOne({
         name: parameters.name,
-    }).exec();
-
-    const resource: Resource = await ResourceModel.findOne({
-        _id: query.resource,
-    }).exec();
+    })
+        .populate("resource")
+        .exec();
+    const resource: Resource = <Resource>query.resource;
 
     switch (resource.type) {
         case "mysql":

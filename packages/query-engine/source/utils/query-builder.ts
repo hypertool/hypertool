@@ -40,6 +40,8 @@ export class QueryBuilder {
         if (query.hasOwnProperty("delete") && query.delete) {
             this.deleteStatement(query);
         }
+
+        return this.instance;
     };
 
     selectStatement = (query: any) => {
