@@ -5,6 +5,8 @@ import joi from "joi";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
+import { verifyEmailTemplate, sendEmail } from "../utils";
+
 import {
     constants,
     google,
@@ -336,7 +338,10 @@ const loginWithGoogle = async (
     return { jwtToken, user: toExternal(user), createdAt: new Date() };
 };
 
-const signupWithEmail = async (context: any, values: any): Promise<Session> => {
+const signupWithEmail = async (
+    context: any,
+    values: any,
+): Promise<ExternalUser> => {
     const { error, value } = signUpWithPasswordInput.validate(values, {
         stripUnknown: true,
     });
@@ -368,11 +373,19 @@ const signupWithEmail = async (context: any, values: any): Promise<Session> => {
     });
     await user.save();
 
-    const jwtToken = createToken(emailAddress, "7d");
+    const token = createToken(emailAddress, "7d");
 
-    // Have to call the utility function to send email
+    const params = {
+        from: { name: "Hypertool", email: "noreply@hypertool.io" },
+        to: emailAddress,
+        subject: "Verify your Hypertool email address",
+        text: "Text",
+        html: await verifyEmailTemplate({ token }),
+    };
 
-    return user._id;
+    await sendEmail(params);
+
+    return toExternal(user);
 };
 
 const loginWithEmail = async (context: any, values: any): Promise<Session> => {
@@ -399,6 +412,51 @@ const loginWithEmail = async (context: any, values: any): Promise<Session> => {
     return { jwtToken, user, createdAt: new Date() };
 };
 
+const updatePassword = async (
+    context: any,
+    values: any,
+): Promise<ExternalUser> => {
+    const { emailAddress, oldPassword, newPassword } = values;
+
+    let user = await UserModel.findOne({ emailAddress }).exec();
+
+    if (!user) {
+        throw new NotFoundError("User Not found");
+    }
+
+    const passwordMatched = bcrypt.compare(oldPassword, user.password);
+
+    if (!passwordMatched) {
+        throw new Error("Old input password is incorrect");
+    }
+
+    user.password = hashPassword(newPassword);
+    user.save();
+
+    return toExternal(user);
+};
+
+const resetPassword = async (
+    context: any,
+    values: any,
+): Promise<ExternalUser> => {
+    const { emailAddress } = values;
+
+    let user = await UserModel.findOne({ emailAddress }).exec();
+
+    if (!user) {
+        throw new NotFoundError("User Not found");
+    }
+
+    const jwtToken = createToken(emailAddress, "300s");
+    /*
+      Further need to code.
+
+    */
+
+    return toExternal(user);
+};
+
 export {
     create,
     list,
@@ -409,4 +467,6 @@ export {
     loginWithGoogle,
     signupWithEmail,
     loginWithEmail,
+    updatePassword,
+    resetPassword,
 };

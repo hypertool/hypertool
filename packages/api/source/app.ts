@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import { api } from "./rest";
 import * as graphql from "./graphql";
 import { memberships } from "./rest";
+import { emailOAuth } from "./rest";
 
 const initialize = async () => {
     const app = express();
@@ -21,6 +22,7 @@ const initialize = async () => {
     const router = express.Router();
     api.attachRoutes(router);
     memberships.attachRoutes(router);
+    emailOAuth.attachRoutes(router);
     app.use("/api/v1", router);
 
     return app;
