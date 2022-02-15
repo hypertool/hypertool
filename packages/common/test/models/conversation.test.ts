@@ -1,8 +1,8 @@
-import { assert } from "chai";
 import * as lodash from "lodash";
+import { assert } from "chai";
 
-import { assertThrowsAsync, conversations } from "../helper";
 import { ConversationModel } from "../../source/models";
+import { assertThrowsAsync, conversations } from "../helper";
 
 describe("Conversation model", function () {
     let conversation = null;
@@ -223,132 +223,39 @@ describe("Conversation model", function () {
         );
     });
 
-    it("should not be created when author in comment is undefined", async () => {
-        const newConversation = lodash.clone(conversation);
-        newConversation.comments = conversation.comments;
-        newConversation.comments[0].author = undefined;
-
-        await assertThrowsAsync(
-            async () => newConversation.save(),
-            "The author in comment attribute is required.",
-        );
-    });
-
-    it("should not be created when author in comment is null", async () => {
-        const newConversation = lodash.clone(conversation);
-        newConversation.comments = conversation.comments;
-        newConversation.comments[0].author = null;
-
-        await assertThrowsAsync(
-            async () => newConversation.save(),
-            "The author in comment attribute is required.",
-        );
-    });
-
-    it("should not be created when commentText in comment is undefined", async () => {
-        const newConversation = lodash.clone(conversation);
-        newConversation.comments = conversation.comments;
-        newConversation.comments[0].commentText = undefined;
-
-        await assertThrowsAsync(
-            async () => newConversation.save(),
-            "The commentText in comment attribute is required.",
-        );
-    });
-
-    it("should not be created when commentText in comment is null", async () => {
-        const newConversation = lodash.clone(conversation);
-        newConversation.comments = conversation.comments;
-        newConversation.comments[0].commentText = null;
-
-        await assertThrowsAsync(
-            async () => newConversation.save(),
-            "The commentText in comment attribute is required.",
-        );
-    });
-
-    it("should not be created when commentText in comment is empty", async () => {
-        const newConversation = lodash.clone(conversation);
-        newConversation.comments = conversation.comments;
-        newConversation.comments[0].commentText = "";
-
-        await assertThrowsAsync(
-            async () => newConversation.save(),
-            "The commentText in comment attribute should have at least 1 character.",
-        );
-    });
-
-    it("should not be created when commentText in comment is too long", async () => {
-        const newConversation = lodash.clone(conversation);
-        newConversation.comments = conversation.comments;
-        newConversation.comments[0].commentText = new Array(513 + 1).join("a");
-
-        await assertThrowsAsync(
-            async () => newConversation.save(),
-            "The commentText in comment attribute should have a maximum of 512 characters.",
-        );
-    });
-
-    /* FAILING TESTS
-    
-    it("should be created when edited in comment is undefined", async () => {
-        const newConversation = lodash.clone(conversation);
-        newConversation.comments = conversation.comments;
-        newConversation.comments[0].edited = undefined;
-
-        await newConversation.save();
-        assert.isFalse(
-            newConversation.isNew,
-            "The conversation should be persisted to the database.",
-        );
-    });
-
-    it("should be created when edited in comment is null", async () => {
-        const newConversation = lodash.clone(conversation);
-        newConversation.comments = conversation.comments;
-        newConversation.comments[0].edited = null;
-
-        await newConversation.save();
-        assert.isFalse(
-            newConversation.isNew,
-            "The conversation should be persisted to the database.",
-        );
-    });
-
-    it("should not be created when comments is undefined", async () => {
+    it("should not be created when status is invalid", async () => {
         const newConversation = new ConversationModel({
             ...conversation,
-            comments: undefined,
+            status: "lorem",
         });
 
         await assertThrowsAsync(
             async () => newConversation.save(),
-            "The comments attribute is required.",
+            "The status attribute is not from defined options.",
         );
     });
 
-    it("should not be created when comments is empty", async () => {
+    it("should not be created when status is null", async () => {
         const newConversation = new ConversationModel({
             ...conversation,
-            comments: [],
-        });
-
-        await assertThrowsAsync(
-            async () => await newConversation.save(),
-            "The comments attribute should have at least 1 element.",
-        );
-    });
-
-    it("should not be created when comments is null", async () => {
-        const newConversation = new ConversationModel({
-            ...conversation,
-            comments: null,
+            status: null,
         });
 
         await assertThrowsAsync(
             async () => newConversation.save(),
-            "The comments attribute is required.",
+            "The status attribute is required.",
         );
     });
-    */
+
+    it("should not be created when status is undefined", async () => {
+        const newConversation = new ConversationModel({
+            ...conversation,
+            status: undefined,
+        });
+
+        await assertThrowsAsync(
+            async () => newConversation.save(),
+            "The status attribute is required.",
+        );
+    });
 });
