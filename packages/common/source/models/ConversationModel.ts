@@ -3,6 +3,10 @@ import { Schema, model } from "mongoose";
 import type { Conversation } from "../types";
 import { conversationStatuses } from "../utils/constants";
 
+function arrayLimit(val) {
+    return val.length >= 1;
+}
+
 const conversationSchema = new Schema(
     {
         /* An identifier that points to the App where the comment was created. */
@@ -46,7 +50,7 @@ const conversationSchema = new Schema(
                     ref: "Comment",
                 },
             ],
-            minlength: 1,
+            validate: [arrayLimit, "{PATH} exceeds the limit of 1"],
             required: true,
         },
 
