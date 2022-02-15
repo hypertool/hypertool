@@ -122,18 +122,8 @@ const conversations = [
         page: "Page-1",
         coordinates: { x: 1, y: 1 },
         taggedUsers: ["61c62df2065114babd37158e", "62068e5a7d50da7d8909908f"],
-        comments: [
-            {
-                author: "61c62df2065114babd37158e",
-                commentText: "I dont think we need improvements",
-                edited: false,
-            },
-            {
-                author: "62068e5a7d50da7d8909908f",
-                commentText: "We can improve on this feature by using caching",
-                edited: false,
-            },
-        ],
+        status: "pending",
+        comments: ["61c93a931da4a79d3a109947", "61c93a931da4a79d3a109947"],
     },
 ];
 
