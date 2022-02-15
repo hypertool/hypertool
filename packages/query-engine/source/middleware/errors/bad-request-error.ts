@@ -1,5 +1,6 @@
 import { NextFunction, Response, Request } from "express";
 import { constants } from "@hypertool/common";
+import { errorCodes } from "../../utils";
 
 const { httpStatuses } = constants;
 
@@ -11,7 +12,7 @@ const badRequestError = (
 ): void => {
     if (error.code === "ER_BAD_HOST_ERROR") {
         response.status(httpStatuses.BAD_REQUEST).json({
-            error: "BAD_HOST_REQUEST",
+            error: errorCodes[error.code],
             message: error.message,
         });
     } else {

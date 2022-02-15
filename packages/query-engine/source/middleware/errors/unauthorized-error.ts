@@ -1,5 +1,6 @@
 import { NextFunction, Response, Request } from "express";
 import { constants } from "@hypertool/common";
+import { errorCodes } from "../../utils";
 
 const { httpStatuses } = constants;
 
@@ -11,7 +12,7 @@ const unauthorizedError = (
 ): void => {
     if (error.code === "ER_ACCESS_DENIED_ERROR") {
         response.status(httpStatuses.UNAUTHORIZED).json({
-            error: "ACCESS_DENIED_ERROR",
+            error: errorCodes[error.code],
             message: error.message,
         });
     } else {

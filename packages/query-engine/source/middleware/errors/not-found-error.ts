@@ -1,13 +1,8 @@
 import { NextFunction, Response, Request } from "express";
 import { constants } from "@hypertool/common";
+import { errorCodes } from "../../utils";
 
 const { httpStatuses } = constants;
-
-const NotFoundErrorMap = {
-    ER_BAD_DB_ERROR: "BAD_DB_ERROR",
-    ER_BAD_TABLE_ERROR: "BAD_TABLE_ERROR",
-    NO_SUCH_TABLE: "NO_SUCH_TABLE_ERROR",
-};
 
 const notFoundError = (
     error: any,
@@ -21,7 +16,7 @@ const notFoundError = (
         error.code === "ER_NO_SUCH_TABLE"
     ) {
         response.status(httpStatuses.NOT_FOUND).json({
-            error: NotFoundErrorMap[error.code],
+            error: errorCodes[error.code],
             message: error.message,
         });
     } else {
