@@ -435,7 +435,7 @@ export interface Conversation {
     app: App;
 
     /* The name of the Page where the comment was created. */
-    page: string;
+    page: string | Page;
 
     /* An object that describes the x and y coordinates of the conversation in
      * the canvas.
@@ -464,10 +464,31 @@ export interface Conversation {
     updatedAt: Date;
 }
 
+export interface Page {
+    id: string;
+
+    /* An identifier that points to the App where the comment was created. */
+    app: string | App;
+
+    /* The title of the page. */
+    title: string;
+
+    /* Optional description of the page. */
+    description: string;
+
+    /* The slug of the page. */
+    slug: string;
+
+    /* Specifies the timestamp that indicates when the page was created */
+    createdAt: Date;
+
+    /* Specifies the timestamp that indicates when the page was last modified */
+    updatedAt: Date;
+}
 export interface ExternalConversation {
     id: string;
     app: App;
-    page: string;
+    page: string | Page;
     coordinates: Coordinates;
     taggedUsers: string[] | [User];
     comments: string[] | [Comment];
