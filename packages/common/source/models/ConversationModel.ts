@@ -19,9 +19,8 @@ const conversationSchema = new Schema(
 
         /* The name of the Page where the comment was created. */
         page: {
-            type: String,
-            minlength: 1,
-            maxlength: 128,
+            type: Schema.Types.ObjectId,
+            ref: "Page",
             required: true,
             immutable: true,
         },
