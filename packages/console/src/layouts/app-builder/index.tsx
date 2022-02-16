@@ -3,8 +3,10 @@ import type { FunctionComponent, ReactElement } from "react";
 import { useState } from "react";
 import { styled } from "@mui/material/styles";
 import { Outlet } from "react-router-dom";
+import { Editor } from "@craftjs/core";
 
 import { NavigationDrawer, AppBar } from "./navigation";
+import { Card, Button, Text, Container } from "../../nodes";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -31,17 +33,19 @@ const AppBuilderLayout: FunctionComponent = (): ReactElement => {
     };
 
     return (
-        <Root>
-            <AppBar open={open} />
-            <NavigationDrawer
-                open={open}
-                onDrawerOpen={handleDrawerOpen}
-                onDrawerClose={handleDrawerClose}
-            />
-            <Main>
-                <Outlet />
-            </Main>
-        </Root>
+        <Editor resolver={{ Card, Button, Text, Container }}>
+            <Root>
+                <AppBar open={open} />
+                <NavigationDrawer
+                    open={open}
+                    onDrawerOpen={handleDrawerOpen}
+                    onDrawerClose={handleDrawerClose}
+                />
+                <Main>
+                    <Outlet />
+                </Main>
+            </Root>
+        </Editor>
     );
 };
 
