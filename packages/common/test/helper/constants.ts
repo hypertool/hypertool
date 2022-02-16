@@ -116,6 +116,35 @@ const memberships = [
     },
 ];
 
+const pages = [
+    {
+        app: "61c93a931da4a79d3a109947",
+        title: "App Builder",
+        description: "This is the first page",
+        slug: "/apps/123/builder",
+    },
+];
+const conversations = [
+    {
+        app: "61c93a931da4a79d3a109947",
+        page: "62068e5a7d50da7d8909908f",
+        coordinates: { x: 1, y: 1 },
+        taggedUsers: ["61c62df2065114babd37158e", "62068e5a7d50da7d8909908f"],
+        status: "pending",
+        comments: ["61c93a931da4a79d3a109947", "61c93a931da4a79d3a109947"],
+    },
+];
+
+const comments = [
+    {
+        author: "61c93a931da4a79d3a109947",
+        content: "I think we can improve this feature by caching",
+        edited: false,
+        status: "created",
+        conversation: "61c93a931da4a79d3a109947",
+    },
+];
+
 export {
     activityLogs,
     queryTemplates,
@@ -124,4 +153,7 @@ export {
     resources,
     organizations,
     memberships,
+    conversations,
+    comments,
+    pages,
 };

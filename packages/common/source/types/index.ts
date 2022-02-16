@@ -1,19 +1,22 @@
 import { ObjectId } from "mongoose";
+
 import {
-    resourceTypes,
-    resourceStatuses,
-    organizationStatuses,
     appStatuses,
-    countryCodes,
-    userStatuses,
-    userRoles,
-    groupTypes,
-    groupStatuses,
-    genders,
-    queryStatuses,
+    commentStatuses,
     componentOrigins,
+    conversationStatuses,
+    countryCodes,
+    genders,
+    groupStatuses,
+    groupTypes,
     membershipStatuses,
     membershipTypes,
+    organizationStatuses,
+    queryStatuses,
+    resourceStatuses,
+    resourceTypes,
+    userRoles,
+    userStatuses,
 } from "../utils/constants";
 
 /* General guidelines to keep in mind when writing interfaces for models.
@@ -386,6 +389,112 @@ export interface ExternalMembership {
     division: string | Group | Organization;
     type: typeof membershipTypes[number];
     status: typeof membershipStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface Comment {
+    /* An identifier that uniquely identifies the comment across Hypertool. */
+    _id: string;
+
+    /* An identifier that points to the User whose created the comment. */
+    author: ObjectId | User;
+
+    /* A string that describes the contents of the comment. */
+    content: string;
+
+    /* A boolean value that describes if the comment is edited or not. */
+    edited: Boolean;
+
+    /* An enumeration of string values that describes the status of the
+     * comment.
+     */
+    status: typeof commentStatuses[number];
+
+    /* An identifier that points to the Conversation where the comment was
+     * created.
+     */
+    conversation: ObjectId | Conversation;
+
+    /* Specifies the timestamp that indicates when the comment was created.  */
+    createdAt: Date;
+
+    /* Specifies the timestamp that indicates when the comment was last modified. */
+    updatedAt: Date;
+}
+
+export interface Coordinates {
+    x: Number;
+    y: Number;
+}
+
+export interface Conversation {
+    /* An identifier uniquely identifies the conversation across Hypertool. */
+    _id: string;
+
+    /* An identifier that points to the App where the comment was created. */
+    app: ObjectId | App;
+
+    /* The name of the Page where the comment was created. */
+    page: ObjectId | Page;
+
+    /* An object that describes the x and y coordinates of the conversation in
+     * the canvas.
+     */
+    coordinates: Coordinates;
+
+    /* A list of users who have participated in the conversation. */
+    taggedUsers: ObjectId[] | User[];
+
+    /* A list of comments in the conversation. The first member is the
+     * initiator’s comment.
+     */
+    comments: ObjectId[] | Comment[];
+
+    /* An enumeration of string values that describes the status of the
+     * conversation.
+     */
+    status: typeof conversationStatuses[number];
+
+    /* Specifies the timestamp that indicates when the conversation was created */
+    createdAt: Date;
+
+    /* Specifies the timestamp that indicates when the conversation was last
+     * modified
+     */
+    updatedAt: Date;
+}
+
+export interface Page {
+    _id: string;
+
+    /* An identifier that points to the App where the comment was created. */
+    app: ObjectId | App;
+
+    /* The title of the page. */
+    title: string;
+
+    /* Optional description of the page. */
+    description: string;
+
+    /* The slug of the page. */
+    slug: string;
+
+    /* Specifies the timestamp that indicates when the page was created */
+    createdAt: Date;
+
+    /* Specifies the timestamp that indicates when the page was last modified */
+    updatedAt: Date;
+}
+
+export interface ExternalConversation {
+    id: string;
+    app: string;
+    page: string;
+    coordinates: Coordinates;
+    taggedUsers: string[] | User[];
+    comments: string[] | Comment[];
+    status: typeof conversationStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
