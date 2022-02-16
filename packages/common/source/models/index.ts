@@ -9,3 +9,4 @@ export { default as DeploymentModel } from "./DeploymentModel";
 export { default as MembershipModel } from "./MembershipModel";
 export { default as ConversationModel } from "./ConversationModel";
 export { default as CommentModel } from "./CommentModel";
+export { default as PageModel } from "./PageModel";
