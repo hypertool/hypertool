@@ -1,47 +1,62 @@
 import type { MySQLConfiguration, Resource, Query } from "@hypertool/common";
 
-import mysql from "mysql2/promise";
 import { QueryTemplateModel, ResourceModel } from "@hypertool/common";
-import { NextFunction } from "express";
+import { Knex, knex } from "knex";
 
 import type { ExecuteParameters } from "../types";
 
-const execute = async (
+import { QueryBuilder } from "../utils/query-builder";
+
+const executeSQL = async (
     queryRequest: ExecuteParameters,
-    next: NextFunction,
+    query: Query,
+    resource: Resource,
 ): Promise<any> => {
-    const query: Query = await QueryTemplateModel.findOne({
-        name: queryRequest.name,
-    }).exec();
-
-    const resource: Resource = await ResourceModel.findOne({
-        _id: query.resource,
-    }).exec();
-
     const mySQLConfig: MySQLConfiguration = resource.mysql;
+    const config: Knex.Config = {
+        client: resource.type,
+        connection: {
+            host: mySQLConfig.host,
+            port: mySQLConfig.port,
+            user: mySQLConfig.databaseUserName,
+            password: mySQLConfig.databasePassword,
+            database: mySQLConfig.databaseName,
+        },
+    };
+    let instance = knex(config);
 
-    const connection = await mysql.createConnection({
-        host: mySQLConfig.host,
-        port: mySQLConfig.port,
-        user: mySQLConfig.databaseUserName,
-        password: mySQLConfig.databasePassword,
-        database: mySQLConfig.databaseName,
-        namedPlaceholders:
-            typeof queryRequest.variables === "object" ? true : false,
-    });
-
-    let queryResult: any;
-    try {
-        const [results, fields] = await connection.execute(
+    if (typeof query.content === "object") {
+        const queryBuilder = new QueryBuilder(instance);
+        instance = queryBuilder.parse(query.content);
+        const queryResult = await instance();
+        return queryResult[0];
+    } else {
+        const queryResult = await instance.raw(
             query.content,
             queryRequest.variables,
         );
-        queryResult = { results, fields };
-    } catch (error) {
-        next(error);
+        return queryResult[0];
     }
+};
 
-    return queryResult;
+const execute = async (parameters: ExecuteParameters): Promise<any> => {
+    const query: Query = await QueryTemplateModel.findOne({
+        name: parameters.name,
+    })
+        .populate("resource")
+        .exec();
+    const resource: Resource = <Resource>query.resource;
+
+    switch (resource.type) {
+        case "mysql":
+        case "postgres": {
+            const queryResult = await executeSQL(parameters, query, resource);
+            return { result: queryResult };
+        }
+        default: {
+            throw new Error("Unknown resource type");
+        }
+    }
 };
 
 export { execute };

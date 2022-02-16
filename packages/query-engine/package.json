@@ -18,9 +18,10 @@
         "express": "^4.17.2",
         "graphql": "^16.3.0",
         "joi": "^17.5.0",
+        "knex": "^1.0.1",
         "mongoose": "^6.0.12",
         "morgan": "^1.10.0",
-        "mysql2": "^2.3.3"
+        "mysql": "^2.18.1"
     },
     "devDependencies": {
         "@types/chai": "^4.3.0",

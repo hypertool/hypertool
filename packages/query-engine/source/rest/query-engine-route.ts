@@ -9,9 +9,13 @@ const attachRoutes = (router: Router): void => {
     router.post(
         "/queries",
         async (request: Request, response: Response, next: NextFunction) => {
-            const { body } = request;
-            const result = await queryEngine.execute(body, next);
-            response.status(httpStatuses.OK).json(result);
+            try {
+                const { body } = request;
+                const result = await queryEngine.execute(body);
+                response.status(httpStatuses.OK).json(result);
+            } catch (error) {
+                next(error);
+            }
         },
     );
 
