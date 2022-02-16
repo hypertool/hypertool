@@ -3,10 +3,6 @@ import { Schema, model } from "mongoose";
 import type { Conversation } from "../types";
 import { conversationStatuses } from "../utils/constants";
 
-function arrayLimit(val) {
-    return val.length >= 1;
-}
-
 const conversationSchema = new Schema(
     {
         /* An identifier that points to the App where the comment was created. */
@@ -17,7 +13,7 @@ const conversationSchema = new Schema(
             immutable: true,
         },
 
-        /* The name of the Page where the comment was created. */
+        /* The page where the comment was created. */
         page: {
             type: Schema.Types.ObjectId,
             ref: "Page",
@@ -28,7 +24,13 @@ const conversationSchema = new Schema(
         /* An object that describes the x and y coordinates of the conversation
          * in the canvas.
          */
-        coordinates: { type: Object, required: true },
+        coordinates: {
+            type: {
+                x: { type: Number },
+                y: { type: Number },
+            },
+            required: true,
+        },
 
         /* A list of users who have participated in the conversation. */
         taggedUsers: [
@@ -49,7 +51,12 @@ const conversationSchema = new Schema(
                     ref: "Comment",
                 },
             ],
-            validate: [arrayLimit, "{PATH} exceeds the limit of 1"],
+            validate: [
+                (value) => {
+                    return value.length >= 1;
+                },
+                "{PATH} exceeds the limit of 1",
+            ],
             required: true,
         },
 
