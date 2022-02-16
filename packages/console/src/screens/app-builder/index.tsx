@@ -11,7 +11,6 @@ import { Editor, Frame } from "@craftjs/core";
 
 import CodeEditor from "./CodeEditor";
 import EditorDrawer from "./editor";
-import Canvas from "./canvas";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -54,7 +53,6 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     }, [drawerOpen]);
 
     return (
-<<<<<<< HEAD
         <>
             <Root>
                 <PrimaryAction onClick={handleClick}>Code Editor</PrimaryAction>
@@ -62,16 +60,6 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             </Root>
             <EditorDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
         </>
-=======
-        <Editor>
-            <Frame>
-                <Root>
-                    <Canvas />
-                    <EditorDrawer open={true} onDrawerClose={() => null} />
-                </Root>
-            </Frame>
-        </Editor>
->>>>>>> ffcc2a4... feat: created initial scaffold for the canvas
     );
 };
 

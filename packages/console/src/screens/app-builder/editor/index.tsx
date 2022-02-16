@@ -76,8 +76,7 @@ const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
             variant="permanent"
             open={open}
             anchor="right"
-            onClose={onDrawerClose}
-        >
+            onClose={onDrawerClose}>
             <DrawerHeader></DrawerHeader>
             <Divider />
             <Root>
@@ -85,8 +84,7 @@ const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                     <Tabs
                         value={active}
                         onChange={handleChange}
-                        variant="fullWidth"
-                    >
+                        variant="fullWidth">
                         <Tab value="properties" label="Properties" />
                         <Tab value="comments" label="Comments" />
                     </Tabs>

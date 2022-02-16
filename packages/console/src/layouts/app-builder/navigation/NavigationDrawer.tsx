@@ -191,8 +191,7 @@ const NavigationDrawer: FunctionComponent<Props> = (
             variant={"permanent"}
             open={open}
             anchor="left"
-            onClose={onDrawerClose}
-        >
+            onClose={onDrawerClose}>
             <DrawerHeader></DrawerHeader>
             <Divider />
             <Root>
@@ -202,6 +201,7 @@ const NavigationDrawer: FunctionComponent<Props> = (
                             <List>
                                 {group.items.map((item) => (
                                     <NavigationDrawerItem
+                                        key={item.id}
                                         open={open}
                                         title={item.title}
                                         id={item.id}

@@ -16,7 +16,7 @@ interface Props {}
 const Canvas: FunctionComponent<Props> = (props: Props): ReactElement => {
     return (
         <Element canvas={true}>
-            <Container />
+            <h1>Test Canvas</h1>
         </Element>
     );
 };
