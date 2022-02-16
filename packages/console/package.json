@@ -11,6 +11,7 @@
         "@hypertool/common": "^0.2.17",
         "@monaco-editor/react": "^4.3.1",
         "@mui/icons-material": "^5.1.0",
+        "@mui/lab": "^5.0.0-alpha.69",
         "@mui/material": "^5.1.0",
         "@mui/styled-engine-sc": "^5.1.0",
         "@mui/x-data-grid": "^5.0.1",
