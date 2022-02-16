@@ -2,7 +2,14 @@ import type { FunctionComponent, ReactElement } from "react";
 
 import { useState, useCallback } from "react";
 import { styled, Theme, CSSObject } from "@mui/material/styles";
-import { Divider, Drawer as MuiDrawer, Tabs, Tab } from "@mui/material";
+import {
+    Divider,
+    Drawer as MuiDrawer,
+    Tabs,
+    Tab,
+    Box,
+    Typography,
+} from "@mui/material";
 
 const drawerWidth = 304;
 
@@ -56,10 +63,38 @@ const Drawer = styled(MuiDrawer)(({ theme, open }) => ({
     }),
 }));
 
+function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={tabIndices[value] !== index}
+            id={value}
+            {...other}>
+            {tabIndices[value] === index && (
+                <Box sx={{ p: 3 }}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
+
+interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: TabIdentifier;
+}
 interface Props {
     open: boolean;
     onDrawerClose: () => void;
 }
+
+const tabIndices = {
+    properties: 0,
+    comments: 1,
+};
 
 type TabIdentifier = "properties" | "comments";
 
@@ -88,6 +123,9 @@ const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                         <Tab value="properties" label="Properties" />
                         <Tab value="comments" label="Comments" />
                     </Tabs>
+                    <TabPanel value={active} index={0}>
+                        Hello
+                    </TabPanel>
                 </div>
             </Root>
         </Drawer>
