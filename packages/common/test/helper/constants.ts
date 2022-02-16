@@ -116,10 +116,18 @@ const memberships = [
     },
 ];
 
+const pages = [
+    {
+        app: "61c93a931da4a79d3a109947",
+        title: "Page-1",
+        description: "This is the first page",
+        slug: "slug content",
+    },
+];
 const conversations = [
     {
         app: "61c93a931da4a79d3a109947",
-        page: "Page-1",
+        page: "62068e5a7d50da7d8909908f",
         coordinates: { x: 1, y: 1 },
         taggedUsers: ["61c62df2065114babd37158e", "62068e5a7d50da7d8909908f"],
         status: "pending",
@@ -147,4 +155,5 @@ export {
     memberships,
     conversations,
     comments,
+    pages,
 };

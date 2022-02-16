@@ -7,6 +7,7 @@ import {
     conversations,
     memberships,
     organizations,
+    pages,
     queryTemplates,
     resources,
     users,
@@ -40,14 +41,15 @@ const assertThrowsAsync = async (
 };
 
 export {
-    assertThrowsAsync,
     activityLogs,
     appData,
-    queryTemplates,
-    users,
-    resources,
-    organizations,
-    memberships,
-    conversations,
+    assertThrowsAsync,
     comments,
+    conversations,
+    memberships,
+    organizations,
+    pages,
+    queryTemplates,
+    resources,
+    users,
 };
