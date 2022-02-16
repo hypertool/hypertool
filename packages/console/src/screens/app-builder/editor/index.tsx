@@ -8,7 +8,13 @@ import {
     Tabs,
     Tab,
     Box,
+    Chip,
+    Grid,
     Typography,
+    Button as MaterialButton,
+    FormControl,
+    FormLabel,
+    Slider,
 } from "@mui/material";
 
 const drawerWidth = 304;
@@ -62,41 +68,52 @@ const Drawer = styled(MuiDrawer)(({ theme, open }) => ({
         "& .MuiDrawer-paper": closedMixin(theme),
     }),
 }));
-
-function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={tabIndices[value] !== index}
-            id={value}
-            {...other}>
-            {tabIndices[value] === index && (
-                <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
-                </Box>
-            )}
-        </div>
-    );
-}
-
-interface TabPanelProps {
-    children?: React.ReactNode;
-    index: number;
-    value: TabIdentifier;
-}
 interface Props {
     open: boolean;
     onDrawerClose: () => void;
 }
 
-const tabIndices = {
-    properties: 0,
-    comments: 1,
-};
-
 type TabIdentifier = "properties" | "comments";
+
+const PropertiesEditor = () => {
+    return (
+        <Box bgcolor="rgba(0, 0, 0, 0.06)" mt={2} px={2} py={2}>
+            <Grid container direction="column" spacing={0}>
+                <Grid item>
+                    <Box pb={2}>
+                        <Grid container alignItems="center">
+                            <Grid item xs>
+                                <Typography variant="subtitle1">
+                                    Selected
+                                </Typography>
+                            </Grid>
+                            <Grid item>
+                                <Chip
+                                    size="small"
+                                    color="primary"
+                                    label="Selected"
+                                />
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Grid>
+                <FormControl size="small" component="fieldset">
+                    <FormLabel component="legend">Prop</FormLabel>
+                    <Slider
+                        defaultValue={0}
+                        step={1}
+                        min={7}
+                        max={50}
+                        valueLabelDisplay="auto"
+                    />
+                </FormControl>
+                <MaterialButton variant="contained" color="primary">
+                    Delete
+                </MaterialButton>
+            </Grid>
+        </Box>
+    );
+};
 
 const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
     const { open, onDrawerClose } = props;
@@ -123,9 +140,7 @@ const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                         <Tab value="properties" label="Properties" />
                         <Tab value="comments" label="Comments" />
                     </Tabs>
-                    <TabPanel value={active} index={0}>
-                        Hello
-                    </TabPanel>
+                    {active === "properties" && <PropertiesEditor />}
                 </div>
             </Root>
         </Drawer>

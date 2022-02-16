@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button as MuiButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
     FunctionComponent,
@@ -11,6 +11,7 @@ import { Editor, Frame } from "@craftjs/core";
 
 import CodeEditor from "./CodeEditor";
 import EditorDrawer from "./editor";
+import { Container, Card, Button, Text } from "../../nodes";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -20,7 +21,7 @@ const Root = styled("section")(({ theme }) => ({
     padding: theme.spacing(0),
 }));
 
-const PrimaryAction = styled(Button)(({ theme }) => ({
+const PrimaryAction = styled(MuiButton)(({ theme }) => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
     marginLeft: theme.spacing(1),
@@ -53,13 +54,24 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     }, [drawerOpen]);
 
     return (
-        <>
-            <Root>
-                <PrimaryAction onClick={handleClick}>Code Editor</PrimaryAction>
-                {drawerOpen && <CodeEditor />}
-            </Root>
+        <Root>
+            <PrimaryAction onClick={handleClick}>Code Editor</PrimaryAction>
+            {!drawerOpen && <CodeEditor />}
             <EditorDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
-        </>
+            <Frame>
+                <Container padding={5} background="#eee">
+                    <Card />
+                    <Button size="small" variant="outlined">
+                        Click
+                    </Button>
+                    <Text size="small" text="Hi world!" />
+                    <Container padding={6} background="#999">
+                        <Text size="small" text="It's me again!" />
+                    </Container>
+                </Container>
+            </Frame>
+            <EditorDrawer open={true} onDrawerClose={() => null} />
+        </Root>
     );
 };
 
