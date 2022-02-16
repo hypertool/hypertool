@@ -4,7 +4,7 @@ import type { Page } from "../types";
 
 const pageSchema = new Schema(
     {
-        /* An identifier that points to the App where the comment was created. */
+        /* An identifier that points to the app where the comment was created. */
         app: {
             type: Schema.Types.ObjectId,
             ref: "App",

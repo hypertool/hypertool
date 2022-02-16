@@ -395,10 +395,10 @@ export interface ExternalMembership {
 
 export interface Comment {
     /* An identifier that uniquely identifies the comment across Hypertool. */
-    id: string;
+    _id: string;
 
     /* An identifier that points to the User whose created the comment. */
-    author: string | User;
+    author: ObjectId | User;
 
     /* A string that describes the contents of the comment. */
     content: string;
@@ -406,7 +406,7 @@ export interface Comment {
     /* A boolean value that describes if the comment is edited or not. */
     edited: Boolean;
 
-    /* A enumeration of string values that describes the status of the
+    /* An enumeration of string values that describes the status of the
      * comment.
      */
     status: typeof commentStatuses[number];
@@ -414,7 +414,7 @@ export interface Comment {
     /* An identifier that points to the Conversation where the comment was
      * created.
      */
-    conversation: string | Conversation;
+    conversation: ObjectId | Conversation;
 
     /* Specifies the timestamp that indicates when the comment was created.  */
     createdAt: Date;
@@ -427,15 +427,16 @@ export interface Coordinates {
     x: Number;
     y: Number;
 }
+
 export interface Conversation {
     /* An identifier uniquely identifies the conversation across Hypertool. */
-    id: string;
+    _id: string;
 
     /* An identifier that points to the App where the comment was created. */
-    app: App;
+    app: ObjectId | App;
 
     /* The name of the Page where the comment was created. */
-    page: string | Page;
+    page: ObjectId | Page;
 
     /* An object that describes the x and y coordinates of the conversation in
      * the canvas.
@@ -443,14 +444,14 @@ export interface Conversation {
     coordinates: Coordinates;
 
     /* A list of users who have participated in the conversation. */
-    taggedUsers: string[] | [User];
+    taggedUsers: ObjectId[] | User[];
 
     /* A list of comments in the conversation. The first member is the
      * initiator’s comment.
      */
-    comments: string[] | [Comment];
+    comments: ObjectId[] | Comment[];
 
-    /* A enumeration of string values that describes the status of the
+    /* An enumeration of string values that describes the status of the
      * conversation.
      */
     status: typeof conversationStatuses[number];
@@ -465,10 +466,10 @@ export interface Conversation {
 }
 
 export interface Page {
-    id: string;
+    _id: string;
 
     /* An identifier that points to the App where the comment was created. */
-    app: string | App;
+    app: ObjectId | App;
 
     /* The title of the page. */
     title: string;
@@ -485,13 +486,14 @@ export interface Page {
     /* Specifies the timestamp that indicates when the page was last modified */
     updatedAt: Date;
 }
+
 export interface ExternalConversation {
     id: string;
-    app: App;
-    page: string | Page;
+    app: string;
+    page: string;
     coordinates: Coordinates;
-    taggedUsers: string[] | [User];
-    comments: string[] | [Comment];
+    taggedUsers: string[] | User[];
+    comments: string[] | Comment[];
     status: typeof conversationStatuses[number];
     createdAt: Date;
     updatedAt: Date;

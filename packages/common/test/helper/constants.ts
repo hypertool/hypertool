@@ -119,9 +119,9 @@ const memberships = [
 const pages = [
     {
         app: "61c93a931da4a79d3a109947",
-        title: "Page-1",
+        title: "App Builder",
         description: "This is the first page",
-        slug: "slug content",
+        slug: "/apps/123/builder",
     },
 ];
 const conversations = [

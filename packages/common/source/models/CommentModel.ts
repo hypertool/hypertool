@@ -5,7 +5,7 @@ import { commentStatuses } from "../utils/constants";
 
 const commentSchema = new Schema(
     {
-        /* An identifier that points to the User whose created the comment. */
+        /* An identifier that points to the User who created the comment. */
         author: {
             type: Schema.Types.ObjectId,
             ref: "User",
@@ -24,7 +24,7 @@ const commentSchema = new Schema(
             default: false,
             required: true,
         },
-        /* A enumeration of string values that describes the status of the
+        /* An enumeration of string values that describes the status of the
          * comment.
          */
         status: {
@@ -32,7 +32,7 @@ const commentSchema = new Schema(
             enum: commentStatuses,
             required: true,
         },
-        /* An identifier that points to the Conversation where the comment was
+        /* An identifier that points to the conversation where the comment was
          * created.
          */
         conversation: {
