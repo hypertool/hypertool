@@ -20,6 +20,6 @@ auditable, and easy to understand.
 
 ## Avoid vendor lock-in with Hypertool
 
-Our client-side technologies are open source and hosted on GitHub. In the long
+Our community edition is open source and hosted on GitHub. In the long
 run, if Hypertool does not meet your requirements, you can always eject your
 project from Hypertool without throwing away everything.
