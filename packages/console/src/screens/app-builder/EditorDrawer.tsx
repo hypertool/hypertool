@@ -1,21 +1,20 @@
-import type { FunctionComponent, ReactElement } from "react";
-
-import { useState, useCallback } from "react";
-import { styled, Theme, CSSObject } from "@mui/material/styles";
 import {
-    Divider,
-    Drawer as MuiDrawer,
-    Tabs,
-    Tab,
     Box,
     Chip,
-    Grid,
-    Typography,
-    Button as MaterialButton,
+    Divider,
     FormControl,
     FormLabel,
+    Grid,
+    Button as MaterialButton,
+    Drawer as MuiDrawer,
     Slider,
+    Tab,
+    Tabs,
+    Typography,
 } from "@mui/material";
+import { CSSObject, Theme, styled } from "@mui/material/styles";
+import type { FunctionComponent, ReactElement } from "react";
+import { useCallback, useState } from "react";
 
 const drawerWidth = 304;
 
@@ -77,7 +76,7 @@ type TabIdentifier = "properties" | "comments";
 
 const PropertiesEditor = () => {
     return (
-        <Box bgcolor="rgba(0, 0, 0, 0.06)" mt={2} px={2} py={2}>
+        <Box mt={2} px={2} py={2}>
             <Grid container direction="column" spacing={0}>
                 <Grid item>
                     <Box pb={2}>
@@ -128,7 +127,8 @@ const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
             variant="permanent"
             open={open}
             anchor="right"
-            onClose={onDrawerClose}>
+            onClose={onDrawerClose}
+        >
             <DrawerHeader></DrawerHeader>
             <Divider />
             <Root>
@@ -136,7 +136,8 @@ const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                     <Tabs
                         value={active}
                         onChange={handleChange}
-                        variant="fullWidth">
+                        variant="fullWidth"
+                    >
                         <Tab value="properties" label="Properties" />
                         <Tab value="comments" label="Comments" />
                     </Tabs>

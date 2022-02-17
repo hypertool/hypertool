@@ -1,3 +1,4 @@
+import { Element, Frame } from "@craftjs/core";
 import { Button as MuiButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
@@ -7,11 +8,11 @@ import {
     useEffect,
     useState,
 } from "react";
-import { Frame, Element } from "@craftjs/core";
+
+import { Button, Card, Container, Text } from "../../nodes";
 
 import CodeEditor from "./CodeEditor";
-import EditorDrawer from "./editor";
-import { Container, Card, Button, Text } from "../../nodes";
+import EditorDrawer from "./EditorDrawer";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -59,11 +60,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             {!drawerOpen && <CodeEditor />}
             <EditorDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
             <Frame>
-                <Element
-                    is={Container}
-                    padding={5}
-                    background="#eee"
-                    canvas>                    
+                <Element is={Container} padding={5} background="#eee" canvas>
                     <Card />
                     <Button size="small" variant="outlined">
                         Click
