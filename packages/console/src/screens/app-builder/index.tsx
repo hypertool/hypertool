@@ -7,7 +7,7 @@ import {
     useEffect,
     useState,
 } from "react";
-import { Editor, Frame } from "@craftjs/core";
+import { Frame, Element } from "@craftjs/core";
 
 import CodeEditor from "./CodeEditor";
 import EditorDrawer from "./editor";
@@ -59,7 +59,11 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             {!drawerOpen && <CodeEditor />}
             <EditorDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
             <Frame>
-                <Container padding={5} background="#eee">
+                <Element
+                    is={Container}
+                    padding={5}
+                    background="#eee"
+                    canvas>                    
                     <Card />
                     <Button size="small" variant="outlined">
                         Click
@@ -68,7 +72,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                     <Container padding={6} background="#999">
                         <Text size="small" text="It's me again!" />
                     </Container>
-                </Container>
+                </Element>
             </Frame>
             <EditorDrawer open={true} onDrawerClose={() => null} />
         </Root>
