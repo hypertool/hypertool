@@ -5,13 +5,14 @@ import type { FunctionComponent, ReactElement } from "react";
 import { useCallback, useState } from "react";
 
 const DrawerHeader = styled("section")(({ theme }) => ({
-    backgroundColor: (theme.palette.background as any).level1,
+    backgroundColor: (theme.palette.background as any).paper1,
     width: "100%",
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: theme.spacing(1),
+    marginTop: theme.spacing(1),
 }));
 
 const DrawerTitle = styled("b")(({ theme }) => ({

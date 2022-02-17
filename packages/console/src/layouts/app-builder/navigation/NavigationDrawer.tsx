@@ -1,17 +1,16 @@
-import type { FunctionComponent, ReactElement } from "react";
-
-import { useState, Fragment, useCallback } from "react";
-import { styled, Theme, CSSObject } from "@mui/material/styles";
+import { Divider, List } from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
-import { List, Divider } from "@mui/material";
+import { CSSObject, Theme, styled } from "@mui/material/styles";
+import type { FunctionComponent, ReactElement } from "react";
+import { Fragment, useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 
-import NavigationDrawerItem from "./NavigationDrawerItem";
-import Explorer from "./Explorer";
 import Components from "./Components";
+import Deployment from "./Deployment";
+import Explorer from "./Explorer";
+import NavigationDrawerItem from "./NavigationDrawerItem";
 import Resources from "./Resources";
 import Teams from "./Teams";
-import Deployment from "./Deployment";
 
 const drawerWidth = 304;
 const navigationWidth = 56;
@@ -54,7 +53,7 @@ const Navigation = styled("div")(({ theme }) => ({
 }));
 
 const NavigationContainer = styled("div")(({ theme }) => ({
-    backgroundColor: "#212121",
+    backgroundColor: (theme.palette.background as any).paper2,
     width: panelWidth,
 }));
 
@@ -191,7 +190,8 @@ const NavigationDrawer: FunctionComponent<Props> = (
             variant={"permanent"}
             open={open}
             anchor="left"
-            onClose={onDrawerClose}>
+            onClose={onDrawerClose}
+        >
             <DrawerHeader></DrawerHeader>
             <Divider />
             <Root>

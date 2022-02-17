@@ -1,8 +1,7 @@
-import type { FunctionComponent, ReactElement } from "react";
 import type { AppBarProps } from "@mui/material";
-
 import { AppBar as MuiAppBar, Toolbar, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import type { FunctionComponent, ReactElement } from "react";
 
 interface PrimaryAppBarProps extends AppBarProps {
     open?: boolean;
@@ -15,7 +14,7 @@ const DecoratedAppBar = styled(MuiAppBar, {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
     }),
-
+    background: (theme.palette.background as any).main,
     zIndex: theme.zIndex.drawer + 1,
 }));
 
