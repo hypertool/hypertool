@@ -33,7 +33,6 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     useEffect(() => {
         if ((params as any).mode && (params as any).mode !== mode) {
             setMode((params as any).mode);
-            setDrawerOpen(mode === "design");
         }
     }, [params, mode]);
 
