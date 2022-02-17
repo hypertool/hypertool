@@ -1,5 +1,4 @@
 import { Element, Frame } from "@craftjs/core";
-import { Button as MuiButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
     FunctionComponent,
@@ -9,6 +8,7 @@ import {
     useState,
 } from "react";
 
+import { useQueryParams } from "../../hooks";
 import { Button, Card, Container, Text } from "../../nodes";
 
 import CodeEditor from "./CodeEditor";
@@ -22,21 +22,19 @@ const Root = styled("section")(({ theme }) => ({
     padding: theme.spacing(0),
 }));
 
-const PrimaryAction = styled(MuiButton)(({ theme }) => ({
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-    marginLeft: theme.spacing(1),
-    borderRadius: theme.spacing(1),
-    backgroundColor: theme.palette.background.paper,
-    textTransform: "none",
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-        width: 120,
-    },
-}));
+type mode = "design" | "code";
 
 const AppBuilder: FunctionComponent = (): ReactElement => {
     const [drawerOpen, setDrawerOpen] = useState(true);
+
+    const [mode, setMode] = useState<"design" | "code">("design");
+    const params = useQueryParams();
+
+    useEffect(() => {
+        if ((params as any).mode && (params as any).mode !== mode) {
+            setMode((params as any).mode);
+        }
+    }, [params, mode]);
 
     const handleClick = useCallback(() => {
         setDrawerOpen(!drawerOpen);
@@ -56,7 +54,6 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
 
     return (
         <Root>
-            <PrimaryAction onClick={handleClick}>Code Editor</PrimaryAction>
             {!drawerOpen && <CodeEditor />}
             <EditorDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
             <Frame>

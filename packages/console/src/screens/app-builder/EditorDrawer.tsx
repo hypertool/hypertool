@@ -39,6 +39,8 @@ const closedMixin = (theme: Theme): CSSObject => ({
 const Root = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
+    height: "100vh",
+    background: (theme.palette.background as any).paper1,
 }));
 
 const DrawerHeader = styled("div")(({ theme }) => ({

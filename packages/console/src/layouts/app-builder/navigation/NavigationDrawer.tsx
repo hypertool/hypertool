@@ -38,6 +38,7 @@ const Root = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
     height: "100vh",
+    background: (theme.palette.background as any).main,
 
     /* Necessary for content to be below app bar */
     ...theme.mixins.toolbar,

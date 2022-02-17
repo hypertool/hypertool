@@ -5,7 +5,7 @@ import type { FunctionComponent, ReactElement } from "react";
 import { useCallback, useState } from "react";
 
 const DrawerHeader = styled("section")(({ theme }) => ({
-    backgroundColor: (theme.palette.background as any).paper1,
+    backgroundColor: (theme.palette.background as any).main,
     width: "100%",
     display: "flex",
     flexDirection: "row",
