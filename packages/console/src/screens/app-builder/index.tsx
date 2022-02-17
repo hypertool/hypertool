@@ -22,17 +22,18 @@ const Root = styled("section")(({ theme }) => ({
     padding: theme.spacing(0),
 }));
 
-type mode = "design" | "code";
+type modes = "design" | "code";
 
 const AppBuilder: FunctionComponent = (): ReactElement => {
     const [drawerOpen, setDrawerOpen] = useState(true);
 
-    const [mode, setMode] = useState<"design" | "code">("design");
+    const [mode, setMode] = useState<modes>("design");
     const params = useQueryParams();
 
     useEffect(() => {
         if ((params as any).mode && (params as any).mode !== mode) {
             setMode((params as any).mode);
+            console.log(params);
         }
     }, [params, mode]);
 
@@ -54,7 +55,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
 
     return (
         <Root>
-            {!drawerOpen && <CodeEditor />}
+            {mode === "code" && <CodeEditor />}
             <EditorDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
             <Frame>
                 <Element is={Container} padding={5} background="#eee" canvas>

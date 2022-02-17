@@ -2,7 +2,8 @@ import { AutoAwesomeMosaic, FormatAlignLeft } from "@mui/icons-material";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 
 const DrawerHeader = styled("section")(({ theme }) => ({
     backgroundColor: (theme.palette.background as any).main,
@@ -20,11 +21,19 @@ const DrawerTitle = styled("b")(({ theme }) => ({
 }));
 
 const Explorer: FunctionComponent = (): ReactElement => {
-    const [alignment, setAlignment] = useState("builder");
+    const [mode, setMode] = useState("design");
 
-    const handleChange = useCallback((event: any, newAlignment: any) => {
-        setAlignment(newAlignment);
+    const handleChange = useCallback((event: any, newMode: any) => {
+        setMode(newMode);
     }, []);
+
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        navigate(location.pathname + "?mode=" + mode);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mode]);
 
     return (
         <>
@@ -32,14 +41,14 @@ const Explorer: FunctionComponent = (): ReactElement => {
                 <DrawerTitle>Explorer</DrawerTitle>
                 <ToggleButtonGroup
                     color="primary"
-                    value={alignment}
+                    value={mode}
                     exclusive={true}
                     onChange={handleChange}
                 >
-                    <ToggleButton value="builder">
+                    <ToggleButton value="design">
                         <AutoAwesomeMosaic fontSize="small" />
                     </ToggleButton>
-                    <ToggleButton value="editor">
+                    <ToggleButton value="code">
                         <FormatAlignLeft fontSize="small" />
                     </ToggleButton>
                 </ToggleButtonGroup>
