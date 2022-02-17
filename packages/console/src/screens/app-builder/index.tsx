@@ -33,13 +33,9 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     useEffect(() => {
         if ((params as any).mode && (params as any).mode !== mode) {
             setMode((params as any).mode);
-            console.log(params);
+            setDrawerOpen(mode === "design");
         }
     }, [params, mode]);
-
-    const handleClick = useCallback(() => {
-        setDrawerOpen(!drawerOpen);
-    }, [drawerOpen]);
 
     const handleDrawerClose = useCallback(() => {
         setDrawerOpen(false);

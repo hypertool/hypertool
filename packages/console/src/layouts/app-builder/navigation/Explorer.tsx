@@ -1,4 +1,4 @@
-import { AutoAwesomeMosaic, FormatAlignLeft } from "@mui/icons-material";
+import { AutoAwesomeMosaic, CodeOutlined } from "@mui/icons-material";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type { FunctionComponent, ReactElement } from "react";
@@ -49,7 +49,7 @@ const Explorer: FunctionComponent = (): ReactElement => {
                         <AutoAwesomeMosaic fontSize="small" />
                     </ToggleButton>
                     <ToggleButton value="code">
-                        <FormatAlignLeft fontSize="small" />
+                        <CodeOutlined fontSize="small" />
                     </ToggleButton>
                 </ToggleButtonGroup>
             </DrawerHeader>
