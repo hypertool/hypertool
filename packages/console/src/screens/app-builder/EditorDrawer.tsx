@@ -3,6 +3,7 @@ import { CSSObject, Theme, styled } from "@mui/material/styles";
 import type { FunctionComponent, ReactElement } from "react";
 import { useCallback, useState } from "react";
 import PropertiesEditor from "./PropertiesEditor";
+import { useEditor } from "@craftjs/core";
 
 const drawerWidth = 304;
 
@@ -68,6 +69,8 @@ const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
     const { open, onDrawerClose } = props;
     const [active, setActive] = useState<TabIdentifier>("properties");
 
+    const selected = useEditor((state) => state.events.selected);
+
     const handleChange = useCallback((event, newValue) => {
         setActive(newValue);
     }, []);
@@ -89,7 +92,9 @@ const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                         <Tab value="properties" label="Properties" />
                         <Tab value="comments" label="Comments" />
                     </Tabs>
-                    {active === "properties" && <PropertiesEditor />}
+                    {active === "properties" && selected && (
+                        <PropertiesEditor />
+                    )}
                 </div>
             </Root>
         </Drawer>

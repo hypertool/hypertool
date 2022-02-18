@@ -4,26 +4,26 @@ import {
     FormControl,
     FormLabel,
     Grid,
-    Button as MaterialButton,
     Slider,
     Typography,
 } from "@mui/material";
 import { useEditor } from "@craftjs/core";
 import React from "react";
+import type { FunctionComponent, ReactElement } from "react";
 
-const PropertiesEditor = () => {
-    const { selected, actions } = useEditor((state, query) => {
+const PropertiesEditor: FunctionComponent = (): ReactElement => {
+    const { selected } = useEditor((state, query) => {
         const currentNodeId: any = state.events.selected;
         let selected;
 
         if (currentNodeId) {
             selected = {
                 id: currentNodeId,
-                name: state.nodes[currentNodeId].data.name,
+                name: state.nodes[currentNodeId]?.data?.name,
                 settings:
-                    state.nodes[currentNodeId].related &&
-                    state.nodes[currentNodeId].related.settings,
-                isDeletable: query.node(currentNodeId).isDeletable(),
+                    state.nodes[currentNodeId]?.related &&
+                    state.nodes[currentNodeId]?.related?.settings,
+                // isDeletable: query.node(currentNodeId).isDeletable(),
             };
         }
 
@@ -67,7 +67,7 @@ const PropertiesEditor = () => {
                                 valueLabelDisplay="auto"
                             />
                         </FormControl>
-                        {selected.isDeletable && (
+                        {/* {selected.isDeletable && (
                             <MaterialButton
                                 variant="contained"
                                 color="primary"
@@ -76,7 +76,7 @@ const PropertiesEditor = () => {
                                 }}>
                                 Delete
                             </MaterialButton>
-                        )}
+                        )} */}
                     </Grid>
                 </Box>
             )}
