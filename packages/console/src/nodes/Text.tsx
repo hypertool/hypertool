@@ -7,7 +7,6 @@ export const Text = ({ text, fontSize }: any) => {
     const {
         connectors: { connect, drag },
         selected,
-        dragged,
         actions: { setProp },
     } = useNode((state) => ({
         selected: state.events.selected,
