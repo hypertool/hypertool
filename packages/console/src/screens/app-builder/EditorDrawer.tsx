@@ -78,8 +78,8 @@ interface Props {
 type TabIdentifier = "properties" | "comments";
 
 const PropertiesEditor = () => {
-    const { selected } = useEditor((state) => {
-        const currentNodeId = state.events.selected;
+    const { selected, actions } = useEditor((state, query) => {
+        const currentNodeId: any = state.events.selected;
         let selected;
 
         if (currentNodeId) {
@@ -89,6 +89,7 @@ const PropertiesEditor = () => {
                 settings:
                     state.nodes[currentNodeId].related &&
                     state.nodes[currentNodeId].related.settings,
+                isDeletable: query.node(currentNodeId).isDeletable(),
             };
         }
 
@@ -131,9 +132,16 @@ const PropertiesEditor = () => {
                             valueLabelDisplay="auto"
                         />
                     </FormControl>
-                    <MaterialButton variant="contained" color="primary">
-                        Delete
-                    </MaterialButton>
+                    {selected.isDeletable && (
+                        <MaterialButton
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {
+                                actions.delete(selected.id);
+                            }}>
+                            Delete
+                        </MaterialButton>
+                    )}
                 </Grid>
             </Box>
         )

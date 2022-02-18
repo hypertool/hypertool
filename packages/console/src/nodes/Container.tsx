@@ -1,6 +1,6 @@
 import { useNode } from "@craftjs/core";
 import { FormControl, FormLabel, Slider, Paper } from "@mui/material";
-import ColorPicker from "material-ui-color-picker";
+// import ColorPicker from "material-ui-color-picker";
 
 export const Container = ({ background, padding = 0, children }: any) => {
     const {
@@ -18,7 +18,6 @@ export const Container = ({ background, padding = 0, children }: any) => {
 
 export const ContainerSettings = () => {
     const {
-        background,
         padding,
         actions: { setProp },
     } = useNode((node) => ({
@@ -29,7 +28,7 @@ export const ContainerSettings = () => {
         <div>
             <FormControl fullWidth={true} margin="normal" component="fieldset">
                 <FormLabel component="legend">Background</FormLabel>
-                <ColorPicker
+                {/* <ColorPicker
                     defaultValue={background || "#000"}
                     onChange={(color: any) => {
                         setProp(
@@ -37,7 +36,7 @@ export const ContainerSettings = () => {
                                 (props.background = color),
                         );
                     }}
-                />
+                /> */}
             </FormControl>
             <FormControl fullWidth={true} margin="normal" component="fieldset">
                 <FormLabel component="legend">Padding</FormLabel>
@@ -56,7 +55,7 @@ export const ContainerSettings = () => {
 };
 
 export const ContainerDefaultProps = {
-    background: "#ffffff",
+    background: "#333",
     padding: 3,
 };
 
