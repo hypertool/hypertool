@@ -31,11 +31,13 @@ const userSchema = new Schema(
             maxlength: 512,
             default: "",
         },
-        organization: {
-            type: {
-                type: Schema.Types.ObjectId,
-                ref: "Organization",
-            },
+        organizations: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "Organization",
+                },
+            ],
         },
         gender: {
             type: String,

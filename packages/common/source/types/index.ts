@@ -133,11 +133,12 @@ export interface User {
     firstName: string;
     lastName: string;
     description: string;
-    organization: string;
+    organizations: string[];
     gender: typeof genders[number];
     countryCode: typeof countryCodes[number];
     pictureURL: string;
     emailAddress: string;
+    password: string;
     emailVerified: boolean;
     groups: string[] | Group[];
     role: typeof userRoles[number];
