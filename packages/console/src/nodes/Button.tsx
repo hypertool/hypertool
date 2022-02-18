@@ -120,6 +120,12 @@ const ButtonSettings = () => {
 };
 
 Button.craft = {
+    props: {
+        size: "small",
+        variant: "contained",
+        color: "primary",
+        text: "Click me",
+    },
     related: {
         settings: ButtonSettings,
     },

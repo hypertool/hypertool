@@ -1,7 +1,11 @@
 import { Element, useNode } from "@craftjs/core";
 
 import { Button } from "./Button";
-import { Container, ContainerSettings } from "./Container";
+import {
+    Container,
+    ContainerSettings,
+    ContainerDefaultProps,
+} from "./Container";
 import { Text } from "./Text";
 
 export const CardTop = ({ children }: any) => {
@@ -67,6 +71,7 @@ export const Card = ({ background, padding = 20 }: any) => {
 };
 
 Card.craft = {
+    props: ContainerDefaultProps,
     related: {
         settings: ContainerSettings,
     },

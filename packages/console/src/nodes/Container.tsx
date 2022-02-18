@@ -55,7 +55,13 @@ export const ContainerSettings = () => {
     );
 };
 
+export const ContainerDefaultProps = {
+    background: "#ffffff",
+    padding: 3,
+};
+
 Container.craft = {
+    props: ContainerDefaultProps,
     related: {
         settings: ContainerSettings,
     },

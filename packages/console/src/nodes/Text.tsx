@@ -88,6 +88,10 @@ const TextSettings = () => {
 };
 
 Text.craft = {
+    props: {
+        text: "Sample Text",
+        fontSize: 20,
+    },
     related: {
         settings: TextSettings,
     },
