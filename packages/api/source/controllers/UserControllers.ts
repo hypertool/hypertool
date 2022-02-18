@@ -53,7 +53,6 @@ const filterSchema = joi.object({
 const updateSchema = joi.object({
     firstName: joi.string().min(1).max(256),
     lastName: joi.string().min(1).max(256),
-    password: joi.string().min(8).max(128),
     description: joi.string().max(512).allow(""),
     organization: joi.string().regex(constants.identifierPattern),
     gender: joi.string().valid(...constants.genders),
@@ -67,7 +66,7 @@ const updateSchema = joi.object({
 const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-const signUpWithPasswordSchema = joi.object({
+const signUpWithEmailSchema = joi.object({
     firstName: joi.string().min(1).max(256).required(),
     lastName: joi.string().min(1).max(256).required(),
     emailAddress: joi.string().max(256).required(),
@@ -363,10 +362,9 @@ const signupWithEmail = async (
     context: any,
     values: any,
 ): Promise<ExternalUser> => {
-    const { error, value } = signUpWithPasswordSchema.validate(values, {
+    const { error, value } = signUpWithEmailSchema.validate(values, {
         stripUnknown: true,
     });
-
     if (error) {
         throw new BadRequestError(error.message);
     }
@@ -458,7 +456,6 @@ const updatePassword = async (
     if (!passwordMatched) {
         throw new Error("Old password is incorrect");
     }
-
     user.password = hashPassword(newPassword);
     user.save();
 
