@@ -44,6 +44,11 @@ const typeDefs = gql`
         ${googleClientTypes.join("\n")}
     }
 
+    type PasswordResetResult {
+        message: String!
+        success: Boolean!
+    }
+
     type Query {
         dummy: String!
 
@@ -66,11 +71,15 @@ const typeDefs = gql`
             password: String!
         ): Session!
 
-        updatePassword(
+        requestPasswordReset(
             emailAddress: String!
+            appId: ID!
+        ): PasswordResetResult!
+
+        completePasswordReset(
+            token: String!
             newPassword: String!
-            newPassword: String!
-        ): User!
+        ): Session!
     }
 `;
 
@@ -91,8 +100,11 @@ const resolvers = {
         loginWithEmail: async (parent, values, context) =>
             users.loginWithEmail(context.request, values),
 
-        updatePassword: async (parent, values, context) =>
-            users.updatePassword(context.request, values),
+        requestPasswordReset: async (parent, values, context) =>
+            users.requestPasswordReset(context.request, values),
+
+        completePasswordReset: async (parent, values, context) =>
+            users.completePasswordReset(context.request, values),
     },
 };
 

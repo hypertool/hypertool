@@ -4,8 +4,13 @@ import type { User, UserPage, ExternalUser, Session } from "@hypertool/common";
 import joi from "joi";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-import { verifyEmailTemplate, sendEmail } from "../utils";
+import {
+    verifyEmailTemplate,
+    sendEmail,
+    resetPasswordTemplate,
+} from "../utils";
 
 import {
     constants,
@@ -15,6 +20,7 @@ import {
     UnauthorizedError,
     extractIds,
     UserModel,
+    AppModel,
 } from "@hypertool/common";
 import { createToken, hashPassword } from "../utils";
 
@@ -58,20 +64,35 @@ const updateSchema = joi.object({
     groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const signUpWithPasswordInput = joi.object({
+const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+const signUpWithPasswordSchema = joi.object({
     firstName: joi.string().min(1).max(256).required(),
     lastName: joi.string().min(1).max(256).required(),
     emailAddress: joi.string().max(256).required(),
-    password: joi
-        .string()
-        .regex(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-            "password",
-        )
-        .min(8)
-        .max(128)
-        .required(),
+    password: joi.string().regex(passwordRegex).min(8).max(128).required(),
     role: joi.string().valid(constants.userRoles).required(),
+});
+
+const loginWithEmailSchema = joi.object({
+    emailAddress: joi.string().max(256).required(),
+    password: joi.string().regex(passwordRegex).min(8).max(128).required(),
+});
+
+const requestPasswordResetSchema = joi.object({
+    emailAddress: joi.string().max(256).required(),
+    appId: joi.string().required(),
+});
+
+const completePasswordResetSchema = joi.object({
+    token: joi.string().max(256).required(),
+    newPassword: joi.string().regex(passwordRegex).min(8).max(128).required(),
+});
+
+const updatePasswordSchema = joi.object({
+    oldPassword: joi.string().regex(passwordRegex).min(8).max(128).required(),
+    newPassword: joi.string().regex(passwordRegex).min(8).max(128).required(),
 });
 
 const toExternal = (user: any): ExternalUser => {
@@ -342,7 +363,7 @@ const signupWithEmail = async (
     context: any,
     values: any,
 ): Promise<ExternalUser> => {
-    const { error, value } = signUpWithPasswordInput.validate(values, {
+    const { error, value } = signUpWithPasswordSchema.validate(values, {
         stripUnknown: true,
     });
 
@@ -389,12 +410,18 @@ const signupWithEmail = async (
 };
 
 const loginWithEmail = async (context: any, values: any): Promise<Session> => {
-    const { emailAddress, password } = values;
+    const { error, value } = loginWithEmailSchema.validate(values, {
+        stripUnknown: true,
+    });
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
 
+    const { emailAddress, password } = values;
     let user = await UserModel.findOne({ emailAddress }).exec();
 
     if (!user) {
-        throw new NotFoundError("User is not signed up");
+        throw new NotFoundError("User not found");
     }
 
     if (!user.emailVerified) {
@@ -409,25 +436,27 @@ const loginWithEmail = async (context: any, values: any): Promise<Session> => {
 
     const jwtToken = createToken(emailAddress, "30d");
 
-    return { jwtToken, user, createdAt: new Date() };
+    return { jwtToken, user: toExternal(user), createdAt: new Date() };
 };
 
 const updatePassword = async (
     context: any,
     values: any,
 ): Promise<ExternalUser> => {
-    const { emailAddress, oldPassword, newPassword } = values;
-
-    let user = await UserModel.findOne({ emailAddress }).exec();
-
-    if (!user) {
-        throw new NotFoundError("User Not found");
+    const { error, value } = updatePasswordSchema.validate(values, {
+        stripUnknown: true,
+    });
+    if (error) {
+        throw new BadRequestError(error.message);
     }
 
-    const passwordMatched = bcrypt.compare(oldPassword, user.password);
+    const { oldPassword, newPassword } = values;
 
+    let user = context.user;
+
+    const passwordMatched = bcrypt.compare(oldPassword, user.password);
     if (!passwordMatched) {
-        throw new Error("Old input password is incorrect");
+        throw new Error("Old password is incorrect");
     }
 
     user.password = hashPassword(newPassword);
@@ -436,25 +465,83 @@ const updatePassword = async (
     return toExternal(user);
 };
 
-const resetPassword = async (
+const requestPasswordReset = async (
     context: any,
     values: any,
-): Promise<ExternalUser> => {
-    const { emailAddress } = values;
+): Promise<any> => {
+    const { error, value } = requestPasswordResetSchema.validate(values, {
+        stripUnknown: true,
+    });
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const { emailAddress, appId } = values;
+
+    let app = await AppModel.findById(appId);
+    let organizationId = app.organization;
+
+    const jwtToken = jwt.sign(
+        { emailAddress, organizationId },
+        process.env.JWT_SIGNATURE_KEY,
+        {
+            expiresIn: "600s" /* 10 minutes */,
+        },
+    );
+
+    const url = `https://${app.name}.hypertool.io/new-password?token=${jwtToken}`;
+
+    const params = {
+        from: { name: "Hypertool", email: "noreply@hypertool.io" },
+        to: emailAddress,
+        subject: "Password Reset Link",
+        text: "Text",
+        html: await resetPasswordTemplate({ url }),
+    };
+
+    await sendEmail(params);
+
+    return {
+        message: "The reset link was sent to the specific email address",
+        success: true,
+    };
+};
+
+const completePasswordReset = async (
+    context: any,
+    values: any,
+): Promise<Session> => {
+    const { error, value } = completePasswordResetSchema.validate(values, {
+        stripUnknown: true,
+    });
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const { token, newPassword } = values;
+
+    const { emailAddress, organizationId } = jwt.verify(
+        token,
+        process.env.JWT_SIGNATURE_KEY,
+    );
+    /* To Do */
+    /* How to check if jwt is expired */
 
     let user = await UserModel.findOne({ emailAddress }).exec();
 
-    if (!user) {
-        throw new NotFoundError("User Not found");
+    /* Check weather the user is inside the given organzation */
+    let ifUserInOrganization = user.organizations.includes(organizationId);
+    if (!ifUserInOrganization) {
+        throw new NotFoundError("User is not in the organization");
     }
 
-    const jwtToken = createToken(emailAddress, "300s");
-    /*
-      Further need to code.
+    /* When all checks are passed */
+    user.password = hashPassword(newPassword);
+    await user.save();
 
-    */
+    const jwtToken = createToken(emailAddress, "30d");
 
-    return toExternal(user);
+    return { jwtToken, user: toExternal(user), createdAt: new Date() };
 };
 
 export {
@@ -468,5 +555,6 @@ export {
     signupWithEmail,
     loginWithEmail,
     updatePassword,
-    resetPassword,
+    requestPasswordReset,
+    completePasswordReset,
 };

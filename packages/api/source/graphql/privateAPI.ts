@@ -390,6 +390,11 @@ const typeDefs = gql`
             groups: [ID!]
         ): User!
 
+        updatePassword(
+            oldPassword: String!
+            newPassword: String!
+        ): User!
+
         deleteUser(userId: ID!): RemoveResult!
 
         createGroup(
@@ -546,6 +551,9 @@ const resolvers = {
 
         deleteUser: async (parent, values, context) =>
             users.remove(context.request, context.userId),
+
+        updatePassword: async (parent, values, context) =>
+            users.updatePassword(context.request, values),
 
         createGroup: async (parent, values, context) =>
             groups.create(context.request, values),
