@@ -12,7 +12,7 @@ const Components = () => {
                 <Box pb={2}>
                     <Typography>Drag to add</Typography>
                 </Box>
-                <Grid container direction="column" item>
+                <Grid container={true} direction="column" item={true}>
                     <MaterialButton
                         ref={(ref) =>
                             connectors.create(
@@ -20,12 +20,11 @@ const Components = () => {
                                 <Button text="Click me" size="small" />,
                             )
                         }
-                        variant="contained"
-                    >
+                        variant="contained">
                         Button
                     </MaterialButton>
                 </Grid>
-                <Grid container direction="column" item>
+                <Grid container={true} direction="column" item={true}>
                     <MaterialButton
                         ref={(ref) =>
                             connectors.create(
@@ -33,12 +32,11 @@ const Components = () => {
                                 <Text text="Hi world" />,
                             )
                         }
-                        variant="contained"
-                    >
+                        variant="contained">
                         Text
                     </MaterialButton>
                 </Grid>
-                <Grid container direction="column" item>
+                <Grid container={true} direction="column" item={true}>
                     <MaterialButton
                         ref={(ref) =>
                             connectors.create(
@@ -46,16 +44,14 @@ const Components = () => {
                                 <Element is={Container} padding={20} canvas />,
                             )
                         }
-                        variant="contained"
-                    >
+                        variant="contained">
                         Container
                     </MaterialButton>
                 </Grid>
-                <Grid container direction="column" item>
+                <Grid container={true} direction="column" item={true}>
                     <MaterialButton
                         ref={(ref) => connectors.create(ref as any, <Card />)}
-                        variant="contained"
-                    >
+                        variant="contained">
                         Card
                     </MaterialButton>
                 </Grid>

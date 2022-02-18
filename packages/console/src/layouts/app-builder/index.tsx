@@ -4,7 +4,14 @@ import type { FunctionComponent, ReactElement } from "react";
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
-import { Button, Card, Container, Text } from "../../nodes";
+import {
+    Button,
+    Card,
+    Container,
+    Text,
+    CardBottom,
+    CardTop,
+} from "../../nodes";
 
 import { AppBar, NavigationDrawer } from "./navigation";
 
@@ -34,7 +41,8 @@ const AppBuilderLayout: FunctionComponent = (): ReactElement => {
     };
 
     return (
-        <Editor resolver={{ Card, Button, Text, Container }}>
+        <Editor
+            resolver={{ Card, Button, Text, Container, CardBottom, CardTop }}>
             <Root>
                 <AppBar open={open} />
                 <NavigationDrawer
