@@ -11,7 +11,7 @@ import { TextField } from "../../components";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
-    minHeight: "100vh",
+    minHeight: "calc(100vh - 64px)",
     width: "100%",
     display: "flex",
     flexDirection: "column",
