@@ -17,6 +17,7 @@ import EditorDrawer from "./EditorDrawer";
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
     width: "100%",
+    height: "100vh",
     display: "flex",
     flexDirection: "column",
     padding: theme.spacing(0),
@@ -53,12 +54,17 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             {mode === "code" && <CodeEditor />}
             <EditorDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
             <Frame>
-                <Element is={Container} padding={5} background="#eee" canvas>
+                <Element
+                    is={Container}
+                    padding={5}
+                    background="#333"
+                    canvas={true}>
                     <Card />
                     <Button size="small" variant="outlined">
                         Click
                     </Button>
                     <Text size="small" text="Hi world!" />
+
                     <Container padding={6} background="#999">
                         <Text size="small" text="It's me again!" />
                     </Container>

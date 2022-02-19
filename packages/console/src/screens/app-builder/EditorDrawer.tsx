@@ -2,8 +2,9 @@ import { Divider, Drawer as MuiDrawer, Tab, Tabs } from "@mui/material";
 import { CSSObject, Theme, styled } from "@mui/material/styles";
 import type { FunctionComponent, ReactElement } from "react";
 import { useCallback, useState } from "react";
-import PropertiesEditor from "./PropertiesEditor";
 import { useEditor } from "@craftjs/core";
+
+import PropertiesEditor from "./PropertiesEditor";
 
 const drawerWidth = 304;
 
@@ -68,7 +69,6 @@ type TabIdentifier = "properties" | "comments";
 const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
     const { open, onDrawerClose } = props;
     const [active, setActive] = useState<TabIdentifier>("properties");
-
     const selected = useEditor((state) => state.events.selected);
 
     const handleChange = useCallback((event, newValue) => {

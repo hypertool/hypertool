@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useNode } from "@craftjs/core";
 
-export const Button = ({ size, variant, color, children }: any) => {
+export const Button = ({ size, variant, color, text, children }: any) => {
     const {
         connectors: { connect, drag },
     } = useNode();
@@ -19,6 +19,7 @@ export const Button = ({ size, variant, color, children }: any) => {
             size={size}
             variant={variant}
             color={color}>
+            <div>{text}</div>
             {children}
         </MaterialButton>
     );

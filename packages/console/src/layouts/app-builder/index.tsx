@@ -1,6 +1,7 @@
+import type { FunctionComponent, ReactElement } from "react";
+
 import { Editor } from "@craftjs/core";
 import { styled } from "@mui/material/styles";
-import type { FunctionComponent, ReactElement } from "react";
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
@@ -12,7 +13,6 @@ import {
     CardBottom,
     CardTop,
 } from "../../nodes";
-
 import { AppBar, NavigationDrawer } from "./navigation";
 
 const Root = styled("div")(({ theme }) => ({
