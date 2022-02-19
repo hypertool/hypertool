@@ -1,21 +1,20 @@
-import type { FunctionComponent, ReactElement } from "react";
-
-import { Routes, Route, Navigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
+import type { FunctionComponent, ReactElement } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 
+import { AppBuilderLayout, VisitorLayout, WorkspaceLayout } from "./layouts";
 import {
-    Login,
-    NewOrganization,
-    ViewApps,
-    NewApp,
-    ResourceLibrary,
-    NewResource,
-    EditResource,
-    SingleApp,
-    AuthenticationServices,
     AppBuilder,
+    AuthenticationServices,
+    EditResource,
+    Login,
+    NewApp,
+    NewOrganization,
+    NewResource,
+    ResourceLibrary,
+    SingleApp,
+    ViewApps,
 } from "./screens";
-import { WorkspaceLayout, AppBuilderLayout } from "./layouts";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -27,7 +26,9 @@ const App: FunctionComponent = (): ReactElement => {
     return (
         <Root>
             <Routes>
-                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<VisitorLayout />}>
+                    <Route path="/login" element={<Login />} />
+                </Route>
                 <Route path="/" element={<WorkspaceLayout />}>
                     <Route
                         path="/organizations/new"
