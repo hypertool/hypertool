@@ -1,11 +1,10 @@
+import bodyParser from "body-parser";
+import cors from "cors";
 import express from "express";
 import logger from "morgan";
-import cors from "cors";
-import bodyParser from "body-parser";
 
-import { api } from "./rest";
 import * as graphql from "./graphql";
-import { memberships } from "./rest";
+import * as rest from "./rest";
 
 const initialize = async () => {
     const app = express();
@@ -17,11 +16,7 @@ const initialize = async () => {
     }
 
     graphql.attachRoutes(app);
-
-    const router = express.Router();
-    api.attachRoutes(router);
-    memberships.attachRoutes(router);
-    app.use("/api/v1", router);
+    rest.attachRoutes(app);
 
     return app;
 };

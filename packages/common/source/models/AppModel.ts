@@ -93,6 +93,10 @@ const appSchema = new Schema(
             enum: appStatuses,
             default: "private",
         },
+        organization: {
+            type: Schema.Types.ObjectId,
+            ref: "Organization",
+        },
         authServices: {
             type: authServicesSchema,
         },

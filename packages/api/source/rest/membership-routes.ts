@@ -1,13 +1,12 @@
-import type { Router, Request, Response, NextFunction } from "express";
-
 import { constants } from "@hypertool/common";
+import type { NextFunction, Request, Response, Router } from "express";
 
 import { memberships } from "../controllers";
 
 const { httpStatuses } = constants;
 const { INVITATION_JWT_SIGNATURE } = process.env;
 
-const attachRoutes = (router: Router): void => {
+const attachRoutes = async (router: Router): Promise<void> => {
     router.get(
         "/invitation/accept/:jwt",
         async (request: Request, response: Response, next: NextFunction) => {

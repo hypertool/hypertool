@@ -1,18 +1,16 @@
-import type { Document } from "mongoose";
-import joi from "joi";
 import {
+    BadRequestError,
+    ExternalMembership,
     MembershipModel,
+    OrganizationModel,
     UserModel,
     constants,
-    BadRequestError,
-    NotFoundError,
-    OrganizationModel,
-    ExternalMembership,
     runAsTransaction,
 } from "@hypertool/common";
+import joi from "joi";
 import jwt from "jsonwebtoken";
 
-import { invitationTemplate, sendEmail } from "../utils";
+import { renderTemplate, sendEmail } from "../utils";
 
 const { INVITATION_JWT_SIGNATURE } = process.env;
 
@@ -104,7 +102,7 @@ const create = async (context, attributes): Promise<ExternalMembership> => {
         to: emailAddress,
         subject: "Invitation to join organization",
         text: "Text",
-        html: await invitationTemplate({ token }),
+        html: await renderTemplate("invitation.html", { token }),
     };
     await sendEmail(params);
 

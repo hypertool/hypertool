@@ -1,10 +1,14 @@
+import { promises as fs } from "fs";
 import Mustache from "mustache";
-import fs from "fs";
 
-const fsPromisify = fs.promises;
-const invitationTemplatePath = `${process.cwd()}/source/templates/invitation.html`;
+/* The base path should be WRT to the build directory, not this file. */
+const base = `${process.cwd()}/templates`;
 
-export const invitationTemplate = async (data) => {
-    const html = await fsPromisify.readFile(invitationTemplatePath, "utf8");
-    return Mustache.render(html, data);
+export const renderTemplate = async (
+    name: string,
+    data: any,
+): Promise<string> => {
+    const path = `${base}/${name}`;
+    const template = await fs.readFile(path, "utf-8");
+    return Mustache.render(template, data);
 };

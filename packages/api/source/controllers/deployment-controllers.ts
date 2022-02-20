@@ -46,8 +46,7 @@ const toExternal = (deployment: Deployment): ExternalDeployment => {
 
 export const generateSignedURLs = async (
     context,
-    attributes: GenerateSignedURLsAttributes,
-): Promise<GenerateSignedURLsResult> => {
+    attributes: GenerateSignedURLsAttributes): Promise<GenerateSignedURLsResult> => {
     const { error, value } = generateSchema.validate(attributes);
 
     if (error) {
