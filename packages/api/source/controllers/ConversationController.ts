@@ -172,3 +172,22 @@ const list = async (context, parameters): Promise<ConversationPage> => {
         records: conversations.docs.map(toExternal),
     };
 };
+
+const listById = async (
+    context,
+    conversationIds: string[],
+): Promise<ExternalConversation[]> => {
+    const unorderedConversations = await ConversationModel.find({
+        _id: { $in: conversationIds },
+        status: { $ne: "deleted" },
+    }).exec();
+    const object = {};
+    // eslint-disable-next-line no-restricted-syntax
+    for (const conversation of unorderedConversations) {
+        object[conversation._id.toString()] = conversation;
+    }
+    // eslint-disable-next-line security/detect-object-injection
+    const res = conversationIds.map((key) => toExternal(object[key]));
+    console.log(res);
+    return res;
+};
