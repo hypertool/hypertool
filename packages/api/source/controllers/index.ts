@@ -8,3 +8,5 @@ export * as deployments from "./deployment-controllers";
 export * as activityLogs from "./activity-log-controllers";
 export * as memberships from "./membership-controllers";
 export * as queries from "./query-engine-controllers";
+export * as comments from "./comment-controller";
+export * as conversations from "./conversation-controller";
