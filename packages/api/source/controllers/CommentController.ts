@@ -122,3 +122,44 @@ const update = async (
 
     return toExternal(updatedComment);
 };
+
+const remove = async (
+    context,
+    commentId: string,
+): Promise<{ success: boolean }> => {
+    if (!constants.identifierPattern.test(commentId)) {
+        throw new BadRequestError(
+            "The specified comment identifier is invalid.",
+        );
+    }
+
+    const comment = await CommentModel.findById(commentId);
+
+    if (context.user.id.toString() !== comment.author.toString()) {
+        throw new UnauthorizedError(
+            "User is not authorized to delete the comment",
+        );
+    }
+
+    const updatedComment = await CommentModel.findByIdAndUpdate(
+        {
+            _id: commentId,
+            status: { $ne: "deleted" },
+        },
+        {
+            status: "deleted",
+        },
+        {
+            new: true,
+            lean: true,
+        },
+    );
+
+    if (!updatedComment) {
+        throw new NotFoundError(
+            "An comment with the specified identifier does not exist.",
+        );
+    }
+
+    return { success: true };
+};
