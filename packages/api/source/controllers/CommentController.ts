@@ -83,3 +83,42 @@ const create = async (context, attributes): Promise<ExternalComment> => {
 
     return toExternal(newComment);
 };
+
+const update = async (
+    context,
+    commentId: string,
+    attributes,
+): Promise<ExternalComment> => {
+    const { error, value } = updateSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const comment = await CommentModel.findById(commentId);
+
+    if (context.user.id.toString() !== comment.author.toString()) {
+        throw new UnauthorizedError(
+            "User is not authorized to update the comment",
+        );
+    }
+
+    const updatedComment = await CommentModel.findByIdAndUpdate(
+        commentId,
+        {
+            ...value,
+            edited: true,
+        },
+        { new: true },
+    );
+
+    if (!updatedComment) {
+        throw new NotFoundError(
+            "A comment with the specified identifier does not exist.",
+        );
+    }
+
+    return toExternal(updatedComment);
+};
