@@ -1,10 +1,10 @@
-import { NotFoundError, UserModel } from "@hypertool/common";
+import { NotFoundError, UserModel, constants } from "@hypertool/common";
 import type { Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
 
 const attachRoutes = async (router: Router): Promise<void> => {
     router.get(
-        "/api/v1/accounts/verify/:jwtToken",
+        "/users/verify/:jwtToken",
         async (request: Request, response: Response) => {
             const { jwtToken } = request.params;
             try {
@@ -12,21 +12,22 @@ const attachRoutes = async (router: Router): Promise<void> => {
                     jwtToken,
                     process.env.JWT_SIGNATURE_KEY,
                 );
-
                 const user = await UserModel.findOne({
                     emailAddress,
                 }).exec();
 
                 if (!user) {
-                    throw new NotFoundError("User Not found");
+                    throw new NotFoundError(
+                        "Cannot find user with the specified email address. (Inconsistent data state; possibly a bug).",
+                    );
                 }
 
                 user.emailVerified = true;
                 await user.save();
-            } catch (err) {
-                return response
-                    .status(401)
-                    .send("The specified token is invalid.");
+            } catch (error) {
+                response
+                    .status(constants.httpStatuses.UNAUTHORIZED)
+                    .send({ message: "The specified token is invalid." });
             }
         },
     );
