@@ -52,3 +52,34 @@ const toExternal = (comment: any): ExternalComment => {
         updatedAt,
     };
 };
+
+const create = async (context, attributes): Promise<ExternalComment> => {
+    const { error, value } = createSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const newComment = new CommentModel({
+        ...value,
+        edited: false,
+        status: "created",
+    });
+    await newComment.save();
+
+    const author = value.author;
+    const conversationId = value.conversation;
+    const conversation = await ConversationModel.findById(conversationId);
+
+    conversation.comments.push(conversationId);
+
+    if (!conversation.taggedUsers.includes(author)) {
+        conversation.taggedUsers.push(author);
+    }
+
+    await conversation.save();
+
+    return toExternal(newComment);
+};
