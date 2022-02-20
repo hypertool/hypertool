@@ -1,6 +1,6 @@
-import express, { Router, Request, Response } from "express";
+import { Request, Response, Router } from "express";
 
-const attachRoutes = (router: Router): void => {
+const attachRoutes = async (router: Router): Promise<void> => {
     router.get(
         "/statuses/live",
         async (request: Request, response: Response) => {
