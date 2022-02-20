@@ -107,3 +107,33 @@ const create = async (context, attributes): Promise<ExternalConversation> => {
 
     return toExternal(newConversation);
 };
+
+const update = async (
+    context,
+    conversationId: string,
+    attributes,
+): Promise<ExternalConversation> => {
+    const { error, value } = updateSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const conversation = await ConversationModel.findByIdAndUpdate(
+        conversationId,
+        {
+            ...value,
+        },
+        { new: true },
+    );
+
+    if (!conversation) {
+        throw new NotFoundError(
+            "A conversation with the specified identifier does not exist.",
+        );
+    }
+
+    return toExternal(conversation);
+};
