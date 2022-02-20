@@ -1,22 +1,22 @@
+import { promises as fs } from "fs";
 import Mustache from "mustache";
-import fs from "fs";
 
-const fsPromisify = fs.promises;
-const invitationTemplatePath = `${process.cwd()}/source/templates/invitation.html`;
-const verifyEmailTemplatePath = `${process.cwd()}/source/templates/verifyEmail.html`;
-const resetPasswordTemplatePath = `${process.cwd()}/source/templates/resetPassword.html`;
+const base = `${process.cwd()}/source/templates`;
+const invitationTemplatePath = `${base}/invitation.html`;
+const verifyEmailTemplatePath = `${base}/verify-email.html`;
+const resetPasswordTemplatePath = `${base}/reset-password.html`;
 
-export const invitationTemplate = async (data) => {
-    const html = await fsPromisify.readFile(invitationTemplatePath, "utf8");
+export const invitationTemplate = async (data: any): Promise<string> => {
+    const html = await fs.readFile(invitationTemplatePath, "utf8");
     return Mustache.render(html, data);
 };
 
-export const verifyEmailTemplate = async (data) => {
-    const html = await fsPromisify.readFile(verifyEmailTemplatePath, "utf-8");
+export const verifyEmailTemplate = async (data: any): Promise<string> => {
+    const html = await fs.readFile(verifyEmailTemplatePath, "utf-8");
     return Mustache.render(html, data);
 };
 
-export const resetPasswordTemplate = async (data) => {
-    const html = await fsPromisify.readFile(resetPasswordTemplatePath, "utf-8");
+export const resetPasswordTemplate = async (data: any): Promise<string> => {
+    const html = await fs.readFile(resetPasswordTemplatePath, "utf-8");
     return Mustache.render(html, data);
 };
