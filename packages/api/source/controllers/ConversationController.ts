@@ -137,3 +137,38 @@ const update = async (
 
     return toExternal(conversation);
 };
+
+const list = async (context, parameters): Promise<ConversationPage> => {
+    const { error, value } = filterSchema.validate(parameters);
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const filters = {
+        status: {
+            $ne: "deleted",
+        },
+    };
+    const { page, limit } = value;
+
+    const conversations = await (ConversationModel as any).paginate(filters, {
+        limit,
+        page: page + 1,
+        lean: true,
+        leanWithId: true,
+        pagination: true,
+        sort: {
+            updatedAt: -1,
+        },
+    });
+
+    return {
+        totalRecords: conversations.totalDocs,
+        totalPages: conversations.totalPages,
+        previousPage: conversations.prevPage ? conversations.prevPage - 1 : -1,
+        nextPage: conversations.nextPage ? conversations.nextPage - 1 : -1,
+        hasPreviousPage: conversations.hasPrevPage,
+        hasNextPage: conversations.hasNextPage,
+        records: conversations.docs.map(toExternal),
+    };
+};
