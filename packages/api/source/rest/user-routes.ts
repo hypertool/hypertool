@@ -1,9 +1,8 @@
-import type { Router, Request, Response } from "express";
+import { NotFoundError, UserModel } from "@hypertool/common";
+import type { Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
 
-import { UserModel, NotFoundError } from "@hypertool/common";
-
-const attachRoutes = (router: Router): void => {
+const attachRoutes = async (router: Router): Promise<void> => {
     router.get(
         "/api/v1/accounts/verify/:jwtToken",
         async (request: Request, response: Response) => {
