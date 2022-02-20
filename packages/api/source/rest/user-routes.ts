@@ -18,7 +18,7 @@ const attachRoutes = async (router: Router): Promise<void> => {
 
                 if (!user) {
                     throw new NotFoundError(
-                        "Cannot find user with the specified email address. (Inconsistent data state; possibly a bug).",
+                        "Cannot find user with the specified email address. (Inconsistent data state; possibly a bug.)",
                     );
                 }
 
