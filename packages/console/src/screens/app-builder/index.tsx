@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Element, Frame } from "@craftjs/core";
 import { styled } from "@mui/material/styles";
 import {
     FunctionComponent,
@@ -8,36 +8,34 @@ import {
     useState,
 } from "react";
 
+import { useQueryParams } from "../../hooks";
+import { Button, Card, Container, Text } from "../../nodes";
+
 import CodeEditor from "./CodeEditor";
-import EditorDrawer from "./editor";
+import EditorDrawer from "./EditorDrawer";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
     width: "100%",
+    height: "100vh",
     display: "flex",
     flexDirection: "column",
     padding: theme.spacing(0),
 }));
 
-const PrimaryAction = styled(Button)(({ theme }) => ({
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-    marginLeft: theme.spacing(1),
-    borderRadius: theme.spacing(1),
-    backgroundColor: theme.palette.background.paper,
-    textTransform: "none",
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-        width: 120,
-    },
-}));
+type modes = "design" | "code";
 
 const AppBuilder: FunctionComponent = (): ReactElement => {
     const [drawerOpen, setDrawerOpen] = useState(true);
 
-    const handleClick = useCallback(() => {
-        setDrawerOpen(!drawerOpen);
-    }, [drawerOpen]);
+    const [mode, setMode] = useState<modes>("design");
+    const params = useQueryParams();
+
+    useEffect(() => {
+        if ((params as any).mode && (params as any).mode !== mode) {
+            setMode((params as any).mode);
+        }
+    }, [params, mode]);
 
     const handleDrawerClose = useCallback(() => {
         setDrawerOpen(false);
@@ -52,13 +50,28 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     }, [drawerOpen]);
 
     return (
-        <>
-            <Root>
-                <PrimaryAction onClick={handleClick}>Code Editor</PrimaryAction>
-                {drawerOpen && <CodeEditor />}
-            </Root>
+        <Root>
+            {mode === "code" && <CodeEditor />}
             <EditorDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
-        </>
+            <Frame>
+                <Element
+                    is={Container}
+                    padding={5}
+                    background="#333"
+                    canvas={true}>
+                    <Card />
+                    <Button size="small" variant="outlined">
+                        Click
+                    </Button>
+                    <Text size="small" text="Hi world!" />
+
+                    <Container padding={6} background="#999">
+                        <Text size="small" text="It's me again!" />
+                    </Container>
+                </Element>
+            </Frame>
+            <EditorDrawer open={true} onDrawerClose={() => null} />
+        </Root>
     );
 };
 

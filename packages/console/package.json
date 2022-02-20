@@ -5,6 +5,7 @@
     "private": true,
     "dependencies": {
         "@apollo/client": "^3.5.5",
+        "@craftjs/core": "^0.2.0-beta.2",
         "@emotion/react": "^11.6.0",
         "@emotion/styled": "^11.6.0",
         "@hypertool/common": "^0.2.17",
@@ -24,6 +25,7 @@
         "history": "5",
         "monaco-editor": "^0.32.1",
         "react": "^17.0.2",
+        "react-contenteditable": "^3.3.6",
         "react-dom": "^17.0.2",
         "react-google-login": "^5.2.2",
         "react-router-dom": "6",

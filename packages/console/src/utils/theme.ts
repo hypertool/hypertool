@@ -19,10 +19,11 @@ const theme = createTheme({
         mode: "dark",
         background: {
             ...{
-                default: "#181b1d",
-                level1: "#BBCBFF",
-                level2: "#2c2f33",
-                paper: "#383c3f",
+                default: "#080808",
+                paper: "#161616",
+                paper1: "#242424",
+                paper2: "#323232",
+                main: "#383838",
             },
         },
         ...{

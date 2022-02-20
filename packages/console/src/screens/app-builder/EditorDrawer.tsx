@@ -1,8 +1,10 @@
+import { Divider, Drawer as MuiDrawer, Tab, Tabs } from "@mui/material";
+import { CSSObject, Theme, styled } from "@mui/material/styles";
 import type { FunctionComponent, ReactElement } from "react";
+import { useCallback, useState } from "react";
+import { useEditor } from "@craftjs/core";
 
-import { useState, useCallback } from "react";
-import { styled, Theme, CSSObject } from "@mui/material/styles";
-import { Divider, Drawer as MuiDrawer, Tabs, Tab } from "@mui/material";
+import PropertiesEditor from "./PropertiesEditor";
 
 const drawerWidth = 304;
 
@@ -27,6 +29,8 @@ const closedMixin = (theme: Theme): CSSObject => ({
 const Root = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
+    height: "100vh",
+    background: (theme.palette.background as any).paper1,
 }));
 
 const DrawerHeader = styled("div")(({ theme }) => ({
@@ -55,7 +59,6 @@ const Drawer = styled(MuiDrawer)(({ theme, open }) => ({
         "& .MuiDrawer-paper": closedMixin(theme),
     }),
 }));
-
 interface Props {
     open: boolean;
     onDrawerClose: () => void;
@@ -66,6 +69,7 @@ type TabIdentifier = "properties" | "comments";
 const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
     const { open, onDrawerClose } = props;
     const [active, setActive] = useState<TabIdentifier>("properties");
+    const selected = useEditor((state) => state.events.selected);
 
     const handleChange = useCallback((event, newValue) => {
         setActive(newValue);
@@ -76,8 +80,7 @@ const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
             variant="permanent"
             open={open}
             anchor="right"
-            onClose={onDrawerClose}
-        >
+            onClose={onDrawerClose}>
             <DrawerHeader></DrawerHeader>
             <Divider />
             <Root>
@@ -85,11 +88,13 @@ const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                     <Tabs
                         value={active}
                         onChange={handleChange}
-                        variant="fullWidth"
-                    >
+                        variant="fullWidth">
                         <Tab value="properties" label="Properties" />
                         <Tab value="comments" label="Comments" />
                     </Tabs>
+                    {active === "properties" && selected && (
+                        <PropertiesEditor />
+                    )}
                 </div>
             </Root>
         </Drawer>
