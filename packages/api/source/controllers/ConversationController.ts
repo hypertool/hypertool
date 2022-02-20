@@ -70,3 +70,40 @@ const toExternal = (comment: any): ExternalConversation => {
         updatedAt,
     };
 };
+
+const create = async (context, attributes): Promise<ExternalConversation> => {
+    const { error, value } = createSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const { app, page, coordinates, user, comment } = value;
+
+    const conversationId = new mongoose.Types.ObjectId();
+
+    const newComment = new CommentModel({
+        author: user,
+        content: comment,
+        conversation: conversationId,
+        edited: false,
+        status: "created",
+    });
+    await newComment.save();
+
+    const newConversation = new ConversationModel({
+        _id: conversationId,
+        app,
+        page,
+        coordinates,
+        taggedUsers: [user],
+        comments: [newComment],
+        status: "pending",
+    });
+
+    await newConversation.save();
+
+    return toExternal(newConversation);
+};
