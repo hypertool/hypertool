@@ -191,3 +191,40 @@ const listById = async (
     console.log(res);
     return res;
 };
+
+const changeStatus = async (
+    context,
+    conversationId: string,
+    status: string,
+    notEqual: string[],
+): Promise<{ success: boolean }> => {
+    if (!constants.identifierPattern.test(conversationId)) {
+        throw new BadRequestError(
+            "The specified conversation identifier is invalid.",
+        );
+    }
+
+    const updatedConversation = await ConversationModel.findByIdAndUpdate(
+        {
+            _id: conversationId,
+            status: { $ne: notEqual },
+        },
+        {
+            status,
+        },
+        {
+            new: true,
+            lean: true,
+        },
+    );
+
+    if (!updatedConversation) {
+        throw new NotFoundError(
+            "An comment with the specified identifier does not exist.",
+        );
+    }
+
+    return { success: true };
+};
+
+export { create, update, list, listById, changeStatus };
