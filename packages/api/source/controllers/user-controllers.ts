@@ -1,27 +1,20 @@
-import type { Document } from "mongoose";
-import type { User, UserPage, ExternalUser, Session } from "@hypertool/common";
-
-import joi from "joi";
-import mongoose from "mongoose";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-
+import type { ExternalUser, Session, UserPage } from "@hypertool/common";
 import {
-    verifyEmailTemplate,
-    sendEmail,
-    resetPasswordTemplate,
-} from "../utils";
-
-import {
-    constants,
-    google,
+    AppModel,
     BadRequestError,
     NotFoundError,
     UnauthorizedError,
-    extractIds,
     UserModel,
-    AppModel,
+    constants,
+    extractIds,
+    google,
 } from "@hypertool/common";
+import bcrypt from "bcrypt";
+import joi from "joi";
+import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
+
+import { renderTemplate, sendEmail } from "../utils";
 import { createToken, hashPassword } from "../utils";
 
 const createSchema = joi.object({
@@ -399,7 +392,7 @@ const signupWithEmail = async (
         to: emailAddress,
         subject: "Verify your Hypertool email address",
         text: "Text",
-        html: await verifyEmailTemplate({ token }),
+        html: await renderTemplate("verify-email.html", { token }),
     };
 
     await sendEmail(params);
@@ -493,7 +486,7 @@ const requestPasswordReset = async (
         to: emailAddress,
         subject: "Password Reset Link",
         text: "Text",
-        html: await resetPasswordTemplate({ url }),
+        html: await renderTemplate("reset-password.html", { url }),
     };
 
     await sendEmail(params);
@@ -526,7 +519,7 @@ const completePasswordReset = async (
 
     let user = await UserModel.findOne({ emailAddress }).exec();
 
-    /* Check weather the user is inside the given organzation */
+    /* Check wether the user is in the given organzation. */
     let ifUserInOrganization = user.organizations.includes(organizationId);
     if (!ifUserInOrganization) {
         throw new NotFoundError("User is not in the organization");

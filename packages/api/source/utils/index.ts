@@ -1,10 +1,6 @@
 import { BadRequestError } from "@hypertool/common";
 import sgMail from "@sendgrid/mail";
 
-import { invitationTemplate } from "./templates";
-import { verifyEmailTemplate } from "./templates";
-import { resetPasswordTemplate } from "./templates";
-
 const { SENDGRID_API_KEY } = process.env;
 
 sgMail.setApiKey(SENDGRID_API_KEY);
@@ -26,6 +22,6 @@ export const sendEmail = async (params) => {
     }
 };
 
-export { invitationTemplate, verifyEmailTemplate, resetPasswordTemplate };
 export { default as createToken } from "./createToken";
 export { default as hashPassword } from "./hashPassword";
+export * from "./templates";
