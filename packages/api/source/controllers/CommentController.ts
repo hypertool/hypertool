@@ -163,3 +163,38 @@ const remove = async (
 
     return { success: true };
 };
+
+const list = async (context, parameters): Promise<CommentPage> => {
+    const { error, value } = filterSchema.validate(parameters);
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const filters = {
+        status: {
+            $ne: "deleted",
+        },
+    };
+    const { page, limit } = value;
+
+    const comments = await (CommentModel as any).paginate(filters, {
+        limit,
+        page: page + 1,
+        lean: true,
+        leanWithId: true,
+        pagination: true,
+        sort: {
+            updatedAt: -1,
+        },
+    });
+
+    return {
+        totalRecords: comments.totalDocs,
+        totalPages: comments.totalPages,
+        previousPage: comments.prevPage ? comments.prevPage - 1 : -1,
+        nextPage: comments.nextPage ? comments.nextPage - 1 : -1,
+        hasPreviousPage: comments.hasPrevPage,
+        hasNextPage: comments.hasNextPage,
+        records: comments.docs.map(toExternal),
+    };
+};
