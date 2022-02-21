@@ -1,8 +1,11 @@
-import { AutoAwesomeMosaic, CodeOutlined } from "@mui/icons-material";
-import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import type { FunctionComponent, ReactElement } from "react";
 import { useCallback, useEffect, useState } from "react";
+
+import { ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+import { AutoAwesomeMosaic, CodeOutlined } from "@mui/icons-material";
+
 import { useLocation, useNavigate } from "react-router";
 
 const DrawerHeader = styled("section")(({ theme }) => ({
@@ -12,8 +15,7 @@ const DrawerHeader = styled("section")(({ theme }) => ({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: theme.spacing(1),
-    marginTop: theme.spacing(1),
+    padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
 }));
 
 const DrawerTitle = styled("b")(({ theme }) => ({
@@ -31,9 +33,8 @@ const Explorer: FunctionComponent = (): ReactElement => {
     const location = useLocation();
 
     useEffect(() => {
-        navigate(location.pathname + "?mode=" + mode);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [mode]);
+        navigate(`${location.pathname}?mode=${mode}`);
+    }, [location.pathname, mode, navigate]);
 
     return (
         <>
@@ -44,6 +45,7 @@ const Explorer: FunctionComponent = (): ReactElement => {
                     value={mode}
                     exclusive={true}
                     onChange={handleChange}
+                    size="small"
                 >
                     <ToggleButton value="design">
                         <AutoAwesomeMosaic fontSize="small" />
