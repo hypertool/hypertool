@@ -6,19 +6,17 @@ import { AppBuilderLayout, VisitorLayout, WorkspaceLayout } from "./layouts";
 import {
     AppBuilder,
     AuthenticationServices,
+    CreateAccount,
     EditResource,
     Login,
     NewApp,
     NewOrganization,
+    NewPassword,
     NewResource,
     ResourceLibrary,
     SingleApp,
-<<<<<<< HEAD
+    UpdatePassword,
     ViewApps,
-=======
-    AuthenticationServices,
-    SignUp,
->>>>>>> 777ea3d (feat: created routes for `Sign-up` page)
 } from "./screens";
 
 const Root = styled("div")(({ theme }) => ({
@@ -31,14 +29,11 @@ const App: FunctionComponent = (): ReactElement => {
     return (
         <Root>
             <Routes>
-<<<<<<< HEAD
                 <Route path="/" element={<VisitorLayout />}>
                     <Route path="/login" element={<Login />} />
                 </Route>
-=======
-                <Route path="/login" element={<Login />} />
-                <Route path="/sign-up" element={<SignUp />} />
->>>>>>> 777ea3d (feat: created routes for `Sign-up` page)
+                <Route path="/create-account" element={<CreateAccount />} />
+                <Route path="/new-password" element={<NewPassword />} />
                 <Route path="/" element={<WorkspaceLayout />}>
                     <Route
                         path="/organizations/new"
@@ -56,6 +51,10 @@ const App: FunctionComponent = (): ReactElement => {
                     <Route
                         path="/apps/:appId/authentication"
                         element={<AuthenticationServices />}
+                    />
+                    <Route
+                        path="/update-password"
+                        element={<UpdatePassword />}
                     />
                 </Route>
                 <Route path="/" element={<AppBuilderLayout />}>
