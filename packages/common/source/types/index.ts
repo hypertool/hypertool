@@ -424,6 +424,19 @@ export interface Comment {
     updatedAt: Date;
 }
 
+export interface ExternalComment {
+    id: string;
+    author: string | User;
+    content: string;
+    edited: Boolean;
+    status: typeof commentStatuses[number];
+    conversation: string | Conversation;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export type CommentPage = ExternalListPage<ExternalComment>;
+
 export interface Coordinates {
     x: Number;
     y: Number;
@@ -445,7 +458,7 @@ export interface Conversation {
     coordinates: Coordinates;
 
     /* A list of users who have participated in the conversation. */
-    taggedUsers: ObjectId[] | User[];
+    taggedUsers: [ObjectId | User];
 
     /* A list of comments in the conversation. The first member is the
      * initiator’s comment.
@@ -493,9 +506,11 @@ export interface ExternalConversation {
     app: string;
     page: string;
     coordinates: Coordinates;
-    taggedUsers: string[] | User[];
-    comments: string[] | Comment[];
+    taggedUsers: [string | User];
+    comments: [string | Comment];
     status: typeof conversationStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
+
+export type ConversationPage = ExternalListPage<ExternalConversation>;

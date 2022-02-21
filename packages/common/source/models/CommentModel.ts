@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import paginate from "mongoose-paginate-v2";
 
 import type { Comment } from "../types";
 import { commentStatuses } from "../utils/constants";
@@ -45,4 +46,5 @@ const commentSchema = new Schema(
     { timestamps: true },
 );
 
+commentSchema.plugin(paginate);
 export default model<Comment>("Comment", commentSchema);

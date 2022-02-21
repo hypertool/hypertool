@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import paginate from "mongoose-paginate-v2";
 
 import type { Conversation } from "../types";
 import { conversationStatuses } from "../utils/constants";
@@ -73,4 +74,5 @@ const conversationSchema = new Schema(
     { timestamps: true },
 );
 
+conversationSchema.plugin(paginate);
 export default model<Conversation>("Conversation", conversationSchema);

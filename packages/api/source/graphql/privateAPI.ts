@@ -1,23 +1,25 @@
+import { constants } from "@hypertool/common";
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
 import GraphQLJSON from "graphql-type-json";
 
 import {
-    organizations,
-    users,
-    groups,
-    apps,
-    resources,
-    queryTemplates,
-    deployments,
     activityLogs,
-    queries,
+    apps,
+    comments,
+    conversations,
+    deployments,
+    groups,
     memberships,
+    organizations,
+    queries,
+    queryTemplates,
+    resources,
+    users,
 } from "../controllers";
-import { types } from "./typeDefinitions";
 import { jwtAuth } from "../middleware";
 
-import { constants } from "@hypertool/common";
+import { types } from "./typeDefinitions";
 
 const {
     resourceTypes,
@@ -31,6 +33,8 @@ const {
     queryResultFormats,
     membershipTypes,
     membershipStatuses,
+    commentStatuses,
+    conversationStatuses,
 } = constants;
 
 const typeDefs = gql`
@@ -119,6 +123,11 @@ const typeDefs = gql`
 
     input AuthServicesInput {
         googleAuth: GoogleAuthInput
+    }
+
+    input CoordinatesInput {
+        x: Int!
+        y: Int!
     }
 
     type GoogleAuth {
@@ -346,6 +355,58 @@ const typeDefs = gql`
         updatedAt: Date!
     }
 
+    enum CommentStatuses {
+        ${commentStatuses.join("\n")}
+    }
+
+    enum ConversationStatuses {
+        ${conversationStatuses.join("\n")}
+    }   
+
+    type Comment {
+        id: ID!
+        author: ID!
+        content: String!
+        edited: Boolean!
+        status: CommentStatuses!
+        conversation: ID!
+    }
+
+    type CommentPage {
+        totalRecords: Int!
+        totalPages: Int!
+        previousPage: Int!
+        nextPage: Int!
+        hasPreviousPage: Int!
+        hasNextPage: Int!
+        records: [Comment!]!
+    }
+
+    type Coordinates {
+        x: Int!
+        y: Int!
+    }
+
+    type Conversation {
+        id: ID!
+        app: ID!
+        page: ID!
+        coordinates: Coordinates!
+        taggedUsers: [ID!]!
+        comments: [ID!]!
+        status: ConversationStatuses!
+    }
+
+    type ConversationPage {
+        totalRecords: Int!
+        totalPages: Int!
+        previousPage: Int!
+        nextPage: Int!
+        hasPreviousPage: Int!
+        hasNextPage: Int!
+        records: [Conversation!]!
+    }
+
     type Mutation {
         createOrganization(
             name: String
@@ -488,6 +549,38 @@ const typeDefs = gql`
             organizationId: ID!
             inviterId: ID!
         ): Membership!
+
+        createComment(
+            author: ID!,
+            content: String!
+            conversation: ID!
+        ): Comment!
+
+        updateComment(
+            commentId: String!
+            content: String!
+        ): Comment!
+
+        deleteComment(commentId: String!): RemoveResult!
+
+        createConversation(
+            app: ID!
+            page: ID!
+            coordinates: CoordinatesInput!
+            user: ID!
+            comment: String!
+        ): Conversation!
+
+        updateConversation(
+            conversationId: String!
+            coordinates: CoordinatesInput!
+        ): Conversation!
+
+        deleteConversation(conversationId: String!): Conversation!
+        
+        resolveConversation(conversationId: String!): Conversation!
+
+        unresolveConversation(conversationId: String!): Conversation!
     }
 
     type Query {
@@ -516,6 +609,12 @@ const typeDefs = gql`
         getActivityLogById(activityLogId: ID!): ActivityLog!
 
         getQueryResult(name: String!, variables: GraphQLJSON!, format: QueryResultFormats!): QueryResult!
+
+        listComments(page: Int, limit: Int): CommentPage!
+        listCommentsById(commentIds: [ID]): [Comment]!
+
+        listConversations(page: Int, limit: Int): ConversationPage!
+        listConversationsById(conversationIds: [ID]): [Conversation]!
     }
 `;
 
@@ -603,6 +702,49 @@ const resolvers = {
 
         createMembership: async (parent, values, context) =>
             memberships.create(context.request, values),
+
+        createComment: async (parent, values, context) =>
+            comments.create(context.request, values),
+
+        updateComment: async (parent, values, context) =>
+            comments.update(context.request, values.commentId, values),
+
+        deleteComment: async (parent, values, context) =>
+            comments.remove(context.request, values.commentId),
+
+        createConversation: async (parent, values, context) =>
+            conversations.create(context.request, values),
+
+        updateConversation: async (parent, values, context) =>
+            conversations.update(
+                context.request,
+                values.conversationId,
+                values,
+            ),
+
+        deleteConversation: async (parent, values, context) =>
+            conversations.changeStatus(
+                context.request,
+                values.conversationId,
+                "deleted",
+                ["deleted"],
+            ),
+
+        resolveConversation: async (parent, values, context) =>
+            conversations.changeStatus(
+                context.request,
+                values.conversationId,
+                "resolved",
+                ["resolved", "deleted"],
+            ),
+
+        unresolveConversation: async (parent, values, context) =>
+            conversations.changeStatus(
+                context.request,
+                values.conversationId,
+                "pending",
+                ["pending", "deleted"],
+            ),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>
@@ -658,6 +800,18 @@ const resolvers = {
 
         getQueryResult: async (parent, values, context) =>
             queries.getQueryResult(context.request, values),
+
+        listComments: async (parent, values, context) =>
+            comments.list(context.request, values),
+
+        listCommentsById: async (parent, values, context) =>
+            comments.listById(context.request, values.commentIds),
+
+        listConversations: async (parent, values, context) =>
+            conversations.list(context.request, values),
+
+        listConversationsById: async (parent, values, context) =>
+            conversations.listById(context.request, values.conversationIds),
     },
 };
 
