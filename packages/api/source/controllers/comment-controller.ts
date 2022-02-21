@@ -8,11 +8,12 @@ import {
     constants,
 } from "@hypertool/common";
 import joi from "joi";
+import mongoose from "mongoose";
 
 const createSchema = joi.object({
-    author: joi.string().regex(constants.identifierPattern),
+    author: joi.string().regex(constants.identifierPattern).required(),
     content: joi.string().max(512).min(1).required(),
-    conversation: joi.string().regex(constants.identifierPattern),
+    conversation: joi.string().regex(constants.identifierPattern).required(),
 });
 
 const updateSchema = joi.object({

@@ -23,7 +23,7 @@ const createSchema = joi.object({
         })
         .required(),
     comment: joi.string().max(512).min(1).required(),
-    user: joi.string().regex(constants.identifierPattern),
+    user: joi.string().regex(constants.identifierPattern).required(),
 });
 
 const updateSchema = joi.object({

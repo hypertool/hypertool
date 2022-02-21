@@ -611,10 +611,10 @@ const typeDefs = gql`
         getQueryResult(name: String!, variables: GraphQLJSON!, format: QueryResultFormats!): QueryResult!
 
         listComments(page: Int, limit: Int): CommentPage!
-        listCommentsById(commentIds: [ID]): GraphQLJSON
+        listCommentsById(commentIds: [ID]): [Comment]!
 
         listConversations(page: Int, limit: Int): ConversationPage!
-        listConversationsById(conversationIds: [ID]): GraphQLJSON
+        listConversationsById(conversationIds: [ID]): [Conversation]!
     }
 `;
 
@@ -805,13 +805,13 @@ const resolvers = {
             comments.list(context.request, values),
 
         listCommentsById: async (parent, values, context) =>
-            comments.listById(context.request, values),
+            comments.listById(context.request, values.commentIds),
 
         listConversations: async (parent, values, context) =>
             conversations.list(context.request, values),
 
         listConversationsById: async (parent, values, context) =>
-            conversations.listById(context.request, values),
+            conversations.listById(context.request, values.conversationIds),
     },
 };
 
