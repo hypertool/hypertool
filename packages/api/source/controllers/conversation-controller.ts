@@ -220,7 +220,7 @@ const changeStatus = async (
 
     if (!updatedConversation) {
         throw new NotFoundError(
-            "An comment with the specified identifier does not exist.",
+            "A conversation with the specified identifier does not exist.",
         );
     }
 

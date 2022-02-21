@@ -100,7 +100,7 @@ const update = async (
 
     const comment = await CommentModel.findById(commentId);
 
-    if (context.user.id.toString() !== comment.author.toString()) {
+    if (context.user._id.toString() !== comment.author.toString()) {
         throw new UnauthorizedError(
             "User is not authorized to update the comment",
         );
@@ -136,9 +136,9 @@ const remove = async (
 
     const comment = await CommentModel.findById(commentId);
 
-    if (context.user.id.toString() !== comment.author.toString()) {
+    if (context.user._id.toString() !== comment.author.toString()) {
         throw new UnauthorizedError(
-            "User is not authorized to delete the comment",
+            "The user is not authorized to delete the comment",
         );
     }
 
@@ -158,7 +158,7 @@ const remove = async (
 
     if (!updatedComment) {
         throw new NotFoundError(
-            "An comment with the specified identifier does not exist.",
+            "A comment with the specified identifier does not exist.",
         );
     }
 
