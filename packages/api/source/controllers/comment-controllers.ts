@@ -73,13 +73,10 @@ const create = async (context, attributes): Promise<ExternalComment> => {
     const author = value.author;
     const conversationId = value.conversation;
     const conversation = await ConversationModel.findById(conversationId);
-
     conversation.comments.push(conversationId);
-
     if (!conversation.taggedUsers.includes(author)) {
         conversation.taggedUsers.push(author);
     }
-
     await conversation.save();
 
     return toExternal(newComment);
@@ -208,11 +205,14 @@ const listById = async (
         _id: { $in: commentIds },
         status: { $ne: "deleted" },
     }).exec();
+
     const object = {};
+
     // eslint-disable-next-line no-restricted-syntax
     for (const comment of unorderedComments) {
         object[comment._id.toString()] = comment;
     }
+
     // eslint-disable-next-line security/detect-object-injection
     return commentIds.map((key) => toExternal(object[key]));
 };

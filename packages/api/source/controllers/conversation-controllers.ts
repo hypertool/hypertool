@@ -83,7 +83,6 @@ const create = async (context, attributes): Promise<ExternalConversation> => {
     const { app, page, coordinates, user, comment } = value;
 
     const conversationId = new mongoose.Types.ObjectId();
-
     const newComment = new CommentModel({
         author: user,
         content: comment,
@@ -102,7 +101,6 @@ const create = async (context, attributes): Promise<ExternalConversation> => {
         comments: [newComment],
         status: "pending",
     });
-
     await newConversation.save();
 
     return toExternal(newConversation);
@@ -181,11 +179,14 @@ const listById = async (
         _id: { $in: conversationIds },
         status: { $ne: "deleted" },
     }).exec();
+
     const object = {};
+
     // eslint-disable-next-line no-restricted-syntax
     for (const conversation of unorderedConversations) {
         object[conversation._id.toString()] = conversation;
     }
+
     // eslint-disable-next-line security/detect-object-injection
     const result = conversationIds.map((key) => toExternal(object[key]));
     return result;
