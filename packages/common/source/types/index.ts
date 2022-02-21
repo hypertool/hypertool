@@ -426,11 +426,11 @@ export interface Comment {
 
 export interface ExternalComment {
     id: string;
-    author: ObjectId | User;
+    author: string | User;
     content: string;
     edited: Boolean;
     status: typeof commentStatuses[number];
-    conversation: ObjectId | Conversation;
+    conversation: string | Conversation;
     createdAt: Date;
     updatedAt: Date;
 }

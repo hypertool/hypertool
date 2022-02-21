@@ -125,7 +125,7 @@ const typeDefs = gql`
         googleAuth: GoogleAuthInput
     }
 
-    input CoordinatesInput{
+    input CoordinatesInput {
         x: Int!
         y: Int!
     }
