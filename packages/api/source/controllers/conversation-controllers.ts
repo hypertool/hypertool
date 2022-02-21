@@ -187,9 +187,8 @@ const listById = async (
         object[conversation._id.toString()] = conversation;
     }
     // eslint-disable-next-line security/detect-object-injection
-    const res = conversationIds.map((key) => toExternal(object[key]));
-    console.log(res);
-    return res;
+    const result = conversationIds.map((key) => toExternal(object[key]));
+    return result;
 };
 
 const changeStatus = async (
