@@ -4,11 +4,18 @@
     "rules": {
         "prettier/prettier": "error",
         "no-unused-vars": "warn",
-        "no-console": "off",
+        "no-console": ["error", { "allow": ["warn", "error"] }],
+        "no-debugger": "error",
+        "no-unused-expressions": "error",
+        "no-undef": "error",
         "func-names": "off",
         "no-process-exit": "off",
+        "no-duplicate-imports": ["error", { "includeExports": true }],
+        "no-restricted-syntax": ["error", "WithStatement"],
+        "no-await-in-loop": "off",
         "object-shorthand": "off",
         "class-methods-use-this": "off",
-        "multiline-comment-style": ["error", "starred-block"]
+        "multiline-comment-style": ["error", "starred-block"],
+        "import/order": ["error", { "newlines-between": "always" }]
     }
 }
