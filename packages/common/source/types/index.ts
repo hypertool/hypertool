@@ -501,6 +501,18 @@ export interface Page {
     updatedAt: Date;
 }
 
+export interface ExternalPage {
+    id: string;
+    app: string;
+    title: string;
+    description: string;
+    slug: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export type PagePage = ExternalListPage<ExternalPage>;
+
 export interface ExternalConversation {
     id: string;
     app: string;
