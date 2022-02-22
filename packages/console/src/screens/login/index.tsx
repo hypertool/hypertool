@@ -113,7 +113,10 @@ const initialValues: FormValues = {
 };
 
 const validationSchema = yup.object({
-    email: yup.string().required("Email is required"),
+    email: yup
+        .string()
+        .email("Must be a valid Email")
+        .required("Email is required"),
     password: yup.string().required("Password is required"),
 });
 
@@ -152,7 +155,8 @@ const Login: FunctionComponent = (): ReactElement => {
         signIn();
     }, [signIn]);
 
-    const handleBasicAuthSubmit = useCallback(() => {
+    const handleBasicAuthSubmit = useCallback((values: FormValues) => {
+        console.log(values);
         return null;
     }, []);
 

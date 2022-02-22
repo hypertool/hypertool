@@ -67,7 +67,7 @@ const CREATE_ACCOUNT = gql`
 
 const COMPLETE_PASSWORD_RESET = gql`
     mutation CompletePasswordReset($token: String!, $newPassword: String!) {
-        completePasswordReset(token: $emailAddress, newPassword: $password) {
+        completePasswordReset(token: $token, newPassword: $newPassword) {
             jwtToken
             user {
                 id

@@ -1,24 +1,20 @@
+import * as yup from "yup";
+import { PublicClient } from "@hypertool/common";
+import { Button, Card, CardContent, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { Formik } from "formik";
 import {
     FunctionComponent,
     ReactElement,
     useCallback,
     useEffect,
+    useMemo,
     useState,
 } from "react";
-import {
-    Typography,
-    Button,
-    TextField,
-    Card,
-    CardContent,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { useNavigate, useLocation } from "react-router";
+import { useNavigate } from "react-router";
 
-import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
-
-import { Formik } from "formik";
-import * as yup from "yup";
+import { TextField } from "../../components";
+import { useQueryParams } from "../../hooks";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -93,61 +89,32 @@ const validationSchema = yup.object().shape({
         .required("Password is required"),
 });
 
-const COMPLETE_PASSWORD_RESET = gql`
-    mutation CompletePasswordReset($token: String!, $newPassword: String!) {
-        completePasswordReset(token: $emailAddress, newPassword: $password) {
-            jwtToken
-            user {
-                id
-            }
-            createdAt
-        }
-    }
-`;
-
-const client = new ApolloClient({
-    uri: `${process.env.REACT_APP_API_URL}/graphql/v1/public`,
-    cache: new InMemoryCache(),
-});
-
-const useQueryParams = () => {
-    const location = useLocation();
-    const params = new URLSearchParams(location.search);
-    const result: any = {};
-    for (const [key, value] of (params as any).entries()) {
-        (result as any)[key] = value;
-    }
-    return result;
-};
-
 const NewPassword: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
     const [showForm, SetShowForm] = useState(false);
     const { token } = useQueryParams();
+
+    const appName = "manage-users"; /* Temporary Declaration */
+    const publicClient = useMemo(() => new PublicClient(appName), [appName]);
 
     useEffect(() => {
         document.title = "New Password | Hypertool";
         if (token) {
             SetShowForm(true);
         }
-    }, []);
+    }, [token]);
 
     const handleSubmit = useCallback(
         async (values: FormValues) => {
-            const result = await client.mutate({
-                mutation: COMPLETE_PASSWORD_RESET,
-                variables: {
-                    token,
-                    newPassword: values.newPassword,
-                },
+            const data = await publicClient.completePasswordReset({
+                token,
+                newPassword: values.newPassword,
             });
-            localStorage.setItem(
-                "session",
-                JSON.stringify(result.data.jwtToken),
-            );
+
+            localStorage.setItem("session", JSON.stringify(data.jwtToken));
             navigate("/organizations/new");
         },
-        [navigate],
+        [navigate, publicClient, token],
     );
 
     return (
@@ -170,11 +137,8 @@ const NewPassword: FunctionComponent = (): ReactElement => {
                                                 variant="outlined"
                                                 name="newPassword"
                                                 size="small"
-                                                type="password"
-                                                value={
-                                                    formik.values.newPassword
-                                                }
                                                 onChange={formik.handleChange}
+                                                help=""
                                             />
                                             <PrimaryAction
                                                 variant="contained"
