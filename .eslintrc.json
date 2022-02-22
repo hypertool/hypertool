@@ -1,21 +1,27 @@
 {
     "extends": ["prettier", "plugin:node/recommended"],
     "plugins": ["prettier"],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "module",
+        "allowImportExportEverywhere": true
+    },
     "rules": {
         "prettier/prettier": "error",
         "no-unused-vars": "warn",
         "no-console": ["warn", { "allow": ["warn", "error"] }],
         "no-debugger": "warn",
         "no-unused-expressions": "warn",
-        "no-unused-imports": "warn",
         "no-undef": "error",
         "func-names": "off",
-        // Disallows hooks dependencies to be used outside of their declaration
-        "hook-deps": "error",
+        "prefer-destructuring": ["error", { "object": true, "array": false }],
+        "node/no-unsupported-features/es-syntax": [
+            "error",
+            { "ignores": ["modules"] }
+        ],
         // Disallows process.exit()
         "no-process-exit": "off",
-        // Disallows duplicate imports
-        "no-duplicate-imports": ["warn", { "includeExports": true }],
         // Disallows the use of with statements and function expressions.
         "no-restricted-syntax": [
             "error",
@@ -30,8 +36,6 @@
         "class-methods-use-this": "off",
         // Disallows comments that are not a multiline comment.
         "multiline-comment-style": ["warn", "starred-block"],
-        // Enforces order of import statements.
-        "import/order": ["warn", { "newlines-between": "always" }],
         // Disallows irregular whitespace outside of strings and comments.
         "no-irregular-whitespace": "warn",
         // Disallows trailing whitespace at the end of lines.

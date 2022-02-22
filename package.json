@@ -6,6 +6,9 @@
     "author": "Hypertool <contact@hypertool.io>",
     "license": "MIT",
     "private": true,
+    "engines": {
+        "node": ">=8.5.0"
+    },
     "workspaces": [
         "packages/*"
     ],
