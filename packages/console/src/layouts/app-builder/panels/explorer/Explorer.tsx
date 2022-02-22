@@ -2,20 +2,13 @@ import type { FunctionComponent, ReactElement } from "react";
 import { useCallback, useEffect, useState } from "react";
 
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { alpha, styled } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 
-import { TreeItem, TreeView } from "@mui/lab";
-import { treeItemClasses } from "@mui/lab/TreeItem";
+import { AutoAwesomeMosaic, CodeOutlined } from "@mui/icons-material";
 
-import {
-    AutoAwesomeMosaic,
-    ChevronRight,
-    CodeOutlined,
-    ExpandMore,
-} from "@mui/icons-material";
-
-import { CustomTreeItem } from ".";
 import { useLocation, useNavigate } from "react-router";
+
+import Layers from "./Layers";
 
 const DrawerHeader = styled("section")(({ theme }) => ({
     backgroundColor: (theme.palette.background as any).main,
@@ -29,21 +22,6 @@ const DrawerHeader = styled("section")(({ theme }) => ({
 
 const DrawerTitle = styled("b")(({ theme }) => ({
     fontSize: 14,
-}));
-
-const StyledTreeItem = styled((props: any) => (
-    <TreeItem {...props} CustomContent={CustomTreeItem} />
-))(({ theme }: any) => ({
-    [`& .${treeItemClasses.iconContainer}`]: {
-        "& .close": {
-            opacity: 0.3,
-        },
-    },
-    [`& .${treeItemClasses.group}`]: {
-        marginLeft: 15,
-        paddingLeft: 0,
-        borderLeft: `1px dashed ${alpha(theme.palette.text.primary, 0.4)}`,
-    },
 }));
 
 const Explorer: FunctionComponent = (): ReactElement => {
@@ -79,31 +57,7 @@ const Explorer: FunctionComponent = (): ReactElement => {
                     </ToggleButton>
                 </ToggleButtonGroup>
             </DrawerHeader>
-            <TreeView
-                defaultCollapseIcon={<ExpandMore />}
-                defaultExpandIcon={<ChevronRight />}
-                sx={{
-                    height: 240,
-                    flexGrow: 1,
-                    maxWidth: 400,
-                    overflowY: "auto",
-                }}
-            >
-                <StyledTreeItem nodeId="1" label="Applications">
-                    <StyledTreeItem nodeId="2" label="Calendar" />
-                    <StyledTreeItem nodeId="3" label="Chrome" />
-                    <StyledTreeItem nodeId="4" label="Webstorm" />
-                </StyledTreeItem>
-                <StyledTreeItem nodeId="5" label="Documents">
-                    <StyledTreeItem nodeId="10" label="OSS" />
-                    <StyledTreeItem nodeId="6" label="MUI">
-                        <StyledTreeItem nodeId="7" label="src">
-                            <StyledTreeItem nodeId="8" label="index.js" />
-                            <StyledTreeItem nodeId="9" label="tree-view.js" />
-                        </StyledTreeItem>
-                    </StyledTreeItem>
-                </StyledTreeItem>
-            </TreeView>
+            <Layers />
         </>
     );
 };
