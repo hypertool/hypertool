@@ -44,3 +44,19 @@ const toExternal = (page: any): ExternalPage => {
         updatedAt,
     };
 };
+
+const create = async (context, attributes): Promise<ExternalPage> => {
+    const { error, value } = createSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const newPage = new PageModel({ ...value });
+
+    await newPage.save();
+
+    return toExternal(newPage);
+};
