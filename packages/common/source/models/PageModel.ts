@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import paginate from "mongoose-paginate-v2";
 
 import type { Page } from "../types";
 
@@ -40,4 +41,5 @@ const pageSchema = new Schema(
     { timestamps: true },
 );
 
+pageSchema.plugin(paginate);
 export default model<Page>("Page", pageSchema);
