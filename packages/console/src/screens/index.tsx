@@ -1,5 +1,4 @@
 export { default as Login } from "./login";
-export { default as SignUp } from "./sign-up";
 export { default as CreateAccount } from "./create-account";
 export { default as NewPassword } from "./new-password";
 export { default as UpdatePassword } from "./update-password";
