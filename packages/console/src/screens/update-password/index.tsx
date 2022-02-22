@@ -1,18 +1,11 @@
-import { FunctionComponent, ReactElement, useCallback, useEffect } from "react";
-import {
-    Typography,
-    Button,
-    TextField,
-    Card,
-    CardContent,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { useNavigate, useLocation } from "react-router";
-
-import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
-
-import { Formik } from "formik";
 import * as yup from "yup";
+import { Button, Card, CardContent, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { Formik } from "formik";
+import { FunctionComponent, ReactElement, useCallback, useEffect } from "react";
+import { useNavigate } from "react-router";
+
+import { TextField } from "../../components";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -109,45 +102,20 @@ const validationSchema = yup.object().shape({
         .required("Password is required"),
 });
 
-const UPDATE_PASSWORD = gql`
-    mutation UpdatePassword($oldPassword: String!, $newPassword: String!) {
-        updatePassword(oldPassword: $emailAddress, newPassword: $password) {
-            id
-        }
-    }
-`;
-
-const client = new ApolloClient({
-    uri: `${process.env.REACT_APP_API_URL}/graphql/v1/private`,
-    cache: new InMemoryCache(),
-});
-
-const useQueryParams = () => {
-    const location = useLocation();
-    const params = new URLSearchParams(location.search);
-    const result: any = {};
-    for (const [key, value] of (params as any).entries()) {
-        (result as any)[key] = value;
-    }
-    return result;
-};
-
 const UpdatePassword: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
-    const { token } = useQueryParams();
     useEffect(() => {
         document.title = "Update Password | Hypertool";
     }, []);
+    /* Temporary Declaration */
+    const client = new Client();
 
     const handleSubmit = useCallback(
         async (values: FormValues) => {
             if (values.newPassword1 === values.newPassword2) {
-                const result = await client.mutate({
-                    mutation: UPDATE_PASSWORD,
-                    variables: {
-                        oldPassword: values.oldPassword,
-                        newPassword: values.newPassword1,
-                    },
+                client.updatePassword({
+                    oldPassword: values.oldPassword,
+                    newPassword: values.newPassword1,
                 });
                 navigate("/organizations/new");
             }
@@ -173,9 +141,8 @@ const UpdatePassword: FunctionComponent = (): ReactElement => {
                                         variant="outlined"
                                         name="oldPassword"
                                         size="small"
-                                        type="password"
-                                        value={formik.values.oldPassword}
                                         onChange={formik.handleChange}
+                                        help=""
                                     />
                                     <InputField
                                         id="newPassword1"
@@ -183,9 +150,8 @@ const UpdatePassword: FunctionComponent = (): ReactElement => {
                                         variant="outlined"
                                         name="newPassword1"
                                         size="small"
-                                        type="password"
-                                        value={formik.values.newPassword1}
                                         onChange={formik.handleChange}
+                                        help=""
                                     />
                                     <InputField
                                         id="newPassword2"
@@ -193,9 +159,8 @@ const UpdatePassword: FunctionComponent = (): ReactElement => {
                                         variant="outlined"
                                         name="newPassword2"
                                         size="small"
-                                        type="password"
-                                        value={formik.values.newPassword2}
                                         onChange={formik.handleChange}
+                                        help=""
                                     />
                                     <PrimaryAction
                                         variant="contained"

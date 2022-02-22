@@ -32,6 +32,7 @@ const App: FunctionComponent = (): ReactElement => {
                 <Route path="/" element={<VisitorLayout />}>
                     <Route path="/login" element={<Login />} />
                 </Route>
+                {/* <Route path="/login" element={<Login />} /> */}
                 <Route path="/create-account" element={<CreateAccount />} />
                 <Route path="/new-password" element={<NewPassword />} />
                 <Route path="/" element={<WorkspaceLayout />}>
