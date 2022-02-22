@@ -10,3 +10,4 @@ export * as memberships from "./membership-controllers";
 export * as queries from "./query-engine-controllers";
 export * as comments from "./comment-controllers";
 export * as conversations from "./conversation-controllers";
+export * as pages from "./page-controllers";
