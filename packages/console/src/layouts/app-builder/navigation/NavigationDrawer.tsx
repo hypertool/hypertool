@@ -1,13 +1,16 @@
+import type { FunctionComponent, ReactElement } from "react";
+import { Fragment, useCallback, useState } from "react";
+
 import { Divider, List } from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
 import { CSSObject, Theme, styled } from "@mui/material/styles";
-import type { FunctionComponent, ReactElement } from "react";
-import { Fragment, useCallback, useState } from "react";
+
 import { useNavigate } from "react-router";
+
+import { Explorer } from "../panels/explorer";
 
 import Components from "./Components";
 import Deployment from "./Deployment";
-import Explorer from "./Explorer";
 import NavigationDrawerItem from "./NavigationDrawerItem";
 import Resources from "./Resources";
 import Teams from "./Teams";
