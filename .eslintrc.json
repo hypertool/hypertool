@@ -7,15 +7,38 @@
         "no-console": ["error", { "allow": ["warn", "error"] }],
         "no-debugger": "error",
         "no-unused-expressions": "error",
+        "no-unused-imports": "error",
         "no-undef": "error",
         "func-names": "off",
+        // Disallows hooks dependencies to be used outside of their declaration
+        "hook-deps": "error",
+        // Disallows process.exit()
         "no-process-exit": "off",
+        // Disallows duplicate imports
         "no-duplicate-imports": ["error", { "includeExports": true }],
-        "no-restricted-syntax": ["error", "WithStatement"],
+        // Disallows the use of with statements and function expressions.
+        "no-restricted-syntax": [
+            "error",
+            "WithStatement",
+            "FunctionExpression"
+        ],
+        // Disallows await in loop which might slow down processes.
         "no-await-in-loop": "off",
+        // Disallows using this/super inside methods.
         "object-shorthand": "off",
+        // Enforces using this/super inside methods.
         "class-methods-use-this": "off",
+        // Disallows comments that are not a multiline comment.
         "multiline-comment-style": ["error", "starred-block"],
-        "import/order": ["error", { "newlines-between": "always" }]
+        // Enforces order of import statements.
+        "import/order": ["error", { "newlines-between": "always" }],
+        // Disallows irregular whitespace outside of strings and comments.
+        "no-irregular-whitespace": "error",
+        // Disallows trailing whitespace at the end of lines.
+        "no-trailing-spaces": "error",
+        // Disallows unreachable code after return, throw, continue, and break statements.
+        "no-unreachable": "error",
+        // Disallows multiple newlines in a row.
+        "no-multiple-empty-lines": "error"
     }
 }
