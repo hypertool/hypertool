@@ -63,7 +63,10 @@ const signUpWithEmailSchema = joi.object({
     lastName: joi.string().min(1).max(256).required(),
     emailAddress: joi.string().max(256).required(),
     password: joi.string().regex(passwordRegex).min(8).max(128).required(),
-    role: joi.string().valid(constants.userRoles).required(),
+    role: joi
+        .string()
+        .valid(...constants.userRoles)
+        .required(),
 });
 
 const loginWithEmailSchema = joi.object({
