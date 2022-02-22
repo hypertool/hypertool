@@ -88,3 +88,35 @@ const update = async (
 
     return toExternal(updatedPage);
 };
+
+const list = async (context, parameters): Promise<PagePage> => {
+    const { error, value } = filterSchema.validate(parameters);
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+    console.log(value);
+    const { page, limit, app } = value;
+
+    const filters = { app };
+
+    const pages = await (PageModel as any).paginate(filters, {
+        limit,
+        page: page + 1,
+        lean: true,
+        leanWithId: true,
+        pagination: true,
+        sort: {
+            updatedAt: -1,
+        },
+    });
+
+    return {
+        totalRecords: pages.totalDocs,
+        totalPages: pages.totalPages,
+        previousPage: pages.prevPage ? pages.prevPage - 1 : -1,
+        nextPage: pages.nextPage ? pages.nextPage - 1 : -1,
+        hasPreviousPage: pages.hasPrevPage,
+        hasNextPage: pages.hasNextPage,
+        records: pages.docs.map(toExternal),
+    };
+};
