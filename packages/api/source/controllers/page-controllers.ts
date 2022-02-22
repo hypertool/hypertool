@@ -60,3 +60,31 @@ const create = async (context, attributes): Promise<ExternalPage> => {
 
     return toExternal(newPage);
 };
+
+const update = async (
+    context,
+    pageId: string,
+    attributes,
+): Promise<ExternalPage> => {
+    const { error, value } = updateSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const updatedPage = await PageModel.findByIdAndUpdate(
+        pageId,
+        { ...value },
+        { new: true },
+    );
+
+    if (!updatedPage) {
+        throw new NotFoundError(
+            "A page with the specified identifier does not exist.",
+        );
+    }
+
+    return toExternal(updatedPage);
+};
