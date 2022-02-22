@@ -120,3 +120,26 @@ const list = async (context, parameters): Promise<PagePage> => {
         records: pages.docs.map(toExternal),
     };
 };
+
+const listById = async (
+    context,
+    appId: string,
+    pageIds: string[],
+): Promise<ExternalPage[]> => {
+    const unorderedPages = await PageModel.find({
+        _id: { $in: pageIds },
+        app: appId,
+    }).exec();
+
+    const object = {};
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const page of unorderedPages) {
+        object[page._id.toString()] = page;
+    }
+
+    // eslint-disable-next-line security/detect-object-injection
+    return pageIds.map((key) => toExternal(object[key]));
+};
+
+export { create, update, list, listById };
