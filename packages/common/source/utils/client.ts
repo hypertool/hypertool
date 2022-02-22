@@ -232,6 +232,14 @@ const CREATE_MEMBERSHIP = gql`
     }
 `;
 
+const UPDATE_PASSWORD = gql`
+    mutation UpdatePassword($oldPassword: String!, $newPassword: String!) {
+        updatePassword(oldPassword: $emailAddress, newPassword: $password) {
+            id
+        }
+    }
+`;
+
 const isNotFoundError = (error0: unknown): boolean => {
     if (error0 instanceof ApolloError) {
         const error = error0 as ApolloError;
@@ -627,5 +635,15 @@ export default class Client<T> {
                 organizationId,
             },
         });
+    }
+
+    async updatePassword({oldPassword, newPassword}): Promise<void> {
+        await this.client.mutate({
+            mutation: UPDATE_PASSWORD,
+            variables: {
+                oldPassword,
+                newPassword
+            }
+        })
     }
 }

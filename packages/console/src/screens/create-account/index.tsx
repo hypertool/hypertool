@@ -1,17 +1,17 @@
-import { FunctionComponent, ReactElement, useCallback, useEffect } from "react";
-import {
-    Typography,
-    Button,
-    TextField,
-    Card,
-    CardContent,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
-
-import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
-
-import { Formik } from "formik";
 import * as yup from "yup";
+import { PublicClient } from "@hypertool/common";
+import { Button, Card, CardContent, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { Formik } from "formik";
+import {
+    FunctionComponent,
+    ReactElement,
+    useCallback,
+    useEffect,
+    useMemo,
+} from "react";
+
+import { TextField } from "../../components";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -91,7 +91,7 @@ const initialValues: FormValues = {
 const regex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-const validationSchema = yup.object().shape({
+const validationSchema = yup.object({
     firstName: yup.string().required("First Name is required"),
     lastName: yup.string().required("Last Name is required"),
     emailAddress: yup
@@ -108,49 +108,25 @@ const validationSchema = yup.object().shape({
         .required("Password is required"),
 });
 
-const client = new ApolloClient({
-    uri: `${process.env.REACT_APP_API_URL}/graphql/v1/public`,
-    cache: new InMemoryCache(),
-});
-
-const CREATE_ACCOUNT = gql`
-    mutation SignUpWithEmail(
-        $firstName: String!
-        $lastName: String!
-        $role: String
-        $emailAddress: String!
-        $password: String!
-    ) {
-        signupWithEmail(
-            firstName: $firstName
-            lastName: $lastName
-            role: $role
-            emailAddress: $emailAddress
-            password: $password
-        ) {
-            id
-        }
-    }
-`;
-
 const CreateAccount: FunctionComponent = (): ReactElement => {
     useEffect(() => {
         document.title = "Create Account | Hypertool";
     }, []);
+    const appName = "manage-users"; /* Temporary Declaration */
+    const publicClient = useMemo(() => new PublicClient(appName), [appName]);
 
-    const handleSubmit = useCallback(async (values: FormValues) => {
-        const result = await client.mutate({
-            mutation: CREATE_ACCOUNT,
-            variables: {
+    const handleSubmit = useCallback(
+        async (values: FormValues) => {
+            publicClient.createAccount({
                 firstName: values.firstName,
                 lastName: values.lastName,
                 role: "developer",
                 emailAddress: values.emailAddress,
                 password: values.password,
-            },
-        });
-        console.log(result);
-    }, []);
+            });
+        },
+        [publicClient],
+    );
 
     return (
         <Root>
@@ -172,9 +148,8 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                                         variant="outlined"
                                         name="firstName"
                                         size="small"
-                                        type="text"
-                                        value={formik.values.firstName}
                                         onChange={formik.handleChange}
+                                        help=""
                                     />
                                     <InputField
                                         id="lastName"
@@ -182,9 +157,8 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                                         variant="outlined"
                                         name="lastName"
                                         size="small"
-                                        type="text"
-                                        value={formik.values.lastName}
                                         onChange={formik.handleChange}
+                                        help=""
                                     />
                                     <InputField
                                         id="email"
@@ -192,9 +166,8 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                                         variant="outlined"
                                         name="emailAddress"
                                         size="small"
-                                        type="email"
-                                        value={formik.values.emailAddress}
                                         onChange={formik.handleChange}
+                                        help=""
                                     />
                                     <InputField
                                         id="password"
@@ -202,10 +175,9 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                                         variant="outlined"
                                         name="password"
                                         size="small"
-                                        type="password"
-                                        value={formik.values.password}
                                         onChange={formik.handleChange}
                                         helperText="Minimum 8 characters, containing alphanumeric and symbolic characters"
+                                        help=""
                                     />
                                     <PrimaryAction
                                         variant="contained"

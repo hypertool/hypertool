@@ -1,12 +1,13 @@
+import {
+    ApolloClient,
+    HttpLink,
+    InMemoryCache,
+    gql,
+} from "@apollo/client/core";
+
 import type { Session } from "../types";
 
 import { googleClientTypes } from "./constants";
-import {
-    gql,
-    ApolloClient,
-    InMemoryCache,
-    HttpLink,
-} from "@apollo/client/core";
 
 const LOGIN_WITH_GOOGLE = gql`
     mutation LoginWithGoogle($token: String!, $client: ClientType!) {
@@ -40,6 +41,38 @@ const GET_AUTH_SERVICES = gql`
                     clientId
                 }
             }
+        }
+    }
+`;
+
+const CREATE_ACCOUNT = gql`
+    mutation SignUpWithEmail(
+        $firstName: String!
+        $lastName: String!
+        $role: String
+        $emailAddress: String!
+        $password: String!
+    ) {
+        signupWithEmail(
+            firstName: $firstName
+            lastName: $lastName
+            role: $role
+            emailAddress: $emailAddress
+            password: $password
+        ) {
+            id
+        }
+    }
+`;
+
+const COMPLETE_PASSWORD_RESET = gql`
+    mutation CompletePasswordReset($token: String!, $newPassword: String!) {
+        completePasswordReset(token: $emailAddress, newPassword: $password) {
+            jwtToken
+            user {
+                id
+            }
+            createdAt
         }
     }
 `;
@@ -93,5 +126,39 @@ export default class PublicClient {
         } catch (error) {
             return null;
         }
+    };
+
+    createAccount = async ({
+        firstName,
+        lastName,
+        role,
+        emailAddress,
+        password,
+    }): Promise<any> => {
+        await this.client.mutate({
+            mutation: CREATE_ACCOUNT,
+            variables: {
+                firstName,
+                lastName,
+                role,
+                emailAddress,
+                password,
+            },
+        });
+    };
+
+    completePasswordReset = async ({
+        token,
+        newPassword,
+    }): Promise<Session> => {
+        const { data } = await this.client.mutate({
+            mutation: COMPLETE_PASSWORD_RESET,
+            variables: {
+                token,
+                newPassword,
+            },
+        });
+
+        return data;
     };
 }
