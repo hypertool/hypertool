@@ -53,9 +53,10 @@ const CanvasViewport: FunctionComponent<ViewportProps> = (
     }));
 
     return (
-        <PageContainer>
+        <PageContainer className="page-container">
             <CanvasHeader />
             <CraftRenderer
+                className="craft-renderer"
                 ref={(ref) =>
                     connectors.select(
                         connectors.hover(ref as any, null as any),
