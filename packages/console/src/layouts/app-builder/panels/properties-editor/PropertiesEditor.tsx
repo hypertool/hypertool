@@ -4,31 +4,31 @@ import type { FunctionComponent, ReactElement } from "react";
 import { useEditor } from "@craftjs/core";
 
 const PropertiesEditor: FunctionComponent = (): ReactElement => {
-    const { selected } = useEditor((state, query) => {
-        const currentNodeId: any = state.events.selected;
-        let selected;
+    const { selected } = useEditor((state) => {
+        const currentNodeId: Set<string> = state.events.selected;
         if (currentNodeId) {
-            selected = {
-                id: currentNodeId.values().next().value,
-                name: state.nodes[currentNodeId.values().next().value]?.data
-                    ?.name,
-                settings:
-                    state.nodes[currentNodeId.values().next().value]?.related &&
-                    state.nodes[currentNodeId.values().next().value]?.related
-                        ?.settings,
-            };
+            const id = currentNodeId.values().next().value;
+            const node = state.nodes[id];
+            if (node) {
+                return {
+                    selected: {
+                        id,
+                        name: node.data?.name,
+                        settings: node.related?.settings,
+                    },
+                };
+            }
         }
 
         return {
-            selected,
+            selected: false,
         };
-    });
+    }) as any;
 
     return (
         <>
-            {selected &&
-                selected.settings &&
-                React.createElement(selected.settings)}
+            {selected?.settings &&
+                React.createElement((selected as any).settings)}
         </>
     );
 };

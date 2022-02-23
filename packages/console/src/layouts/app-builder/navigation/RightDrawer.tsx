@@ -87,7 +87,7 @@ const RightDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
             <DrawerHeader></DrawerHeader>
             <Divider />
             <Root>
-                <div>
+                <div style={{ width: "100%" }}>
                     <Tabs
                         value={active}
                         onChange={handleChange}
