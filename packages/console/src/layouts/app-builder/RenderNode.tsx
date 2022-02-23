@@ -1,35 +1,36 @@
 import React, { useCallback, useEffect, useRef } from "react";
 
-import { ArrowUpward, Delete, DragHandle } from "@mui/icons-material";
+import { styled } from "@mui/material/styles";
+
+import { ArrowUpward, ControlCamera, Delete } from "@mui/icons-material";
 
 import { useEditor, useNode } from "@craftjs/core";
 import { ROOT_NODE } from "@craftjs/utils";
 import ReactDOM from "react-dom";
-import styled from "styled-components";
 
-const IndicatorDiv = styled.div`
-    height: 30px;
-    margin-top: -29px;
-    font-size: 12px;
-    line-height: 12px;
-    svg {
-        fill: #fff;
-        width: 15px;
-        height: 15px;
-    }
-`;
+const Indicator = styled("div")(({ theme }) => ({
+    height: theme.spacing(4),
+    fontSize: 10,
+    lineHeight: 12,
+    color: "white",
+    backgroundColor: "#f00",
+    padding: theme.spacing(0.5),
+    display: "flex",
+    alignItems: "center",
+    position: "absolute",
+}));
 
-const Button = styled.a`
-    padding: 0 0px;
-    opacity: 0.9;
-    display: flex;
-    align-items: center;
-    > div {
-        position: relative;
-        top: -50%;
-        left: -50%;
-    }
-`;
+const IndicatorText = styled("div")(({ theme }) => ({
+    marginRight: 8,
+    fontSize: 16,
+}));
+
+const Button = styled("a")(({ theme }) => ({
+    display: "flex",
+    alignItems: "center",
+    opacity: 0.9,
+    marginRight: theme.spacing(1),
+}));
 
 interface RenderNodeProps {
     render: any;
@@ -105,46 +106,40 @@ export const RenderNode = (props: RenderNodeProps) => {
         <>
             {isHover || isActive
                 ? ReactDOM.createPortal(
-                      <IndicatorDiv
+                      <Indicator
                           ref={currentRef as any}
-                          className="px-2 py-2 text-white bg-primary fixed flex items-center"
                           style={{
                               left: getPos(dom as any).left,
                               top: getPos(dom as any).top,
                               zIndex: 9999,
                           }}
                       >
-                          <h2 className="flex-1 mr-4">{name}</h2>
                           {moveable ? (
-                              <Button
-                                  className="mr-2 cursor-move"
-                                  ref={drag as any}
-                              >
-                                  <DragHandle />
+                              <Button ref={drag as any}>
+                                  <ControlCamera fontSize="small" />
                               </Button>
                           ) : null}
                           {id !== ROOT_NODE && (
                               <Button
-                                  className="mr-2 cursor-pointer"
                                   onClick={() => {
                                       actions.selectNode(parent);
                                   }}
                               >
-                                  <ArrowUpward />
+                                  <ArrowUpward fontSize="small" />
                               </Button>
                           )}
                           {deletable ? (
                               <Button
-                                  className="cursor-pointer"
                                   onMouseDown={(event: React.MouseEvent) => {
                                       event.stopPropagation();
                                       actions.delete(id);
                                   }}
                               >
-                                  <Delete />
+                                  <Delete fontSize="small" />
                               </Button>
                           ) : null}
-                      </IndicatorDiv>,
+                          <IndicatorText>{name}</IndicatorText>
+                      </Indicator>,
                       (document as any).querySelector(".page-container"),
                   )
                 : null}
