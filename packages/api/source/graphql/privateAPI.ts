@@ -12,6 +12,7 @@ import {
     groups,
     memberships,
     organizations,
+    pages,
     queries,
     queryTemplates,
     resources,
@@ -407,6 +408,24 @@ const typeDefs = gql`
         records: [Conversation!]!
     }
 
+    type Page {
+        id: ID!
+        app: String!
+        title: String!
+        description: String
+        slug: String!
+    }
+
+    type PagePage {
+        totalRecords: Int!
+        totalPages: Int!
+        previousPage: Int!
+        nextPage: Int!
+        hasPreviousPage: Int!
+        hasNextPage: Int!
+        records: [Page!]!
+    }
+
     type Mutation {
         createOrganization(
             name: String
@@ -581,6 +600,20 @@ const typeDefs = gql`
         resolveConversation(conversationId: String!): Conversation!
 
         unresolveConversation(conversationId: String!): Conversation!
+
+        createPage(
+            app: ID!
+            title: String!
+            slug: String
+            description: String
+        ) : Page!
+
+        updatePage(
+            pageId: String!
+            title: String!
+            slug: String!
+            description: String
+        ) : Page!
     }
 
     type Query {
@@ -615,6 +648,9 @@ const typeDefs = gql`
 
         listConversations(page: Int, limit: Int): ConversationPage!
         listConversationsById(conversationIds: [ID]): [Conversation]!
+
+        listPages(app: ID!, page: Int, limit: Int): PagePage!
+        listPagesById(appId: ID!, pageIds: [ID]): [Page]!
     }
 `;
 
@@ -745,6 +781,12 @@ const resolvers = {
                 "pending",
                 ["pending", "deleted"],
             ),
+
+        createPage: async (parent, values, context) =>
+            pages.create(context.request, values),
+
+        updatePage: async (parent, values, context) =>
+            pages.update(context.request, values.pageId, values),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>
@@ -812,6 +854,12 @@ const resolvers = {
 
         listConversationsById: async (parent, values, context) =>
             conversations.listById(context.request, values.conversationIds),
+
+        listPages: async (parent, values, context) =>
+            pages.list(context.request, values),
+
+        listPagesById: async (parent, values, context) =>
+            pages.listById(context.request, values.appId, values.pageIds),
     },
 };
 
