@@ -7,10 +7,10 @@ import { wrapConnectorHooks } from "@craftjs/utils";
 import { useLayerEventHandler } from "../events/LayerEventContext";
 import { LayerManagerContext } from "../manager";
 
-import { LayerContext } from "./LayerContext";
+import { LayerContext, TLayerContext } from "./LayerContext";
 import { LayerNode } from "./LayerNode";
 
-type Props = Omit<LayerContext, "connectors">;
+type Props = Omit<TLayerContext, "connectors">;
 
 export const LayerContextProvider: FunctionComponent<Props> = (
     props: Props,

@@ -5,12 +5,12 @@ import { EventHandlerConnectors } from "@craftjs/utils";
 
 import { LayerHandlers } from "../events/LayerHandlers";
 
-export type LayerContext = {
+export type TLayerContext = {
     id: NodeId;
     depth: number;
     connectors: EventHandlerConnectors<LayerHandlers, React.ReactElement>;
 };
 
-export const LayerContext = React.createContext<LayerContext>(
-    {} as LayerContext,
+export const LayerContext = React.createContext<TLayerContext>(
+    {} as TLayerContext,
 );
