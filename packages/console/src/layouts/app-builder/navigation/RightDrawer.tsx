@@ -1,10 +1,12 @@
-import { Divider, Drawer as MuiDrawer, Tab, Tabs } from "@mui/material";
-import { CSSObject, Theme, styled } from "@mui/material/styles";
 import type { FunctionComponent, ReactElement } from "react";
 import { useCallback, useState } from "react";
+
+import { Divider, Drawer as MuiDrawer, Tab, Tabs } from "@mui/material";
+import { CSSObject, Theme, styled } from "@mui/material/styles";
+
 import { useEditor } from "@craftjs/core";
 
-import PropertiesEditor from "./PropertiesEditor";
+import PropertiesEditor from "../panels/properties-editor/PropertiesEditor";
 
 const drawerWidth = 304;
 
@@ -66,7 +68,7 @@ interface Props {
 
 type TabIdentifier = "properties" | "comments";
 
-const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
+const RightDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
     const { open, onDrawerClose } = props;
     const [active, setActive] = useState<TabIdentifier>("properties");
     const selected = useEditor((state) => state.events.selected);
@@ -80,7 +82,8 @@ const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
             variant="permanent"
             open={open}
             anchor="right"
-            onClose={onDrawerClose}>
+            onClose={onDrawerClose}
+        >
             <DrawerHeader></DrawerHeader>
             <Divider />
             <Root>
@@ -88,7 +91,8 @@ const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                     <Tabs
                         value={active}
                         onChange={handleChange}
-                        variant="fullWidth">
+                        variant="fullWidth"
+                    >
                         <Tab value="properties" label="Properties" />
                         <Tab value="comments" label="Comments" />
                     </Tabs>
@@ -101,4 +105,4 @@ const EditorDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
     );
 };
 
-export default EditorDrawer;
+export default RightDrawer;

@@ -1,5 +1,5 @@
-import { CraftProps } from ".";
-import { useNode } from "@craftjs/core";
+import { FunctionComponent, ReactElement } from "react";
+
 import {
     FormControl,
     FormControlLabel,
@@ -8,7 +8,10 @@ import {
     Radio,
     RadioGroup,
 } from "@mui/material";
-import { FunctionComponent, ReactElement } from "react";
+
+import { useNode } from "@craftjs/core";
+
+import { CraftProps } from ".";
 
 interface ButtonProps {
     size?: string | number;

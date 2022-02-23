@@ -1,18 +1,13 @@
-import { Element, Frame } from "@craftjs/core";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
+
 import { styled } from "@mui/material/styles";
-import {
-    FunctionComponent,
-    ReactElement,
-    useCallback,
-    useEffect,
-    useState,
-} from "react";
+
+import { Element, Frame } from "@craftjs/core";
 
 import { useQueryParams } from "../../hooks";
 import { Card, Container, Text } from "../../nodes";
 
 import CodeEditor from "./CodeEditor";
-import EditorDrawer from "./EditorDrawer";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -26,8 +21,6 @@ const Root = styled("section")(({ theme }) => ({
 type modes = "design" | "code";
 
 const AppBuilder: FunctionComponent = (): ReactElement => {
-    const [drawerOpen, setDrawerOpen] = useState(true);
-
     const [mode, setMode] = useState<modes>("design");
     const params = useQueryParams();
 
@@ -37,22 +30,13 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         }
     }, [params, mode]);
 
-    const handleDrawerClose = useCallback(() => {
-        setDrawerOpen(false);
-    }, []);
-
     useEffect(() => {
-        if (drawerOpen) {
-            document.title = "App Builder | Hypertool";
-        } else {
-            document.title = "Edit Source | Hypertool";
-        }
-    }, [drawerOpen]);
+        document.title = "App Builder | Hypertool";
+    }, []);
 
     return (
         <Root>
             {mode === "code" && <CodeEditor />}
-            <EditorDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
             <Frame>
                 <Element
                     is={Container}

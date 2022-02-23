@@ -1,7 +1,7 @@
 import type { FunctionComponent, ReactElement } from "react";
-
 import { useCallback } from "react";
-import { ListItem, ListItemIcon, Icon, Tooltip } from "@mui/material";
+
+import { Icon, ListItem, ListItemIcon, Tooltip } from "@mui/material";
 
 import Wrap from "../../../components/Wrap";
 
@@ -15,7 +15,7 @@ interface Props {
     onClick: (id: string, url?: string) => void;
 }
 
-const NavigationDrawerItem: FunctionComponent<Props> = (
+const LeftDrawerItem: FunctionComponent<Props> = (
     props: Props,
 ): ReactElement => {
     const { open, title, id, url, icon, onClick, selected } = props;
@@ -39,4 +39,4 @@ const NavigationDrawerItem: FunctionComponent<Props> = (
     );
 };
 
-export default NavigationDrawerItem;
+export default LeftDrawerItem;

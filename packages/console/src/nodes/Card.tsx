@@ -1,7 +1,8 @@
-import { CraftProps } from ".";
-import { Element, useNode } from "@craftjs/core";
 import { FunctionComponent, ReactElement } from "react";
 
+import { Element, useNode } from "@craftjs/core";
+
+import { CraftProps } from ".";
 import { Button } from "./Button";
 import {
     Container,

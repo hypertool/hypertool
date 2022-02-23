@@ -1,6 +1,7 @@
-import { useEditor } from "@craftjs/core";
 import React from "react";
 import type { FunctionComponent, ReactElement } from "react";
+
+import { useEditor } from "@craftjs/core";
 
 const PropertiesEditor: FunctionComponent = (): ReactElement => {
     const { selected } = useEditor((state, query) => {

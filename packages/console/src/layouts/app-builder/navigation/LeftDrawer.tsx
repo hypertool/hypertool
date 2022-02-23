@@ -1,8 +1,7 @@
 import type { FunctionComponent, ReactElement } from "react";
 import { Fragment, useCallback, useState } from "react";
 
-import { Divider, List } from "@mui/material";
-import MuiDrawer from "@mui/material/Drawer";
+import { Divider, List, Drawer as MuiDrawer } from "@mui/material";
 import { CSSObject, Theme, styled } from "@mui/material/styles";
 
 import { useNavigate } from "react-router";
@@ -11,7 +10,7 @@ import { Explorer } from "../panels/explorer";
 
 import Components from "./Components";
 import Deployment from "./Deployment";
-import NavigationDrawerItem from "./NavigationDrawerItem";
+import LeftDrawerItem from "./LeftDrawerItem";
 import Resources from "./Resources";
 import Teams from "./Teams";
 
@@ -161,11 +160,9 @@ const groups: Group[] = [
     },
 ];
 
-const NavigationDrawer: FunctionComponent<Props> = (
-    props: Props,
-): ReactElement => {
+const LeftDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
     const { open, onDrawerOpen, onDrawerClose } = props;
-    const [active, setActive] = useState<string | null>(null);
+    const [active, setActive] = useState<string>("explorer");
     const navigate = useNavigate();
 
     const handleOpenItem = useCallback(
@@ -177,8 +174,7 @@ const NavigationDrawer: FunctionComponent<Props> = (
                     navigate(url);
                 }
             } else {
-                if (id === active) {
-                    setActive(null);
+                if (id === active && open) {
                     onDrawerClose();
                 } else {
                     setActive(id);
@@ -186,12 +182,12 @@ const NavigationDrawer: FunctionComponent<Props> = (
                 }
             }
         },
-        [active, navigate, onDrawerClose, onDrawerOpen],
+        [active, navigate, onDrawerClose, onDrawerOpen, open],
     );
 
     return (
         <Drawer
-            variant={"permanent"}
+            variant="permanent"
             open={open}
             anchor="left"
             onClose={onDrawerClose}
@@ -204,7 +200,7 @@ const NavigationDrawer: FunctionComponent<Props> = (
                         <Fragment key={group.title}>
                             <List>
                                 {group.items.map((item) => (
-                                    <NavigationDrawerItem
+                                    <LeftDrawerItem
                                         key={item.id}
                                         open={open}
                                         title={item.title}
@@ -234,4 +230,4 @@ const NavigationDrawer: FunctionComponent<Props> = (
     );
 };
 
-export default NavigationDrawer;
+export default LeftDrawer;
