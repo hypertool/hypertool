@@ -5,6 +5,7 @@ import {
     PageModel,
     constants,
 } from "@hypertool/common";
+
 import joi from "joi";
 
 const createSchema = joi.object({
@@ -94,7 +95,6 @@ const list = async (context, parameters): Promise<PagePage> => {
     if (error) {
         throw new BadRequestError(error.message);
     }
-    console.log(value);
     const { page, limit, app } = value;
 
     const filters = { app };
