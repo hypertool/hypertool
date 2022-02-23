@@ -6,6 +6,7 @@
     "dependencies": {
         "@apollo/client": "^3.5.5",
         "@craftjs/core": "^0.2.0-beta.2",
+        "@date-io/moment": "^2.13.1",
         "@emotion/react": "^11.6.0",
         "@emotion/styled": "^11.6.0",
         "@hypertool/common": "^0.2.17",
