@@ -58,19 +58,15 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                     is={Container}
                     padding={5}
                     background="#333"
-                    canvas={true}>
+                    canvas={true}
+                >
                     <Card />
-                    <Button size="small" variant="outlined">
-                        Click
-                    </Button>
                     <Text size="small" text="Hi world!" />
-
                     <Container padding={6} background="#999">
                         <Text size="small" text="It's me again!" />
                     </Container>
                 </Element>
             </Frame>
-            <EditorDrawer open={true} onDrawerClose={() => null} />
         </Root>
     );
 };

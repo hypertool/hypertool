@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
 import { useNode } from "@craftjs/core";
+import { FormControl, FormLabel, Slider } from "@mui/material";
+import { useEffect, useState } from "react";
 import ContentEditable from "react-contenteditable";
-import { Slider, FormControl, FormLabel } from "@mui/material";
 
 export const Text = ({ text, fontSize }: any) => {
     const {
@@ -16,7 +16,11 @@ export const Text = ({ text, fontSize }: any) => {
     const [editable, setEditable] = useState(false);
 
     useEffect(() => {
-        !selected && setEditable(false);
+        if (!selected) {
+            setEditable(false);
+        } else {
+            setEditable(true);
+        }
     }, [selected]);
 
     return (
@@ -36,24 +40,6 @@ export const Text = ({ text, fontSize }: any) => {
                 tagName="p"
                 style={{ fontSize: `${fontSize}px` }}
             />
-            {selected && (
-                <FormControl className="text-additional-settings" size="small">
-                    <FormLabel component="legend">Font size</FormLabel>
-                    <Slider
-                        defaultValue={fontSize}
-                        step={1}
-                        min={7}
-                        max={50}
-                        valueLabelDisplay="auto"
-                        onChange={(_, value) => {
-                            setProp(
-                                (props: { fontSize: number | number[] }) =>
-                                    (props.fontSize = value),
-                            );
-                        }}
-                    />
-                </FormControl>
-            )}
         </div>
     );
 };
@@ -68,13 +54,14 @@ const TextSettings = () => {
 
     return (
         <>
-            <FormControl size="small" component="fieldset">
+            <FormControl className="text-additional-settings" size="small">
                 <FormLabel component="legend">Font size</FormLabel>
                 <Slider
-                    value={fontSize || 7}
-                    step={7}
-                    min={1}
+                    defaultValue={fontSize}
+                    step={1}
+                    min={7}
                     max={50}
+                    valueLabelDisplay="auto"
                     onChange={(_, value) => {
                         setProp(
                             (props: { fontSize: number | number[] }) =>
