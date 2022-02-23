@@ -1,56 +1,27 @@
-import { Tooltip } from "@mui/material";
+import { Button, Tooltip, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+import { CheckBox, Edit, Redo, Undo } from "@mui/icons-material";
 
 import { useEditor } from "@craftjs/core";
-import styled from "styled-components";
 
-import Checkmark from "../../../public/icons/check.svg";
-import Customize from "../../../public/icons/customize.svg";
-import RedoSvg from "../../../public/icons/toolbox/redo.svg";
-import UndoSvg from "../../../public/icons/toolbox/undo.svg";
+const Header = styled("div")(({ theme }) => ({
+    width: "100%",
+    padding: theme.spacing(1),
+    backgroundColor: (theme.palette.background as any).paper1,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+}));
 
-const HeaderDiv = styled.div`
-    width: 100%;
-    height: 45px;
-    z-index: 99999;
-    position: relative;
-    padding: 0px 10px;
-    background: #d4d4d4;
-    display: flex;
-`;
+const HelperText = styled(Typography)(({ theme }) => ({
+    fontSize: 14,
+    fontWeight: "bold",
+    marginLeft: theme.spacing(1),
+}));
 
-const Btn = styled.a`
-    display: flex;
-    align-items: center;
-    padding: 5px 15px;
-    border-radius: 3px;
-    color: #fff;
-    font-size: 13px;
-    svg {
-        margin-right: 6px;
-        width: 12px;
-        height: 12px;
-        fill: #fff;
-        opacity: 0.9;
-    }
-`;
-
-const Item = styled.a<{ disabled?: boolean }>`
-    margin-right: 10px;
-    cursor: pointer;
-    svg {
-        width: 20px;
-        height: 20px;
-        fill: #707070;
-    }
-    ${(props) =>
-        props.disabled &&
-        `
-    opacity:0.5;
-    cursor: not-allowed;
-  `}
-`;
-
-export const Header = () => {
+const CanvasHeader = () => {
     const { enabled, canUndo, canRedo, actions } = useEditor(
         (state, query) => ({
             enabled: state.options.enabled,
@@ -60,41 +31,46 @@ export const Header = () => {
     );
 
     return (
-        <HeaderDiv className="header text-white transition w-full">
-            <div className="items-center flex w-full px-4 justify-end">
-                {enabled && (
-                    <div className="flex-1 flex">
-                        <Tooltip title="Undo" placement="bottom">
-                            <Item
-                                disabled={!canUndo}
-                                onClick={() => actions.history.undo()}
-                            >
-                                <UndoSvg />
-                            </Item>
-                        </Tooltip>
-                        <Tooltip title="Redo" placement="bottom">
-                            <Item
-                                disabled={!canRedo}
-                                onClick={() => actions.history.redo()}
-                            >
-                                <RedoSvg />
-                            </Item>
-                        </Tooltip>
-                    </div>
-                )}
-                <div className="flex">
-                    <Btn
-                        onClick={() => {
-                            actions.setOptions(
-                                (options) => (options.enabled = !enabled),
-                            );
-                        }}
-                    >
-                        {enabled ? <Checkmark /> : <Customize />}
-                        {enabled ? "Finish Editing" : "Edit"}
-                    </Btn>
+        <Header>
+            {enabled && (
+                <div>
+                    <Tooltip title="Undo" placement="bottom">
+                        <Button
+                            disabled={!canUndo}
+                            onClick={() => actions.history.undo()}
+                        >
+                            <Undo />
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title="Redo" placement="bottom">
+                        <Button
+                            disabled={!canRedo}
+                            onClick={() => actions.history.redo()}
+                        >
+                            <Redo />
+                        </Button>
+                    </Tooltip>
                 </div>
+            )}
+            <div></div>
+            <div>
+                <Button
+                    onClick={() => {
+                        actions.setOptions(
+                            (options) => (options.enabled = !enabled),
+                        );
+                    }}
+                >
+                    {enabled ? (
+                        <CheckBox fontSize="small" />
+                    ) : (
+                        <Edit fontSize="small" />
+                    )}
+                    <HelperText>{enabled ? "Finish" : "Edit"}</HelperText>
+                </Button>
             </div>
-        </HeaderDiv>
+        </Header>
     );
 };
+
+export default CanvasHeader;
