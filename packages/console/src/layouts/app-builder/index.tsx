@@ -1,18 +1,18 @@
-import type { FunctionComponent, ReactElement } from "react";
-
 import { Editor } from "@craftjs/core";
 import { styled } from "@mui/material/styles";
+import type { FunctionComponent, ReactElement } from "react";
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import {
     Button,
     Card,
-    Container,
-    Text,
     CardBottom,
     CardTop,
+    Container,
+    Text,
 } from "../../nodes";
+
 import { AppBar, NavigationDrawer } from "./navigation";
 
 const Root = styled("div")(({ theme }) => ({
@@ -42,7 +42,8 @@ const AppBuilderLayout: FunctionComponent = (): ReactElement => {
 
     return (
         <Editor
-            resolver={{ Card, Button, Text, Container, CardBottom, CardTop }}>
+            resolver={{ Card, Button, Text, Container, CardBottom, CardTop }}
+        >
             <Root>
                 <AppBar open={open} />
                 <NavigationDrawer
@@ -53,6 +54,11 @@ const AppBuilderLayout: FunctionComponent = (): ReactElement => {
                 <Main>
                     <Outlet />
                 </Main>
+                <NavigationDrawer
+                    open={open}
+                    onDrawerOpen={handleDrawerOpen}
+                    onDrawerClose={handleDrawerClose}
+                />
             </Root>
         </Editor>
     );

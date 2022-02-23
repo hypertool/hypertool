@@ -1,21 +1,35 @@
+import { CraftProps } from ".";
 import { useNode } from "@craftjs/core";
-import { FormControl, FormLabel, Slider, Paper } from "@mui/material";
+import { FormControl, FormLabel, Paper, Slider } from "@mui/material";
+import { FunctionComponent, ReactElement } from "react";
 
-export const Container = ({ background, padding = 0, children }: any) => {
+interface ContainerProps {
+    background?: string;
+    padding?: string | number;
+    children?: ReactElement | any;
+}
+
+type CraftComponent<Props> = FunctionComponent<Props> & CraftProps;
+
+export const Container: CraftComponent<ContainerProps> = (
+    props: ContainerProps,
+): ReactElement => {
     const {
         connectors: { connect, drag },
     } = useNode();
+    const { background, padding, children } = props;
 
     return (
         <Paper
             ref={(ref: any) => connect(drag(ref as any))}
-            style={{ background, padding: `${padding}px` }}>
+            style={{ background, padding: `${padding}px` }}
+        >
             {children}
         </Paper>
     );
 };
 
-export const ContainerSettings = () => {
+export const ContainerSettings: FunctionComponent = (): ReactElement => {
     const {
         padding,
         actions: { setProp },

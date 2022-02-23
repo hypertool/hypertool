@@ -1,36 +1,55 @@
+import { CraftProps } from ".";
 import { Element, useNode } from "@craftjs/core";
+import { FunctionComponent, ReactElement } from "react";
 
 import { Button } from "./Button";
 import {
     Container,
-    ContainerSettings,
     ContainerDefaultProps,
+    ContainerSettings,
 } from "./Container";
 import { Text } from "./Text";
 
-export const CardTop = ({ children }: any) => {
+interface PartialCardProps {
+    children: ReactElement;
+}
+
+interface CardProps {
+    background?: string;
+    padding?: string | number;
+}
+
+type CraftComponent<Props> = FunctionComponent<Props> & CraftProps;
+
+export const CardTop: CraftComponent<PartialCardProps> = (
+    props: PartialCardProps,
+): ReactElement => {
     const {
         connectors: { connect },
     } = useNode();
     return (
         <div ref={connect as any} className="text-only">
-            {children}
+            {props.children}
         </div>
     );
 };
 
-export const CardBottom = ({ children }: any) => {
+export const CardBottom: CraftComponent<PartialCardProps> = (
+    props: PartialCardProps,
+): ReactElement => {
     const {
         connectors: { connect },
     } = useNode();
-    return <div ref={connect as any}>{children}</div>;
+    return <div ref={connect as any}>{props.children}</div>;
 };
 
-export const Card = ({ background, padding = 20 }: any) => {
+export const Card: CraftComponent<CardProps> = (
+    props: CardProps,
+): ReactElement => {
+    const { background, padding } = props;
     return (
-        <Container background={background} padding={padding}>
+        <Container background={background as any} padding={padding as any}>
             <Element id="text" is={CardTop} canvas={true}>
-                <Text text="Title" fontSize={20} />
                 <Text text="Subtitle" fontSize={15} />
             </Element>
             <Element id="buttons" is={CardBottom} canvas={true}>

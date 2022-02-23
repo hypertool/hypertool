@@ -8,11 +8,13 @@ const PropertiesEditor: FunctionComponent = (): ReactElement => {
         let selected;
         if (currentNodeId) {
             selected = {
-                id: currentNodeId,
-                name: state.nodes[currentNodeId]?.data?.name,
+                id: currentNodeId.values().next().value,
+                name: state.nodes[currentNodeId.values().next().value]?.data
+                    ?.name,
                 settings:
-                    state.nodes[currentNodeId]?.related &&
-                    state.nodes[currentNodeId]?.related?.settings,
+                    state.nodes[currentNodeId.values().next().value]?.related &&
+                    state.nodes[currentNodeId.values().next().value]?.related
+                        ?.settings,
             };
         }
 

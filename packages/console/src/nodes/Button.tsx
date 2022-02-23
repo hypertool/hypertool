@@ -1,14 +1,36 @@
-import {
-    Button as MaterialButton,
-    FormControl,
-    FormLabel,
-    RadioGroup,
-    Radio,
-    FormControlLabel,
-} from "@mui/material";
+import { CraftProps } from ".";
 import { useNode } from "@craftjs/core";
+import {
+    FormControl,
+    FormControlLabel,
+    FormLabel,
+    Button as MaterialButton,
+    Radio,
+    RadioGroup,
+} from "@mui/material";
+import { FunctionComponent, ReactElement } from "react";
 
-export const Button = ({ size, variant, color, text, children }: any) => {
+interface ButtonProps {
+    size?: string | number;
+    variant?: "text" | "outlined" | "contained";
+    color?: "primary" | "secondary";
+    text: string;
+    children?: ReactElement | any;
+}
+
+type CraftComponent<Props> = FunctionComponent<Props> & CraftProps;
+
+export const Button: CraftComponent<ButtonProps> = (
+    props: ButtonProps,
+): ReactElement => {
+    const {
+        size = "small",
+        variant = "contianed",
+        color = "primary",
+        text,
+        children,
+    } = props;
+
     const {
         connectors: { connect, drag },
     } = useNode();
@@ -16,16 +38,17 @@ export const Button = ({ size, variant, color, text, children }: any) => {
     return (
         <MaterialButton
             ref={(ref) => connect(drag(ref as any))}
-            size={size}
-            variant={variant}
-            color={color}>
+            size={size as any}
+            variant={variant as any}
+            color={color as any}
+        >
             <div>{text}</div>
             {children}
         </MaterialButton>
     );
 };
 
-const ButtonSettings = () => {
+const ButtonSettings: FunctionComponent = (): ReactElement => {
     const {
         actions: { setProp },
         props,
@@ -44,7 +67,8 @@ const ButtonSettings = () => {
                             (props: { size: string }) =>
                                 (props.size = e.target.value),
                         )
-                    }>
+                    }
+                >
                     <FormControlLabel
                         label="Small"
                         value="small"
@@ -71,7 +95,8 @@ const ButtonSettings = () => {
                             (props: { variant: string }) =>
                                 (props.variant = e.target.value),
                         )
-                    }>
+                    }
+                >
                     <FormControlLabel
                         label="Text"
                         value="text"
@@ -98,7 +123,8 @@ const ButtonSettings = () => {
                             (props: { color: string }) =>
                                 (props.color = e.target.value),
                         )
-                    }>
+                    }
+                >
                     <FormControlLabel
                         label="Default"
                         value="default"
