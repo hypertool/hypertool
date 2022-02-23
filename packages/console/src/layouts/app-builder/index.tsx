@@ -8,6 +8,7 @@ import { Outlet } from "react-router-dom";
 
 import { nodeMappings } from "../../nodes";
 
+import { RenderNode } from "./RenderNode";
 import { AppBar, LeftDrawer, RightDrawer } from "./navigation";
 
 const Root = styled("div")(({ theme }) => ({
@@ -41,7 +42,7 @@ const AppBuilderLayout: FunctionComponent = (): ReactElement => {
     }, []);
 
     return (
-        <Editor resolver={nodeMappings}>
+        <Editor resolver={nodeMappings} onRender={RenderNode}>
             <Root>
                 <AppBar open={leftDrawerOpen} />
                 <LeftDrawer
