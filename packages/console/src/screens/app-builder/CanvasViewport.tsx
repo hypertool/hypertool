@@ -8,11 +8,11 @@ import CanvasHeader from "./CanvasHeader";
 
 const PageContainer = styled("div")(({ theme }) => ({
     width: "100%",
-    height: "100vh",
+    height: "100%",
     display: "flex",
-    flexDirection: "row",
-    padding: theme.spacing(3),
+    flexDirection: "column",
     overflow: "hidden",
+    padding: theme.spacing(2),
 }));
 
 const CraftRenderer = styled("div")(({ theme }) => ({
@@ -28,17 +28,7 @@ const CanvasContainer = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    paddingTop: theme.spacing(1),
-}));
-
-const PageFooter = styled("div")(({ theme }) => ({
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
     width: "100%",
-    paddingTop: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    fontSize: 8,
 }));
 
 interface ViewportProps {
@@ -53,21 +43,22 @@ const CanvasViewport: FunctionComponent<ViewportProps> = (
     }));
 
     return (
-        <PageContainer className="page-container">
-            <CanvasHeader />
-            <CraftRenderer
-                className="craft-renderer"
-                ref={(ref) =>
-                    connectors.select(
-                        connectors.hover(ref as any, null as any),
-                        null as any,
-                    )
-                }
-            >
-                <CanvasContainer>{props.children}</CanvasContainer>
-                <PageFooter>Powered by Hypertool</PageFooter>
-            </CraftRenderer>
-        </PageContainer>
+        <>
+            <CanvasHeader />s
+            <PageContainer className="page-container">
+                <CraftRenderer
+                    className="craft-renderer"
+                    ref={(ref) =>
+                        connectors.select(
+                            connectors.hover(ref as any, null as any),
+                            null as any,
+                        )
+                    }
+                >
+                    <CanvasContainer>{props.children}</CanvasContainer>
+                </CraftRenderer>
+            </PageContainer>
+        </>
     );
 };
 

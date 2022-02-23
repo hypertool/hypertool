@@ -81,7 +81,6 @@ export const RenderNode = (props: RenderNodeProps) => {
 
     const scroll = useCallback(() => {
         const { current: currentDOM } = currentRef;
-
         if (!currentDOM) return;
         const { top, left } = getPos(dom as any);
         currentDOM.style.top = top;
@@ -89,15 +88,17 @@ export const RenderNode = (props: RenderNodeProps) => {
     }, [dom, getPos]);
 
     useEffect(() => {
-        (document as any)
-            .querySelector(".craftjs-renderer")
-            .addEventListener("scroll", scroll);
-
-        return () => {
+        if ((document as any).querySelector(".craftjs-renderer")) {
             (document as any)
                 .querySelector(".craftjs-renderer")
-                .removeEventListener("scroll", scroll);
-        };
+                .addEventListener("scroll", scroll);
+
+            return () => {
+                (document as any)
+                    .querySelector(".craftjs-renderer")
+                    .removeEventListener("scroll", scroll);
+            };
+        }
     }, [scroll]);
 
     return (
@@ -135,8 +136,8 @@ export const RenderNode = (props: RenderNodeProps) => {
                           {deletable ? (
                               <Button
                                   className="cursor-pointer"
-                                  onMouseDown={(e: React.MouseEvent) => {
-                                      e.stopPropagation();
+                                  onMouseDown={(event: React.MouseEvent) => {
+                                      event.stopPropagation();
                                       actions.delete(id);
                                   }}
                               >

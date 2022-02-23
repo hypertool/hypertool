@@ -2,9 +2,12 @@ import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 
 import { styled } from "@mui/material/styles";
 
-import { useQueryParams } from "../../hooks";
+import { Element, Frame } from "@craftjs/core";
 
-import Canvas from "./Canvas";
+import { useQueryParams } from "../../hooks";
+import { Button, Card, Container, Text } from "../../nodes";
+
+import CanvasViewport from "./CanvasViewport";
 import CodeEditor from "./CodeEditor";
 
 const Root = styled("section")(({ theme }) => ({
@@ -35,7 +38,23 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     return (
         <Root>
             {mode === "code" && <CodeEditor />}
-            {mode === "design" && <Canvas />}
+            <CanvasViewport>
+                <Frame>
+                    <Element is={Container} padding={4} canvas={true}>
+                        <Card />
+                        <Button text="Click me" size="small" />
+                        <Text fontSize={20} text="Hi world!" />
+                        <Element
+                            canvas
+                            is={Container}
+                            padding={6}
+                            background="#999999"
+                        >
+                            <Text fontSize="small" text="It's me again!" />
+                        </Element>
+                    </Element>
+                </Frame>
+            </CanvasViewport>
         </Root>
     );
 };
