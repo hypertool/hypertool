@@ -3,7 +3,7 @@ import React from "react";
 import type { FunctionComponent, ReactElement } from "react";
 
 const PropertiesEditor: FunctionComponent = (): ReactElement => {
-    const { state, selected } = useEditor((state, query) => {
+    const { selected } = useEditor((state, query) => {
         const currentNodeId: any = state.events.selected;
         let selected;
         if (currentNodeId) {
@@ -19,8 +19,6 @@ const PropertiesEditor: FunctionComponent = (): ReactElement => {
         }
 
         return {
-            state,
-            currentNodeId,
             selected,
         };
     });

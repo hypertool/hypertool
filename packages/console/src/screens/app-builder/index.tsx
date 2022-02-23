@@ -9,7 +9,7 @@ import {
 } from "react";
 
 import { useQueryParams } from "../../hooks";
-import { Button, Card, Container, Text } from "../../nodes";
+import { Card, Container, Text } from "../../nodes";
 
 import CodeEditor from "./CodeEditor";
 import EditorDrawer from "./EditorDrawer";
@@ -61,9 +61,8 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                     canvas={true}
                 >
                     <Card />
-                    <Text size="small" text="Hi world!" />
                     <Container padding={6} background="#999">
-                        <Text size="small" text="It's me again!" />
+                        <Text text="It's me again!" />
                     </Container>
                 </Element>
             </Frame>

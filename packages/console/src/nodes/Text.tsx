@@ -1,9 +1,19 @@
+import { CraftProps } from ".";
 import { useNode } from "@craftjs/core";
 import { FormControl, FormLabel, Slider } from "@mui/material";
-import { useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import ContentEditable from "react-contenteditable";
 
-export const Text = ({ text, fontSize }: any) => {
+interface TextProps {
+    text?: string;
+    fontSize?: string | number;
+}
+
+type CraftComponent<Props> = FunctionComponent<Props> & CraftProps;
+
+export const Text: CraftComponent<TextProps> = (
+    props: TextProps,
+): ReactElement => {
     const {
         connectors: { connect, drag },
         selected,
@@ -26,7 +36,7 @@ export const Text = ({ text, fontSize }: any) => {
     return (
         <div ref={(ref) => connect(drag(ref as any))}>
             <ContentEditable
-                html={text}
+                html={props.text as any}
                 onChange={(e) =>
                     setProp(
                         (props: { text: string }) =>
@@ -38,13 +48,13 @@ export const Text = ({ text, fontSize }: any) => {
                 }
                 disabled={!editable}
                 tagName="p"
-                style={{ fontSize: `${fontSize}px` }}
+                style={{ fontSize: `${props.fontSize}px` }}
             />
         </div>
     );
 };
 
-const TextSettings = () => {
+const TextSettings: FunctionComponent = (): ReactElement => {
     const {
         actions: { setProp },
         fontSize,
@@ -54,7 +64,7 @@ const TextSettings = () => {
 
     return (
         <>
-            <FormControl className="text-additional-settings" size="small">
+            <FormControl size="small">
                 <FormLabel component="legend">Font size</FormLabel>
                 <Slider
                     defaultValue={fontSize}
