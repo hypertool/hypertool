@@ -42,7 +42,11 @@ const DecoratedChip = styled(Chip)(({ theme }) => ({
 }));
 
 const DecoratedTextField = styled(TextField)(({ theme }) => ({
-    marginBottom: theme.spacing(2),
+    margin: `${theme.spacing(1.5)} 0px`,
+}));
+
+const DecoratedFormControl = styled(FormControl)(({ theme }) => ({
+    margin: `${theme.spacing(1.5)} 0px`,
 }));
 
 export interface Props {
@@ -60,14 +64,13 @@ const PropertiesForm: FunctionComponent<Props> = (
     } = useNode((node) => ({
         componentProps: node.data.props,
     }));
-    const values = componentProps;
 
     const makeChangeHandler = (field: FormField) => (event: any) => {
         setProp((props: any) => (props[field.id] = event.target.value));
     };
 
     const renderSelect = (field: FormSelect): ReactElement => (
-        <FormControl
+        <DecoratedFormControl
             variant={field.variant}
             fullWidth={true}
             required={field.required}
@@ -76,7 +79,7 @@ const PropertiesForm: FunctionComponent<Props> = (
             <InputLabel id={field.id}>{field.title}</InputLabel>
             <Select
                 labelId={field.id}
-                value={values[field.id]}
+                value={componentProps[field.id]}
                 onChange={makeChangeHandler(field)}
                 label={field.title}
                 name={field.id}
@@ -85,7 +88,7 @@ const PropertiesForm: FunctionComponent<Props> = (
                     <MenuItem value={option.value}>{option.title}</MenuItem>
                 ))}
             </Select>
-        </FormControl>
+        </DecoratedFormControl>
     );
 
     const getSelectedTitle = (field: FormSelect, selected: string): string =>
@@ -93,11 +96,15 @@ const PropertiesForm: FunctionComponent<Props> = (
         "<invalid>";
 
     const renderMultiSelect = (field: FormSelect) => (
-        <FormControl variant={field.variant} fullWidth={true} size={field.size}>
+        <DecoratedFormControl
+            variant={field.variant}
+            fullWidth={true}
+            size={field.size}
+        >
             <InputLabel id={field.id}>{field.title}</InputLabel>
             <Select
                 labelId={field.id}
-                value={values[field.id]}
+                value={componentProps[field.id]}
                 multiple={true}
                 onChange={makeChangeHandler(field)}
                 label={field.title}
@@ -116,7 +123,7 @@ const PropertiesForm: FunctionComponent<Props> = (
                     <MenuItem value={option.value}>{option.title}</MenuItem>
                 ))}
             </Select>
-        </FormControl>
+        </DecoratedFormControl>
     );
 
     const renderTextField = (field: FormTextField): ReactElement => (
@@ -128,7 +135,7 @@ const PropertiesForm: FunctionComponent<Props> = (
             variant={field.variant}
             fullWidth={true}
             required={field.required}
-            value={values[field.id]}
+            value={componentProps[field.id]}
             onChange={makeChangeHandler(field)}
             size={field.size}
             help={field.help}
@@ -146,7 +153,7 @@ const PropertiesForm: FunctionComponent<Props> = (
             fullWidth={true}
             variant={field.variant}
             required={field.required}
-            value={values[field.id]}
+            value={componentProps[field.id]}
             onChange={makeChangeHandler(field)}
             size={field.size}
             help={field.help}
@@ -162,7 +169,7 @@ const PropertiesForm: FunctionComponent<Props> = (
             fullWidth={true}
             variant={field.variant}
             required={field.required}
-            value={values[field.id]}
+            value={componentProps[field.id]}
             onChange={makeChangeHandler(field)}
             size={field.size}
             help={field.help}
@@ -224,7 +231,7 @@ const PropertiesForm: FunctionComponent<Props> = (
                 label={field.title}
                 name={field.id}
                 control={<Switch color="primary" size={field.size} />}
-                value={values[field.id]}
+                value={componentProps[field.id]}
                 onChange={makeChangeHandler(field)}
             />
         </FormGroup>
@@ -293,7 +300,7 @@ const PropertiesForm: FunctionComponent<Props> = (
             fullWidth={true}
             variant={field.variant}
             required={field.required}
-            value={values[field.id]}
+            value={componentProps[field.id]}
             onChange={makeChangeHandler(field)}
             size={field.size}
             help={field.help}
@@ -309,7 +316,7 @@ const PropertiesForm: FunctionComponent<Props> = (
             fullWidth={true}
             variant={field.variant}
             required={field.required}
-            value={values[field.id]}
+            value={componentProps[field.id]}
             onChange={makeChangeHandler(field)}
             size={field.size}
             help={field.help}
@@ -404,7 +411,7 @@ const PropertiesForm: FunctionComponent<Props> = (
 
             <LocalizationProvider dateAdapter={DateAdapter}>
                 <Formik
-                    initialValues={{}}
+                    initialValues={componentProps}
                     onSubmit={async () => null}
                     validationSchema={validationSchema}
                 >
