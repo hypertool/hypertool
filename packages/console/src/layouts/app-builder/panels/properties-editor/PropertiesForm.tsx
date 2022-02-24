@@ -20,6 +20,14 @@ import { useNode } from "@craftjs/core";
 import { Formik } from "formik";
 
 import { TextField } from "../../../../components";
+import type {
+    FormField,
+    FormFieldGroup,
+    FormLargeTextField,
+    FormSelect,
+    FormSwitch,
+    FormTextField,
+} from "../../../../types";
 
 const DecoratedForm = styled("form")(({ theme }) => ({
     display: "flex",
@@ -37,69 +45,7 @@ const DecoratedTextField = styled(TextField)(({ theme }) => ({
     marginBottom: theme.spacing(2),
 }));
 
-interface FormField {
-    id: string;
-    type:
-        | "text"
-        | "large_text"
-        | "number"
-        | "date"
-        | "time"
-        | "date_time"
-        | "switch"
-        | "date_range"
-        | "select"
-        | "multi_select"
-        | "email_address"
-        | "phone_number";
-    help: string;
-}
-
-interface FormSelectOption {
-    value: string;
-    title: string;
-}
-
-interface FormSelect extends FormField {
-    required: boolean;
-    title: string;
-    options: FormSelectOption[];
-    size: "small" | "medium";
-    variant: "standard" | "outlined" | "filled";
-}
-
-interface FormTextField extends FormField {
-    required: boolean;
-    title: string;
-    variant: "standard" | "outlined" | "filled";
-    size: "small" | "medium" | "large";
-}
-
-interface FormLargeTextField extends FormTextField {
-    rows?: number;
-}
-
-interface FormSwitch extends FormField {
-    title: string;
-    size: "small" | "medium";
-}
-
-type FormFieldType =
-    | FormSelect
-    | FormTextField
-    | FormLargeTextField
-    | FormSwitch;
-
-interface FormFieldGroup {
-    title: string;
-    fields: FormFieldType[];
-}
-
-export interface FormDescription {
-    groups: FormFieldGroup[];
-}
-
-interface Props {
+export interface Props {
     groups: FormFieldGroup[];
     validationSchema: any;
 }
@@ -465,73 +411,63 @@ const PropertiesForm: FunctionComponent<Props> = (
                     <DecoratedForm>
                         {groups.map((group: FormFieldGroup) => (
                             <>
-                                {group.fields.map(
-                                    (field, index: number) =>
-                                        (console.log(field) as any) || (
-                                            <Fragment key={field.id + index}>
-                                                {field.type === "text" &&
-                                                    renderTextField(
-                                                        field as FormTextField,
-                                                    )}
+                                {group.fields.map((field) => (
+                                    <Fragment key={field.id}>
+                                        {field.type === "text" &&
+                                            renderTextField(
+                                                field as FormTextField,
+                                            )}
 
-                                                {field.type === "large_text" &&
-                                                    renderLargeTextField(
-                                                        field as FormLargeTextField,
-                                                    )}
+                                        {field.type === "large_text" &&
+                                            renderLargeTextField(
+                                                field as FormLargeTextField,
+                                            )}
 
-                                                {field.type === "number" &&
-                                                    renderNumberTextField(
-                                                        field as FormTextField,
-                                                    )}
+                                        {field.type === "number" &&
+                                            renderNumberTextField(
+                                                field as FormTextField,
+                                            )}
 
-                                                {field.type === "date" &&
-                                                    renderDateField(
-                                                        field as FormTextField,
-                                                    )}
+                                        {field.type === "date" &&
+                                            renderDateField(
+                                                field as FormTextField,
+                                            )}
 
-                                                {field.type === "time" &&
-                                                    renderTimeField(
-                                                        field as FormTextField,
-                                                    )}
+                                        {field.type === "time" &&
+                                            renderTimeField(
+                                                field as FormTextField,
+                                            )}
 
-                                                {field.type === "date_time" &&
-                                                    renderDateTimeField(
-                                                        field as FormTextField,
-                                                    )}
+                                        {field.type === "date_time" &&
+                                            renderDateTimeField(
+                                                field as FormTextField,
+                                            )}
 
-                                                {field.type === "switch" &&
-                                                    renderSwitch(
-                                                        field as FormSwitch,
-                                                    )}
+                                        {field.type === "switch" &&
+                                            renderSwitch(field as FormSwitch)}
 
-                                                {field.type === "date_range" &&
-                                                    renderDateRange(field)}
+                                        {field.type === "date_range" &&
+                                            renderDateRange(field)}
 
-                                                {field.type === "select" &&
-                                                    renderSelect(
-                                                        field as FormSelect,
-                                                    )}
+                                        {field.type === "select" &&
+                                            renderSelect(field as FormSelect)}
 
-                                                {field.type ===
-                                                    "multi_select" &&
-                                                    renderMultiSelect(
-                                                        field as FormSelect,
-                                                    )}
+                                        {field.type === "multi_select" &&
+                                            renderMultiSelect(
+                                                field as FormSelect,
+                                            )}
 
-                                                {field.type ===
-                                                    "email_address" &&
-                                                    renderEmailAddressField(
-                                                        field as FormTextField,
-                                                    )}
+                                        {field.type === "email_address" &&
+                                            renderEmailAddressField(
+                                                field as FormTextField,
+                                            )}
 
-                                                {field.type ===
-                                                    "phone_number" &&
-                                                    renderPhoneNumberField(
-                                                        field as FormTextField,
-                                                    )}
-                                            </Fragment>
-                                        ),
-                                )}
+                                        {field.type === "phone_number" &&
+                                            renderPhoneNumberField(
+                                                field as FormTextField,
+                                            )}
+                                    </Fragment>
+                                ))}
                             </>
                         ))}
                     </DecoratedForm>
