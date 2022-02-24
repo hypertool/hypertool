@@ -17,24 +17,27 @@ interface Props {
     variant?: ButtonVariant;
     color?: Color;
     text?: string;
+    disabled?: boolean;
 }
 
 export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
-    const { size, variant, color, text } = props;
+    const { size, variant, color, text, disabled } = props;
 
     const {
         connectors: { connect, drag },
     } = useNode();
 
     return (
-        <MuiButton
-            ref={(ref) => connect(drag(ref as any))}
-            size={size as any}
-            variant={variant}
-            color={color}
-        >
-            {text}
-        </MuiButton>
+        <div ref={(ref) => connect(drag(ref as any))}>
+            <MuiButton
+                size={size as any}
+                variant={variant}
+                color={color}
+                disabled={disabled}
+            >
+                {text}
+            </MuiButton>
+        </div>
     );
 };
 
@@ -56,6 +59,13 @@ Button.craft = {
                     {
                         title: "General",
                         fields: [
+                            {
+                                id: "disabled",
+                                title: "Disabled",
+                                type: "switch",
+                                size: "small",
+                                help: "Determines wether the button is disabled, or not.",
+                            },
                             {
                                 id: "size",
                                 size: "small",
