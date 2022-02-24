@@ -1,4 +1,6 @@
-import { Button, Tooltip, Typography } from "@mui/material";
+import { useCallback } from "react";
+
+import { Button, IconButton, Tooltip, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { CheckBox, Edit, Redo, Undo } from "@mui/icons-material";
@@ -30,29 +32,30 @@ const CanvasHeader = () => {
         }),
     );
 
+    const handleUndo = useCallback(() => {
+        actions.history.undo();
+    }, [actions.history]);
+
+    const handleRedo = useCallback(() => {
+        actions.history.redo();
+    }, [actions.history]);
+
     return (
         <Header>
             {enabled && (
                 <div>
                     <Tooltip title="Undo" placement="bottom">
-                        <Button
-                            disabled={!canUndo}
-                            onClick={() => actions.history.undo()}
-                        >
+                        <IconButton disabled={!canUndo} onClick={handleUndo}>
                             <Undo />
-                        </Button>
+                        </IconButton>
                     </Tooltip>
                     <Tooltip title="Redo" placement="bottom">
-                        <Button
-                            disabled={!canRedo}
-                            onClick={() => actions.history.redo()}
-                        >
+                        <IconButton disabled={!canRedo} onClick={handleRedo}>
                             <Redo />
-                        </Button>
+                        </IconButton>
                     </Tooltip>
                 </div>
             )}
-            <div></div>
             <div>
                 <Button
                     onClick={() => {
