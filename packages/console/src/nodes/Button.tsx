@@ -18,10 +18,11 @@ interface Props {
     color?: Color;
     text?: string;
     disabled?: boolean;
+    disableElevation?: boolean;
 }
 
 export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
-    const { size, variant, color, text, disabled } = props;
+    const { size, variant, color, text, disabled, disableElevation } = props;
 
     const {
         connectors: { connect, drag },
@@ -34,6 +35,7 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
                 variant={variant}
                 color={color}
                 disabled={disabled}
+                disableElevation={disableElevation}
             >
                 {text}
             </MuiButton>
@@ -46,6 +48,8 @@ const defaultProps: Props = {
     variant: "contained",
     color: "primary",
     text: "CLICK ME",
+    disabled: false,
+    disableElevation: false,
 };
 
 Button.defaultProps = defaultProps;
@@ -65,6 +69,13 @@ Button.craft = {
                                 type: "switch",
                                 size: "small",
                                 help: "Determines wether the button is disabled, or not.",
+                            },
+                            {
+                                id: "disableElevation",
+                                title: "Disable Elevation",
+                                type: "switch",
+                                size: "small",
+                                help: "Determines whether the button should have elevation or not.",
                             },
                             {
                                 id: "size",
