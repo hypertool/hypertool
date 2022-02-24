@@ -20,6 +20,7 @@ interface Props {
     disabled?: boolean;
     disableElevation?: boolean;
     disableFocusRipple?: boolean;
+    disableRipple?: boolean;
 }
 
 export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
@@ -31,6 +32,7 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
         disabled,
         disableElevation,
         disableFocusRipple,
+        disableRipple,
     } = props;
 
     const {
@@ -46,6 +48,7 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
                 disabled={disabled}
                 disableElevation={disableElevation}
                 disableFocusRipple={disableFocusRipple}
+                disableRipple={disableRipple}
             >
                 {text}
             </MuiButton>
@@ -61,6 +64,7 @@ const defaultProps: Props = {
     disabled: false,
     disableElevation: false,
     disableFocusRipple: false,
+    disableRipple: false,
 };
 
 Button.defaultProps = defaultProps;
@@ -94,6 +98,13 @@ Button.craft = {
                                 type: "switch",
                                 size: "small",
                                 help: "Determines whether the button should have focus ripple or not.",
+                            },
+                            {
+                                id: "disableRipple",
+                                title: "Disable Ripple",
+                                type: "switch",
+                                size: "small",
+                                help: "Determines whether a ripple effect is rendered or not when the button is clicked.",
                             },
                             {
                                 id: "size",
