@@ -1,8 +1,9 @@
-import { FunctionComponent, ReactElement } from "react";
+import { ReactElement } from "react";
 
 import { Element, useNode } from "@craftjs/core";
 
-import { CraftProps } from ".";
+import type { CraftComponent } from "../types";
+
 import { Button } from "./Button";
 import {
     Container,
@@ -19,8 +20,6 @@ interface CardProps {
     background?: string;
     padding?: string | number;
 }
-
-type CraftComponent<Props> = FunctionComponent<Props> & CraftProps;
 
 export const CardTop: CraftComponent<PartialCardProps> = (
     props: PartialCardProps,
