@@ -49,6 +49,10 @@ const DecoratedFormControl = styled(FormControl)(({ theme }) => ({
     margin: `${theme.spacing(1.5)} 0px`,
 }));
 
+const DecoratedFormGroup = styled(FormGroup)(({ theme }) => ({
+    margin: `${theme.spacing(1.5)} 0px`,
+}));
+
 export interface Props {
     groups: FormFieldGroup[];
     validationSchema: any;
@@ -65,9 +69,13 @@ const PropertiesForm: FunctionComponent<Props> = (
         componentProps: node.data.props,
     }));
 
-    const makeChangeHandler = (field: FormField) => (event: any) => {
-        setProp((props: any) => (props[field.id] = event.target.value));
-    };
+    const makeChangeHandler =
+        (field: FormField, valueField: "value" | "checked" = "value") =>
+        (event: any) => {
+            setProp(
+                (props: any) => (props[field.id] = event.target[valueField]),
+            );
+        };
 
     const renderSelect = (field: FormSelect): ReactElement => (
         <DecoratedFormControl
@@ -225,16 +233,21 @@ const PropertiesForm: FunctionComponent<Props> = (
         null;
 
     const renderSwitch = (field: FormSwitch) => (
-        <FormGroup>
+        <DecoratedFormGroup>
             <FormControlLabel
                 id={field.id}
                 label={field.title}
                 name={field.id}
-                control={<Switch color="primary" size={field.size} />}
-                value={componentProps[field.id]}
-                onChange={makeChangeHandler(field)}
+                control={
+                    <Switch
+                        color="primary"
+                        size={field.size}
+                        checked={componentProps[field.id]}
+                        onChange={makeChangeHandler(field, "checked")}
+                    />
+                }
             />
-        </FormGroup>
+        </DecoratedFormGroup>
     );
 
     const renderDateRange = (field: any /*FormDateRange*/) =>
