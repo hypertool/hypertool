@@ -75,7 +75,7 @@ export const RenderNode = (props: RenderNodeProps) => {
             ? dom.getBoundingClientRect()
             : { top: 0, left: 0, bottom: 0 };
         return {
-            top: `${top > 0 ? top : bottom}px`,
+            top: `${(top > 0 ? top : bottom) - 30}px`,
             left: `${left}px`,
         };
     }, []);
@@ -103,7 +103,7 @@ export const RenderNode = (props: RenderNodeProps) => {
     }, [scroll]);
 
     return (
-        <>
+        <div style={{ position: "relative" }}>
             {isHover || isActive
                 ? ReactDOM.createPortal(
                       <Indicator
@@ -144,6 +144,6 @@ export const RenderNode = (props: RenderNodeProps) => {
                   )
                 : null}
             {render}
-        </>
+        </div>
     );
 };
