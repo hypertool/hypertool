@@ -45,7 +45,6 @@ interface FormField {
         | "multi_select"
         | "email_address"
         | "phone_number";
-    size: "small" | "medium" | "large";
     help: string;
 }
 
@@ -58,23 +57,15 @@ interface FormSelect extends FormField {
     required: boolean;
     title: string;
     options: FormSelectOption[];
-}
-
-interface FormMultiSelectOption {
-    value: string;
-    title: string;
-}
-
-interface FormMultiSelect extends FormField {
-    required: boolean;
-    title: string;
-    options: FormMultiSelectOption[];
+    size: "small" | "medium";
+    variant: "standard" | "outlined" | "filled";
 }
 
 interface FormTextField extends FormField {
     required: boolean;
     title: string;
-    variant: "outlined";
+    variant: "standard" | "outlined" | "filled";
+    size: "small" | "medium" | "large";
 }
 
 interface FormLargeTextField extends FormTextField {
@@ -83,11 +74,11 @@ interface FormLargeTextField extends FormTextField {
 
 interface FormSwitch extends FormField {
     title: string;
+    size: "small" | "medium";
 }
 
 type FormFieldType =
     | FormSelect
-    | FormMultiSelect
     | FormTextField
     | FormLargeTextField
     | FormSwitch;
@@ -124,10 +115,10 @@ const PropertiesForm: FunctionComponent<Props> = (
 
     const renderSelect = (field: FormSelect): ReactElement => (
         <FormControl
-            variant="outlined"
+            variant={field.variant}
             fullWidth={true}
-            size="medium"
             required={field.required}
+            size={field.size}
         >
             <InputLabel id={field.id}>{field.title}</InputLabel>
             <Select
@@ -144,15 +135,12 @@ const PropertiesForm: FunctionComponent<Props> = (
         </FormControl>
     );
 
-    const getSelectedTitle = (
-        field: FormMultiSelect,
-        selected: string,
-    ): string =>
+    const getSelectedTitle = (field: FormSelect, selected: string): string =>
         field.options.find((option) => option.value === selected)?.title ??
         "<invalid>";
 
-    const renderMultiSelect = (field: FormMultiSelect) => (
-        <FormControl variant="outlined" fullWidth={true} size="medium">
+    const renderMultiSelect = (field: FormSelect) => (
+        <FormControl variant={field.variant} fullWidth={true} size={field.size}>
             <InputLabel id={field.id}>{field.title}</InputLabel>
             <Select
                 labelId={field.id}
@@ -184,7 +172,7 @@ const PropertiesForm: FunctionComponent<Props> = (
             id={field.id}
             name={field.id}
             type="text"
-            variant="outlined"
+            variant={field.variant}
             fullWidth={true}
             required={field.required}
             value={values[field.id]}
@@ -203,7 +191,7 @@ const PropertiesForm: FunctionComponent<Props> = (
             multiline={true}
             rows={field.rows || 4}
             fullWidth={true}
-            variant="outlined"
+            variant={field.variant}
             required={field.required}
             value={values[field.id]}
             onChange={makeChangeHandler(field)}
@@ -219,7 +207,7 @@ const PropertiesForm: FunctionComponent<Props> = (
             name={field.id}
             type="number"
             fullWidth={true}
-            variant="outlined"
+            variant={field.variant}
             required={field.required}
             value={values[field.id]}
             onChange={makeChangeHandler(field)}
@@ -282,7 +270,7 @@ const PropertiesForm: FunctionComponent<Props> = (
                 id={field.id}
                 label={field.title}
                 name={field.id}
-                control={<Switch color="primary" />}
+                control={<Switch color="primary" size={field.size} />}
                 value={values[field.id]}
                 onChange={makeChangeHandler(field)}
             />
@@ -527,7 +515,7 @@ const PropertiesForm: FunctionComponent<Props> = (
                                                 {field.type ===
                                                     "multi_select" &&
                                                     renderMultiSelect(
-                                                        field as FormMultiSelect,
+                                                        field as FormSelect,
                                                     )}
 
                                                 {field.type ===
