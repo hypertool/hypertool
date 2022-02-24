@@ -44,7 +44,7 @@ const CanvasViewport: FunctionComponent<ViewportProps> = (
 
     return (
         <>
-            <CanvasHeader />s
+            <CanvasHeader />
             <PageContainer className="page-container">
                 <CraftRenderer
                     className="craft-renderer"
