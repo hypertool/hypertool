@@ -1,58 +1,54 @@
-import { FunctionComponent, ReactElement } from "react";
+import type { ReactElement } from "react";
 
-import { Button as MaterialButton } from "@mui/material";
+import { Button as MuiButton } from "@mui/material";
 
 import { useNode } from "@craftjs/core";
 
 import PropertiesForm from "../layouts/app-builder/panels/properties-editor/PropertiesForm";
+import type {
+    ButtonSize,
+    ButtonVariant,
+    Color,
+    CraftComponent,
+} from "../types";
 
-import { CraftProps } from ".";
-
-interface ButtonProps {
-    size?: string | number;
-    variant?: "text" | "outlined" | "contained";
-    color?: "primary" | "secondary";
-    text: string;
-    children?: ReactElement | any;
+interface Props {
+    size?: ButtonSize;
+    variant?: ButtonVariant;
+    color?: Color;
+    text?: string;
 }
 
-type CraftComponent<Props> = FunctionComponent<Props> & CraftProps;
-
-export const Button: CraftComponent<ButtonProps> = (
-    props: ButtonProps,
-): ReactElement => {
-    const {
-        size = "small",
-        variant = "contianed",
-        color = "primary",
-        text,
-        children,
-    } = props;
+export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
+    const { size, variant, color, text } = props;
 
     const {
         connectors: { connect, drag },
     } = useNode();
 
     return (
-        <MaterialButton
+        <MuiButton
             ref={(ref) => connect(drag(ref as any))}
             size={size as any}
-            variant={variant as any}
-            color={color as any}
+            variant={variant}
+            color={color}
         >
-            <div>{text}</div>
-            {children}
-        </MaterialButton>
+            {text}
+        </MuiButton>
     );
 };
 
+const defaultProps: Props = {
+    size: "small",
+    variant: "contained",
+    color: "primary",
+    text: "CLICK ME",
+};
+
+Button.defaultProps = defaultProps;
+
 Button.craft = {
-    props: {
-        size: "small",
-        variant: "contained",
-        color: "primary",
-        text: "Click me",
-    },
+    props: defaultProps,
     related: {
         settings: () => (
             <PropertiesForm
@@ -60,6 +56,36 @@ Button.craft = {
                     {
                         title: "General",
                         fields: [
+                            {
+                                id: "size",
+                                size: "small",
+                                help: "The size of the button.",
+                                type: "select",
+                                required: true,
+                                title: "Size",
+                                options: [
+                                    { value: "small", title: "Small" },
+                                    { value: "medium", title: "Medium" },
+                                    { value: "large", title: "Large" },
+                                ],
+                            },
+                            {
+                                id: "color",
+                                size: "small",
+                                help: "The color of the button.",
+                                type: "select",
+                                required: true,
+                                title: "Color",
+                                options: [
+                                    { value: "inherit", title: "Inherit" },
+                                    { value: "primary", title: "Primary" },
+                                    { value: "secondary", title: "Secondary" },
+                                    { value: "success", title: "Success" },
+                                    { value: "error", title: "Error" },
+                                    { value: "info", title: "Info" },
+                                    { value: "warning", title: "Warning" },
+                                ],
+                            },
                             {
                                 id: "text",
                                 size: "small",

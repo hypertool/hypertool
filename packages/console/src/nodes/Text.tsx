@@ -1,15 +1,15 @@
-import { CraftProps } from ".";
+import { ReactElement, useEffect, useState } from "react";
+
 import { useNode } from "@craftjs/core";
-import { FormControl, FormLabel, Slider } from "@mui/material";
-import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import ContentEditable from "react-contenteditable";
+
+import PropertiesForm from "../layouts/app-builder/panels/properties-editor/PropertiesForm";
+import { CraftComponent } from "../types";
 
 interface TextProps {
     text?: string;
     fontSize?: string | number;
 }
-
-type CraftComponent<Props> = FunctionComponent<Props> & CraftProps;
 
 export const Text: CraftComponent<TextProps> = (
     props: TextProps,
@@ -54,42 +54,12 @@ export const Text: CraftComponent<TextProps> = (
     );
 };
 
-const TextSettings: FunctionComponent = (): ReactElement => {
-    const {
-        actions: { setProp },
-        fontSize,
-    } = useNode((node) => ({
-        fontSize: node.data.props.fontSize,
-    }));
-
-    return (
-        <>
-            <FormControl size="small">
-                <FormLabel component="legend">Font size</FormLabel>
-                <Slider
-                    defaultValue={fontSize}
-                    step={1}
-                    min={7}
-                    max={50}
-                    valueLabelDisplay="auto"
-                    onChange={(_, value) => {
-                        setProp(
-                            (props: { fontSize: number | number[] }) =>
-                                (props.fontSize = value),
-                        );
-                    }}
-                />
-            </FormControl>
-        </>
-    );
-};
-
 Text.craft = {
     props: {
         text: "Sample Text",
         fontSize: 20,
     },
     related: {
-        settings: TextSettings,
+        settings: PropertiesForm,
     },
 };

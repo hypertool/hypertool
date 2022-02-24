@@ -1,3 +1,5 @@
+import type { FunctionComponent } from "react";
+
 import { constants } from "@hypertool/common";
 
 const { resourceStatuses, resourceTypes } = constants;
@@ -72,3 +74,22 @@ export interface FormFieldGroup {
 export interface FormDescription {
     groups: FormFieldGroup[];
 }
+
+export interface CraftProps {
+    craft: any;
+}
+
+export type CraftComponent<P> = FunctionComponent<P> & CraftProps;
+
+export type Color =
+    | "inherit"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "error"
+    | "info"
+    | "warning";
+
+export type ButtonVariant = "text" | "outlined" | "contained";
+
+export type ButtonSize = "small" | "medium" | "large";

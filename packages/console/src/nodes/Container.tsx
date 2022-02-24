@@ -4,15 +4,13 @@ import { FormControl, FormLabel, Paper, Slider } from "@mui/material";
 
 import { useNode } from "@craftjs/core";
 
-import { CraftProps } from ".";
+import { CraftComponent } from "../types";
 
 interface ContainerProps {
     background?: string;
     padding?: string | number;
     children?: ReactElement | any;
 }
-
-type CraftComponent<Props> = FunctionComponent<Props> & CraftProps;
 
 export const Container: CraftComponent<ContainerProps> = (
     props: ContainerProps,

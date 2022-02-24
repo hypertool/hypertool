@@ -1,12 +1,14 @@
-import { Element, useEditor } from "@craftjs/core";
+import { Grid, Button as MaterialButton, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
 import {
     AddBoxOutlined,
     AddBoxTwoTone,
     FormatShapes,
     TextFields,
 } from "@mui/icons-material";
-import { Grid, Button as MaterialButton, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+
+import { Element, useEditor } from "@craftjs/core";
 
 import { Button, Card, Container, Text } from "../../../nodes";
 
@@ -35,12 +37,7 @@ const Components = () => {
             </Grid>
             <Grid item={true} xs={6}>
                 <ItemButton
-                    ref={(ref) =>
-                        connectors.create(
-                            ref as any,
-                            <Button text="Click me" size="small" />,
-                        )
-                    }
+                    ref={(ref) => connectors.create(ref as any, <Button />)}
                     variant="contained"
                 >
                     <FormatShapes fontSize="large" />
