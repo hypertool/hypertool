@@ -21,6 +21,13 @@ import { Formik } from "formik";
 
 import { TextField } from "../../../../components";
 
+const DecoratedForm = styled("form")(({ theme }) => ({
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    padding: theme.spacing(2),
+}));
+
 const DecoratedChip = styled(Chip)(({ theme }) => ({
     margin: 2,
     fontWeight: 500,
@@ -455,14 +462,7 @@ const PropertiesForm: FunctionComponent<Props> = (
                     onSubmit={async () => null}
                     validationSchema={validationSchema}
                 >
-                    <div
-                        style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            width: "100%",
-                            padding: 16,
-                        }}
-                    >
+                    <DecoratedForm>
                         {groups.map((group: FormFieldGroup) => (
                             <>
                                 {group.fields.map(
@@ -534,7 +534,7 @@ const PropertiesForm: FunctionComponent<Props> = (
                                 )}
                             </>
                         ))}
-                    </div>
+                    </DecoratedForm>
                 </Formik>
             </LocalizationProvider>
         </>
