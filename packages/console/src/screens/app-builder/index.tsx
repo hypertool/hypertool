@@ -1,18 +1,14 @@
-import { Element, Frame } from "@craftjs/core";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
+
 import { styled } from "@mui/material/styles";
-import {
-    FunctionComponent,
-    ReactElement,
-    useCallback,
-    useEffect,
-    useState,
-} from "react";
+
+import { Element, Frame } from "@craftjs/core";
 
 import { useQueryParams } from "../../hooks";
-import { Card, Container, Text } from "../../nodes";
+import { Button, Card, Container, Text } from "../../nodes";
 
+import CanvasViewport from "./CanvasViewport";
 import CodeEditor from "./CodeEditor";
-import EditorDrawer from "./EditorDrawer";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -26,8 +22,6 @@ const Root = styled("section")(({ theme }) => ({
 type modes = "design" | "code";
 
 const AppBuilder: FunctionComponent = (): ReactElement => {
-    const [drawerOpen, setDrawerOpen] = useState(true);
-
     const [mode, setMode] = useState<modes>("design");
     const params = useQueryParams();
 
@@ -37,35 +31,30 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         }
     }, [params, mode]);
 
-    const handleDrawerClose = useCallback(() => {
-        setDrawerOpen(false);
-    }, []);
-
     useEffect(() => {
-        if (drawerOpen) {
-            document.title = "App Builder | Hypertool";
-        } else {
-            document.title = "Edit Source | Hypertool";
-        }
-    }, [drawerOpen]);
+        document.title = "App Builder | Hypertool";
+    }, []);
 
     return (
         <Root>
             {mode === "code" && <CodeEditor />}
-            <EditorDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
-            <Frame>
-                <Element
-                    is={Container}
-                    padding={5}
-                    background="#333"
-                    canvas={true}
-                >
-                    <Card />
-                    <Container padding={6} background="#999">
-                        <Text text="It's me again!" />
-                    </Container>
-                </Element>
-            </Frame>
+            <CanvasViewport>
+                <Frame>
+                    <Element is={Container} padding={4} canvas={true}>
+                        <Card />
+                        <Button text="Click me" size="small" />
+                        <Text fontSize={20} text="Hi world!" />
+                        <Element
+                            canvas
+                            is={Container}
+                            padding={6}
+                            background="#999999"
+                        >
+                            <Text fontSize="small" text="It's me again!" />
+                        </Element>
+                    </Element>
+                </Frame>
+            </CanvasViewport>
         </Root>
     );
 };

@@ -1,19 +1,15 @@
-import { Editor } from "@craftjs/core";
-import { styled } from "@mui/material/styles";
 import type { FunctionComponent, ReactElement } from "react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+
+import { styled } from "@mui/material/styles";
+
+import { Editor } from "@craftjs/core";
 import { Outlet } from "react-router-dom";
 
-import {
-    Button,
-    Card,
-    CardBottom,
-    CardTop,
-    Container,
-    Text,
-} from "../../nodes";
+import { nodeMappings } from "../../nodes";
 
-import { AppBar, NavigationDrawer } from "./navigation";
+import { RenderNode } from "./RenderNode";
+import { AppBar, LeftDrawer, RightDrawer } from "./navigation";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: (theme.palette.background as any).main,
@@ -30,34 +26,36 @@ const Main = styled("main")(({ theme }) => ({
 }));
 
 const AppBuilderLayout: FunctionComponent = (): ReactElement => {
-    const [open, setOpen] = useState(false);
+    const [leftDrawerOpen, setLeftDrawerOpen] = useState(true);
+    const [rightDrawerOpen, setRightDrawerOpen] = useState(true);
 
-    const handleDrawerOpen = () => {
-        setOpen(true);
+    const handleLeftDrawerOpen = () => {
+        setLeftDrawerOpen(true);
     };
 
-    const handleDrawerClose = () => {
-        setOpen(false);
+    const handleLeftDrawerClose = () => {
+        setLeftDrawerOpen(false);
     };
+
+    const handleRightDrawerClose = useCallback(() => {
+        setRightDrawerOpen(false);
+    }, []);
 
     return (
-        <Editor
-            resolver={{ Card, Button, Text, Container, CardBottom, CardTop }}
-        >
+        <Editor resolver={nodeMappings} onRender={RenderNode}>
             <Root>
-                <AppBar open={open} />
-                <NavigationDrawer
-                    open={open}
-                    onDrawerOpen={handleDrawerOpen}
-                    onDrawerClose={handleDrawerClose}
+                <AppBar open={leftDrawerOpen} />
+                <LeftDrawer
+                    open={leftDrawerOpen}
+                    onDrawerOpen={handleLeftDrawerOpen}
+                    onDrawerClose={handleLeftDrawerClose}
                 />
                 <Main>
                     <Outlet />
                 </Main>
-                <NavigationDrawer
-                    open={open}
-                    onDrawerOpen={handleDrawerOpen}
-                    onDrawerClose={handleDrawerClose}
+                <RightDrawer
+                    open={rightDrawerOpen}
+                    onDrawerClose={handleRightDrawerClose}
                 />
             </Root>
         </Editor>

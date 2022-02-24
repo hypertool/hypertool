@@ -10,3 +10,65 @@ export interface AuthenticationServicesType {
     name: string;
     description: string;
 }
+
+export interface FormField {
+    id: string;
+    type:
+        | "text"
+        | "large_text"
+        | "number"
+        | "date"
+        | "time"
+        | "date_time"
+        | "switch"
+        | "date_range"
+        | "select"
+        | "multi_select"
+        | "email_address"
+        | "phone_number";
+    help: string;
+}
+
+export interface FormSelectOption {
+    value: string;
+    title: string;
+}
+
+export interface FormSelect extends FormField {
+    required: boolean;
+    title: string;
+    options: FormSelectOption[];
+    size: "small" | "medium";
+    variant: "standard" | "outlined" | "filled";
+}
+
+export interface FormTextField extends FormField {
+    required: boolean;
+    title: string;
+    variant: "standard" | "outlined" | "filled";
+    size: "small" | "medium" | "large";
+}
+
+export interface FormLargeTextField extends FormTextField {
+    rows?: number;
+}
+
+export interface FormSwitch extends FormField {
+    title: string;
+    size: "small" | "medium";
+}
+
+export type FormFieldType =
+    | FormSelect
+    | FormTextField
+    | FormLargeTextField
+    | FormSwitch;
+
+export interface FormFieldGroup {
+    title: string;
+    fields: FormFieldType[];
+}
+
+export interface FormDescription {
+    groups: FormFieldGroup[];
+}

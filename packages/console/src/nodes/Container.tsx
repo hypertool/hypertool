@@ -1,7 +1,10 @@
-import { CraftProps } from ".";
-import { useNode } from "@craftjs/core";
-import { FormControl, FormLabel, Paper, Slider } from "@mui/material";
 import { FunctionComponent, ReactElement } from "react";
+
+import { FormControl, FormLabel, Paper, Slider } from "@mui/material";
+
+import { useNode } from "@craftjs/core";
+
+import { CraftProps } from ".";
 
 interface ContainerProps {
     background?: string;
@@ -56,8 +59,13 @@ export const ContainerSettings: FunctionComponent = (): ReactElement => {
 };
 
 export const ContainerDefaultProps = {
-    background: "#333",
-    padding: 3,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    width: "100%",
+    background: "#242424",
+    margin: "8px",
 };
 
 Container.craft = {
