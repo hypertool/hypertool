@@ -5,6 +5,12 @@
             "mode": "auto"
         }
     ],
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "html",
+        "typescriptreact"
+    ],
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.rulers": [80],
     "editor.formatOnSave": true,

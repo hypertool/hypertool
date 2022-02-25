@@ -6,23 +6,32 @@
     "author": "Hypertool <contact@hypertool.io>",
     "license": "MIT",
     "private": true,
+    "engines": {
+        "node": ">=8.5.0"
+    },
     "workspaces": [
         "packages/*"
     ],
     "scripts": {
         "format": "prettier --write .",
+        "lint": "eslint --fix .",
         "build": "lerna run build",
         "test": "lerna run test",
         "prepare": "husky install",
         "pre-commit": "lint-staged"
     },
     "devDependencies": {
+        "@trivago/prettier-plugin-sort-imports": "^3.2.0",
         "commitizen": "^4.2.4",
+        "eslint": "^8.9.0",
+        "eslint-config": "^0.3.0",
+        "eslint-config-prettier": "^8.4.0",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-prettier": "^4.0.0",
         "husky": "^7.0.0",
         "lerna": "^4.0.0",
         "lint-staged": "^12.1.2",
-        "prettier": "^2.5.0",
-        "@trivago/prettier-plugin-sort-imports": "^3.2.0"
+        "prettier": "^2.5.0"
     },
     "peerDependencies": {},
     "config": {
@@ -32,7 +41,9 @@
     },
     "lint-staged": {
         "*.{js,ts,jsx,tsx,scss,css,md,yaml}": [
-            "prettier --write"
+            "prettier --write",
+            "eslint --fix"
         ]
-    }
+    },
+    "dependencies": {}
 }
