@@ -22,6 +22,10 @@ export interface Props {
         | "space-between"
         | "space-around"
         | "space-evenly";
+    alignItems?: "flex-start" | "flex-end" | "center" | "stretch" | "baseline";
+    gap?: string | number;
+    rowGap?: string | number;
+    columnGap?: string | number;
 }
 
 const FlexLayout: CraftComponent<Props> = (props: Props): ReactElement => {
@@ -39,6 +43,10 @@ const FlexLayout: CraftComponent<Props> = (props: Props): ReactElement => {
         direction,
         wrap,
         justifyContent,
+        alignItems,
+        gap,
+        rowGap,
+        columnGap,
     } = props;
 
     return (
@@ -57,6 +65,10 @@ const FlexLayout: CraftComponent<Props> = (props: Props): ReactElement => {
                     height: 400,
                     flexWrap: wrap,
                     justifyContent,
+                    alignItems,
+                    gap: parseInt(gap as any, 10),
+                    rowGap: parseInt(rowGap as any, 10),
+                    columnGap: parseInt(columnGap as any, 10),
                 }}
             >
                 {children}
@@ -75,6 +87,10 @@ const defaultProps = {
     direction: "row",
     wrap: "nowrap",
     justifyContent: "flex-start",
+    alignItems: "flex-start",
+    gap: 0,
+    rowGap: 0,
+    columnGap: 0,
 };
 
 FlexLayout.craft = {
@@ -191,6 +207,48 @@ FlexLayout.craft = {
                                         title: "Space Evenly",
                                     },
                                 ],
+                            },
+                            {
+                                id: "alignItems",
+                                size: "small",
+                                help: "The alignment along the cross axis.",
+                                type: "select",
+                                required: true,
+                                title: "Cross Axis Alignment",
+                                options: [
+                                    { value: "flex-start", title: "Start" },
+                                    { value: "flex-end", title: "End" },
+                                    { value: "center", title: "Center" },
+                                    {
+                                        value: "stretch",
+                                        title: "Stretch",
+                                    },
+                                    {
+                                        value: "baseline",
+                                        title: "Baseline",
+                                    },
+                                ],
+                            },
+                            {
+                                id: "gap",
+                                title: "Gap",
+                                type: "number",
+                                size: "small",
+                                help: "The space between the items.",
+                            },
+                            {
+                                id: "rowGap",
+                                title: "Row Gap",
+                                type: "number",
+                                size: "small",
+                                help: "The space between the rows.",
+                            },
+                            {
+                                id: "columnGap",
+                                title: "Column Gap",
+                                type: "number",
+                                size: "small",
+                                help: "The space between the columns.",
                             },
                         ],
                     },
