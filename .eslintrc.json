@@ -8,41 +8,105 @@
         "allowImportExportEverywhere": true
     },
     "rules": {
-        "prettier/prettier": "error",
-        "no-unused-vars": "warn",
-        "no-console": ["warn", { "allow": ["warn", "error"] }],
-        "no-debugger": "warn",
-        "no-unused-expressions": "warn",
+        /**
+         * The following rules fix possible problems. (STRICTLY ENFORCED)
+         */
+
+        // Disallows unused variables
+        "no-unused-vars": "error",
+        // Disallows use of undeclared variables
         "no-undef": "error",
-        "func-names": "off",
-        "prefer-destructuring": ["error", { "object": true, "array": false }],
-        "node/no-unsupported-features/es-syntax": [
-            "error",
-            { "ignores": ["modules"] }
-        ],
-        // Disallows process.exit()
-        "no-process-exit": "off",
-        // Disallows the use of with statements and function expressions.
-        "no-restricted-syntax": [
-            "error",
-            "WithStatement",
-            "FunctionExpression"
-        ],
+        // Disallows use of variables before they are defined
+        "no-use-before-define": "error",
         // Disallows await in loop which might slow down processes.
-        "no-await-in-loop": "off",
+        "no-await-in-loop": "error",
+        // Disallows irregular whitespace outside of strings and comments.
+        "no-irregular-whitespace": "error",
+        // Disallows unreachable code after return, throw, continue, and break statements.
+        "no-unreachable": "error",
+        // Enforces "for" loop update clause moving the counter in the right direction.
+        "for-direction": "error",
+        // Disallows reassigning class members.
+        "no-class-assign": "error",
+        // Disallows debugger statements
+        "no-debugger": "error",
+        // Disallows control characters in regular expressions.
+        "no-control-regex": "error",
+        // Disallows returning values from setters.
+        "no-return-assign": "error",
+        // Disallows returning values from constructor functions.
+        "no-constructor-return": "error",
+        // Disallows duplicate case labels in switch statements.
+        "no-dupe-case": "error",
+        // Disallows duplicate arguments in functions.
+        "no-dupe-args": "error",
+        // Disallows duplicate conditions in if-else-if chains.
+        "no-dupe-else-if": "error",
+        // Disallows reassigning const variables.
+        "no-const-assign": "error",
+        // Disallow empty destructuring patterns.
+        "no-empty-pattern": "error",
+        // Disallow invalid regular expression strings in RegExp constructors.
+        "no-invalid-regexp": "error",
+        // Disallow duplicate imports.
+        "no-duplicate-imports": "error",
+        // Disallow duplicate keys in object literals.
+        "no-dupe-keys": "error",
+
+        /**
+         * The following rules provide alternative solutions. (OPTIONAL)
+         */
+
+        // Disallows console logs
+        "no-console": ["warn", { "allow": ["warn", "error"] }],
+        // Disallows unused expressions
+        "no-unused-expressions": "warn",
+        // Disallows initializing variables to `undefined`
+        "no-undef-init": "warn",
+        // Disallows use of undefined variable
+        "no-undefined": "warn",
+        // Disallow named `function` expressions
+        "func-names": "warn",
+        // Require destructuring from arrays and/or objects
+        "prefer-destructuring": ["warn", { "object": true, "array": false }],
+        // Disallows the use of with statements and function expressions.
+        "no-restricted-syntax": ["warn", "WithStatement", "FunctionExpression"],
         // Disallows using this/super inside methods.
         "object-shorthand": "off",
         // Enforces using this/super inside methods.
         "class-methods-use-this": "off",
         // Disallows comments that are not a multiline comment.
         "multiline-comment-style": ["warn", "starred-block"],
-        // Disallows irregular whitespace outside of strings and comments.
-        "no-irregular-whitespace": "warn",
         // Disallows trailing whitespace at the end of lines.
         "no-trailing-spaces": "warn",
-        // Disallows unreachable code after return, throw, continue, and break statements.
-        "no-unreachable": "error",
+
+        /**
+         * The following rules are for layout and formating. (ENFORCED)
+         */
+
+        // Prettier integration with ESLint
+        "prettier/prettier": "error",
         // Disallows multiple newlines in a row.
-        "no-multiple-empty-lines": "warn"
+        "no-multiple-empty-lines": "error",
+        // Enforces consistent spacing inside braces.
+        "object-curly-spacing": ["error", "always"],
+        // Enforces consistent spacing inside single-line blocks.
+        "block-spacing": ["error", "always"],
+        // Enforces consistent spacing before and after keywords.
+        "keyword-spacing": ["error", { "before": true, "after": true }],
+        // Enforces consistent spacing before and after commas.
+        "comma-spacing": ["error", { "before": false, "after": true }],
+        // Enforces consistent spacing before and after semicolons.
+        "semi-spacing": ["error", { "before": false, "after": true }],
+        // Enforces consistent spacing before and after unary operators
+        "space-unary-ops": ["error", { "words": true, "nonwords": false }],
+        // Enforces consistent spacing inside parentheses.
+        "space-in-parens": ["error", "never"],
+        // Enforces consistent indentation, even inside nested structures
+        "indent": ["error", 4],
+        // Disallows all tabs.
+        "no-tabs": "error",
+        // Enforce consistent line breaks inside function parentheses.
+        "function-paren-newline": ["error", "never"]
     }
 }
