@@ -72,9 +72,9 @@ const PropertiesForm: FunctionComponent<Props> = (
     const makeChangeHandler =
         (field: FormField, valueField: "value" | "checked" = "value") =>
         (event: any) => {
-            setProp(
-                (props: any) => (props[field.id] = event.target[valueField]),
-            );
+            setProp((props: any) => {
+                props[field.id] = event.target[valueField];
+            });
         };
 
     const renderSelect = (field: FormSelect): ReactElement => (
@@ -425,6 +425,7 @@ const PropertiesForm: FunctionComponent<Props> = (
             <LocalizationProvider dateAdapter={DateAdapter}>
                 <Formik
                     initialValues={componentProps}
+                    enableReinitialize={true}
                     onSubmit={async () => null}
                     validationSchema={validationSchema}
                 >
