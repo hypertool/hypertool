@@ -15,6 +15,13 @@ export interface Props {
     children?: ReactElement;
     direction?: "row" | "row-reverse" | "column" | "column-reverse";
     wrap?: "nowrap" | "wrap" | "wrap-reverse";
+    justifyContent?:
+        | "flex-start"
+        | "flex-end"
+        | "center"
+        | "space-between"
+        | "space-around"
+        | "space-evenly";
 }
 
 const FlexLayout: CraftComponent<Props> = (props: Props): ReactElement => {
@@ -31,6 +38,7 @@ const FlexLayout: CraftComponent<Props> = (props: Props): ReactElement => {
         children,
         direction,
         wrap,
+        justifyContent,
     } = props;
 
     return (
@@ -48,6 +56,7 @@ const FlexLayout: CraftComponent<Props> = (props: Props): ReactElement => {
                     width: 400,
                     height: 400,
                     flexWrap: wrap,
+                    justifyContent,
                 }}
             >
                 {children}
@@ -65,6 +74,7 @@ const defaultProps = {
     paddingBottom: 0,
     direction: "row",
     wrap: "nowrap",
+    justifyContent: "flex-start",
 };
 
 FlexLayout.craft = {
@@ -154,6 +164,31 @@ FlexLayout.craft = {
                                     {
                                         value: "wrap-reverse",
                                         title: "Wrap Reverse",
+                                    },
+                                ],
+                            },
+                            {
+                                id: "justifyContent",
+                                size: "small",
+                                help: "The alignment along the main axis.",
+                                type: "select",
+                                required: true,
+                                title: "Main Axis Alignment",
+                                options: [
+                                    { value: "flex-start", title: "Start" },
+                                    { value: "flex-end", title: "End" },
+                                    { value: "center", title: "Center" },
+                                    {
+                                        value: "space-between",
+                                        title: "Space Between",
+                                    },
+                                    {
+                                        value: "space-around",
+                                        title: "Space Around",
+                                    },
+                                    {
+                                        value: "space-evenly",
+                                        title: "Space Evenly",
                                     },
                                 ],
                             },
