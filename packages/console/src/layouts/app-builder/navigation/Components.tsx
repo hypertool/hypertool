@@ -10,7 +10,7 @@ import {
 
 import { Element, useEditor } from "@craftjs/core";
 
-import { Button, Card, Container, Text } from "../../../nodes";
+import { Button, Card, FlexLayout, Text } from "../../../nodes";
 
 const ContianerGrid = styled(Grid)(({ theme }) => ({
     padding: theme.spacing(2),
@@ -58,17 +58,13 @@ const Components = () => {
                     ref={(ref) =>
                         connectors.create(
                             ref as any,
-                            <Element
-                                is={Container}
-                                padding={20}
-                                canvas={true}
-                            />,
+                            <Element is={FlexLayout} canvas={true} />,
                         )
                     }
                     variant="contained"
                 >
                     <AddBoxOutlined fontSize="large" />
-                    Container
+                    Flex Layout
                 </ItemButton>
             </Grid>
             <Grid item={true} xs={6}>
