@@ -5,11 +5,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
 import fs from "fs";
+import glob from "glob";
 import path from "path";
 import { URL } from "url";
-import glob from "glob";
 
 /**
  * Returns a URL or a path with slash at the end.

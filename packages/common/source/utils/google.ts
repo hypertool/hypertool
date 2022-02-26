@@ -1,8 +1,7 @@
 import type { GetSignedUrlConfig } from "@google-cloud/storage";
-
-import { OAuth2Client } from "google-auth-library";
 import { Storage } from "@google-cloud/storage";
 import axios from "axios";
+import { OAuth2Client } from "google-auth-library";
 import mimeTypes from "mime-types";
 
 import * as constants from "./constants";

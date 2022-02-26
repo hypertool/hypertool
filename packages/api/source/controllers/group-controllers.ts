@@ -1,14 +1,14 @@
-import type { Document } from "mongoose";
-import type { Group, GroupPage, ExternalGroup } from "@hypertool/common";
+import type { ExternalGroup, Group, GroupPage } from "@hypertool/common";
+import {
+    BadRequestError,
+    GroupModel,
+    NotFoundError,
+    constants,
+    extractIds,
+} from "@hypertool/common";
 
 import joi from "joi";
-import {
-    constants,
-    BadRequestError,
-    NotFoundError,
-    extractIds,
-    GroupModel,
-} from "@hypertool/common";
+import type { Document } from "mongoose";
 
 const createSchema = joi.object({
     name: joi.string().max(256).allow(""),

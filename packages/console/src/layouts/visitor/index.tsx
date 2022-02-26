@@ -1,5 +1,7 @@
-import { styled } from "@mui/material/styles";
 import type { FunctionComponent, ReactElement } from "react";
+
+import { styled } from "@mui/material/styles";
+
 import { Outlet } from "react-router-dom";
 
 import { AppBar } from "./navigation";

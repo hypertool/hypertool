@@ -1,8 +1,12 @@
-import { Grid, Typography, Button, ButtonGroup } from "@mui/material";
+import { Button, ButtonGroup, Grid, Typography } from "@mui/material";
 
 const MyGrid = (props: any) => {
-    return <Grid container={true} {...props}>{props.children}</Grid>;
-}
+    return (
+        <Grid container={true} {...props}>
+            {props.children}
+        </Grid>
+    );
+};
 
 const GridItem = (props: any) => {
     console.log(props);
@@ -10,12 +14,15 @@ const GridItem = (props: any) => {
 };
 
 const Box = () => {
-    return <div style={{
-        backgroundColor: "black",
-        height: 400,
-        width: "100%"
-    }}>
-    </div>;
+    return (
+        <div
+            style={{
+                backgroundColor: "black",
+                height: 400,
+                width: "100%",
+            }}
+        ></div>
+    );
 };
 
 const components: any = {
@@ -24,7 +31,7 @@ const components: any = {
     text: Typography,
     box: Box,
     button: Button,
-    button_group: ButtonGroup
+    button_group: ButtonGroup,
 };
 
 const renderChild = (child: any) => {
@@ -32,7 +39,7 @@ const renderChild = (child: any) => {
         return child.payload;
     }
     return render(child.payload);
-}
+};
 
 const prepareProps = (attributes: any[]) => {
     const props: any = {};
@@ -47,9 +54,11 @@ const render = (node: any) => {
     if (!Component) {
         console.log(node.tagName, "not found", node);
     }
-    return <Component {...prepareProps(node.attributes)}>
+    return (
+        <Component {...prepareProps(node.attributes)}>
             {node.children.map(renderChild)}
-        </Component>;
+        </Component>
+    );
 };
 
 const LayoutRenderer = (props: any) => {

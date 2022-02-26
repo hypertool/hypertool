@@ -1,18 +1,20 @@
 import type { FunctionComponent, ReactElement } from "react";
-
 import { useCallback } from "react";
-import { styled } from "@mui/material/styles";
+
 import {
     AppBar,
-    Toolbar,
     Button,
     Icon,
-    Typography,
-    TextField,
     InputAdornment,
+    TextField,
+    Toolbar,
+    Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router";
+import { styled } from "@mui/material/styles";
+
 import { gql, useQuery } from "@apollo/client";
+
+import { useNavigate } from "react-router";
 
 import ResourcesTable from "./ResourcesTable";
 

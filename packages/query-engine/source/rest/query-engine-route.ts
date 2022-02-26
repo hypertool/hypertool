@@ -1,5 +1,6 @@
-import type { Router, Request, Response, NextFunction } from "express";
 import { constants } from "@hypertool/common";
+
+import type { NextFunction, Request, Response, Router } from "express";
 
 import { queryEngine } from "../controllers";
 

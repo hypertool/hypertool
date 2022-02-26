@@ -1,4 +1,4 @@
-import type { Router, Request, Response, NextFunction } from "express";
+import type { NextFunction, Request, Response, Router } from "express";
 
 const attachRoutes = (router: Router): void => {
     router.get("/statuses/live", (request: Request, response: Response) => {

@@ -1,17 +1,17 @@
-import type { Document } from "mongoose";
 import type {
     ActivityLog,
-    ExternalActivityLog,
     ActivityLogPage,
+    ExternalActivityLog,
+} from "@hypertool/common";
+import {
+    ActivityLogModel,
+    BadRequestError,
+    NotFoundError,
+    constants,
 } from "@hypertool/common";
 
 import joi from "joi";
-import {
-    ActivityLogModel,
-    constants,
-    BadRequestError,
-    NotFoundError,
-} from "@hypertool/common";
+import type { Document } from "mongoose";
 
 const createSchema = joi.object({
     message: joi.string().max(512).min(1).required(),

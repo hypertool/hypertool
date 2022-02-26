@@ -1,6 +1,7 @@
-import joi from "joi";
-import { constants, BadRequestError } from "@hypertool/common";
+import { BadRequestError, constants } from "@hypertool/common";
+
 import axios from "axios";
+import joi from "joi";
 
 const { QUERY_ENGINE_URL } = process.env;
 

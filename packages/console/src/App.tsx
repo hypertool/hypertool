@@ -1,5 +1,7 @@
-import { styled } from "@mui/material/styles";
 import type { FunctionComponent, ReactElement } from "react";
+
+import { styled } from "@mui/material/styles";
+
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { AppBuilderLayout, VisitorLayout, WorkspaceLayout } from "./layouts";

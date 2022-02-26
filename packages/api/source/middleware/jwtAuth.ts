@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-
 import { UserModel, constants } from "@hypertool/common";
+
+import { NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken";
 
 const jwtAuth = async (
     request: Request,

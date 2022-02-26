@@ -1,4 +1,5 @@
 import { assert } from "chai";
+
 import { MembershipModel } from "../../source/models";
 import { assertThrowsAsync, memberships } from "../helper";
 

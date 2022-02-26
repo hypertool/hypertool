@@ -1,14 +1,14 @@
 import bodyParser from "body-parser";
+import cors from "cors";
 import express from "express";
 import logger from "morgan";
-import cors from "cors";
 
-import { queryEngine } from "./rest";
 import {
     queryBadRequestError,
     queryNotFoundError,
     queryUnauthorizedError,
 } from "./middleware";
+import { queryEngine } from "./rest";
 
 const initialize = async () => {
     const app = express();

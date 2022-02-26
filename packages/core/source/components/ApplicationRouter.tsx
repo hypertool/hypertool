@@ -1,7 +1,7 @@
 import type { FunctionComponent, ReactElement } from "react";
-
 import React, { Suspense } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import type { Hypertool, Route as HypertoolRoute } from "../types";
 
