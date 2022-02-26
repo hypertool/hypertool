@@ -47,11 +47,6 @@
         "test:watch": "SKIP_PREFLIGHT_CHECK=true react-scripts test --watchAll=true --passWithNoTests",
         "eject": "SKIP_PREFLIGHT_CHECK=true react-scripts eject"
     },
-    "eslintConfig": {
-        "extends": [
-            "react-app"
-        ]
-    },
     "browserslist": {
         "production": [
             ">0.2%",
