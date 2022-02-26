@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-import { IArtifactsContext } from "../../types";
+import { IArtifactsContext } from "../types";
 
 const ArtifactsContext = createContext<IArtifactsContext>({});
 

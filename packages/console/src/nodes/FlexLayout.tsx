@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 
 import { useNode } from "@craftjs/core";
 
-import PropertiesForm from "../layouts/app-builder/panels/properties-editor/PropertiesForm";
+import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import { CraftComponent } from "../types";
 
 export interface Props {
@@ -69,8 +69,7 @@ const FlexLayout: CraftComponent<Props> = (props: Props): ReactElement => {
                     gap: parseInt(gap as any, 10),
                     rowGap: parseInt(rowGap as any, 10),
                     columnGap: parseInt(columnGap as any, 10),
-                }}
-            >
+                }}>
                 {children}
             </div>
         </div>

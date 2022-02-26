@@ -1,12 +1,11 @@
-import { ReactElement, useCallback } from "react";
-import { useContext } from "react";
+import type { ReactElement } from "react";
 
 import { Button as MuiButton } from "@mui/material";
 
 import { useNode } from "@craftjs/core";
 
 import { useArtifactReference } from "../hooks";
-import PropertiesForm from "../layouts/app-builder/panels/properties-editor/PropertiesForm";
+import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
     ButtonSize,
     ButtonVariant,

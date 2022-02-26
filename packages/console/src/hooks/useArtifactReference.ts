@@ -2,7 +2,7 @@ import { useContext } from "react";
 
 import lodash from "lodash";
 
-import ArtifactsContext from "../screens/app-builder/ArtifactsContext";
+import { ArtifactsContext } from "../contexts";
 
 const useArtifactReference = (
     artifactId: string,

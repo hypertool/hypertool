@@ -1,1 +1,3 @@
-export * from "./AppBuilder";
+import AppBuilder from "./AppBuilder";
+
+export default AppBuilder;
