@@ -1,1 +1,2 @@
-export { default as useQueryParams } from "../hooks/useQueryParams";
+export { default as useQueryParams } from "./useQueryParams";
+export { default as useArtifactReference } from "./useArtifactReference";
