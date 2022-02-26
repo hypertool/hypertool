@@ -114,3 +114,7 @@ export interface IArtifact extends IDeflatedArtifact {
      */
     object: any;
 }
+
+export interface IArtifactsContext {
+    [artifactId: string]: IArtifact;
+}

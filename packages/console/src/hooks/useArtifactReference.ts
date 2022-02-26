@@ -2,7 +2,7 @@ import { useContext } from "react";
 
 import lodash from "lodash";
 
-import ArtifactContext from "../screens/app-builder/ArtifactContext";
+import ArtifactsContext from "../screens/app-builder/ArtifactsContext";
 
 const useArtifactReference = (
     artifactId: string,
@@ -12,7 +12,7 @@ const useArtifactReference = (
         return undefined;
     }
 
-    const artifacts = useContext(ArtifactContext);
+    const artifacts = useContext(ArtifactsContext);
     const artifact = artifacts[artifactId];
     if (!artifact) {
         throw new Error(`Cannot find artifact with ID "${artifactId}"`);
