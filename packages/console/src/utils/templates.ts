@@ -1,7 +1,11 @@
 export const CONTROLLER_TEMPLATE = `
-export default {
-    handlers: {
-
+(function initializer() {
+    function myHandler() {
+        console.log("You clicked me.");
     }
-}
+
+    return {
+        myHandler
+    };
+})
 `;
