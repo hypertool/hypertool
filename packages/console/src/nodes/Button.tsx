@@ -1,10 +1,12 @@
-import type { ReactElement } from "react";
+import { ReactElement, useCallback } from "react";
+import { useContext } from "react";
 
 import { Button as MuiButton } from "@mui/material";
 
 import { useNode } from "@craftjs/core";
 
 import PropertiesForm from "../layouts/app-builder/panels/properties-editor/PropertiesForm";
+import EvaluationContext from "../screens/app-builder/EvaluationContext";
 import type {
     ButtonSize,
     ButtonVariant,
@@ -21,6 +23,7 @@ interface Props {
     disableElevation?: boolean;
     disableFocusRipple?: boolean;
     disableRipple?: boolean;
+    onClick?: string;
 }
 
 export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
@@ -33,11 +36,22 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
         disableElevation,
         disableFocusRipple,
         disableRipple,
+        onClick,
     } = props;
+    const evaluations = useContext(EvaluationContext) || {
+        anonymous: {},
+    };
 
     const {
         connectors: { connect, drag },
     } = useNode();
+
+    const handleClick = useCallback(() => {
+        const callback = evaluations["anonymous"]?.[onClick ?? ""];
+        if (callback) {
+            callback();
+        }
+    }, [evaluations, onClick]);
 
     return (
         <div ref={(ref) => connect(drag(ref as any))}>
@@ -49,7 +63,7 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
                 disableElevation={disableElevation}
                 disableFocusRipple={disableFocusRipple}
                 disableRipple={disableRipple}
-            >
+                onClick={handleClick}>
                 {text}
             </MuiButton>
         </div>
@@ -65,6 +79,7 @@ const defaultProps: Props = {
     disableElevation: false,
     disableFocusRipple: false,
     disableRipple: false,
+    onClick: "",
 };
 
 Button.defaultProps = defaultProps;
@@ -143,6 +158,14 @@ Button.craft = {
                                 type: "text",
                                 required: true,
                                 title: "Text",
+                            },
+                            {
+                                id: "onClick",
+                                size: "small",
+                                help: "The name of the callback to invoke on click.",
+                                type: "text",
+                                required: true,
+                                title: "On Click",
                             },
                             {
                                 id: "variant",
