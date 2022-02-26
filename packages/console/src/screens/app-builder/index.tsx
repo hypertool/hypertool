@@ -1,14 +1,17 @@
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
+import { useMemo } from "react";
 
 import { styled } from "@mui/material/styles";
 
 import { Element, Frame } from "@craftjs/core";
 
 import { useQueryParams } from "../../hooks";
-import { Button, Card, Container, Text } from "../../nodes";
+import { Button, Container, Text } from "../../nodes";
+import { templates } from "../../utils";
 
 import CanvasViewport from "./CanvasViewport";
 import CodeEditor from "./CodeEditor";
+import EvaluationContext from "./EvaluationContext";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -19,11 +22,14 @@ const Root = styled("section")(({ theme }) => ({
     padding: theme.spacing(0),
 }));
 
-type modes = "design" | "code";
+type Modes = "design" | "code";
 
 const AppBuilder: FunctionComponent = (): ReactElement => {
-    const [mode, setMode] = useState<modes>("design");
+    const [mode, setMode] = useState<Modes>("design");
     const params = useQueryParams();
+    const [editorValue, setEditorValue] = useState<string | undefined>(
+        templates.CONTROLLER_TEMPLATE,
+    );
 
     useEffect(() => {
         if ((params as any).mode && (params as any).mode !== mode) {
@@ -35,26 +41,41 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         document.title = "App Builder | Hypertool";
     }, []);
 
+    const evaluations = useMemo(() => {
+        let evaluation: any = {};
+        try {
+            // eslint-disable-next-line no-eval
+            evaluation = eval(editorValue ?? "");
+            console.log("Eval", evaluation);
+        } catch (error) {
+            console.log("Error", error);
+        }
+        return {
+            anonymous: evaluation,
+        };
+    }, [editorValue]);
+
     return (
         <Root>
-            {mode === "code" && <CodeEditor />}
-            <CanvasViewport>
-                <Frame>
-                    <Element is={Container} padding={4} canvas={true}>
-                        <Card />
-                        <Button text="Click me" size="small" />
-                        <Text fontSize={20} text="Hi world!" />
-                        <Element
-                            canvas
-                            is={Container}
-                            padding={6}
-                            background="#999999"
-                        >
-                            <Text fontSize="small" text="It's me again!" />
+            {mode === "code" && (
+                <CodeEditor value={editorValue} onChange={setEditorValue} />
+            )}
+            <EvaluationContext.Provider value={evaluations}>
+                <CanvasViewport>
+                    <Frame>
+                        <Element is={Container} padding={4} canvas={true}>
+                            <Element
+                                canvas
+                                is={Container}
+                                padding={6}
+                                background="#999999">
+                                <Text fontSize="small" text="It's me again!" />
+                            </Element>
+                            <Button />
                         </Element>
-                    </Element>
-                </Frame>
-            </CanvasViewport>
+                    </Frame>
+                </CanvasViewport>
+            </EvaluationContext.Provider>
         </Root>
     );
 };

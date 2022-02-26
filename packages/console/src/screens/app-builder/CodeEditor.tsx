@@ -16,14 +16,20 @@ const Root = styled("section")(({ theme }) => ({
     padding: theme.spacing(0),
 }));
 
-const CodeEditor: FunctionComponent = (): ReactElement => {
-    const [editorValue, setEditorValue] = useState<string | undefined>(
-        templates.CONTROLLER_TEMPLATE,
-    );
+export interface Props {
+    value?: string;
+    onChange: (value?: string) => void;
+}
 
-    const handleChange = useCallback((value?: string) => {
-        setEditorValue(value);
-    }, []);
+const CodeEditor: FunctionComponent<Props> = (props: Props): ReactElement => {
+    const { value, onChange } = props;
+
+    const handleChange = useCallback(
+        (value?: string) => {
+            onChange(value);
+        },
+        [onChange],
+    );
 
     return (
         <Root>
@@ -32,7 +38,7 @@ const CodeEditor: FunctionComponent = (): ReactElement => {
                 defaultLanguage="javascript"
                 theme="vs-dark"
                 defaultValue={templates.CONTROLLER_TEMPLATE}
-                value={editorValue}
+                value={value}
                 onChange={handleChange}
             />
         </Root>
