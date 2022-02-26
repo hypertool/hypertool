@@ -5,8 +5,8 @@ import { Button as MuiButton } from "@mui/material";
 
 import { useNode } from "@craftjs/core";
 
+import { useArtifactReference } from "../hooks";
 import PropertiesForm from "../layouts/app-builder/panels/properties-editor/PropertiesForm";
-import EvaluationContext from "../screens/app-builder/EvaluationContext";
 import type {
     ButtonSize,
     ButtonVariant,
@@ -38,20 +38,10 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
         disableRipple,
         onClick,
     } = props;
-    const evaluations = useContext(EvaluationContext) || {
-        anonymous: {},
-    };
-
     const {
         connectors: { connect, drag },
     } = useNode();
-
-    const handleClick = useCallback(() => {
-        const callback = evaluations["anonymous"]?.[onClick ?? ""];
-        if (callback) {
-            callback();
-        }
-    }, [evaluations, onClick]);
+    const handleClick = useArtifactReference("anonymous", onClick);
 
     return (
         <div ref={(ref) => connect(drag(ref as any))}>
