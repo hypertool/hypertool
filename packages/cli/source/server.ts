@@ -1,9 +1,8 @@
+import portFinder from "portfinder";
+import prompts from "prompts";
 import type { Compiler } from "webpack";
 import type { Configuration } from "webpack-dev-server";
-
-import prompts from "prompts";
 import WebpackDevServer from "webpack-dev-server";
-import portFinder from "portfinder";
 
 import { getProcessForPort, isPortAvailable, isRoot, paths } from "./utils";
 

@@ -5,12 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
 import fs from "fs";
 import path from "path";
-import { truthy } from ".";
 
 import * as paths from "./paths";
+import { truthy } from ".";
 
 // Make sure that including paths.js after env.js will read .env variables.
 delete require.cache[require.resolve("./paths")];

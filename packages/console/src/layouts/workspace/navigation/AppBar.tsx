@@ -1,10 +1,10 @@
 import type { FunctionComponent, ReactElement } from "react";
-import type { AppBarProps, IconButtonProps } from "@mui/material";
 
+import type { AppBarProps, IconButtonProps } from "@mui/material";
 import {
+    IconButton,
     AppBar as MuiAppBar,
     Toolbar,
-    IconButton,
     Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";

@@ -1,8 +1,8 @@
-import { beforeEach } from "mocha";
 import { assert } from "chai";
+import { beforeEach } from "mocha";
 
 import { ActivityLogModel } from "../../source/models";
-import { assertThrowsAsync, activityLogs } from "../helper";
+import { activityLogs, assertThrowsAsync } from "../helper";
 
 describe("ActivityLog model", function () {
     let logTemplate = null;

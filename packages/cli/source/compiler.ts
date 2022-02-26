@@ -5,21 +5,20 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
-import type { Configuration, Compiler } from "webpack";
-
-import webpack from "webpack";
+import CaseSensitivePathsPlugin from "case-sensitive-paths-webpack-plugin";
 import crypto from "crypto";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import CaseSensitivePathsPlugin from "case-sensitive-paths-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import type { Compiler, Configuration } from "webpack";
+import webpack from "webpack";
 
-import { getLocalIdentifier, logger, truthy } from "./utils";
-import { env, paths } from "./utils";
 import {
     DefineHypertoolPlugin,
-    InterpolateHtmlPlugin /* ModuleScopePlugin */,
+    InterpolateHtmlPlugin,
+    /* ModuleScopePlugin */
 } from "./plugins";
+import { getLocalIdentifier, logger, truthy } from "./utils";
+import { env, paths } from "./utils";
 
 const hash = (data: any) => {
     const hash = crypto.createHash("md5");

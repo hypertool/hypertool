@@ -1,11 +1,13 @@
 import type { FunctionComponent, ReactElement } from "react";
-
 import { Fragment, useCallback } from "react";
-import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
+
+import { Divider, IconButton, List, useMediaQuery } from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
-import { List, Divider, IconButton, useMediaQuery } from "@mui/material";
+import { CSSObject, Theme, styled, useTheme } from "@mui/material/styles";
+
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+
 import { useNavigate } from "react-router";
 
 import MiniDrawerItem from "./MiniDrawerItem";

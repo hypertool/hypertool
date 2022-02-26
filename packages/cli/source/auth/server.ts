@@ -1,7 +1,6 @@
 import type { Request, Response } from "express";
-import type { Server } from "http";
-
 import express from "express";
+import type { Server } from "http";
 import open from "open";
 import path from "path";
 

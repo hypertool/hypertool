@@ -1,4 +1,5 @@
 import { NotFoundError, UserModel, constants } from "@hypertool/common";
+
 import type { Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
 

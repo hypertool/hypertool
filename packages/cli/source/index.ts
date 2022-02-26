@@ -1,16 +1,17 @@
+import { session } from "@hypertool/common";
+
 import chalk from "chalk";
 import { Command } from "commander";
 import TaskList from "listr";
-import { session } from "@hypertool/common";
-
-import { createServer } from "./server";
-import { createCompiler } from "./compiler";
-import { createProject } from "./project";
-import * as authUtils from "./auth";
-import * as manifest from "./manifest";
-import { env, logger, listFiles, fsHelper } from "./utils";
 
 import packageData from "../package.json";
+
+import * as authUtils from "./auth";
+import * as manifest from "./manifest";
+import { createCompiler } from "./compiler";
+import { createProject } from "./project";
+import { createServer } from "./server";
+import { env, fsHelper, listFiles, logger } from "./utils";
 
 const auth = async (): Promise<void> => {
     authUtils.authenticate();

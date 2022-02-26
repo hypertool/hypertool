@@ -1,13 +1,14 @@
-import dotenv from "dotenv";
-dotenv.config();
+import { AppModel, BadRequestError, NotFoundError } from "@hypertool/common";
 
-import express from "express";
-import logger from "morgan";
 import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { AppModel, NotFoundError, BadRequestError } from "@hypertool/common";
+import logger from "morgan";
 
 import { abs } from "./rest";
+
+dotenv.config();
 
 const { APP_BUNDLES_BUCKET_NAME, PROVIDER_DOMAIN } = process.env;
 

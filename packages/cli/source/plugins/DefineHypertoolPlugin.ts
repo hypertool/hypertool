@@ -1,8 +1,8 @@
-import { Compiler } from "webpack";
 import path from "path";
-
-import { paths, listFiles } from "../utils";
+import { Compiler } from "webpack";
 import { DefinePlugin } from "webpack";
+
+import { listFiles, paths } from "../utils";
 
 export const findRoutes = async () => {
     const absolutePaths = await listFiles(

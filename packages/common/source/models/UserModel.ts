@@ -3,10 +3,10 @@ import paginate from "mongoose-paginate-v2";
 
 import type { User } from "../types";
 import {
-    genders,
     countryCodes,
-    userStatuses,
+    genders,
     userRoles,
+    userStatuses,
 } from "../utils/constants";
 
 const userSchema = new Schema(

@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
-import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
+import mongoose from "mongoose";
 
 dotenv.config({
     path: `${__dirname}/../../../.env.test`,

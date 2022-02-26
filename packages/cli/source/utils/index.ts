@@ -7,14 +7,13 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
 import chalk from "chalk";
 import { execSync } from "child_process";
 import { execFileSync } from "child_process";
-import path from "path";
-import { Socket } from "net";
-import loaderUtils from "loader-utils";
 import glob from "glob";
+import loaderUtils from "loader-utils";
+import { Socket } from "net";
+import path from "path";
 
 const execOptions = {
     encoding: "utf8",

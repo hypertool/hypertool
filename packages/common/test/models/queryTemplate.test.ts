@@ -1,5 +1,5 @@
-import { beforeEach } from "mocha";
 import { assert } from "chai";
+import { beforeEach } from "mocha";
 
 import { QueryTemplateModel } from "../../source/models";
 import { assertThrowsAsync, queryTemplates } from "../helper";

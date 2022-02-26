@@ -1,9 +1,12 @@
-import * as yup from "yup";
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { FunctionComponent, ReactElement, useCallback } from "react";
+
 import { Button, Card, CardContent, Divider, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+
+import * as yup from "yup";
 import { Formik } from "formik";
-import { FunctionComponent, ReactElement, useCallback } from "react";
 import { useGoogleLogin } from "react-google-login";
 import { Link, useNavigate } from "react-router-dom";
 

@@ -1,7 +1,6 @@
 import { Schema, model } from "mongoose";
 
 import type { Membership } from "../types";
-
 import { membershipStatuses, membershipTypes } from "../utils/constants";
 
 const membershipSchema = new Schema(

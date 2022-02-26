@@ -1,14 +1,14 @@
 import { FunctionComponent, ReactElement, useState } from "react";
+
+import { Button, CircularProgress, Modal, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Button, Modal, TextField, CircularProgress } from "@mui/material";
 
 import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 
-import { Formik } from "formik";
-import * as yup from "yup";
-
 import { gql, useMutation } from "@apollo/client";
 
+import * as yup from "yup";
+import { Formik } from "formik";
 import { useParams } from "react-router";
 
 import { AuthenticationServicesType } from "../../types";

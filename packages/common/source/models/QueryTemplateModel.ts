@@ -43,7 +43,7 @@ const queryTemplateSchema = new Schema(
             default: "enabled",
         },
     },
-    { timestamps: true }
+    { timestamps: true },
 );
 
 queryTemplateSchema.plugin(paginate);

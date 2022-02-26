@@ -1,8 +1,10 @@
 import { FunctionComponent, ReactElement } from "react";
+
 import { styled } from "@mui/material/styles";
 
-import Authentication from "./Authentication";
 import { AuthenticationServicesType } from "../../types";
+
+import Authentication from "./Authentication";
 
 const authServicesArray: AuthenticationServicesType[] = [
     {

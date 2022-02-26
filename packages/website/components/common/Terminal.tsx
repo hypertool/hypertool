@@ -1,20 +1,20 @@
 import React from "react";
+
 import { Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-
-const ApplicationFormPaper = styled('div')(({ theme }) => ({
+const ApplicationFormPaper = styled("div")(({ theme }) => ({
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: "rgba(255, 255, 255, 0.225)",
     borderRadius: 8,
     width: 600,
     [theme.breakpoints.down("md")]: {
-        width: 400
+        width: 400,
     },
-}))
+}));
 
-const Taskbar = styled('div')(({ theme }) => ({
+const Taskbar = styled("div")(({ theme }) => ({
     background: theme.palette.background.paper,
     display: "flex",
     flexDirection: "row",
@@ -23,12 +23,12 @@ const Taskbar = styled('div')(({ theme }) => ({
     padding: 16,
     justifyContent: "space-between",
     alignItems: "center",
-}))
+}));
 
-const Buttons = styled('div')(({ theme }) => ({
+const Buttons = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
-}))
+}));
 
 const Text = styled(Typography)(({ theme }) => ({
     fontSize: 16,
@@ -37,9 +37,9 @@ const Text = styled(Typography)(({ theme }) => ({
     color: "white",
     textAlign: "left",
     width: "100%",
-}))
+}));
 
-const BottomBar = styled('div')(({ theme }) => ({
+const BottomBar = styled("div")(({ theme }) => ({
     backgroundColor: "rgba(17, 25, 40, 0.30)",
     borderWidth: 0,
     borderTopWidth: 1,
@@ -54,17 +54,17 @@ const BottomBar = styled('div')(({ theme }) => ({
     alignItems: "flex-start",
     width: "100%",
     minHeight: 100,
-}))
+}));
 
-const RedButton = styled('div')(({ theme }) => ({
+const RedButton = styled("div")(({ theme }) => ({
     width: 16,
     height: 16,
     borderRadius: 16,
     marginLeft: theme.spacing(1),
     backgroundColor: "#ff605c",
-}))
+}));
 
-const YellowButton = styled('div')(({ theme }) => ({
+const YellowButton = styled("div")(({ theme }) => ({
     width: 16,
     height: 16,
     borderRadius: 16,
@@ -72,13 +72,13 @@ const YellowButton = styled('div')(({ theme }) => ({
     backgroundColor: "#ffbd44",
 }));
 
-const GreenButton = styled('div')(({ theme }) => ({
+const GreenButton = styled("div")(({ theme }) => ({
     width: 16,
     height: 16,
     borderRadius: 16,
     marginLeft: theme.spacing(1),
     backgroundColor: "#00ca4e",
-}))
+}));
 
 const Terminal = (props: any) => {
     return (
@@ -91,9 +91,7 @@ const Terminal = (props: any) => {
                 </Buttons>
             </Taskbar>
             <BottomBar>
-                <Text>
-                    {props.children}
-                </Text>
+                <Text>{props.children}</Text>
             </BottomBar>
         </ApplicationFormPaper>
     );

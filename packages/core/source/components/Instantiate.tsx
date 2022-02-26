@@ -1,6 +1,5 @@
 import type { FunctionComponent, ReactElement } from "react";
-
-import React, { lazy, useState, useEffect } from "react";
+import React, { lazy, useEffect, useState } from "react";
 
 export interface Props {
     path: string;

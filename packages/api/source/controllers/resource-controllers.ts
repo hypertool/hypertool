@@ -1,17 +1,17 @@
-import type { Document } from "mongoose";
 import type {
-    Resource,
     ExternalResource,
+    Resource,
     ResourcePage,
 } from "@hypertool/common";
-
-import joi from "joi";
 import {
-    constants,
     BadRequestError,
     NotFoundError,
     ResourceModel,
+    constants,
 } from "@hypertool/common";
+
+import joi from "joi";
+import type { Document } from "mongoose";
 
 // TODO: Add limits to database configurations!
 const createSchema = joi.object({

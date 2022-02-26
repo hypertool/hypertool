@@ -1,6 +1,8 @@
-import Editor from "@monaco-editor/react";
-import { styled } from "@mui/material/styles";
 import { FunctionComponent, ReactElement, useCallback, useState } from "react";
+
+import { styled } from "@mui/material/styles";
+
+import Editor from "@monaco-editor/react";
 
 import { templates } from "../../utils";
 

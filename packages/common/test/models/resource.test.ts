@@ -1,8 +1,8 @@
-import { assert } from "chai";
 import * as lodash from "lodash";
+import { assert } from "chai";
 
-import { assertThrowsAsync, resources } from "../helper";
 import { ResourceModel } from "../../source/models";
+import { assertThrowsAsync, resources } from "../helper";
 
 describe("Resource model", function () {
     let resource = null;

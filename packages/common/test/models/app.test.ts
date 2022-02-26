@@ -1,8 +1,8 @@
-import { beforeEach } from "mocha";
 import { assert } from "chai";
+import { beforeEach } from "mocha";
 
 import { AppModel } from "../../source/models";
-import { assertThrowsAsync, appData } from "../helper";
+import { appData, assertThrowsAsync } from "../helper";
 
 describe("App model", function () {
     let appTemplate = null;

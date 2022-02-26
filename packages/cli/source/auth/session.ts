@@ -1,14 +1,15 @@
 import type { Session } from "@hypertool/common";
-
 import { PublicClient } from "@hypertool/common";
+
 import chalk from "chalk";
 import fs from "fs-extra";
 import os from "os";
 import path from "path";
 
-import { startServer } from "./server";
-import { logger } from "../utils";
 import { compile } from "../manifest";
+import { logger } from "../utils";
+
+import { startServer } from "./server";
 
 const HOME_DIRECTORY = os.homedir();
 const SESSION_DESCRIPTOR = path.join(

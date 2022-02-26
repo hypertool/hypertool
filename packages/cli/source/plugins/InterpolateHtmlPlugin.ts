@@ -19,10 +19,8 @@
  * Learn more about creating plugins like this:
  * https://github.com/ampedandwired/html-webpack-plugin#events
  */
-
-import type { Compiler } from "webpack";
-
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import type { Compiler } from "webpack";
 
 import { escapeStringRegexp } from "../utils";
 

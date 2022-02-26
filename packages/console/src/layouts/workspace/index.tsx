@@ -1,10 +1,11 @@
 import type { FunctionComponent, ReactElement } from "react";
-
 import { useState } from "react";
+
 import { styled } from "@mui/material/styles";
+
 import { Outlet } from "react-router-dom";
 
-import { MiniDrawer, AppBar } from "./navigation";
+import { AppBar, MiniDrawer } from "./navigation";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,

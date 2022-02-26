@@ -1,4 +1,5 @@
 import { constants } from "@hypertool/common";
+
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
 import GraphQLJSON from "graphql-type-json";

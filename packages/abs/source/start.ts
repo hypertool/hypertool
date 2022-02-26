@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
-dotenv.config({
-    path: `${__dirname}/../../../.env`,
-});
-
 import http from "http";
 import mongoose from "mongoose";
 
 import { initialize } from "./app";
+
+dotenv.config({
+    path: `${__dirname}/../../../.env`,
+});
 
 const { ABS_PORT, DATABASE_URL } = process.env;
 

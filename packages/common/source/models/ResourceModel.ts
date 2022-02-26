@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
 import type { Resource } from "../types";
-import { resourceTypes, resourceStatuses } from "../utils/constants";
+import { resourceStatuses, resourceTypes } from "../utils/constants";
 
 const mysqlSchema = new Schema({
     host: {

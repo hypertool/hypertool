@@ -1,12 +1,13 @@
+import {
+    ApolloClient,
+    HttpLink,
+    InMemoryCache,
+    gql,
+} from "@apollo/client/core";
+
 import type { Session } from "../types";
 
 import { googleClientTypes } from "./constants";
-import {
-    gql,
-    ApolloClient,
-    InMemoryCache,
-    HttpLink,
-} from "@apollo/client/core";
 
 const LOGIN_WITH_GOOGLE = gql`
     mutation LoginWithGoogle($token: String!, $client: ClientType!) {
