@@ -1,17 +1,16 @@
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
-import { useMemo } from "react";
 
 import { styled } from "@mui/material/styles";
 
 import { Element, Frame } from "@craftjs/core";
 
-import { useQueryParams } from "../../hooks";
+import { useInflateArtifacts, useQueryParams } from "../../hooks";
 import { Button, Container, Text } from "../../nodes";
 import { templates } from "../../utils";
 
+import ArtifactsContext from "./ArtifactsContext";
 import CanvasViewport from "./CanvasViewport";
 import CodeEditor from "./CodeEditor";
-import EvaluationContext from "./EvaluationContext";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -41,26 +40,16 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         document.title = "App Builder | Hypertool";
     }, []);
 
-    const evaluations = useMemo(() => {
-        let evaluation: any = {};
-        try {
-            // eslint-disable-next-line no-eval
-            evaluation = eval(editorValue ?? "");
-            console.log("Eval", evaluation);
-        } catch (error) {
-            console.log("Error", error);
-        }
-        return {
-            anonymous: evaluation,
-        };
-    }, [editorValue]);
+    const artifacts = useInflateArtifacts([
+        { id: "anonymous", code: editorValue ?? "" },
+    ]);
 
     return (
         <Root>
             {mode === "code" && (
                 <CodeEditor value={editorValue} onChange={setEditorValue} />
             )}
-            <EvaluationContext.Provider value={evaluations}>
+            <ArtifactsContext.Provider value={artifacts}>
                 <CanvasViewport>
                     <Frame>
                         <Element is={Container} padding={4} canvas={true}>
@@ -75,7 +64,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         </Element>
                     </Frame>
                 </CanvasViewport>
-            </EvaluationContext.Provider>
+            </ArtifactsContext.Provider>
         </Root>
     );
 };
