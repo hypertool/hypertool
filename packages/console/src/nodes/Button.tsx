@@ -11,6 +11,7 @@ import type {
     ButtonVariant,
     Color,
     CraftComponent,
+    IArtifactReference,
 } from "../types";
 
 interface Props {
@@ -22,7 +23,7 @@ interface Props {
     disableElevation?: boolean;
     disableFocusRipple?: boolean;
     disableRipple?: boolean;
-    onClick?: string;
+    onClick?: IArtifactReference;
 }
 
 export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
@@ -40,7 +41,7 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
     const {
         connectors: { connect, drag },
     } = useNode();
-    const handleClick = useArtifactReference("anonymous", onClick);
+    const handleClick = useArtifactReference(onClick);
 
     return (
         <div ref={(ref) => connect(drag(ref as any))}>
@@ -68,7 +69,7 @@ const defaultProps: Props = {
     disableElevation: false,
     disableFocusRipple: false,
     disableRipple: false,
-    onClick: "",
+    onClick: undefined,
 };
 
 Button.defaultProps = defaultProps;
@@ -152,7 +153,7 @@ Button.craft = {
                                 id: "onClick",
                                 size: "small",
                                 help: "The name of the callback to invoke on click.",
-                                type: "text",
+                                type: "handler",
                                 required: true,
                                 title: "On Click",
                             },
