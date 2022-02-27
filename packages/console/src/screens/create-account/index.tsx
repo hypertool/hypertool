@@ -1,8 +1,4 @@
-import * as yup from "yup";
-import { PublicClient } from "@hypertool/common";
-import { Button, Card, CardContent, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { Formik } from "formik";
+/* eslint-disable no-undef */
 import {
     FunctionComponent,
     ReactElement,
@@ -10,6 +6,14 @@ import {
     useEffect,
     useMemo,
 } from "react";
+
+import { Button, Card, CardContent, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+import { PublicClient } from "@hypertool/common";
+
+import * as yup from "yup";
+import { Formik } from "formik";
 
 import { TextField } from "../../components";
 
@@ -113,20 +117,25 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
         document.title = "Create Account | Hypertool";
     }, []);
     const appName = "manage-users"; /* Temporary Declaration */
-    const publicClient = useMemo(() => new PublicClient(appName), [appName]);
+    // const publicClient = useMemo(() => new PublicClient(appName), [appName]);
 
-    const handleSubmit = useCallback(
-        async (values: FormValues) => {
-            publicClient.createAccount({
-                firstName: values.firstName,
-                lastName: values.lastName,
-                role: "developer",
-                emailAddress: values.emailAddress,
-                password: values.password,
-            });
-        },
-        [publicClient],
-    );
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const handleSubmit = () => {};
+
+    /*
+     * const handleSubmit = useCallback(
+     *     async (values: FormValues) => {
+     *         (publicClient as any).createAccount({
+     *             firstName: values.firstName,
+     *             lastName: values.lastName,
+     *             role: "developer",
+     *             emailAddress: values.emailAddress,
+     *             password: values.password,
+     *         });
+     *     },
+     *     [publicClient],
+     * );
+     */
 
     return (
         <Root>
@@ -139,7 +148,8 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                         <Formik
                             initialValues={initialValues}
                             onSubmit={handleSubmit}
-                            validationSchema={validationSchema}>
+                            validationSchema={validationSchema}
+                        >
                             {(formik) => (
                                 <>
                                     <InputField
@@ -183,7 +193,8 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                                         variant="contained"
                                         color="primary"
                                         size="medium"
-                                        onClick={() => formik.submitForm()}>
+                                        onClick={() => formik.submitForm()}
+                                    >
                                         Create Account
                                     </PrimaryAction>
                                 </>

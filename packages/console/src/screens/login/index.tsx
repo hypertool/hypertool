@@ -66,7 +66,7 @@ const Links = styled("div")(({ theme }) => ({
     padding: `${theme.spacing(2)} 0px ${theme.spacing(2)} 0px`,
 }));
 
-const DecoratedLink = styled(Link)(({ theme }) => ({
+const DecoratedLink = styled(Link)(() => ({
     color: "white",
     fontSize: 12,
 }));
@@ -88,6 +88,7 @@ const LOGIN_WITH_GOOGLE = gql`
     }
 `;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGIN_WITH_EMAIL = gql`
     mutation LoginWithEmail($emailAddress: String!, $password: String!) {
         loginWithEmail(emailAddress: $emailAddress, password: $password) {
@@ -143,7 +144,8 @@ const Login: FunctionComponent = (): ReactElement => {
         [navigate],
     );
 
-    const onFailure = (event: any) => {};
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const onFailure = () => {};
 
     const { signIn } = useGoogleLogin({
         onSuccess,

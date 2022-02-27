@@ -150,8 +150,7 @@ const MiniDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
             variant={matches ? "permanent" : undefined}
             open={open}
             anchor="left"
-            onClose={onDrawerClose}
-        >
+            onClose={onDrawerClose}>
             <DrawerHeader>
                 <IconButton onClick={onDrawerClose}>
                     {theme.direction === "rtl" ? (

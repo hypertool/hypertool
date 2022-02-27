@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import type { FunctionComponent, ReactElement } from "react";
 
 import { styled } from "@mui/material/styles";
@@ -17,7 +18,6 @@ import {
     NewResource,
     ResourceLibrary,
     SingleApp,
-    SignUp,
     UpdatePassword,
     ViewApps,
 } from "./screens";
@@ -29,6 +29,8 @@ const Root = styled("div")(({ theme }) => ({
 
 const App: FunctionComponent = (): ReactElement => {
     const session = localStorage.getItem("session");
+
+    console.log(session);
     return (
         <Root>
             <Routes>
@@ -36,7 +38,6 @@ const App: FunctionComponent = (): ReactElement => {
                     <Route path="/login" element={<Login />} />
                 </Route>
                 <Route path="/login" element={<Login />} />
-                <Route path="/sign-up" element={<SignUp />} />
                 <Route path="/create-account" element={<CreateAccount />} />
                 <Route path="/new-password" element={<NewPassword />} />
                 <Route path="/" element={<WorkspaceLayout />}>
@@ -69,8 +70,8 @@ const App: FunctionComponent = (): ReactElement => {
                     index={true}
                     element={<Navigate to={session ? "/apps" : "/login"} />}
                 />
-            </Routes >
-        </Root >
+            </Routes>
+        </Root>
     );
 };
 

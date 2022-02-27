@@ -21,13 +21,13 @@ const CraftRenderer = styled("div")(({ theme }) => ({
     backgroundColor: (theme.palette.background as any).paper1,
 }));
 
-const CanvasContainer = styled("div")({
+const CanvasContainer = styled("div")(() => ({
     position: "relative",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     width: "100%",
-});
+}));
 
 interface ViewportProps {
     children: any;

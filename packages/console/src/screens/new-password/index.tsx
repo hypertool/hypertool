@@ -1,8 +1,3 @@
-import * as yup from "yup";
-import { PublicClient } from "@hypertool/common";
-import { Button, Card, CardContent, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { Formik } from "formik";
 import {
     FunctionComponent,
     ReactElement,
@@ -11,6 +6,14 @@ import {
     useMemo,
     useState,
 } from "react";
+
+import { Button, Card, CardContent, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+import { PublicClient } from "@hypertool/common";
+
+import * as yup from "yup";
+import { Formik } from "formik";
 import { useNavigate } from "react-router";
 
 import { TextField } from "../../components";
@@ -95,7 +98,7 @@ const NewPassword: FunctionComponent = (): ReactElement => {
     const { token } = useQueryParams();
 
     const appName = "manage-users"; /* Temporary Declaration */
-    const publicClient = useMemo(() => new PublicClient(appName), [appName]);
+    // const publicClient = useMemo(() => new PublicClient(appName), [appName]);
 
     useEffect(() => {
         document.title = "New Password | Hypertool";
@@ -104,18 +107,25 @@ const NewPassword: FunctionComponent = (): ReactElement => {
         }
     }, [token]);
 
-    const handleSubmit = useCallback(
-        async (values: FormValues) => {
-            const data = await publicClient.completePasswordReset({
-                token,
-                newPassword: values.newPassword,
-            });
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const handleSubmit = () => {};
 
-            localStorage.setItem("session", JSON.stringify(data.jwtToken));
-            navigate("/organizations/new");
-        },
-        [navigate, publicClient, token],
-    );
+    /*
+     * const handleSubmit = useCallback(
+     *     async (values: FormValues) => {
+     *         const data = await (publicClient as any).completePasswordReset({
+     *             token,
+     *             newPassword: values.newPassword,
+     *         });
+     */
+
+    /*
+     *         localStorage.setItem("session", JSON.stringify(data.jwtToken));
+     *         navigate("/organizations/new");
+     *     },
+     *     [navigate, publicClient, token],
+     * );
+     */
 
     return (
         <Root>
@@ -128,7 +138,8 @@ const NewPassword: FunctionComponent = (): ReactElement => {
                                 <Formik
                                     initialValues={initialValues}
                                     onSubmit={handleSubmit}
-                                    validationSchema={validationSchema}>
+                                    validationSchema={validationSchema}
+                                >
                                     {(formik) => (
                                         <>
                                             <InputField
@@ -146,7 +157,8 @@ const NewPassword: FunctionComponent = (): ReactElement => {
                                                 size="medium"
                                                 onClick={() =>
                                                     formik.submitForm()
-                                                }>
+                                                }
+                                            >
                                                 Submit
                                             </PrimaryAction>
                                         </>

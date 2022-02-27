@@ -1,8 +1,10 @@
-import * as yup from "yup";
+import { FunctionComponent, ReactElement, useCallback, useEffect } from "react";
+
 import { Button, Card, CardContent, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import * as yup from "yup";
 import { Formik } from "formik";
-import { FunctionComponent, ReactElement, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router";
 
 import { TextField } from "../../components";
@@ -41,7 +43,7 @@ const PrimaryAction = styled(Button)(({ theme }) => ({
     },
 }));
 
-const FormContainer = styled("div")(({ theme }) => ({
+const FormContainer = styled("div")(() => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -108,15 +110,17 @@ const UpdatePassword: FunctionComponent = (): ReactElement => {
         document.title = "Update Password | Hypertool";
     }, []);
     /* Temporary Declaration */
-    const client = new Client();
+    // const client = new Client();
 
     const handleSubmit = useCallback(
         async (values: FormValues) => {
             if (values.newPassword1 === values.newPassword2) {
-                client.updatePassword({
-                    oldPassword: values.oldPassword,
-                    newPassword: values.newPassword1,
-                });
+                /*
+                 * client.updatePassword({
+                 *     oldPassword: values.oldPassword,
+                 *     newPassword: values.newPassword1,
+                 * });
+                 */
                 navigate("/organizations/new");
             }
         },

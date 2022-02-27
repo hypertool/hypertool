@@ -16,7 +16,7 @@ import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import { gql, useMutation } from "@apollo/client";
 
 import * as yup from "yup";
-import { Formik, FormikHelpers } from "formik";
+import { Formik } from "formik";
 import { useNavigate } from "react-router";
 
 import Wrap from "../../components/Wrap";
@@ -31,11 +31,11 @@ const TitleContainer = styled(Typography)(({ theme }) => ({
     },
 }));
 
-const FormContainer = styled("div")(({ theme }) => ({
+const FormContainer = styled("div")(() => ({
     height: "calc(100vh - 200px)",
 }));
 
-const ActionContainer = styled("div")(({ theme }) => ({
+const ActionContainer = styled("div")(() => ({
     display: "flex",
     flexDirection: "row",
     width: "100%",
@@ -120,7 +120,7 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
     }, [navigate, newOrganization, session, updateUser, updatedUser]);
 
     const handleSubmit = useCallback(
-        (values: FormValues, helpers: FormikHelpers<FormValues>): any => {
+        (values: FormValues): any => {
             if (session) {
                 createOrganization({
                     variables: {
@@ -138,8 +138,7 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
             <Formik
                 initialValues={initialValues}
                 onSubmit={handleSubmit}
-                validationSchema={validationSchema}
-            >
+                validationSchema={validationSchema}>
                 {(formik) => (
                     <>
                         <TitleContainer>
@@ -148,8 +147,7 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
                         <Wrap
                             when={smallerThanLg}
                             wrapper={Container}
-                            style={{ height: "calc(100vh - 156px)" }}
-                        >
+                            style={{ height: "calc(100vh - 156px)" }}>
                             <Wrap when={!smallerThanLg} wrapper={FormContainer}>
                                 <OrganizationForm />
                             </Wrap>
@@ -160,8 +158,7 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
                                 onClick={() => formik.submitForm()}
                                 variant="contained"
                                 size="small"
-                                disabled={creatingOrganization || updatingUser}
-                            >
+                                disabled={creatingOrganization || updatingUser}>
                                 Create
                                 {!creatingOrganization && !updatingUser && (
                                     <CheckCircleOutline

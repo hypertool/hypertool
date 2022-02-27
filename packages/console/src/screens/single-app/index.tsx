@@ -3,8 +3,7 @@ import { FunctionComponent, ReactElement } from "react";
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { useParams } from "react-router";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -38,8 +37,7 @@ const SingleApp: FunctionComponent = (): ReactElement => {
                 onClick={handleClick}
                 variant="contained"
                 color="primary"
-                size="medium"
-            >
+                size="medium">
                 Authentication Services
             </PrimaryAction>
         </Root>

@@ -9,7 +9,6 @@ const MyGrid = (props: any) => {
 };
 
 const GridItem = (props: any) => {
-    console.log(props);
     return <Grid {...props}>{props.children}</Grid>;
 };
 
@@ -20,8 +19,7 @@ const Box = () => {
                 backgroundColor: "black",
                 height: 400,
                 width: "100%",
-            }}
-        ></div>
+            }}></div>
     );
 };
 
@@ -38,6 +36,7 @@ const renderChild = (child: any) => {
     if (child.type === "text") {
         return child.payload;
     }
+    // eslint-disable-next-line no-use-before-define
     return render(child.payload);
 };
 
@@ -52,6 +51,7 @@ const prepareProps = (attributes: any[]) => {
 const render = (node: any) => {
     const Component = components[node.tagName];
     if (!Component) {
+        // eslint-disable-next-line no-console
         console.log(node.tagName, "not found", node);
     }
     return (
@@ -61,6 +61,7 @@ const render = (node: any) => {
     );
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const LayoutRenderer = (props: any) => {
     const { layout } = props;
     return render(layout);

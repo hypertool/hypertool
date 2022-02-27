@@ -26,20 +26,20 @@ import { useNavigate } from "react-router";
 import AppCard from "./AppCard";
 import AppFilter from "./AppFilter";
 
-const Root = styled("section")(({ theme }) => ({
+const Root = styled("section")(() => ({
     width: "100%",
 }));
 
-const Title = styled(Typography)(({ theme }) => ({}));
+const Title = styled(Typography)(() => ({}));
 
-const WorkspaceToolbar = styled(Toolbar)(({ theme }) => ({
+const WorkspaceToolbar = styled(Toolbar)(() => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
 }));
 
-const ActionContainer = styled("div")(({ theme }) => ({
+const ActionContainer = styled("div")(() => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -73,7 +73,7 @@ const Content = styled(Container)(({ theme }) => ({
     },
 }));
 
-const Apps = styled("div")(({ theme }) => ({
+const Apps = styled("div")(() => ({
     width: "100%",
     display: "flex",
     flexDirection: "row",
@@ -82,7 +82,7 @@ const Apps = styled("div")(({ theme }) => ({
     flexWrap: "wrap",
 }));
 
-const ProgressContainer = styled("div")(({ theme }) => ({
+const ProgressContainer = styled("div")(() => ({
     width: "100%",
     height: "calc(100vh - 256px)",
     display: "flex",
@@ -154,8 +154,7 @@ const ViewApps: FunctionComponent = (): ReactElement => {
                 id="filter"
                 value={filter}
                 label="Filter"
-                onChange={handleFilterChange}
-            >
+                onChange={handleFilterChange}>
                 {filters.map((filter) => (
                     <MenuItem value={filter.url}>{filter.title}</MenuItem>
                 ))}

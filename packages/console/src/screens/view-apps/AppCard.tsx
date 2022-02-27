@@ -21,14 +21,14 @@ const Card = styled(MuiCard)(({ theme }) => ({
     marginBottom: theme.spacing(2),
 }));
 
-const CardHeader = styled("div")(({ theme }) => ({
+const CardHeader = styled("div")(() => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
 }));
 
-const Title = styled(Typography)(({ theme }) => ({
+const Title = styled(Typography)(() => ({
     fontSize: 16,
     fontWeight: 500,
 }));
@@ -38,14 +38,14 @@ const Description = styled(Typography)(({ theme }) => ({
     marginTop: theme.spacing(0.5),
 }));
 
-const CardActions = styled(MuiCardActions)(({ theme }) => ({
+const CardActions = styled(MuiCardActions)(() => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
 }));
 
-const ActionIcon = styled(Icon)(({ theme }) => ({
+const ActionIcon = styled(Icon)(() => ({
     marginLeft: 4,
     fontSize: 16,
 }));
@@ -85,8 +85,7 @@ const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
                         <IconButton
                             onClick={handleOpenOptions}
                             size="small"
-                            sx={{ ml: 2 }}
-                        >
+                            sx={{ ml: 2 }}>
                             <Icon fontSize="small">more_vert</Icon>
                         </IconButton>
                     </Tooltip>

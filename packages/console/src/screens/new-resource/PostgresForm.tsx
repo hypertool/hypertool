@@ -5,7 +5,7 @@ import { styled } from "@mui/material/styles";
 
 import { Checkbox, TextField } from "../../components";
 
-const TextFieldHelp = styled(Typography)(({ theme }) => ({
+const TextFieldHelp = styled(Typography)(() => ({
     display: "flex",
     marginTop: 4,
     flexDirection: "column",
@@ -14,7 +14,7 @@ const TextFieldHelp = styled(Typography)(({ theme }) => ({
     paddingBottom: 0,
 }));
 
-const ResourceNameTextField = styled(TextField)(({ theme }) => ({
+const ResourceNameTextField = styled(TextField)(() => ({
     maxWidth: 400,
 })) as any;
 

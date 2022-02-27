@@ -29,8 +29,7 @@ const LeftDrawerItem: FunctionComponent<Props> = (
                 key={title}
                 button={true}
                 onClick={handleClick}
-                selected={selected}
-            >
+                selected={selected}>
                 <ListItemIcon>
                     <Icon fontSize="medium">{icon}</Icon>
                 </ListItemIcon>

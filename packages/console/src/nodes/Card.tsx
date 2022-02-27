@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { ReactElement } from "react";
 
 import { Element, useNode } from "@craftjs/core";

@@ -91,7 +91,7 @@ const InputField = styled(TextField)(({ theme }) => ({
     },
 }));
 
-const ActionContainer = styled("div")(({ theme }) => ({
+const ActionContainer = styled("div")(() => ({
     display: "flex",
     flexDirection: "row",
     width: "100%",
@@ -99,7 +99,7 @@ const ActionContainer = styled("div")(({ theme }) => ({
     justifyContent: "space-between",
 }));
 
-const CreateAction = styled(Button)(({ theme }) => ({
+const CreateAction = styled(Button)(() => ({
     width: 144,
 }));
 
@@ -170,15 +170,13 @@ const Authentication: FunctionComponent<Props> = (
                     variant="contained"
                     color="primary"
                     size="medium"
-                    onClick={handleOpen}
-                >
+                    onClick={handleOpen}>
                     Configure
                 </PrimaryAction>
                 <PrimaryAction
                     variant="contained"
                     color="primary"
-                    size="medium"
-                >
+                    size="medium">
                     Enable
                 </PrimaryAction>
             </ButtonContainer>
@@ -187,8 +185,7 @@ const Authentication: FunctionComponent<Props> = (
                     <Formik
                         initialValues={initialValues}
                         onSubmit={handleSubmit}
-                        validationSchema={validationSchema}
-                    >
+                        validationSchema={validationSchema}>
                         {(formik) => (
                             <>
                                 <InputField
@@ -212,8 +209,7 @@ const Authentication: FunctionComponent<Props> = (
                                         onClick={() => formik.submitForm()}
                                         variant="contained"
                                         size="small"
-                                        disabled={false}
-                                    >
+                                        disabled={false}>
                                         Create
                                         {updatingApp && (
                                             <CircularProgress
@@ -233,8 +229,7 @@ const Authentication: FunctionComponent<Props> = (
                                         onClick={handleClose}
                                         variant="contained"
                                         size="small"
-                                        disabled={false}
-                                    >
+                                        disabled={false}>
                                         Close
                                     </CreateAction>
                                 </ActionContainer>

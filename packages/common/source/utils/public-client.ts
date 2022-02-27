@@ -84,11 +84,10 @@ export default class PublicClient {
     constructor(appName: string) {
         this.appName = appName;
         this.client = new ApolloClient({
+            cache: new InMemoryCache(),
             link: new HttpLink({
                 uri: `http://localhost:3001/graphql/v1/public`,
-                fetch,
             }),
-            cache: new InMemoryCache(),
         });
     }
 
@@ -113,7 +112,7 @@ export default class PublicClient {
                 query: GET_AUTH_SERVICES,
                 variables: { name: this.appName },
             });
-            const clientId = data.getAppByName.authServices.googleAuth.clientId;
+            const { clientId } = data.getAppByName.authServices.googleAuth;
             const authData = [
                 {
                     type: "google-oauth",
