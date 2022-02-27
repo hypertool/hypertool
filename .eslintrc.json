@@ -16,8 +16,6 @@
          * The following rules fix possible problems. (STRICTLY ENFORCED)
          */
 
-        // Disallows unused variables
-        "no-unused-vars": "error",
         // Disallows use of undeclared variables
         "no-undef": "error",
         // Disallows use of variables before they are defined
@@ -119,7 +117,14 @@
          * Using "no-duplicate-imports" causes false positive errors for type
          * imports.
          */
-        "no-duplicate-imports": ["off"],
+        "no-duplicate-imports": "off",
+
+        /* Disallows unused variables.
+         *
+         * Using "no-unused-vars" causes false positive errors for function
+         * prototypes in interfaces.
+         */
+        "no-unused-vars": "off",
 
         /* Disallow duplicate imports.
          *
@@ -129,7 +134,14 @@
         "@typescript-eslint/no-duplicate-imports": "error",
 
         /* Disallow usage of the `any` type. */
-        "@typescript-eslint/no-explicit-any": ["off"]
+        "@typescript-eslint/no-explicit-any": ["off"],
+
+        /* Disallows unused variables.
+         *
+         * Using "no-unused-vars" from ESLint causes false positive errors for
+         * function prototypes in interfaces.
+         */
+        "@typescript-eslint/no-unused-vars": "error"
     },
 
     "overrides": [
