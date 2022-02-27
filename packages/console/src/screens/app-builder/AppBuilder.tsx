@@ -3,9 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { styled } from "@mui/material/styles";
 
-import { Editor } from "@craftjs/core";
-import { Element, Frame } from "@craftjs/core";
-import { Outlet } from "react-router-dom";
+import { Editor, Element, Frame } from "@craftjs/core";
 
 import { ArtifactsContext } from "../../contexts";
 import { useInflateArtifacts, useQueryParams } from "../../hooks";
@@ -80,21 +78,21 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     return (
         <Editor resolver={nodeMappings} onRender={RenderNode}>
             <Root>
-                <AppBar open={leftDrawerOpen} />
-                <LeftDrawer
-                    open={leftDrawerOpen}
-                    onDrawerOpen={handleLeftDrawerOpen}
-                    onDrawerClose={handleLeftDrawerClose}
-                />
-                <Main>
-                    <Content>
-                        {mode === "code" && (
-                            <CodeEditor
-                                value={editorValue}
-                                onChange={setEditorValue}
-                            />
-                        )}
-                        <ArtifactsContext.Provider value={artifacts}>
+                <ArtifactsContext.Provider value={artifacts}>
+                    <AppBar open={leftDrawerOpen} />
+                    <LeftDrawer
+                        open={leftDrawerOpen}
+                        onDrawerOpen={handleLeftDrawerOpen}
+                        onDrawerClose={handleLeftDrawerClose}
+                    />
+                    <Main>
+                        <Content>
+                            {mode === "code" && (
+                                <CodeEditor
+                                    value={editorValue}
+                                    onChange={setEditorValue}
+                                />
+                            )}
                             <CanvasViewport>
                                 <Frame>
                                     <Element
@@ -115,13 +113,13 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                     </Element>
                                 </Frame>
                             </CanvasViewport>
-                        </ArtifactsContext.Provider>
-                    </Content>
-                </Main>
-                <RightDrawer
-                    open={rightDrawerOpen}
-                    onDrawerClose={handleRightDrawerClose}
-                />
+                        </Content>
+                    </Main>
+                    <RightDrawer
+                        open={rightDrawerOpen}
+                        onDrawerClose={handleRightDrawerClose}
+                    />
+                </ArtifactsContext.Provider>
             </Root>
         </Editor>
     );

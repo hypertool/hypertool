@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactElement } from "react";
+import type { FunctionComponent, ReactElement } from "react";
 import { Fragment } from "react";
 
 import {
@@ -27,7 +27,10 @@ import type {
     FormSelect,
     FormSwitch,
     FormTextField,
+    IArtifactReference,
 } from "../../../../types";
+
+import Handler from "./Handler";
 
 const DecoratedForm = styled("form")(({ theme }) => ({
     display: "flex",
@@ -36,10 +39,10 @@ const DecoratedForm = styled("form")(({ theme }) => ({
     padding: theme.spacing(2),
 }));
 
-const DecoratedChip = styled(Chip)(({ theme }) => ({
+const DecoratedChip = styled(Chip)({
     margin: 2,
     fontWeight: 500,
-}));
+});
 
 const DecoratedTextField = styled(TextField)(({ theme }) => ({
     margin: `${theme.spacing(1.5)} 0px`,
@@ -77,21 +80,26 @@ const PropertiesForm: FunctionComponent<Props> = (
             });
         };
 
+    const makeHandlerChangeHandler =
+        (field: FormField) => (reference: IArtifactReference) => {
+            setProp((props: any) => {
+                props[field.id] = reference;
+            });
+        };
+
     const renderSelect = (field: FormSelect): ReactElement => (
         <DecoratedFormControl
             variant={field.variant}
             fullWidth={true}
             required={field.required}
-            size={field.size}
-        >
+            size={field.size}>
             <InputLabel id={field.id}>{field.title}</InputLabel>
             <Select
                 labelId={field.id}
                 value={componentProps[field.id]}
                 onChange={makeChangeHandler(field)}
                 label={field.title}
-                name={field.id}
-            >
+                name={field.id}>
                 {field.options.map((option) => (
                     <MenuItem value={option.value}>{option.title}</MenuItem>
                 ))}
@@ -107,8 +115,7 @@ const PropertiesForm: FunctionComponent<Props> = (
         <DecoratedFormControl
             variant={field.variant}
             fullWidth={true}
-            size={field.size}
-        >
+            size={field.size}>
             <InputLabel id={field.id}>{field.title}</InputLabel>
             <Select
                 labelId={field.id}
@@ -125,8 +132,7 @@ const PropertiesForm: FunctionComponent<Props> = (
                             />
                         ))}
                     </div>
-                )}
-            >
+                )}>
                 {field.options.map((option) => (
                     <MenuItem value={option.value}>{option.title}</MenuItem>
                 ))}
@@ -184,6 +190,7 @@ const PropertiesForm: FunctionComponent<Props> = (
         />
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const renderDateField = (field: FormTextField) =>
         // <DatePicker
         //     id={field.id}
@@ -199,6 +206,7 @@ const PropertiesForm: FunctionComponent<Props> = (
         // />
         null;
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const renderTimeField = (field: FormTextField) =>
         // <TimePicker
         //     id={field.id}
@@ -213,6 +221,7 @@ const PropertiesForm: FunctionComponent<Props> = (
         // />
         null;
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const renderDateTimeField = (field: FormTextField) =>
         // <DateTimePicker
         //     id={field.identifier}
@@ -250,58 +259,56 @@ const PropertiesForm: FunctionComponent<Props> = (
         </DecoratedFormGroup>
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const renderDateRange = (field: any /*FormDateRange*/) =>
-        // <div>
-        //     <FormControl variant="outlined" fullWidth={true} size="medium">
-        //         <InputLabel id={field.identifier}>{field.title}</InputLabel>
-        //         <Select
-        //             name={field.identifier}
-        //             labelId={field.identifier}
-        //             value={values[field.identifier].option}
-        //             onChange={makeRangeHandler(field)}
-        //             label={field.title}>
-        //             {field.options.map((option) => (
-        //                 <MenuItem value={option.value}>{option.title}</MenuItem>
-        //             ))}
-        //         </Select>
-        //     </FormControl>
-        //     {values[field.identifier].option === "custom" && (
-        //         <React.Fragment>
-        //             <DatePicker
-        //                 margin="normal"
-        //                 id={field.identifier + "Start"}
-        //                 label={field.startTitle}
-        //                 format="MM/dd/yyyy"
-        //                 inputVariant="outlined"
-        //                 fullWidth={true}
-        //                 name={field.identifier + "Start"}
-        //                 size="medium"
-        //                 value={
-        //                     !values[field.identifier].startDate
-        //                         ? new Date()
-        //                         : new Date(values[field.identifier].startDate)
-        //                 }
-        //                 onChange={makeDateChangeHandler(field, "startDate")}
-        //             />
-        //             <DatePicker
-        //                 margin="normal"
-        //                 name={field.identifier + "End"}
-        //                 id={field.identifier + "End"}
-        //                 label={field.endTitle}
-        //                 format="MM/dd/yyyy"
-        //                 inputVariant="outlined"
-        //                 fullWidth={true}
-        //                 size="medium"
-        //                 value={
-        //                     !values[field.identifier].endDate
-        //                         ? new Date()
-        //                         : new Date(values[field.identifier].endDate)
-        //                 }
-        //                 onChange={makeDateChangeHandler(field, "endDate")}
-        //             />
-        //         </React.Fragment>
-        //     )}
-        // </div>
+        /*
+         * <div>
+         *     <FormControl variant="outlined" fullWidth={true} size="medium">
+         *         <InputLabel id={field.identifier}>{field.title}</InputLabel>
+         *         <Select
+         *             name={field.identifier}
+         *             labelId={field.identifier}
+         *             value={values[field.identifier].option}
+         *             onChange={makeRangeHandler(field)}
+         *             label={field.title}>
+         *             {field.options.map((option) => (
+         *                 <MenuItem value={option.value}>{option.title}</MenuItem>
+         *             ))}
+         *         </Select>
+         *     </FormControl>
+         *     {values[field.identifier].option === "custom" && (
+         *         <React.Fragment>
+         *             <DatePicker
+         *                 margin="normal"
+         *                 id={field.identifier + "Start"}
+         *                 label={field.startTitle}
+         *                 format="MM/dd/yyyy"
+         *                 inputVariant="outlined"
+         *                 fullWidth={true}
+         *                 name={field.identifier + "Start"}
+         *                 size="medium"
+         *                 value={
+         *                     !values[field.identifier].startDate
+         *                         ? new Date()
+         *                         : new Date(values[field.identifier].startDate)
+         *                 }
+         *          title      id={field.identifier + "End"}
+         *                 label={field.endTitle}
+         *                 format="MM/dd/yyyy"
+         *                 inputVariant="outlined"
+         *                 fullWidth={true}
+         *                 size="medium"
+         *                 value={
+         *                     !values[field.identifier].endDate
+         *                         ? new Date()
+         *                         : new Date(values[field.identifier].endDate)
+         *                 }
+         *                 onChange={makeDateChangeHandler(field, "endDate")}
+         *             />
+         *         </React.Fragment>
+         *     )}
+         * </div>
+         */
         null;
 
     const renderEmailAddressField = (field: FormTextField) => (
@@ -333,6 +340,14 @@ const PropertiesForm: FunctionComponent<Props> = (
             onChange={makeChangeHandler(field)}
             size={field.size}
             help={field.help}
+        />
+    );
+
+    const renderHandlerField = (field: FormTextField) => (
+        <Handler
+            title={field.title}
+            onSelect={makeHandlerChangeHandler(field)}
+            value={componentProps[field.id]}
         />
     );
 
@@ -427,68 +442,82 @@ const PropertiesForm: FunctionComponent<Props> = (
                     initialValues={componentProps}
                     enableReinitialize={true}
                     onSubmit={async () => null}
-                    validationSchema={validationSchema}
-                >
+                    validationSchema={validationSchema}>
                     <DecoratedForm>
                         {groups.map((group: FormFieldGroup) => (
                             <>
-                                {group.fields.map((field) => (
-                                    <Fragment key={field.id}>
-                                        {field.type === "text" &&
-                                            renderTextField(
-                                                field as FormTextField,
-                                            )}
+                                {group.fields.map(
+                                    (field) =>
+                                        (console.log(field) as any) || (
+                                            <Fragment key={field.id}>
+                                                {field.type === "text" &&
+                                                    renderTextField(
+                                                        field as FormTextField,
+                                                    )}
 
-                                        {field.type === "large_text" &&
-                                            renderLargeTextField(
-                                                field as FormLargeTextField,
-                                            )}
+                                                {field.type === "large_text" &&
+                                                    renderLargeTextField(
+                                                        field as FormLargeTextField,
+                                                    )}
 
-                                        {field.type === "number" &&
-                                            renderNumberTextField(
-                                                field as FormTextField,
-                                            )}
+                                                {field.type === "number" &&
+                                                    renderNumberTextField(
+                                                        field as FormTextField,
+                                                    )}
 
-                                        {field.type === "date" &&
-                                            renderDateField(
-                                                field as FormTextField,
-                                            )}
+                                                {field.type === "date" &&
+                                                    renderDateField(
+                                                        field as FormTextField,
+                                                    )}
 
-                                        {field.type === "time" &&
-                                            renderTimeField(
-                                                field as FormTextField,
-                                            )}
+                                                {field.type === "time" &&
+                                                    renderTimeField(
+                                                        field as FormTextField,
+                                                    )}
 
-                                        {field.type === "date_time" &&
-                                            renderDateTimeField(
-                                                field as FormTextField,
-                                            )}
+                                                {field.type === "date_time" &&
+                                                    renderDateTimeField(
+                                                        field as FormTextField,
+                                                    )}
 
-                                        {field.type === "switch" &&
-                                            renderSwitch(field as FormSwitch)}
+                                                {field.type === "switch" &&
+                                                    renderSwitch(
+                                                        field as FormSwitch,
+                                                    )}
 
-                                        {field.type === "date_range" &&
-                                            renderDateRange(field)}
+                                                {field.type === "date_range" &&
+                                                    renderDateRange(field)}
 
-                                        {field.type === "select" &&
-                                            renderSelect(field as FormSelect)}
+                                                {field.type === "select" &&
+                                                    renderSelect(
+                                                        field as FormSelect,
+                                                    )}
 
-                                        {field.type === "multi_select" &&
-                                            renderMultiSelect(
-                                                field as FormSelect,
-                                            )}
+                                                {field.type ===
+                                                    "multi_select" &&
+                                                    renderMultiSelect(
+                                                        field as FormSelect,
+                                                    )}
 
-                                        {field.type === "email_address" &&
-                                            renderEmailAddressField(
-                                                field as FormTextField,
-                                            )}
+                                                {field.type ===
+                                                    "email_address" &&
+                                                    renderEmailAddressField(
+                                                        field as FormTextField,
+                                                    )}
 
-                                        {field.type === "phone_number" &&
-                                            renderPhoneNumberField(
-                                                field as FormTextField,
-                                            )}
-                                    </Fragment>
-                                ))}
+                                                {field.type ===
+                                                    "phone_number" &&
+                                                    renderPhoneNumberField(
+                                                        field as FormTextField,
+                                                    )}
+
+                                                {field.type === "handler" &&
+                                                    renderHandlerField(
+                                                        field as FormTextField,
+                                                    )}
+                                            </Fragment>
+                                        ),
+                                )}
                             </>
                         ))}
                     </DecoratedForm>
