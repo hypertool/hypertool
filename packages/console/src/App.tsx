@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import { AppBuilderLayout, VisitorLayout, WorkspaceLayout } from "./layouts";
+import { VisitorLayout, WorkspaceLayout } from "./layouts";
 import {
     AppBuilder,
     AuthenticationServices,
@@ -31,6 +31,7 @@ const App: FunctionComponent = (): ReactElement => {
                 <Route path="/" element={<VisitorLayout />}>
                     <Route path="/login" element={<Login />} />
                 </Route>
+
                 <Route path="/" element={<WorkspaceLayout />}>
                     <Route
                         path="/organizations/new"
@@ -50,12 +51,9 @@ const App: FunctionComponent = (): ReactElement => {
                         element={<AuthenticationServices />}
                     />
                 </Route>
-                <Route path="/" element={<AppBuilderLayout />}>
-                    <Route
-                        path="/apps/:appId/builder"
-                        element={<AppBuilder />}
-                    />
-                </Route>
+
+                <Route path="/apps/:appId/builder" element={<AppBuilder />} />
+
                 <Route
                     index={true}
                     element={<Navigate to={session ? "/apps" : "/login"} />}

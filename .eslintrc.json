@@ -1,6 +1,10 @@
 {
-    "extends": ["prettier", "plugin:node/recommended"],
-    "plugins": ["prettier"],
+    "extends": [
+        "prettier",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "plugins": ["prettier", "@typescript-eslint"],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": 2022,
@@ -12,8 +16,6 @@
          * The following rules fix possible problems. (STRICTLY ENFORCED)
          */
 
-        // Disallows unused variables
-        "no-unused-vars": "error",
         // Disallows use of undeclared variables
         "no-undef": "error",
         // Disallows use of variables before they are defined
@@ -37,7 +39,7 @@
         // Disallows returning values from constructor functions.
         "no-constructor-return": "error",
         // Disallows duplicate case labels in switch statements.
-        "no-dupe-case": "error",
+        "no-duplicate-case": "error",
         // Disallows duplicate arguments in functions.
         "no-dupe-args": "error",
         // Disallows duplicate conditions in if-else-if chains.
@@ -48,8 +50,6 @@
         "no-empty-pattern": "error",
         // Disallow invalid regular expression strings in RegExp constructors.
         "no-invalid-regexp": "error",
-        // Disallow duplicate imports.
-        "no-duplicate-imports": "error",
         // Disallow duplicate keys in object literals.
         "no-dupe-keys": "error",
 
@@ -64,7 +64,7 @@
         // Disallows initializing variables to `undefined`
         "no-undef-init": "warn",
         // Disallows use of undefined variable
-        "no-undefined": "warn",
+        "no-undefined": "off",
         // Disallow named `function` expressions
         "func-names": "warn",
         // Require destructuring from arrays and/or objects
@@ -102,11 +102,62 @@
         "space-unary-ops": ["error", { "words": true, "nonwords": false }],
         // Enforces consistent spacing inside parentheses.
         "space-in-parens": ["error", "never"],
-        // Enforces consistent indentation, even inside nested structures
-        "indent": ["error", 4],
         // Disallows all tabs.
         "no-tabs": "error",
-        // Enforce consistent line breaks inside function parentheses.
-        "function-paren-newline": ["error", "never"]
-    }
+
+        /* Enforce consistent line breaks inside function parentheses.
+         * Turn off this rule and let Prettier take care of positioning parentheses.
+         */
+        "function-paren-newline": "off",
+
+        /* Disallow duplicate imports.
+         *
+         * Using "no-duplicate-imports" causes false positive errors for type
+         * imports.
+         */
+        "no-duplicate-imports": "off",
+
+        /* Disallows unused variables.
+         *
+         * Using "no-unused-vars" causes false positive errors for function
+         * prototypes in interfaces.
+         */
+        "no-unused-vars": "off",
+
+        /* Enforces consistent indentation, even inside nested structures.
+         *
+         * Disable this rule to let Prettier take the final decision on
+         * indentation.
+         */
+        "indent": "off",
+
+        /* Disallow duplicate imports.
+         *
+         * Using "no-duplicate-imports" from ESLint causes false positive
+         * errors for type imports.
+         */
+        "@typescript-eslint/no-duplicate-imports": "error",
+
+        /* Disallow usage of the `any` type. */
+        "@typescript-eslint/no-explicit-any": "off",
+
+        /* Disallows unused variables.
+         *
+         * Using "no-unused-vars" from ESLint causes false positive errors for
+         * function prototypes in interfaces.
+         */
+        "@typescript-eslint/no-unused-vars": "error"
+    },
+
+    "overrides": [
+        {
+            "files": [
+                "./packages/console/**/*.ts",
+                "./packages/console/**/*.tsx"
+            ],
+            "rules": {
+                "no-undef": "off"
+            }
+        }
+    ]
 }

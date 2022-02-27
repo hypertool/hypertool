@@ -1,9 +1,10 @@
-import { ReactElement, useEffect, useState } from "react";
+import type { ReactElement } from "react";
+import { useEffect, useState } from "react";
 
 import { useNode } from "@craftjs/core";
 import ContentEditable from "react-contenteditable";
 
-import PropertiesForm from "../layouts/app-builder/panels/properties-editor/PropertiesForm";
+import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import { CraftComponent } from "../types";
 
 interface TextProps {

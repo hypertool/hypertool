@@ -27,7 +27,8 @@ export interface FormField {
         | "select"
         | "multi_select"
         | "email_address"
-        | "phone_number";
+        | "phone_number"
+        | "handler";
     help: string;
 }
 
@@ -93,3 +94,33 @@ export type Color =
 export type ButtonVariant = "text" | "outlined" | "contained";
 
 export type ButtonSize = "small" | "medium" | "large";
+
+/**
+ * Inflating basically refers to evaluating the source code of an artifact.
+ */
+export interface IDeflatedArtifact {
+    id: string;
+    code: string;
+}
+
+/**
+ * An artifact is a combination of the following properties:
+ * 1. Artifact ID
+ * 2. Source code
+ * 3. Object returned by the initializer
+ */
+export interface IArtifact extends IDeflatedArtifact {
+    /**
+     * The object returned by the initializer when inflating the artifact.
+     */
+    object: any;
+}
+
+export interface IArtifactsContext {
+    [artifactId: string]: IArtifact;
+}
+
+export interface IArtifactReference {
+    artifactId: string;
+    target: string;
+}
