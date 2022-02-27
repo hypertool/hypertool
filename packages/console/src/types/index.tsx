@@ -27,7 +27,8 @@ export interface FormField {
         | "select"
         | "multi_select"
         | "email_address"
-        | "phone_number";
+        | "phone_number"
+        | "handler";
     help: string;
 }
 
@@ -117,4 +118,9 @@ export interface IArtifact extends IDeflatedArtifact {
 
 export interface IArtifactsContext {
     [artifactId: string]: IArtifact;
+}
+
+export interface IArtifactReference {
+    artifactId: string;
+    target: string;
 }
