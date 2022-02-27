@@ -102,15 +102,13 @@
         "space-unary-ops": ["error", { "words": true, "nonwords": false }],
         // Enforces consistent spacing inside parentheses.
         "space-in-parens": ["error", "never"],
-        // Enforces consistent indentation, even inside nested structures
-        "indent": ["error", 4],
         // Disallows all tabs.
         "no-tabs": "error",
 
         /* Enforce consistent line breaks inside function parentheses.
          * Turn off this rule and let Prettier take care of positioning parentheses.
          */
-        "function-paren-newline": ["off"],
+        "function-paren-newline": "off",
 
         /* Disallow duplicate imports.
          *
@@ -126,6 +124,13 @@
          */
         "no-unused-vars": "off",
 
+        /* Enforces consistent indentation, even inside nested structures.
+         *
+         * Disable this rule to let Prettier take the final decision on
+         * indentation.
+         */
+        "indent": "off",
+
         /* Disallow duplicate imports.
          *
          * Using "no-duplicate-imports" from ESLint causes false positive
@@ -134,7 +139,7 @@
         "@typescript-eslint/no-duplicate-imports": "error",
 
         /* Disallow usage of the `any` type. */
-        "@typescript-eslint/no-explicit-any": ["off"],
+        "@typescript-eslint/no-explicit-any": "off",
 
         /* Disallows unused variables.
          *
