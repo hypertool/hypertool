@@ -55,13 +55,6 @@
         // Disallow duplicate keys in object literals.
         "no-dupe-keys": "error",
 
-        /* Disallow duplicate imports.
-         *
-         * NOTE: Using "no-duplicate-imports" from ESLint causes false positive
-         * errors for type imports.
-         */
-        "@typescript-eslint/no-duplicate-imports": "error",
-
         /**
          * The following rules provide alternative solutions. (OPTIONAL)
          */
@@ -73,7 +66,7 @@
         // Disallows initializing variables to `undefined`
         "no-undef-init": "warn",
         // Disallows use of undefined variable
-        "no-undefined": "warn",
+        "no-undefined": "off",
         // Disallow named `function` expressions
         "func-names": "warn",
         // Require destructuring from arrays and/or objects
@@ -115,7 +108,39 @@
         "indent": ["error", 4],
         // Disallows all tabs.
         "no-tabs": "error",
-        // Enforce consistent line breaks inside function parentheses.
-        "function-paren-newline": ["error", "never"]
-    }
+
+        /* Enforce consistent line breaks inside function parentheses.
+         * Turn off this rule and let Prettier take care of positioning parentheses.
+         */
+        "function-paren-newline": ["off"],
+
+        /* Disallow duplicate imports.
+         *
+         * Using "no-duplicate-imports" causes false positive errors for type
+         * imports.
+         */
+        "no-duplicate-imports": ["off"],
+
+        /* Disallow duplicate imports.
+         *
+         * Using "no-duplicate-imports" from ESLint causes false positive
+         * errors for type imports.
+         */
+        "@typescript-eslint/no-duplicate-imports": "error",
+
+        /* Disallow usage of the `any` type. */
+        "@typescript-eslint/no-explicit-any": ["off"]
+    },
+
+    "overrides": [
+        {
+            "files": [
+                "./packages/console/**/*.ts",
+                "./packages/console/**/*.tsx"
+            ],
+            "rules": {
+                "no-undef": "off"
+            }
+        }
+    ]
 }
