@@ -41,7 +41,7 @@
         // Disallows returning values from constructor functions.
         "no-constructor-return": "error",
         // Disallows duplicate case labels in switch statements.
-        "no-dupe-case": "error",
+        "no-duplicate-case": "error",
         // Disallows duplicate arguments in functions.
         "no-dupe-args": "error",
         // Disallows duplicate conditions in if-else-if chains.
