@@ -4,13 +4,14 @@ import { styled } from "@mui/material/styles";
 import {
     AddBoxOutlined,
     AddBoxTwoTone,
+    ArrowDropDownCircle,
     FormatShapes,
     TextFields,
 } from "@mui/icons-material";
 
 import { Element, useEditor } from "@craftjs/core";
 
-import { Button, Card, FlexLayout, Text } from "../../../nodes";
+import { Button, Card, FlexLayout, Select, Text } from "../../../nodes";
 
 const ContianerGrid = styled(Grid)(({ theme }) => ({
     padding: theme.spacing(2),
@@ -38,8 +39,7 @@ const Components = () => {
             <Grid item={true} xs={6}>
                 <ItemButton
                     ref={(ref) => connectors.create(ref as any, <Button />)}
-                    variant="contained"
-                >
+                    variant="contained">
                     <FormatShapes fontSize="large" />
                     Button
                 </ItemButton>
@@ -47,8 +47,7 @@ const Components = () => {
             <Grid item={true} xs={6}>
                 <ItemButton
                     ref={(ref) => connectors.create(ref as any, <Text />)}
-                    variant="contained"
-                >
+                    variant="contained">
                     <TextFields fontSize="large" />
                     Text
                 </ItemButton>
@@ -61,8 +60,7 @@ const Components = () => {
                             <Element is={FlexLayout} canvas={true} />,
                         )
                     }
-                    variant="contained"
-                >
+                    variant="contained">
                     <AddBoxOutlined fontSize="large" />
                     Flex Layout
                 </ItemButton>
@@ -70,10 +68,17 @@ const Components = () => {
             <Grid item={true} xs={6}>
                 <ItemButton
                     ref={(ref) => connectors.create(ref as any, <Card />)}
-                    variant="contained"
-                >
+                    variant="contained">
                     <AddBoxTwoTone fontSize="large" />
                     Card
+                </ItemButton>
+            </Grid>
+            <Grid item={true} xs={6}>
+                <ItemButton
+                    ref={(ref) => connectors.create(ref as any, <Select />)}
+                    variant="contained">
+                    <ArrowDropDownCircle fontSize="large" />
+                    Select
                 </ItemButton>
             </Grid>
         </ContianerGrid>
