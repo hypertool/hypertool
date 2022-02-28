@@ -24,8 +24,7 @@ interface Props {
 }
 
 export const Switch: CraftComponent<Props> = (props: Props): ReactElement => {
-    const { label, size, color, disabled, checked, disableRipple, onChange } =
-        props;
+    const { size, color, disabled, checked, disableRipple, onChange } = props;
     const {
         connectors: { connect, drag },
     } = useNode();
