@@ -16,19 +16,19 @@ export interface AuthenticationServicesType {
 export interface FormField {
     id: string;
     type:
-        | "text"
-        | "large_text"
-        | "number"
-        | "date"
-        | "time"
-        | "date_time"
-        | "switch"
-        | "date_range"
-        | "select"
-        | "multi_select"
-        | "email_address"
-        | "phone_number"
-        | "handler";
+    | "text"
+    | "large_text"
+    | "number"
+    | "date"
+    | "time"
+    | "date_time"
+    | "switch"
+    | "date_range"
+    | "select"
+    | "multi_select"
+    | "email_address"
+    | "phone_number"
+    | "handler";
     help: string;
 }
 
@@ -124,3 +124,16 @@ export interface IArtifactReference {
     artifactId: string;
     target: string;
 }
+export type TextVarient = "filled" | "outlined" | "standard";
+
+export type TextSize = "small" | "medium";
+
+export type TextMargin = "none" | "dense" | "normal";
+
+export type TextColor =
+    | "primary"
+    | "secondary"
+    | "success"
+    | "error"
+    | "info"
+    | "warning";
