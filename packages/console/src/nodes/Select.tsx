@@ -1,15 +1,12 @@
 import type { ReactElement } from "react";
 import { useState } from "react";
 
-import { Select as MuiSelect } from "@mui/material";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import { SelectChangeEvent } from "@mui/material/Select";
+import { FormControl, MenuItem, Select as MuiSelect } from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material/Select";
 
 import { useNode } from "@craftjs/core";
 
-import PropertiesForm from "../layouts/app-builder/panels/properties-editor/PropertiesForm";
+import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
     Color,
     CraftComponent,
@@ -32,16 +29,15 @@ interface Props {
 }
 
 export const Select: CraftComponent<Props> = (props: Props): ReactElement => {
-    const { menuItems, autoWidth, multiple, variant, margin, color, size } =
-        props;
+    const { menuItems, autoWidth, multiple, variant } = props;
     const menuItemsArray = menuItems?.trim()?.split(",");
-    const [age, setAge] = useState<string[]>([]);
+    const [property, setProperty] = useState<string[]>([]);
 
     const handleChange = (event: SelectChangeEvent<string[]>) => {
         const {
             target: { value },
         } = event;
-        setAge(typeof value === "string" ? value.split(",") : value);
+        setProperty(typeof value === "string" ? value.split(",") : value);
     };
 
     const {
@@ -52,13 +48,12 @@ export const Select: CraftComponent<Props> = (props: Props): ReactElement => {
         <div ref={(ref) => connect(drag(ref as any))}>
             <FormControl variant={variant} sx={{ m: 1, minWidth: 120 }}>
                 <MuiSelect
-                    labelId="demo-simple-select-filled-label"
-                    id="demo-simple-select-filled"
-                    value={age}
+                    labelId="label-select-id"
+                    id="select-id"
+                    value={property}
                     onChange={handleChange}
                     autoWidth={autoWidth}
-                    multiple={multiple}
-                >
+                    multiple={multiple}>
                     <MenuItem value="">
                         <em>None</em>
                     </MenuItem>
@@ -75,8 +70,7 @@ export const Select: CraftComponent<Props> = (props: Props): ReactElement => {
 
 const defaultProps: Props = {
     size: "normal",
-    menuItems:
-        "           abc, xyz, abdanfduoahfuaobefjbaufbweoibfadjkbfdwsvfwiyfb        ",
+    menuItems: "",
     autoWidth: false,
     multiple: false,
     variant: "standard",
@@ -99,7 +93,7 @@ Select.craft = {
                             {
                                 id: "size",
                                 size: "small",
-                                help: "The size of the button.",
+                                help: "The size of the select.",
                                 type: "select",
                                 required: true,
                                 title: "Size",
@@ -120,7 +114,7 @@ Select.craft = {
                                 title: "Auto-Width",
                                 type: "switch",
                                 size: "small",
-                                help: "Determines whether the autoWidth is disabled, or not.",
+                                help: "Determines whether the auto-width is disabled, or not.",
                             },
                             {
                                 id: "multiple",
@@ -155,13 +149,15 @@ Select.craft = {
                                 ],
                                 help: "List all the margins of dropdown",
                             },
-                            // {
-                            //     id: "color",
-                            //     title: "Menu Items",
-                            //     type: "large_text",
-                            //     size: "small",
-                            //     help: "List all the items of dropdown",
-                            // },
+                            /*
+                             * {
+                             *     id: "color",
+                             *     title: "Menu Items",
+                             *     type: "large_text",
+                             *     size: "small",
+                             *     help: "List all the items of dropdown",
+                             * },
+                             */
                         ],
                     },
                 ]}
