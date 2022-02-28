@@ -85,7 +85,7 @@
          */
 
         // Prettier integration with ESLint
-        "prettier/prettier": "error",
+        "prettier/prettier": "off",
         // Disallows multiple newlines in a row.
         "no-multiple-empty-lines": "error",
         // Enforces consistent spacing inside braces.
