@@ -8,7 +8,7 @@ import { AutoAwesomeMosaic, CodeOutlined } from "@mui/icons-material";
 
 import { useLocation, useNavigate } from "react-router";
 
-import Layers from "./Layers";
+import ExplorerAccordions from "./ExplorerAccordions";
 
 const DrawerHeader = styled("section")(({ theme }) => ({
     backgroundColor: (theme.palette.background as any).main,
@@ -20,9 +20,9 @@ const DrawerHeader = styled("section")(({ theme }) => ({
     padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
 }));
 
-const DrawerTitle = styled("b")(({ theme }) => ({
+const DrawerTitle = styled("b")({
     fontSize: 14,
-}));
+});
 
 const Explorer: FunctionComponent = (): ReactElement => {
     const [mode, setMode] = useState("design");
@@ -47,8 +47,7 @@ const Explorer: FunctionComponent = (): ReactElement => {
                     value={mode}
                     exclusive={true}
                     onChange={handleChange}
-                    size="small"
-                >
+                    size="small">
                     <ToggleButton value="design">
                         <AutoAwesomeMosaic fontSize="small" />
                     </ToggleButton>
@@ -57,7 +56,7 @@ const Explorer: FunctionComponent = (): ReactElement => {
                     </ToggleButton>
                 </ToggleButtonGroup>
             </DrawerHeader>
-            <Layers />
+            <ExplorerAccordions />
         </>
     );
 };
