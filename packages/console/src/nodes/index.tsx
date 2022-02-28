@@ -1,5 +1,6 @@
 import { Button } from "./Button";
 import { Card, CardBottom, CardTop } from "./Card";
+import { Checkbox } from "./Checkbox";
 import { Container } from "./Container";
 import FlexLayout from "./FlexLayout";
 import { Select } from "./Select";
@@ -14,6 +15,7 @@ export const nodeMappings = {
     Text,
     FlexLayout,
     Select,
+    Checkbox,
 };
 
 export * from "./Text";
@@ -22,3 +24,4 @@ export * from "./Container";
 export * from "./Card";
 export { FlexLayout };
 export * from "./Select";
+export * from "./Checkbox";
