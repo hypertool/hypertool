@@ -1,35 +1,49 @@
 import type { ReactElement } from "react";
 
-import { Switch as MuiSwitch } from "@mui/material";
+import { FormGroup, Switch as MuiSwitch } from "@mui/material";
 
 import { useNode } from "@craftjs/core";
 
+import { useArtifactReference } from "../hooks";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
-import type { CraftComponent, SwitchColor, SwitchSize } from "../types";
+import type {
+    CraftComponent,
+    IArtifactReference,
+    SwitchColor,
+    SwitchSize,
+} from "../types";
 
 interface Props {
+    label?: string;
     color?: SwitchColor;
     disabled?: boolean;
     checked?: boolean;
     disableRipple?: boolean;
-    // onChange?:
+    onChange?: IArtifactReference;
     size?: SwitchSize;
 }
 
 export const Switch: CraftComponent<Props> = (props: Props): ReactElement => {
-    const { size, color, disabled, checked, disableRipple } = props;
+    const { label, size, color, disabled, checked, disableRipple, onChange } =
+        props;
     const {
         connectors: { connect, drag },
     } = useNode();
 
+    const handleClick = useArtifactReference(onChange);
+
     return (
         <div ref={(ref) => connect(drag(ref as any))}>
-            <MuiSwitch
-                size={size as any}
-                disabled={disabled}
-                checked={checked}
-                disableRipple={disableRipple}
-                color={color}></MuiSwitch>
+            <FormGroup sx={{ m: 1, minWidth: 120 }}>
+                <MuiSwitch
+                    size={size as any}
+                    disabled={disabled}
+                    checked={checked}
+                    disableRipple={disableRipple}
+                    color={color}
+                    onChange={handleClick}
+                />
+            </FormGroup>
         </div>
     );
 };
@@ -38,8 +52,8 @@ const defaultProps: Props = {
     size: "small",
     color: "primary",
     disabled: false,
-    checked: true,
     disableRipple: false,
+    onChange: undefined,
 };
 
 Switch.defaultProps = defaultProps;
@@ -101,6 +115,14 @@ Switch.craft = {
                                     { value: "info", title: "Info" },
                                     { value: "warning", title: "Warning" },
                                 ],
+                            },
+                            {
+                                id: "onChange",
+                                size: "small",
+                                help: "The name of the callback to invoke on change.",
+                                type: "handler",
+                                required: true,
+                                title: "On Change",
                             },
                         ],
                     },

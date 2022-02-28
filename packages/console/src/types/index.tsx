@@ -124,21 +124,17 @@ export interface IArtifactReference {
     artifactId: string;
     target: string;
 }
-<<<<<<< HEAD
 export type SelectSize = "small" | "normal";
 
 export type SelectVariant = "filled" | "standard" | "outlined";
 
 export type SelectMargin = "none" | "dense" | "normal";
 
-export type SelectColor =
-    | "inherit"
-=======
+export type SelectColor = "inherit";
 
 export type SwitchSize = "small" | "medium";
 
 export type SwitchColor =
->>>>>>> f04d25f... feat: added Switch to app-builder navigation
     | "primary"
     | "secondary"
     | "success"
