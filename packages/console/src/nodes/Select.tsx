@@ -121,7 +121,7 @@ Select.craft = {
                                 title: "Multiple",
                                 type: "switch",
                                 size: "small",
-                                help: "Determines wether the multiple is disabled, or not.",
+                                help: "Determines whether the multiple is disabled, or not.",
                             },
                             {
                                 id: "variant",
