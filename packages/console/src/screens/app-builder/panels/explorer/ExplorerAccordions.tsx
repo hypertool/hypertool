@@ -10,6 +10,7 @@ import {
 import { styled } from "@mui/material/styles";
 
 import Layers from "./Layers";
+import Queries from "./Queries";
 
 const StyledAccordion = styled(Accordion)({});
 
@@ -33,7 +34,12 @@ const ExplorerAccordions = () => {
         </StyledAccordion>
     );
 
-    return <div>{renderAccordion("layers", "Layers", <Layers />)}</div>;
+    return (
+        <div>
+            {renderAccordion("layers", "Layers", <Layers />)}
+            {renderAccordion("queries", "Queries", <Queries />)}
+        </div>
+    );
 };
 
 export default ExplorerAccordions;
