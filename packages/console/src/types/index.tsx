@@ -2,6 +2,8 @@ import type { FunctionComponent } from "react";
 
 import { constants } from "@hypertool/common";
 
+import { constants as consoleConstants } from "../utils";
+
 const { resourceStatuses, resourceTypes } = constants;
 
 export type ResourceType = typeof resourceTypes[number];
@@ -134,7 +136,7 @@ export type BaseColor =
 
 export type Color = "inherit" | BaseColor;
 
-export type TTabType = "query" | "controller";
+export type TTabType = typeof consoleConstants.tabTypes[number];
 
 export interface ITab {
     id: string;
