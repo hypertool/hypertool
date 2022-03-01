@@ -71,7 +71,7 @@ Switch.craft = {
                                 title: "Disabled",
                                 type: "switch",
                                 size: "small",
-                                help: "Determines wether the switch is disabled, or not.",
+                                help: "Determines whether the switch is disabled, or not.",
                             },
                             {
                                 id: "checked",

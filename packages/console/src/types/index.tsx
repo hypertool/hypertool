@@ -130,7 +130,14 @@ export type SelectVariant = "filled" | "standard" | "outlined";
 
 export type SelectMargin = "none" | "dense" | "normal";
 
-export type SelectColor = "inherit";
+export type SelectColor =
+    | "inherit"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "error"
+    | "info"
+    | "warning";
 
 export type SwitchSize = "small" | "medium";
 
