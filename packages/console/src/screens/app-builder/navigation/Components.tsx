@@ -7,11 +7,12 @@ import {
     ArrowDropDownCircle,
     FormatShapes,
     TextFields,
+    ToggleOff,
 } from "@mui/icons-material";
 
 import { Element, useEditor } from "@craftjs/core";
 
-import { Button, Card, FlexLayout, Select, Text } from "../../../nodes";
+import { Button, Card, FlexLayout, Select, Switch, Text } from "../../../nodes";
 
 const ContianerGrid = styled(Grid)(({ theme }) => ({
     padding: theme.spacing(2),
@@ -79,6 +80,14 @@ const Components = () => {
                     variant="contained">
                     <ArrowDropDownCircle fontSize="large" />
                     Select
+                </ItemButton>
+            </Grid>
+            <Grid item={true} xs={6}>
+                <ItemButton
+                    ref={(ref) => connectors.create(ref as any, <Switch />)}
+                    variant="contained">
+                    <ToggleOff fontSize="large" />
+                    Switch
                 </ItemButton>
             </Grid>
         </ContianerGrid>

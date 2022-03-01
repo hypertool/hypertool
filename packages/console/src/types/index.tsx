@@ -138,3 +138,13 @@ export type SelectColor =
     | "error"
     | "info"
     | "warning";
+
+export type SwitchSize = "small" | "medium";
+
+export type SwitchColor =
+    | "primary"
+    | "secondary"
+    | "success"
+    | "error"
+    | "info"
+    | "warning";
