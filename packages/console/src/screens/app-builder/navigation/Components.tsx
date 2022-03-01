@@ -8,16 +8,24 @@ import {
     FormatShapes,
     TextFields,
 } from "@mui/icons-material";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
 import { Element, useEditor } from "@craftjs/core";
 
-import { Button, Card, FlexLayout, Select, Text } from "../../../nodes";
+import {
+    Button,
+    Card,
+    Checkbox,
+    FlexLayout,
+    Select,
+    Text,
+} from "../../../nodes";
 
 const ContianerGrid = styled(Grid)(({ theme }) => ({
     padding: theme.spacing(2),
 }));
 
-const ToolName = styled(Typography)(({ theme }) => ({
+const ToolName = styled(Typography)(() => ({
     fontSize: 14,
     fontWeight: "bold",
 }));
@@ -78,6 +86,14 @@ const Components = () => {
                     ref={(ref) => connectors.create(ref as any, <Select />)}
                     variant="contained">
                     <ArrowDropDownCircle fontSize="large" />
+                    Select
+                </ItemButton>
+            </Grid>
+            <Grid item={true} xs={6}>
+                <ItemButton
+                    ref={(ref) => connectors.create(ref as any, <Checkbox />)}
+                    variant="contained">
+                    <CheckBoxIcon fontSize="large" />
                     Select
                 </ItemButton>
             </Grid>
