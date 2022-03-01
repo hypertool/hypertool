@@ -24,10 +24,10 @@ const Actions = styled("div")(({ theme }) => ({
 }));
 
 const Queries: FunctionComponent = (): ReactElement => {
-    const { createNewQuery } = useContext(BuilderActionsContext);
+    const { createNewTab } = useContext(BuilderActionsContext);
 
     const handleNewQuery = useCallback(() => {
-        createNewQuery();
+        createNewTab("New Query", "query");
     }, []);
 
     const renderQuery = (title: string) => (

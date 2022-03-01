@@ -1,5 +1,5 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { styled } from "@mui/material/styles";
 
@@ -9,7 +9,7 @@ import { Editor, Element, Frame } from "@craftjs/core";
 import { ArtifactsContext, BuilderActionsContext } from "../../contexts";
 import { useInflateArtifacts, useQueryParams } from "../../hooks";
 import { Button, Container, Text, nodeMappings } from "../../nodes";
-import type { ITab } from "../../types";
+import type { ITab, TTabType } from "../../types";
 import { templates } from "../../utils";
 
 import CanvasViewport from "./CanvasViewport";
@@ -42,6 +42,11 @@ const Content = styled("section")(({ theme }) => ({
 
 type Modes = "design" | "code";
 
+const iconByType: { [key: string]: string } = {
+    controller: "code",
+    query: "category",
+};
+
 const AppBuilder: FunctionComponent = (): ReactElement => {
     const [leftDrawerOpen, setLeftDrawerOpen] = useState(true);
     const [rightDrawerOpen, setRightDrawerOpen] = useState(true);
@@ -52,26 +57,42 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     );
     const [tabs, setTabs] = useState<ITab[]>([]);
     const [activeTab, setActiveTab] = useState<string | null>(null);
+    const setCounts = useState<Record<string, number>>({
+        controller: 0,
+        query: 0,
+    })[1];
 
-    const handleCreateNewQuery = useCallback(() => {
-        const newTab = {
-            id: uuid.v4(),
-            title: "New Query",
-            icon: "category",
-        };
-        setTabs((tabs) => [...tabs, newTab]);
-        setActiveTab(newTab.id);
-    }, []);
+    /*
+     * TODO: For some reason, `useMemo` causes binding issues in callbacks
+     * resulting in incomprehensible behavior.
+     */
+    const builderActions = {
+        tabs,
+        activeTab,
+        setActiveTab,
+        createNewTab: (title: string, type: TTabType) => {
+            let newCount = 0;
+            let newTabId = null;
 
-    const builderActions = useMemo(
-        () => ({
-            tabs,
-            activeTab,
-            setActiveTab,
-            createNewQuery: handleCreateNewQuery,
-        }),
-        [tabs, activeTab, setActiveTab, handleCreateNewQuery],
-    );
+            setCounts((oldCount) => {
+                newCount = oldCount[type] + 1;
+                return { ...oldCount, [type]: newCount };
+            });
+
+            setTabs((tabs) => {
+                newTabId = uuid.v4();
+                const newTab = {
+                    id: newTabId,
+                    title: `${title} ${newCount}`,
+                    icon: iconByType[type],
+                    type,
+                };
+
+                return [...tabs, newTab];
+            });
+            setActiveTab(newTabId);
+        },
+    };
 
     useEffect(() => {
         if ((params as any).mode && (params as any).mode !== mode) {

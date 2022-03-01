@@ -134,14 +134,17 @@ export type BaseColor =
 
 export type Color = "inherit" | BaseColor;
 
+export type TTabType = "query" | "controller";
+
 export interface ITab {
     id: string;
     title: string;
     icon: string;
+    type: TTabType;
 }
 
 export interface IBuilderActionsContext {
-    createNewQuery: () => void;
+    createNewTab: (title: string, type: TTabType) => void;
     tabs: ITab[];
     activeTab: string | null;
     setActiveTab: (activeTab: string) => void;
