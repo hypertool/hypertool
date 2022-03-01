@@ -1,8 +1,11 @@
 import type { FunctionComponent, ReactElement, SyntheticEvent } from "react";
-import { useState } from "react";
+import { useContext } from "react";
 
 import { Icon, IconButton, Tab, Tabs } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import { BuilderActionsContext } from "../../../contexts";
+import type { ITab } from "../../../types";
 
 const tabHeight = 48;
 
@@ -21,35 +24,17 @@ const TabTitleText = styled("span")({
     fontSize: 12,
 });
 
-interface ITab {
-    id: string;
-    title: string;
-    icon: string;
-}
-
-const tabs: ITab[] = [
-    {
-        id: "1",
-        title: "New Query",
-        icon: "category",
-    },
-    {
-        id: "2",
-        title: "Home",
-        icon: "wysiwyg",
-    },
-];
-
 const BuilderTabs: FunctionComponent = (): ReactElement => {
-    const [value, setValue] = useState(0);
+    const { tabs, activeTab, setActiveTab } = useContext(BuilderActionsContext);
 
-    const handleChange = (event: SyntheticEvent, newValue: any) => {
-        setValue(newValue);
+    const handleChange = (_event: SyntheticEvent, newActiveTab: string) => {
+        setActiveTab(newActiveTab);
     };
 
     const renderTab = (tab: ITab) => (
         <Tab
             key={tab.id}
+            value={tab.id}
             icon={<Icon fontSize="small">{tab.icon}</Icon>}
             iconPosition="start"
             label={
@@ -66,7 +51,10 @@ const BuilderTabs: FunctionComponent = (): ReactElement => {
     );
 
     return (
-        <StyledTabs value={value} onChange={handleChange} variant="scrollable">
+        <StyledTabs
+            value={activeTab}
+            onChange={handleChange}
+            variant="scrollable">
             {tabs.map(renderTab)}
         </StyledTabs>
     );
