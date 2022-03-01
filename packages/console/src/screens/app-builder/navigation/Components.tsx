@@ -6,6 +6,7 @@ import {
     AddBoxTwoTone,
     ArrowDropDownCircle,
     FormatShapes,
+    LinearScale,
     TextFields,
 } from "@mui/icons-material";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
@@ -18,6 +19,7 @@ import {
     Checkbox,
     FlexLayout,
     Select,
+    Slider,
     Text,
 } from "../../../nodes";
 
@@ -95,6 +97,14 @@ const Components = () => {
                     variant="contained">
                     <CheckBoxIcon fontSize="large" />
                     Select
+                </ItemButton>
+            </Grid>
+            <Grid item={true} xs={6}>
+                <ItemButton
+                    ref={(ref) => connectors.create(ref as any, <Slider />)}
+                    variant="contained">
+                    <LinearScale fontSize="large" />
+                    Slider
                 </ItemButton>
             </Grid>
         </ContianerGrid>
