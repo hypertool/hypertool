@@ -11,6 +11,7 @@ import { styled } from "@mui/material/styles";
 
 import Controllers from "./Controllers";
 import Layers from "./Layers";
+import Pages from "./Pages";
 import Queries from "./Queries";
 
 const StyledAccordion = styled(Accordion)({});
@@ -40,6 +41,7 @@ const ExplorerAccordions = () => {
             {renderAccordion("layers", "Layers", <Layers />)}
             {renderAccordion("queries", "Queries", <Queries />)}
             {renderAccordion("controllers", "Controllers", <Controllers />)}
+            {renderAccordion("pages", "Pages", <Pages />)}
         </div>
     );
 };
