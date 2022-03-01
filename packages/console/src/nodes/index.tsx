@@ -3,6 +3,8 @@ import { Card, CardBottom, CardTop } from "./Card";
 import { Checkbox } from "./Checkbox";
 import { Container } from "./Container";
 import FlexLayout from "./FlexLayout";
+import { Radio } from "./Radio";
+import { RadioGroup } from "./RadioGroup";
 import { Select } from "./Select";
 import { Text } from "./Text";
 
@@ -16,6 +18,8 @@ export const nodeMappings = {
     FlexLayout,
     Select,
     Checkbox,
+    Radio,
+    RadioGroup,
 };
 
 export * from "./Text";
@@ -25,3 +29,5 @@ export * from "./Card";
 export { FlexLayout };
 export * from "./Select";
 export * from "./Checkbox";
+export * from "./Radio";
+export * from "./RadioGroup";
