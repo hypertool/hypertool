@@ -1,13 +1,15 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { styled } from "@mui/material/styles";
 
+import * as uuid from "uuid";
 import { Editor, Element, Frame } from "@craftjs/core";
 
-import { ArtifactsContext } from "../../contexts";
+import { ArtifactsContext, BuilderActionsContext } from "../../contexts";
 import { useInflateArtifacts, useQueryParams } from "../../hooks";
 import { Button, Container, Text, nodeMappings } from "../../nodes";
+import type { ITab } from "../../types";
 import { templates } from "../../utils";
 
 import CanvasViewport from "./CanvasViewport";
@@ -48,6 +50,28 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     const [editorValue, setEditorValue] = useState<string | undefined>(
         templates.CONTROLLER_TEMPLATE,
     );
+    const [tabs, setTabs] = useState<ITab[]>([]);
+    const [activeTab, setActiveTab] = useState<string | null>(null);
+
+    const handleCreateNewQuery = useCallback(() => {
+        const newTab = {
+            id: uuid.v4(),
+            title: "New Query",
+            icon: "category",
+        };
+        setTabs((tabs) => [...tabs, newTab]);
+        setActiveTab(newTab.id);
+    }, []);
+
+    const builderActions = useMemo(
+        () => ({
+            tabs,
+            activeTab,
+            setActiveTab,
+            createNewQuery: handleCreateNewQuery,
+        }),
+        [tabs, activeTab, setActiveTab, handleCreateNewQuery],
+    );
 
     useEffect(() => {
         if ((params as any).mode && (params as any).mode !== mode) {
@@ -77,50 +101,52 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
 
     return (
         <Editor resolver={nodeMappings} onRender={RenderNode}>
-            <Root>
+            <BuilderActionsContext.Provider value={builderActions}>
                 <ArtifactsContext.Provider value={artifacts}>
-                    <AppBar open={leftDrawerOpen} />
-                    <LeftDrawer
-                        open={leftDrawerOpen}
-                        onDrawerOpen={handleLeftDrawerOpen}
-                        onDrawerClose={handleLeftDrawerClose}
-                    />
-                    <Main>
-                        <Content>
-                            {mode === "code" && (
-                                <CodeEditor
-                                    value={editorValue}
-                                    onChange={setEditorValue}
-                                />
-                            )}
-                            <CanvasViewport>
-                                <Frame>
-                                    <Element
-                                        is={Container}
-                                        padding={4}
-                                        canvas={true}>
+                    <Root>
+                        <AppBar open={leftDrawerOpen} />
+                        <LeftDrawer
+                            open={leftDrawerOpen}
+                            onDrawerOpen={handleLeftDrawerOpen}
+                            onDrawerClose={handleLeftDrawerClose}
+                        />
+                        <Main>
+                            <Content>
+                                {mode === "code" && (
+                                    <CodeEditor
+                                        value={editorValue}
+                                        onChange={setEditorValue}
+                                    />
+                                )}
+                                <CanvasViewport>
+                                    <Frame>
                                         <Element
-                                            canvas
                                             is={Container}
-                                            padding={6}
-                                            background="#999999">
-                                            <Text
-                                                fontSize="small"
-                                                text="It's me again!"
-                                            />
+                                            padding={4}
+                                            canvas={true}>
+                                            <Element
+                                                canvas
+                                                is={Container}
+                                                padding={6}
+                                                background="#999999">
+                                                <Text
+                                                    fontSize="small"
+                                                    text="It's me again!"
+                                                />
+                                            </Element>
+                                            <Button />
                                         </Element>
-                                        <Button />
-                                    </Element>
-                                </Frame>
-                            </CanvasViewport>
-                        </Content>
-                    </Main>
-                    <RightDrawer
-                        open={rightDrawerOpen}
-                        onDrawerClose={handleRightDrawerClose}
-                    />
+                                    </Frame>
+                                </CanvasViewport>
+                            </Content>
+                        </Main>
+                        <RightDrawer
+                            open={rightDrawerOpen}
+                            onDrawerClose={handleRightDrawerClose}
+                        />
+                    </Root>
                 </ArtifactsContext.Provider>
-            </Root>
+            </BuilderActionsContext.Provider>
         </Editor>
     );
 };
