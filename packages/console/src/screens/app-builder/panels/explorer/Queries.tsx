@@ -1,4 +1,5 @@
 import type { FunctionComponent, ReactElement } from "react";
+import { useCallback, useContext } from "react";
 
 import {
     Avatar,
@@ -12,6 +13,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import { BuilderActionsContext } from "../../../../contexts";
+
 const Actions = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
@@ -21,6 +24,12 @@ const Actions = styled("div")(({ theme }) => ({
 }));
 
 const Queries: FunctionComponent = (): ReactElement => {
+    const { createNewQuery } = useContext(BuilderActionsContext);
+
+    const handleNewQuery = useCallback(() => {
+        createNewQuery();
+    }, []);
+
     const renderQuery = (title: string) => (
         <ListItem
             key={title}
@@ -47,7 +56,8 @@ const Queries: FunctionComponent = (): ReactElement => {
                     fullWidth={true}
                     variant="outlined"
                     color="primary"
-                    endIcon={<Icon>add</Icon>}>
+                    endIcon={<Icon>add</Icon>}
+                    onClick={handleNewQuery}>
                     Create New Query
                 </Button>
             </Actions>
