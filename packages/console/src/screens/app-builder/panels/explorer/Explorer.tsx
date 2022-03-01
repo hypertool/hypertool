@@ -17,7 +17,8 @@ const DrawerHeader = styled("section")(({ theme }) => ({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
+    height: 48,
+    padding: theme.spacing(0, 2),
 }));
 
 const DrawerTitle = styled("b")({
