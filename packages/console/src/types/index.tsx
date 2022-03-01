@@ -133,3 +133,16 @@ export type BaseColor =
     | "warning";
 
 export type Color = "inherit" | BaseColor;
+
+export interface ITab {
+    id: string;
+    title: string;
+    icon: string;
+}
+
+export interface IBuilderActionsContext {
+    createNewQuery: () => void;
+    tabs: ITab[];
+    activeTab: string | null;
+    setActiveTab: (activeTab: string) => void;
+}
