@@ -82,15 +82,6 @@ export interface CraftProps {
 
 export type CraftComponent<P> = FunctionComponent<P> & CraftProps;
 
-export type Color =
-    | "inherit"
-    | "primary"
-    | "secondary"
-    | "success"
-    | "error"
-    | "info"
-    | "warning";
-
 export type ButtonVariant = "text" | "outlined" | "contained";
 
 export type ButtonSize = "small" | "medium" | "large";
@@ -131,21 +122,14 @@ export type SelectVariant = "filled" | "standard" | "outlined";
 
 export type SelectMargin = "none" | "dense" | "normal";
 
-export type SelectColor =
-    | "inherit"
-    | "primary"
-    | "secondary"
-    | "success"
-    | "error"
-    | "info"
-    | "warning";
-
 export type CheckboxSize = "small" | "medium";
 
-export type CheckboxColor =
+export type BaseColor =
     | "primary"
     | "secondary"
     | "success"
     | "error"
     | "info"
     | "warning";
+
+export type Color = "inherit" | BaseColor;

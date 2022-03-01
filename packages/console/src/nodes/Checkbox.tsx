@@ -11,7 +11,7 @@ import { useNode } from "@craftjs/core";
 import { useArtifactReference } from "../hooks";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
-    CheckboxColor,
+    BaseColor,
     CheckboxSize,
     CraftComponent,
     IArtifactReference,
@@ -19,7 +19,7 @@ import type {
 
 interface Props {
     label?: string;
-    color?: CheckboxColor;
+    color?: BaseColor;
     disabled?: boolean;
     checked?: boolean;
     disableRipple?: boolean;
@@ -91,7 +91,7 @@ Checkbox.craft = {
                                 title: "Checked",
                                 type: "switch",
                                 size: "small",
-                                help: "Determines wether the checkbox is checked by default, or not.",
+                                help: "Determines whether the checkbox is checked by default, or not.",
                             },
                             {
                                 id: "label",
@@ -105,7 +105,7 @@ Checkbox.craft = {
                                 title: "Disabled",
                                 type: "switch",
                                 size: "small",
-                                help: "Determines wether the checkbox is disabled, or not.",
+                                help: "Determines whether the checkbox is disabled, or not.",
                             },
                             //TODO change this when color component is implemented
                             {
