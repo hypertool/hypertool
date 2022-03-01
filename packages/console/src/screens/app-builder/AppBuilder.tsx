@@ -10,7 +10,7 @@ import { ArtifactsContext, BuilderActionsContext } from "../../contexts";
 import { useInflateArtifacts, useQueryParams } from "../../hooks";
 import { Button, Container, Text, nodeMappings } from "../../nodes";
 import type { ITab, TTabType } from "../../types";
-import { templates } from "../../utils";
+import { constants, templates } from "../../utils";
 
 import CanvasViewport from "./CanvasViewport";
 import CodeEditor from "./CodeEditor";
@@ -57,10 +57,11 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     );
     const [tabs, setTabs] = useState<ITab[]>([]);
     const [activeTab, setActiveTab] = useState<string | null>(null);
-    const setCounts = useState<Record<string, number>>({
-        controller: 0,
-        query: 0,
-    })[1];
+    const setCounts = useState<Record<string, number>>(() =>
+        Object.fromEntries(
+            constants.tabTypes.map((tabType: string) => [tabType, 0]),
+        ),
+    )[1];
 
     /*
      * TODO: For some reason, `useMemo` causes binding issues in callbacks
