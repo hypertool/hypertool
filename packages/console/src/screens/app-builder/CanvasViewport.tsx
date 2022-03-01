@@ -4,8 +4,6 @@ import { styled } from "@mui/material/styles";
 
 import { useEditor } from "@craftjs/core";
 
-import CanvasHeader from "./CanvasHeader";
-
 const PageContainer = styled("div")(({ theme }) => ({
     width: "100%",
     height: "100%",
@@ -23,13 +21,13 @@ const CraftRenderer = styled("div")(({ theme }) => ({
     backgroundColor: (theme.palette.background as any).paper1,
 }));
 
-const CanvasContainer = styled("div")(({ theme }) => ({
+const CanvasContainer = styled("div")({
     position: "relative",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     width: "100%",
-}));
+});
 
 interface ViewportProps {
     children: any;
@@ -44,7 +42,6 @@ const CanvasViewport: FunctionComponent<ViewportProps> = (
 
     return (
         <>
-            <CanvasHeader />
             <PageContainer className="page-container">
                 <CraftRenderer
                     className="craft-renderer"
@@ -53,8 +50,7 @@ const CanvasViewport: FunctionComponent<ViewportProps> = (
                             connectors.hover(ref as any, null as any),
                             null as any,
                         )
-                    }
-                >
+                    }>
                     <CanvasContainer>{props.children}</CanvasContainer>
                 </CraftRenderer>
             </PageContainer>
