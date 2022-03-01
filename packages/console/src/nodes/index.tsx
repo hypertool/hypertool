@@ -4,6 +4,7 @@ import { Checkbox } from "./Checkbox";
 import { Container } from "./Container";
 import FlexLayout from "./FlexLayout";
 import { Select } from "./Select";
+import { Slider } from "./Slider";
 import { Text } from "./Text";
 
 export const nodeMappings = {
@@ -16,6 +17,7 @@ export const nodeMappings = {
     FlexLayout,
     Select,
     Checkbox,
+    Slider,
 };
 
 export * from "./Text";
@@ -25,3 +27,4 @@ export * from "./Card";
 export { FlexLayout };
 export * from "./Select";
 export * from "./Checkbox";
+export * from "./Slider";

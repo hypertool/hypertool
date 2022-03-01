@@ -133,3 +133,7 @@ export type BaseColor =
     | "warning";
 
 export type Color = "inherit" | BaseColor;
+
+export type SliderValueLabelDisplay = "on" | "auto" | "off";
+
+export type SliderSize = "medium" | "small";
