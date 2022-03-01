@@ -25,7 +25,7 @@ const Root = styled("div")(({ theme }) => ({
 
 const Main = styled("main")(({ theme }) => ({
     backgroundColor: (theme.palette.background as any).main,
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(6),
     width: "100%",
 }));
 
