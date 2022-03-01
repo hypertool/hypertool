@@ -1,5 +1,4 @@
 import type { ApolloClient } from "@apollo/client/core";
-
 import { gql, ApolloError } from "@apollo/client/core";
 import lodash from "lodash";
 
@@ -9,6 +8,7 @@ import type {
     Query as QueryTemplate,
     ExternalResource,
     Resource,
+    ActivityLog,
 } from "../types";
 
 const GET_APP_BY_NAME = gql`
@@ -232,6 +232,47 @@ const CREATE_MEMBERSHIP = gql`
     }
 `;
 
+const CREATE_ACTIVITY_LOG = gql`
+    mutation CreateActivityLog(
+        $message: String!
+        $component: ComponentOrigin!
+        $context: GraphQLJSON
+    ) {
+        createActivityLog(
+            message: $message
+            context: $context
+            component: $component
+        ) {
+            id
+        }
+    }
+`;
+
+const GET_ACTIVITY_LOG_BY_ID = gql`
+    query GetActivityLogById($activityLogId: String!) {
+        getActivityLogById(activityLogId: $activityLogId) {
+            id
+            message
+            context
+            component
+        }
+    }
+`;
+
+const GET_ACTIVITY_LOGS = gql`
+    query GetActivityLogs($page: Int!, $limit: Int!) {
+        getActivityLogs(page: $page, limit: $limit) {
+            totalRecords
+            totalPages
+            previousPage
+            nextPage
+            hasPreviousPage
+            hasNextPage
+            records
+        }
+    }
+`;
+
 const isNotFoundError = (error0: unknown): boolean => {
     if (error0 instanceof ApolloError) {
         const error = error0 as ApolloError;
@@ -252,7 +293,7 @@ export default class Client<T> {
         this.client = client;
     }
 
-    async getAppByName(name: string): Promise<App | null> {
+    getAppByName = async (name: string): Promise<App | null> => {
         try {
             const app = await this.client.query({
                 query: GET_APP_BY_NAME,
@@ -276,7 +317,7 @@ export default class Client<T> {
      *
      * NOTE: The hit rate of the cache has not been tested.
      */
-    async convertNameToId(name: string, type: string): Promise<string> {
+    convertNameToId = async (name: string, type: string): Promise<string> => {
         switch (type) {
             case "app": {
                 const app = await this.getAppByName(name);
@@ -287,7 +328,8 @@ export default class Client<T> {
             }
 
             case "resource": {
-                /* NOTE: For this resolution to work, all the resources must be
+                /*
+                 * NOTE: For this resolution to work, all the resources must be
                  * created before the queries because queries refer resources.
                  */
                 const resource = await this.getResourceByName(name);
@@ -308,7 +350,7 @@ export default class Client<T> {
         }
     }
 
-    async createApp(app: App): Promise<void> {
+    createApp = async (app: App): Promise<void> => {
         await this.client.mutate({
             mutation: CREATE_APP,
             variables: {
@@ -325,7 +367,7 @@ export default class Client<T> {
         });
     }
 
-    async updateApp(appId: string, app: App): Promise<void> {
+    updateApp = async (appId: string, app: App): Promise<void> => {
         await this.client.mutate({
             mutation: UPDATE_APP,
             variables: {
@@ -334,7 +376,8 @@ export default class Client<T> {
                 title: app.title,
                 slug: app.slug,
                 description: app.description,
-                /* Any implicit value injection to the manifests must be done
+                /*
+                 * Any implicit value injection to the manifests must be done
                  * during compilation by the compiler, not when syncing changes.
                  */
                 groups: await Promise.all(
@@ -346,7 +389,7 @@ export default class Client<T> {
         });
     }
 
-    async getQueryTemplateByName(name: string): Promise<QueryTemplate | null> {
+    getQueryTemplateByName = async (name: string): Promise<QueryTemplate | null> => {
         try {
             const queryTemplate = await this.client.query({
                 query: GET_QUERY_TEMPLATE_BY_NAME,
@@ -363,10 +406,10 @@ export default class Client<T> {
         }
     }
 
-    async createQueryTemplate(
+    createQueryTemplate = async (
         queryTemplate: QueryTemplate,
         appName: string,
-    ): Promise<void> {
+    ): Promise<void> => {
         await this.client.mutate({
             mutation: CREATE_QUERY_TEMPLATE,
             variables: {
@@ -382,10 +425,10 @@ export default class Client<T> {
         });
     }
 
-    async updateQueryTemplate(
+    updateQueryTemplate = async (
         queryTemplateId: string,
         queryTemplate: QueryTemplate,
-    ): Promise<void> {
+    ): Promise<void> => {
         await this.client.mutate({
             mutation: UPDATE_QUERY_TEMPLATE,
             variables: {
@@ -397,7 +440,7 @@ export default class Client<T> {
         });
     }
 
-    async getResourceByName(name: string): Promise<ExternalResource | null> {
+    getResourceByName = async (name: string): Promise<ExternalResource | null> => {
         try {
             const resource = await this.client.query({
                 query: GET_RESOURCE_BY_NAME,
@@ -414,7 +457,7 @@ export default class Client<T> {
         }
     }
 
-    async createResource(resource: Resource, appName: string): Promise<void> {
+    createResource = async (resource: Resource): Promise<void> => {
         await this.client.mutate({
             mutation: CREATE_RESOURCE,
             variables: {
@@ -426,10 +469,10 @@ export default class Client<T> {
         });
     }
 
-    async updateResource(
+    updateResource = async (
         resourceId: string,
         resource: Resource,
-    ): Promise<void> {
+    ): Promise<void> => {
         await this.client.mutate({
             mutation: UPDATE_RESOURCE,
             variables: {
@@ -441,7 +484,7 @@ export default class Client<T> {
         });
     }
 
-    async patchApp(oldApp: App, newApp: App): Promise<boolean> {
+    patchApp = async (oldApp: App, newApp: App): Promise<boolean> => {
         const keys = ["name", "slug", "description", "title", "groups"];
         const oldAppPicked = lodash.pick(oldApp, keys);
         const newAppPicked = lodash.pick(newApp, keys);
@@ -450,7 +493,8 @@ export default class Client<T> {
             throw new Error("lodash.pick() returned undefined for some reason");
         }
 
-        /* `oldAppPicked.groups` contains IDs, not names. Therefore, convert
+        /*
+         * `oldAppPicked.groups` contains IDs, not names. Therefore, convert
          * names in `newAppPicked.groups` to their corresponding IDs before
          * comparing.
          */
@@ -469,10 +513,10 @@ export default class Client<T> {
         return true;
     }
 
-    async patchQueryTemplate(
+    patchQueryTemplate = async (
         oldQueryTemplate: QueryTemplate,
         newQueryTemplate: QueryTemplate,
-    ): Promise<boolean> {
+    ): Promise<boolean> => {
         const keys = ["name", "description", "content"];
         const oldQueryTemplatePicked = lodash.pick(oldQueryTemplate, keys);
         const newQueryTemplatePicked = lodash.pick(newQueryTemplate, keys);
@@ -492,11 +536,12 @@ export default class Client<T> {
         return true;
     }
 
-    async patchResource(
+    patchResource = async (
         oldResource: Resource,
         newResource: Resource,
-    ): Promise<boolean> {
-        /* TODO: At the moment, the connection object does not have any optional keys.
+    ): Promise<boolean> => {
+        /*
+         * TODO: At the moment, the connection object does not have any optional keys.
          * When optional keys are present, the following picking logic needs to
          * to be updated accordingly.
          */
@@ -537,7 +582,8 @@ export default class Client<T> {
 
         if (
             lodash.isEqual(oldAppPicked, newAppPicked) &&
-            /* Compare `oldResource[mysql|postgres|mongodb|bigquery]` with
+            /*
+             * Compare `oldResource[mysql|postgres|mongodb|bigquery]` with
              * `newResource.connection`
              */
             lodash.isEqual(
@@ -562,7 +608,7 @@ export default class Client<T> {
         return true;
     }
 
-    async syncManifest(manifest: Manifest) {
+    syncManifest = async  (manifest: Manifest) => {
         const { app, queries, resources } = manifest;
 
         const deployedApp = await this.getAppByName(app.name);
@@ -572,38 +618,45 @@ export default class Client<T> {
             await this.patchApp(deployedApp, app);
         }
 
+        const promises = [];
         /* TODO: Fetch all the resources at once and then run the patching algorithm. */
         for (const resource of resources) {
-            const deployedResource = await this.getResourceByName(
+            const promise = this.getResourceByName(
                 resource.name,
-            );
-            if (!deployedResource) {
-                await this.createResource(resource, app.name);
-            } else {
-                await this.patchResource(deployedResource as any, resource);
-            }
+            ).then((deployedResource): Promise<boolean | void> => {
+                if (!deployedResource) {
+                    return this.createResource(resource);
+                } else {
+                    return this.patchResource(deployedResource as any, resource);
+                }
+            });
+            promises.push(promise);
         }
+        await Promise.all(promises);
 
         /* TODO: Fetch all the queries at once and then run the patching algorithm. */
+        const promises2 = [];
         for (const queryTemplate of queries) {
-            const deployedQueryTemplate = await this.getQueryTemplateByName(
+            const promise = this.getQueryTemplateByName(
                 queryTemplate.name,
-            );
-            if (!deployedQueryTemplate) {
-                await this.createQueryTemplate(queryTemplate, app.name);
-            } else {
-                await this.patchQueryTemplate(
-                    deployedQueryTemplate,
-                    queryTemplate,
-                );
-            }
+            ).then((deployedQueryTemplate): Promise<void | boolean> => {
+                if (!deployedQueryTemplate) {
+                    return this.createQueryTemplate(queryTemplate, app.name);
+                } else {
+                    return this.patchQueryTemplate(
+                        deployedQueryTemplate,
+                        queryTemplate,
+                    );
+                }
+            });
+            promises2.push(promise);
         }
     }
 
-    async generateSignedURLs(
+    generateSignedURLs = async (
         appId: string,
         files: string[],
-    ): Promise<string[]> {
+    ): Promise<string[]> => {
         const app = await this.client.mutate({
             mutation: GENERATE_SIGNED_URLS,
             variables: {
@@ -612,20 +665,72 @@ export default class Client<T> {
             },
         });
         return app.data.generateSignedURLs;
-    }
+    };
 
-    async createMembership(
+    createMembership = async (
         emailAddress,
         inviterId,
         organizationId,
-    ): Promise<void> {
+    ): Promise<void> => {
         await this.client.mutate({
             mutation: CREATE_MEMBERSHIP,
             variables: {
                 emailAddress,
                 inviterId,
-                organizationId,
+                organizationId,            },
+            });
+        };
+
+    createActivityLog = async  (activityLog: ActivityLog): Promise<void> => {
+        await this.client.mutate({
+            mutation: CREATE_ACTIVITY_LOG,
+            variables: {
+                message: activityLog.message,
+                component: activityLog.component,
+                context: activityLog.context,
             },
         });
+    }
+
+    async getActivityLogById(
+        activityLogId: string,
+    ): Promise<ActivityLog | null> {
+        try {
+            const activityLog = await this.client.query({
+                query: GET_ACTIVITY_LOG_BY_ID,
+                variables: {
+                    activityLogId: activityLogId,
+                },
+            });
+
+            return activityLog.data.getActivityLogById;
+        } catch (error: unknown) {
+            if (isNotFoundError(error)) {
+                return null;
+            }
+            throw error;
+        }
+    }
+
+    async getActivityLogs(
+        page: Number,
+        limit: Number,
+    ): Promise<ActivityLogPage | null> {
+        try {
+            const activityLog = await this.client.query({
+                query: GET_ACTIVITY_LOGS,
+                variables: {
+                    page,
+                    limit,
+                },
+            });
+
+            return activityLog.data.getActivityLogs;
+        } catch (error: unknown) {
+            if (isNotFoundError(error)) {
+                return null;
+            }
+            throw error;
+        }
     }
 }
