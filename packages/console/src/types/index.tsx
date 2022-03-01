@@ -133,3 +133,5 @@ export type BaseColor =
     | "warning";
 
 export type Color = "inherit" | BaseColor;
+
+export type LabelPlacement = "top" | "bottom" | "start" | "end";
