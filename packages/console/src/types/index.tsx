@@ -151,3 +151,5 @@ export interface IBuilderActionsContext {
     activeTab: string | null;
     setActiveTab: (activeTab: string) => void;
 }
+
+export type ChipVariant = "filled" | "outlined";
