@@ -9,7 +9,8 @@ const BuilderActionsContext = createContext<IBuilderActionsContext>({
     },
     tabs: [],
     activeTab: null,
-    setActiveTab: () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setActiveTab: (_activeTab: string) => {
         throw new Error("Implementation for this operation is missing.");
     },
 });
