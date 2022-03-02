@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactElement, useCallback, useState } from "react";
+import { FunctionComponent, ReactElement } from "react";
 
 import { styled } from "@mui/material/styles";
 
@@ -17,19 +17,12 @@ const Root = styled("section")(({ theme }) => ({
 }));
 
 export interface Props {
-    value?: string;
     onChange: (value?: string) => void;
+    path: string;
 }
 
 const CodeEditor: FunctionComponent<Props> = (props: Props): ReactElement => {
-    const { value, onChange } = props;
-
-    const handleChange = useCallback(
-        (value?: string) => {
-            onChange(value);
-        },
-        [onChange],
-    );
+    const { path, onChange } = props;
 
     return (
         <Root>
@@ -38,8 +31,9 @@ const CodeEditor: FunctionComponent<Props> = (props: Props): ReactElement => {
                 defaultLanguage="javascript"
                 theme="vs-dark"
                 defaultValue={templates.CONTROLLER_TEMPLATE}
-                value={value}
-                onChange={handleChange}
+                onChange={onChange}
+                path={path}
+                saveViewState={true}
             />
         </Root>
     );
