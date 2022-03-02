@@ -1,21 +1,29 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { styled } from "@mui/material/styles";
 
 import * as uuid from "uuid";
-import { Editor, Element, Frame } from "@craftjs/core";
+import { Editor } from "@craftjs/core";
+import { useMonaco } from "@monaco-editor/react";
 
 import { ArtifactsContext, BuilderActionsContext } from "../../contexts";
 import { useInflateArtifacts, useQueryParams } from "../../hooks";
-import { Button, Container, Text, nodeMappings } from "../../nodes";
-import type { ITab, TTabType } from "../../types";
-import { constants, templates } from "../../utils";
+import { nodeMappings } from "../../nodes";
+import type { IDeflatedArtifact, ITab, TTabType } from "../../types";
+import { constants } from "../../utils";
 
-import CanvasViewport from "./CanvasViewport";
+import CanvasEditor from "./CanvasEditor";
 import CodeEditor from "./CodeEditor";
 import { RenderNode } from "./RenderNode";
 import { AppBar, LeftDrawer, RightDrawer } from "./navigation";
+
+/* TODO: Move these constructs to @hypertool/common. */
+export type Truthy<T> = T extends false | "" | 0 | null | undefined ? never : T;
+
+const truthy = <T,>(value: T): value is Truthy<T> => {
+    return !!value;
+};
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: (theme.palette.background as any).main,
@@ -52,9 +60,6 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     const [rightDrawerOpen, setRightDrawerOpen] = useState(true);
     const [mode, setMode] = useState<Modes>("design");
     const params = useQueryParams();
-    const [editorValue, setEditorValue] = useState<string | undefined>(
-        templates.CONTROLLER_TEMPLATE,
-    );
     const [tabs, setTabs] = useState<ITab[]>([]);
     const [activeTab, setActiveTab] = useState<string | null>(null);
     const setCounts = useState<Record<string, number>>(() =>
@@ -62,6 +67,35 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             constants.tabTypes.map((tabType: string) => [tabType, 0]),
         ),
     )[1];
+    const [deflatedArtifacts, setDeflatedArtifacts] = useState<
+        IDeflatedArtifact[]
+    >([]);
+    const artifacts = useInflateArtifacts(deflatedArtifacts);
+    const monaco = useMonaco();
+
+    const { type: activeTabType } = useMemo(
+        () =>
+            tabs.find((tab) => tab.id === activeTab) || {
+                type: undefined,
+                bundle: undefined,
+            },
+        [activeTab, tabs],
+    );
+
+    const handleMonacoChange = useCallback(() => {
+        const newDeflatedArtifacts = tabs
+            .map((tab) => {
+                if (tab.type === "controller") {
+                    const uri = monaco?.Uri.parse(tab.id);
+                    const model = monaco?.editor.getModel(uri as any);
+                    const code = model?.getValue() || "";
+                    return { id: tab.id, code };
+                }
+                return null;
+            })
+            .filter(truthy);
+        setDeflatedArtifacts(newDeflatedArtifacts);
+    }, [tabs]);
 
     /*
      * TODO: For some reason, `useMemo` causes binding issues in callbacks
@@ -82,6 +116,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         title: `${title} ${newCount}`,
                         icon: iconByType[type],
                         type,
+                        bundle: undefined,
                     };
 
                     setActiveTab(newTabId);
@@ -103,10 +138,6 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     useEffect(() => {
         document.title = "App Builder | Hypertool";
     }, []);
-
-    const artifacts = useInflateArtifacts([
-        { id: "anonymous", code: editorValue ?? "" },
-    ]);
 
     const handleLeftDrawerOpen = () => {
         setLeftDrawerOpen(true);
@@ -133,34 +164,13 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         />
                         <Main>
                             <Content>
-                                {mode === "code" && (
+                                {activeTabType === "controller" && (
                                     <CodeEditor
-                                        value={editorValue}
-                                        onChange={setEditorValue}
+                                        onChange={handleMonacoChange as any}
+                                        path={activeTab as string}
                                     />
                                 )}
-                                <CanvasViewport>
-                                    <Frame>
-                                        <Element
-                                            is={Container}
-                                            padding={4}
-                                            canvas={true}
-                                        >
-                                            <Element
-                                                canvas
-                                                is={Container}
-                                                padding={6}
-                                                background="#999999"
-                                            >
-                                                <Text
-                                                    fontSize="small"
-                                                    text="It's me again!"
-                                                />
-                                            </Element>
-                                            <Button />
-                                        </Element>
-                                    </Frame>
-                                </CanvasViewport>
+                                {activeTabType === "page" && <CanvasEditor />}
                             </Content>
                         </Main>
                         <RightDrawer

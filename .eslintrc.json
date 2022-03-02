@@ -94,8 +94,6 @@
         "block-spacing": ["error", "always"],
         // Enforces consistent spacing before and after keywords.
         "keyword-spacing": ["error", { "before": true, "after": true }],
-        // Enforces consistent spacing before and after commas.
-        "comma-spacing": ["error", { "before": false, "after": true }],
         // Enforces consistent spacing before and after semicolons.
         "semi-spacing": ["error", { "before": false, "after": true }],
         // Enforces consistent spacing before and after unary operators
@@ -104,6 +102,11 @@
         "space-in-parens": ["error", "never"],
         // Disallows all tabs.
         "no-tabs": "error",
+
+        /* Enforces consistent spacing before and after commas.
+         * Turn off this rule and let Prettier take care of spaces.
+         */
+        "comma-spacing": "off",
 
         /* Enforce consistent line breaks inside function parentheses.
          * Turn off this rule and let Prettier take care of positioning parentheses.

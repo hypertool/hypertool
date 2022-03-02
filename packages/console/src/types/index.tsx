@@ -143,6 +143,7 @@ export interface ITab {
     title: string;
     icon: string;
     type: TTabType;
+    bundle?: any;
 }
 
 export interface IBuilderActionsContext {
