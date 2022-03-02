@@ -1,4 +1,8 @@
-import { Grid, Button as MaterialButton, Typography } from "@mui/material";
+import {
+    Grid,
+    Button as MaterialButton,
+    Typography as MuiTypography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import {
@@ -9,6 +13,7 @@ import {
     TextFields,
 } from "@mui/icons-material";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import FormatColorTextIcon from "@mui/icons-material/FormatColorText";
 
 import { Element, useEditor } from "@craftjs/core";
 
@@ -19,13 +24,14 @@ import {
     FlexLayout,
     Select,
     Text,
+    Typography,
 } from "../../../nodes";
 
 const ContianerGrid = styled(Grid)(({ theme }) => ({
     padding: theme.spacing(2),
 }));
 
-const ToolName = styled(Typography)(() => ({
+const ToolName = styled(MuiTypography)(() => ({
     fontSize: 14,
     fontWeight: "bold",
 }));
@@ -47,7 +53,8 @@ const Components = () => {
             <Grid item={true} xs={6}>
                 <ItemButton
                     ref={(ref) => connectors.create(ref as any, <Button />)}
-                    variant="contained">
+                    variant="contained"
+                >
                     <FormatShapes fontSize="large" />
                     Button
                 </ItemButton>
@@ -55,7 +62,8 @@ const Components = () => {
             <Grid item={true} xs={6}>
                 <ItemButton
                     ref={(ref) => connectors.create(ref as any, <Text />)}
-                    variant="contained">
+                    variant="contained"
+                >
                     <TextFields fontSize="large" />
                     Text
                 </ItemButton>
@@ -68,7 +76,8 @@ const Components = () => {
                             <Element is={FlexLayout} canvas={true} />,
                         )
                     }
-                    variant="contained">
+                    variant="contained"
+                >
                     <AddBoxOutlined fontSize="large" />
                     Flex Layout
                 </ItemButton>
@@ -76,7 +85,8 @@ const Components = () => {
             <Grid item={true} xs={6}>
                 <ItemButton
                     ref={(ref) => connectors.create(ref as any, <Card />)}
-                    variant="contained">
+                    variant="contained"
+                >
                     <AddBoxTwoTone fontSize="large" />
                     Card
                 </ItemButton>
@@ -84,7 +94,8 @@ const Components = () => {
             <Grid item={true} xs={6}>
                 <ItemButton
                     ref={(ref) => connectors.create(ref as any, <Select />)}
-                    variant="contained">
+                    variant="contained"
+                >
                     <ArrowDropDownCircle fontSize="large" />
                     Select
                 </ItemButton>
@@ -92,9 +103,19 @@ const Components = () => {
             <Grid item={true} xs={6}>
                 <ItemButton
                     ref={(ref) => connectors.create(ref as any, <Checkbox />)}
-                    variant="contained">
+                    variant="contained"
+                >
                     <CheckBoxIcon fontSize="large" />
                     Select
+                </ItemButton>
+            </Grid>
+            <Grid item={true} xs={6}>
+                <ItemButton
+                    ref={(ref) => connectors.create(ref as any, <Typography />)}
+                    variant="contained"
+                >
+                    <FormatColorTextIcon fontSize="large" />
+                    Typography
                 </ItemButton>
             </Grid>
         </ContianerGrid>
