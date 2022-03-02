@@ -4,15 +4,15 @@ import { useCallback, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 
 import * as uuid from "uuid";
-import { Editor, Element, Frame } from "@craftjs/core";
+import { Editor } from "@craftjs/core";
 
 import { ArtifactsContext, BuilderActionsContext } from "../../contexts";
 import { useInflateArtifacts, useQueryParams } from "../../hooks";
-import { Button, Container, Text, nodeMappings } from "../../nodes";
+import { nodeMappings } from "../../nodes";
 import type { ITab, TTabType } from "../../types";
 import { constants, templates } from "../../utils";
 
-import CanvasViewport from "./CanvasViewport";
+import CanvasEditor from "./CanvasEditor";
 import CodeEditor from "./CodeEditor";
 import { RenderNode } from "./RenderNode";
 import { AppBar, LeftDrawer, RightDrawer } from "./navigation";
@@ -139,28 +139,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                         onChange={setEditorValue}
                                     />
                                 )}
-                                <CanvasViewport>
-                                    <Frame>
-                                        <Element
-                                            is={Container}
-                                            padding={4}
-                                            canvas={true}
-                                        >
-                                            <Element
-                                                canvas
-                                                is={Container}
-                                                padding={6}
-                                                background="#999999"
-                                            >
-                                                <Text
-                                                    fontSize="small"
-                                                    text="It's me again!"
-                                                />
-                                            </Element>
-                                            <Button />
-                                        </Element>
-                                    </Frame>
-                                </CanvasViewport>
+                                <CanvasEditor />
                             </Content>
                         </Main>
                         <RightDrawer
