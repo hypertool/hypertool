@@ -1,5 +1,5 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { styled } from "@mui/material/styles";
 
@@ -62,6 +62,14 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             constants.tabTypes.map((tabType: string) => [tabType, 0]),
         ),
     )[1];
+
+    const { type: activeTabType } = useMemo(
+        () =>
+            tabs.find((tab) => tab.id === activeTab) || {
+                type: undefined,
+            },
+        [activeTab, tabs],
+    );
 
     /*
      * TODO: For some reason, `useMemo` causes binding issues in callbacks
@@ -133,13 +141,13 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         />
                         <Main>
                             <Content>
-                                {mode === "code" && (
+                                {activeTabType === "controller" && (
                                     <CodeEditor
                                         value={editorValue}
                                         onChange={setEditorValue}
                                     />
                                 )}
-                                <CanvasEditor />
+                                {activeTabType === "page" && <CanvasEditor />}
                             </Content>
                         </Main>
                         <RightDrawer
