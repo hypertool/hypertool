@@ -26,10 +26,16 @@ const StyledAccordionDetails = styled(AccordionDetails)({
 
 const ExplorerAccordions = () => {
     const renderAccordion = (id: string, title: string, node: ReactNode) => (
-        <StyledAccordion key={id} disableGutters={true} square={true}>
+        <StyledAccordion
+            key={id}
+            disableGutters={true}
+            square={true}
+            defaultExpanded={true}
+        >
             <AccordionSummary
                 expandIcon={<Icon fontSize="small">expand_more</Icon>}
-                id={`${id}-header`}>
+                id={`${id}-header`}
+            >
                 <AccordionTitle>{title}</AccordionTitle>
             </AccordionSummary>
             <StyledAccordionDetails>{node}</StyledAccordionDetails>
