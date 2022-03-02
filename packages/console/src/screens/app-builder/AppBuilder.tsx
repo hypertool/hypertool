@@ -72,26 +72,25 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         activeTab,
         setActiveTab,
         createNewTab: (title: string, type: TTabType) => {
-            let newCount = 0;
-            let newTabId = null;
-
             setCounts((oldCount) => {
-                newCount = oldCount[type] + 1;
+                const newCount = oldCount[type] + 1;
+
+                setTabs((tabs) => {
+                    const newTabId = uuid.v4();
+                    const newTab = {
+                        id: newTabId,
+                        title: `${title} ${newCount}`,
+                        icon: iconByType[type],
+                        type,
+                    };
+
+                    setActiveTab(newTabId);
+
+                    return [...tabs, newTab];
+                });
+
                 return { ...oldCount, [type]: newCount };
             });
-
-            setTabs((tabs) => {
-                newTabId = uuid.v4();
-                const newTab = {
-                    id: newTabId,
-                    title: `${title} ${newCount}`,
-                    icon: iconByType[type],
-                    type,
-                };
-
-                return [...tabs, newTab];
-            });
-            setActiveTab(newTabId);
         },
     };
 
@@ -145,12 +144,14 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                         <Element
                                             is={Container}
                                             padding={4}
-                                            canvas={true}>
+                                            canvas={true}
+                                        >
                                             <Element
                                                 canvas
                                                 is={Container}
                                                 padding={6}
-                                                background="#999999">
+                                                background="#999999"
+                                            >
                                                 <Text
                                                     fontSize="small"
                                                     text="It's me again!"
