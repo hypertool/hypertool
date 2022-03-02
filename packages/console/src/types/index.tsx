@@ -151,3 +151,7 @@ export interface IBuilderActionsContext {
     activeTab: string | null;
     setActiveTab: (activeTab: string) => void;
 }
+
+export type IconColor = Color | "action" | "disabled";
+
+export type IconFontSize = "inherit" | "large" | "medium" | "small";
