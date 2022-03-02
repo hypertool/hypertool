@@ -2,6 +2,8 @@ import type { FunctionComponent } from "react";
 
 import { constants } from "@hypertool/common";
 
+import { constants as consoleConstants } from "../utils";
+
 const { resourceStatuses, resourceTypes } = constants;
 
 export type ResourceType = typeof resourceTypes[number];
@@ -133,3 +135,19 @@ export type BaseColor =
     | "warning";
 
 export type Color = "inherit" | BaseColor;
+
+export type TTabType = typeof consoleConstants.tabTypes[number];
+
+export interface ITab {
+    id: string;
+    title: string;
+    icon: string;
+    type: TTabType;
+}
+
+export interface IBuilderActionsContext {
+    createNewTab: (title: string, type: TTabType) => void;
+    tabs: ITab[];
+    activeTab: string | null;
+    setActiveTab: (activeTab: string) => void;
+}

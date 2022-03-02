@@ -46,6 +46,8 @@ const Root = styled("div")(({ theme }) => ({
     ...theme.mixins.toolbar,
 }));
 
+const StyledList = styled(List)({ padding: 0 });
+
 const Navigation = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
@@ -58,16 +60,6 @@ const Navigation = styled("div")(({ theme }) => ({
 const NavigationContainer = styled("div")(({ theme }) => ({
     backgroundColor: (theme.palette.background as any).paper2,
     width: panelWidth,
-}));
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    padding: theme.spacing(0, 1),
-
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
 }));
 
 const Drawer = styled(MuiDrawer)(({ theme, open }) => ({
@@ -190,15 +182,12 @@ const LeftDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
             variant="permanent"
             open={open}
             anchor="left"
-            onClose={onDrawerClose}
-        >
-            <DrawerHeader></DrawerHeader>
-            <Divider />
+            onClose={onDrawerClose}>
             <Root>
                 <Navigation>
                     {groups.map((group, index: number) => (
                         <Fragment key={group.title}>
-                            <List>
+                            <StyledList>
                                 {group.items.map((item) => (
                                     <LeftDrawerItem
                                         key={item.id}
@@ -211,7 +200,7 @@ const LeftDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                                         selected={active === item.id}
                                     />
                                 ))}
-                            </List>
+                            </StyledList>
                             {index + 1 < groups.length && <Divider />}
                         </Fragment>
                     ))}

@@ -1,7 +1,7 @@
 import type { FunctionComponent, ReactElement } from "react";
 import { useCallback, useState } from "react";
 
-import { Divider, Drawer as MuiDrawer, Tab, Tabs } from "@mui/material";
+import { Drawer as MuiDrawer, Tab, Tabs } from "@mui/material";
 import { CSSObject, Theme, styled } from "@mui/material/styles";
 
 import { useEditor } from "@craftjs/core";
@@ -40,9 +40,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
     alignItems: "center",
     justifyContent: "flex-end",
     padding: theme.spacing(0, 1),
-
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
+    marginTop: 48,
 }));
 
 const Drawer = styled(MuiDrawer)(({ theme, open }) => ({
@@ -82,17 +80,14 @@ const RightDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
             variant="permanent"
             open={open}
             anchor="right"
-            onClose={onDrawerClose}
-        >
-            <DrawerHeader></DrawerHeader>
-            <Divider />
+            onClose={onDrawerClose}>
+            <DrawerHeader />
             <Root>
                 <div style={{ width: "100%" }}>
                     <Tabs
                         value={active}
                         onChange={handleChange}
-                        variant="fullWidth"
-                    >
+                        variant="fullWidth">
                         <Tab value="properties" label="Properties" />
                         <Tab value="comments" label="Comments" />
                     </Tabs>
