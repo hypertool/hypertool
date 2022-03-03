@@ -1,1 +1,1 @@
-export const tabTypes = ["query", "controller", "page"];
+export const tabTypes = ["query", "controller", "page", "resource"];
