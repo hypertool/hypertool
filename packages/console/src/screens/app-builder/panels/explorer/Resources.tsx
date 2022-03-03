@@ -27,7 +27,11 @@ const Resources: FunctionComponent = (): ReactElement => {
     const { createNewTab } = useContext(BuilderActionsContext);
 
     const handleNewResource = useCallback(() => {
-        createNewTab("New Resource", true, "resource");
+        createNewTab("New Resource", true, "new-resource");
+    }, [createNewTab]);
+
+    const handleEditResource = useCallback(() => {
+        createNewTab("Edit Resource", true, "resource");
     }, [createNewTab]);
 
     const renderResource = (title: string) => (
@@ -38,6 +42,7 @@ const Resources: FunctionComponent = (): ReactElement => {
                     <Icon fontSize="small">delete</Icon>
                 </IconButton>
             }
+            onClick={handleEditResource}
         >
             <ListItemAvatar>
                 <Avatar sx={{ width: 28, height: 28 }}>

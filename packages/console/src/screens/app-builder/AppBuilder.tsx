@@ -12,6 +12,8 @@ import { useInflateArtifacts } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type { IDeflatedArtifact, ITab, TTabType } from "../../types";
 import { constants, templates } from "../../utils";
+import ResourceEditor from "../edit-resource";
+import NewResourceEditor from "../new-resource";
 
 import CanvasEditor from "./CanvasEditor";
 import CodeEditor from "./CodeEditor";
@@ -198,6 +200,12 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                     />
                                 )}
                                 {activeTabType === "page" && <CanvasEditor />}
+                                {activeTabType === "new-resource" && (
+                                    <NewResourceEditor />
+                                )}
+                                {activeTabType === "resource" && (
+                                    <ResourceEditor />
+                                )}
                             </Content>
                         </Main>
                         <RightDrawer
