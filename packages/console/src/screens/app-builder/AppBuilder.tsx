@@ -8,7 +8,7 @@ import { Editor } from "@craftjs/core";
 import { useMonaco } from "@monaco-editor/react";
 
 import { ArtifactsContext, BuilderActionsContext } from "../../contexts";
-import { useInflateArtifacts, useQueryParams } from "../../hooks";
+import { useInflateArtifacts } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type { IDeflatedArtifact, ITab, TTabType } from "../../types";
 import { constants, templates } from "../../utils";
@@ -48,8 +48,6 @@ const Content = styled("section")(({ theme }) => ({
     padding: theme.spacing(0),
 }));
 
-type Modes = "design" | "code";
-
 const iconByType: { [key: string]: string } = {
     controller: "code",
     query: "category",
@@ -58,8 +56,6 @@ const iconByType: { [key: string]: string } = {
 const AppBuilder: FunctionComponent = (): ReactElement => {
     const [leftDrawerOpen, setLeftDrawerOpen] = useState(true);
     const [rightDrawerOpen, setRightDrawerOpen] = useState(true);
-    const [mode, setMode] = useState<Modes>("design");
-    const params = useQueryParams();
     const [tabs, setTabs] = useState<ITab[]>([]);
     const [activeTab, setActiveTab] = useState<string | null>(null);
     const setCounts = useState<Record<string, number>>(() =>
@@ -150,12 +146,6 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             });
         },
     };
-
-    useEffect(() => {
-        if ((params as any).mode && (params as any).mode !== mode) {
-            setMode((params as any).mode);
-        }
-    }, [params, mode]);
 
     useEffect(() => {
         document.title = "App Builder | Hypertool";
