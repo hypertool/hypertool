@@ -13,6 +13,7 @@ import Controllers from "./Controllers";
 import Layers from "./Layers";
 import Pages from "./Pages";
 import Queries from "./Queries";
+import Resources from "./Resources";
 
 const StyledAccordion = styled(Accordion)({});
 
@@ -48,6 +49,7 @@ const ExplorerAccordions = () => {
             {renderAccordion("queries", "Queries", <Queries />)}
             {renderAccordion("controllers", "Controllers", <Controllers />)}
             {renderAccordion("pages", "Pages", <Pages />)}
+            {renderAccordion("resources", "Resources", <Resources />)}
         </div>
     );
 };
