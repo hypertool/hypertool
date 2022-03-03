@@ -94,6 +94,7 @@ export type ButtonSize = "small" | "medium" | "large";
 export interface IDeflatedArtifact {
     id: string;
     code: string;
+    path: string;
 }
 
 /**

@@ -85,12 +85,12 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     const deflateArtifacts = useCallback(
         (tabs: ITab[]) => {
             const newDeflatedArtifacts = tabs
-                .map((tab) => {
+                .map((tab): IDeflatedArtifact | null => {
                     if (tab.type === "controller") {
                         const uri = monaco?.Uri.parse(tab.id);
                         const model = monaco?.editor.getModel(uri as any);
                         const code = model?.getValue() || "";
-                        return { id: tab.id, code };
+                        return { id: tab.id, code, path: tab.bundle.path };
                     }
                     return null;
                 })
@@ -129,7 +129,9 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                             : title,
                         icon: iconByType[type],
                         type,
-                        bundle: undefined,
+                        bundle: {
+                            ...(type === "controller" ? { path: title } : {}),
+                        },
                     };
 
                     setActiveTab(newTabId);
@@ -144,6 +146,10 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                             {
                                 id: newTabId,
                                 code: templates.CONTROLLER_TEMPLATE,
+                                /* The title for new controller tabs carries the path
+                                 * of the controller.
+                                 */
+                                path: title,
                             },
                         ]);
                     }

@@ -53,8 +53,9 @@ const Handler: FunctionComponent<Props> = (props: Props) => {
         <NestedMenuItem
             leftIcon={<Icon fontSize="small">functions</Icon>}
             rightIcon={<Icon fontSize="small">chevron_right</Icon>}
-            label={artifact.id}
-            parentMenuOpen={open}>
+            label={artifact.path}
+            parentMenuOpen={open}
+        >
             {Object.keys(artifact.object).map((target) => (
                 <IconMenuItem
                     onClick={makeSelectHandler(artifact, target)}
