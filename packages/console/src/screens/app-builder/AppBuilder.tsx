@@ -82,24 +82,27 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
      * The `deflateArtifacts` function loads the latest code from the Monaco editor
      * models for all the controller tabs.
      */
-    const deflateArtifacts = (tabs: ITab[]) => {
-        const newDeflatedArtifacts = tabs
-            .map((tab) => {
-                if (tab.type === "controller") {
-                    const uri = monaco?.Uri.parse(tab.id);
-                    const model = monaco?.editor.getModel(uri as any);
-                    const code = model?.getValue() || "";
-                    return { id: tab.id, code };
-                }
-                return null;
-            })
-            .filter(truthy);
-        setDeflatedArtifacts(newDeflatedArtifacts);
-    };
+    const deflateArtifacts = useCallback(
+        (tabs: ITab[]) => {
+            const newDeflatedArtifacts = tabs
+                .map((tab) => {
+                    if (tab.type === "controller") {
+                        const uri = monaco?.Uri.parse(tab.id);
+                        const model = monaco?.editor.getModel(uri as any);
+                        const code = model?.getValue() || "";
+                        return { id: tab.id, code };
+                    }
+                    return null;
+                })
+                .filter(truthy);
+            setDeflatedArtifacts(newDeflatedArtifacts);
+        },
+        [monaco?.Uri, monaco?.editor],
+    );
 
     const handleMonacoChange = useCallback(() => {
         deflateArtifacts(tabs);
-    }, [tabs]);
+    }, [deflateArtifacts, tabs]);
 
     /*
      * TODO: For some reason, `useMemo` causes binding issues in callbacks
@@ -109,7 +112,11 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         tabs,
         activeTab,
         setActiveTab,
-        createNewTab: (title: string, type: TTabType) => {
+        createNewTab: (
+            title: string,
+            placeholderTitle: boolean,
+            type: TTabType,
+        ) => {
             setCounts((oldCount) => {
                 const newCount = oldCount[type] + 1;
 
@@ -117,7 +124,9 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                     const newTabId = uuid.v4();
                     const newTab = {
                         id: newTabId,
-                        title: `${title} ${newCount}`,
+                        title: placeholderTitle
+                            ? `${title} ${newCount}`
+                            : title,
                         icon: iconByType[type],
                         type,
                         bundle: undefined,

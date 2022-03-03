@@ -27,8 +27,8 @@ const Pages: FunctionComponent = (): ReactElement => {
     const { createNewTab } = useContext(BuilderActionsContext);
 
     const handleNewPage = useCallback(() => {
-        createNewTab("New Page", "page");
-    }, []);
+        createNewTab("New Page", true, "page");
+    }, [createNewTab]);
 
     const renderPage = (title: string) => (
         <ListItem
@@ -37,7 +37,8 @@ const Pages: FunctionComponent = (): ReactElement => {
                 <IconButton edge="end">
                     <Icon fontSize="small">delete</Icon>
                 </IconButton>
-            }>
+            }
+        >
             <ListItemAvatar>
                 <Avatar sx={{ width: 28, height: 28 }}>
                     <Icon fontSize="small">wysiwyg</Icon>
@@ -57,7 +58,8 @@ const Pages: FunctionComponent = (): ReactElement => {
                     variant="outlined"
                     color="primary"
                     endIcon={<Icon>add</Icon>}
-                    onClick={handleNewPage}>
+                    onClick={handleNewPage}
+                >
                     Create New Page
                 </Button>
             </Actions>

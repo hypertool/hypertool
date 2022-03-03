@@ -1,5 +1,5 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 
 import {
     Avatar,
@@ -15,6 +15,8 @@ import { styled } from "@mui/material/styles";
 
 import { BuilderActionsContext } from "../../../../contexts";
 
+import NewControllerDialog from "./NewControllerDialog";
+
 const Actions = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
@@ -25,10 +27,23 @@ const Actions = styled("div")(({ theme }) => ({
 
 const Controllers: FunctionComponent = (): ReactElement => {
     const { createNewTab } = useContext(BuilderActionsContext);
+    const [newDialog, setNewDialog] = useState(false);
 
-    const handleNewController = useCallback(() => {
-        createNewTab("New Controller", "controller");
-    }, []);
+    const handleCreateController = useCallback(
+        (name: string) => {
+            createNewTab(name, false, "controller");
+            setNewDialog(false);
+        },
+        [createNewTab],
+    );
+
+    const handleCloseNewDialog = useCallback(() => {
+        setNewDialog(false);
+    }, [setNewDialog]);
+
+    const handleOpenNewDialog = useCallback(() => {
+        setNewDialog(true);
+    }, [setNewDialog]);
 
     const renderController = (title: string) => (
         <ListItem
@@ -37,7 +52,8 @@ const Controllers: FunctionComponent = (): ReactElement => {
                 <IconButton edge="end">
                     <Icon fontSize="small">delete</Icon>
                 </IconButton>
-            }>
+            }
+        >
             <ListItemAvatar>
                 <Avatar sx={{ width: 28, height: 28 }}>
                     <Icon fontSize="small">code</Icon>
@@ -59,10 +75,16 @@ const Controllers: FunctionComponent = (): ReactElement => {
                     variant="outlined"
                     color="primary"
                     endIcon={<Icon>add</Icon>}
-                    onClick={handleNewController}>
+                    onClick={handleOpenNewDialog}
+                >
                     Create New Controller
                 </Button>
             </Actions>
+            <NewControllerDialog
+                open={newDialog}
+                onCreate={handleCreateController}
+                onClose={handleCloseNewDialog}
+            />
         </div>
     );
 };
