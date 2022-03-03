@@ -11,7 +11,7 @@ import { ArtifactsContext, BuilderActionsContext } from "../../contexts";
 import { useInflateArtifacts, useQueryParams } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type { IDeflatedArtifact, ITab, TTabType } from "../../types";
-import { constants } from "../../utils";
+import { constants, templates } from "../../utils";
 
 import CanvasEditor from "./CanvasEditor";
 import CodeEditor from "./CodeEditor";
@@ -82,7 +82,11 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         [activeTab, tabs],
     );
 
-    const handleMonacoChange = useCallback(() => {
+    /*
+     * The `deflateArtifacts` function loads the latest code from the Monaco editor
+     * models for all the controller tabs.
+     */
+    const deflateArtifacts = (tabs: ITab[]) => {
         const newDeflatedArtifacts = tabs
             .map((tab) => {
                 if (tab.type === "controller") {
@@ -95,6 +99,10 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             })
             .filter(truthy);
         setDeflatedArtifacts(newDeflatedArtifacts);
+    };
+
+    const handleMonacoChange = useCallback(() => {
+        deflateArtifacts(tabs);
     }, [tabs]);
 
     /*
@@ -120,6 +128,20 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                     };
 
                     setActiveTab(newTabId);
+
+                    /*
+                     * When a new controller tab is created, load the default
+                     * template controller.
+                     */
+                    if (type === "controller") {
+                        setDeflatedArtifacts((oldDeflatedArtifacts) => [
+                            ...oldDeflatedArtifacts,
+                            {
+                                id: newTabId,
+                                code: templates.CONTROLLER_TEMPLATE,
+                            },
+                        ]);
+                    }
 
                     return [...tabs, newTab];
                 });
