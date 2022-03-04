@@ -94,6 +94,7 @@ export type ButtonSize = "small" | "medium" | "large";
 export interface IDeflatedArtifact {
     id: string;
     code: string;
+    path: string;
 }
 
 /**
@@ -147,7 +148,11 @@ export interface ITab {
 }
 
 export interface IBuilderActionsContext {
-    createNewTab: (title: string, type: TTabType) => void;
+    createNewTab: (
+        title: string,
+        placeholderTitle: boolean,
+        type: TTabType,
+    ) => void;
     tabs: ITab[];
     activeTab: string | null;
     setActiveTab: (activeTab: string) => void;

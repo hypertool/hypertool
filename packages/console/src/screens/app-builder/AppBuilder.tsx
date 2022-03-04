@@ -8,10 +8,13 @@ import { Editor } from "@craftjs/core";
 import { useMonaco } from "@monaco-editor/react";
 
 import { ArtifactsContext, BuilderActionsContext } from "../../contexts";
-import { useInflateArtifacts, useQueryParams } from "../../hooks";
+import { useInflateArtifacts } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type { IDeflatedArtifact, ITab, TTabType } from "../../types";
-import { constants } from "../../utils";
+import { constants, templates } from "../../utils";
+import ResourceEditor from "../edit-resource";
+import NewQueryEditor from "../new-query";
+import NewResourceEditor from "../new-resource";
 
 import CanvasEditor from "./CanvasEditor";
 import CodeEditor from "./CodeEditor";
@@ -48,8 +51,6 @@ const Content = styled("section")(({ theme }) => ({
     padding: theme.spacing(0),
 }));
 
-type Modes = "design" | "code";
-
 const iconByType: { [key: string]: string } = {
     controller: "code",
     query: "category",
@@ -58,8 +59,6 @@ const iconByType: { [key: string]: string } = {
 const AppBuilder: FunctionComponent = (): ReactElement => {
     const [leftDrawerOpen, setLeftDrawerOpen] = useState(true);
     const [rightDrawerOpen, setRightDrawerOpen] = useState(true);
-    const [mode, setMode] = useState<Modes>("design");
-    const params = useQueryParams();
     const [tabs, setTabs] = useState<ITab[]>([]);
     const [activeTab, setActiveTab] = useState<string | null>(null);
     const setCounts = useState<Record<string, number>>(() =>
@@ -82,20 +81,31 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         [activeTab, tabs],
     );
 
+    /*
+     * The `deflateArtifacts` function loads the latest code from the Monaco editor
+     * models for all the controller tabs.
+     */
+    const deflateArtifacts = useCallback(
+        (tabs: ITab[]) => {
+            const newDeflatedArtifacts = tabs
+                .map((tab): IDeflatedArtifact | null => {
+                    if (tab.type === "controller") {
+                        const uri = monaco?.Uri.parse(tab.id);
+                        const model = monaco?.editor.getModel(uri as any);
+                        const code = model?.getValue() || "";
+                        return { id: tab.id, code, path: tab.bundle.path };
+                    }
+                    return null;
+                })
+                .filter(truthy);
+            setDeflatedArtifacts(newDeflatedArtifacts);
+        },
+        [monaco?.Uri, monaco?.editor],
+    );
+
     const handleMonacoChange = useCallback(() => {
-        const newDeflatedArtifacts = tabs
-            .map((tab) => {
-                if (tab.type === "controller") {
-                    const uri = monaco?.Uri.parse(tab.id);
-                    const model = monaco?.editor.getModel(uri as any);
-                    const code = model?.getValue() || "";
-                    return { id: tab.id, code };
-                }
-                return null;
-            })
-            .filter(truthy);
-        setDeflatedArtifacts(newDeflatedArtifacts);
-    }, [tabs]);
+        deflateArtifacts(tabs);
+    }, [deflateArtifacts, tabs]);
 
     /*
      * TODO: For some reason, `useMemo` causes binding issues in callbacks
@@ -105,7 +115,11 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         tabs,
         activeTab,
         setActiveTab,
-        createNewTab: (title: string, type: TTabType) => {
+        createNewTab: (
+            title: string,
+            placeholderTitle: boolean,
+            type: TTabType,
+        ) => {
             setCounts((oldCount) => {
                 const newCount = oldCount[type] + 1;
 
@@ -113,13 +127,35 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                     const newTabId = uuid.v4();
                     const newTab = {
                         id: newTabId,
-                        title: `${title} ${newCount}`,
+                        title: placeholderTitle
+                            ? `${title} ${newCount}`
+                            : title,
                         icon: iconByType[type],
                         type,
-                        bundle: undefined,
+                        bundle: {
+                            ...(type === "controller" ? { path: title } : {}),
+                        },
                     };
 
                     setActiveTab(newTabId);
+
+                    /*
+                     * When a new controller tab is created, load the default
+                     * template controller.
+                     */
+                    if (type === "controller") {
+                        setDeflatedArtifacts((oldDeflatedArtifacts) => [
+                            ...oldDeflatedArtifacts,
+                            {
+                                id: newTabId,
+                                code: templates.CONTROLLER_TEMPLATE,
+                                /* The title for new controller tabs carries the path
+                                 * of the controller.
+                                 */
+                                path: title,
+                            },
+                        ]);
+                    }
 
                     return [...tabs, newTab];
                 });
@@ -128,12 +164,6 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             });
         },
     };
-
-    useEffect(() => {
-        if ((params as any).mode && (params as any).mode !== mode) {
-            setMode((params as any).mode);
-        }
-    }, [params, mode]);
 
     useEffect(() => {
         document.title = "App Builder | Hypertool";
@@ -171,6 +201,15 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                     />
                                 )}
                                 {activeTabType === "page" && <CanvasEditor />}
+                                {activeTabType === "new-resource" && (
+                                    <NewResourceEditor />
+                                )}
+                                {activeTabType === "edit-resource" && (
+                                    <ResourceEditor />
+                                )}
+                                {activeTabType === "new-query" && (
+                                    <NewQueryEditor />
+                                )}
                             </Content>
                         </Main>
                         <RightDrawer

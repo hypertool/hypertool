@@ -150,17 +150,5 @@
          * function prototypes in interfaces.
          */
         "@typescript-eslint/no-unused-vars": "error"
-    },
-
-    "overrides": [
-        {
-            "files": [
-                "./packages/console/**/*.ts",
-                "./packages/console/**/*.tsx"
-            ],
-            "rules": {
-                "no-undef": "off"
-            }
-        }
-    ]
+    }
 }

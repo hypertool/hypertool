@@ -111,11 +111,6 @@ const groups: Group[] = [
                 id: "components",
                 icon: "bubble_chart",
             },
-            {
-                title: "Resources",
-                id: "resources",
-                icon: "category",
-            },
         ],
     },
     {
@@ -182,7 +177,8 @@ const LeftDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
             variant="permanent"
             open={open}
             anchor="left"
-            onClose={onDrawerClose}>
+            onClose={onDrawerClose}
+        >
             <Root>
                 <Navigation>
                     {groups.map((group, index: number) => (

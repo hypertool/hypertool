@@ -1,5 +1,5 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext } from "react";
 
 import {
     Avatar,
@@ -15,8 +15,6 @@ import { styled } from "@mui/material/styles";
 
 import { BuilderActionsContext } from "../../../../contexts";
 
-import NewControllerDialog from "./NewControllerDialog";
-
 const Actions = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
@@ -25,27 +23,18 @@ const Actions = styled("div")(({ theme }) => ({
     )} ${theme.spacing(2)}`,
 }));
 
-const Controllers: FunctionComponent = (): ReactElement => {
+const Resources: FunctionComponent = (): ReactElement => {
     const { createNewTab } = useContext(BuilderActionsContext);
-    const [newDialog, setNewDialog] = useState(false);
 
-    const handleCreateController = useCallback(
-        (name: string) => {
-            createNewTab(name, false, "controller");
-            setNewDialog(false);
-        },
-        [createNewTab],
-    );
+    const handleNewResource = useCallback(() => {
+        createNewTab("New Resource", true, "new-resource");
+    }, [createNewTab]);
 
-    const handleCloseNewDialog = useCallback(() => {
-        setNewDialog(false);
-    }, [setNewDialog]);
+    const handleEditResource = useCallback(() => {
+        createNewTab("Edit Resource", true, "edit-resource");
+    }, [createNewTab]);
 
-    const handleOpenNewDialog = useCallback(() => {
-        setNewDialog(true);
-    }, [setNewDialog]);
-
-    const renderController = (title: string) => (
+    const renderResource = (title: string) => (
         <ListItem
             key={title}
             secondaryAction={
@@ -53,10 +42,11 @@ const Controllers: FunctionComponent = (): ReactElement => {
                     <Icon fontSize="small">delete</Icon>
                 </IconButton>
             }
+            onClick={handleEditResource}
         >
             <ListItemAvatar>
                 <Avatar sx={{ width: 28, height: 28 }}>
-                    <Icon fontSize="small">code</Icon>
+                    <Icon fontSize="small">category</Icon>
                 </Avatar>
             </ListItemAvatar>
             <ListItemText primary={title} />
@@ -65,9 +55,7 @@ const Controllers: FunctionComponent = (): ReactElement => {
 
     return (
         <div>
-            <List dense={true}>
-                {["home-controller", "users-controller"].map(renderController)}
-            </List>
+            <List dense={true}>{["magento", "trell"].map(renderResource)}</List>
             <Actions>
                 <Button
                     size="small"
@@ -75,18 +63,13 @@ const Controllers: FunctionComponent = (): ReactElement => {
                     variant="outlined"
                     color="primary"
                     endIcon={<Icon>add</Icon>}
-                    onClick={handleOpenNewDialog}
+                    onClick={handleNewResource}
                 >
-                    Create New Controller
+                    Create New Resource
                 </Button>
             </Actions>
-            <NewControllerDialog
-                open={newDialog}
-                onCreate={handleCreateController}
-                onClose={handleCloseNewDialog}
-            />
         </div>
     );
 };
 
-export default Controllers;
+export default Resources;

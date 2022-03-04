@@ -27,8 +27,8 @@ const Queries: FunctionComponent = (): ReactElement => {
     const { createNewTab } = useContext(BuilderActionsContext);
 
     const handleNewQuery = useCallback(() => {
-        createNewTab("New Query", "query");
-    }, []);
+        createNewTab("New Query", true, "new-query");
+    }, [createNewTab]);
 
     const renderQuery = (title: string) => (
         <ListItem
@@ -37,7 +37,8 @@ const Queries: FunctionComponent = (): ReactElement => {
                 <IconButton edge="end">
                     <Icon fontSize="small">delete</Icon>
                 </IconButton>
-            }>
+            }
+        >
             <ListItemAvatar>
                 <Avatar sx={{ width: 28, height: 28 }}>
                     <Icon fontSize="small">category</Icon>
@@ -57,7 +58,8 @@ const Queries: FunctionComponent = (): ReactElement => {
                     variant="outlined"
                     color="primary"
                     endIcon={<Icon>add</Icon>}
-                    onClick={handleNewQuery}>
+                    onClick={handleNewQuery}
+                >
                     Create New Query
                 </Button>
             </Actions>
