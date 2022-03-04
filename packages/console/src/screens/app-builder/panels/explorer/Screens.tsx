@@ -23,14 +23,14 @@ const Actions = styled("div")(({ theme }) => ({
     )} ${theme.spacing(2)}`,
 }));
 
-const Pages: FunctionComponent = (): ReactElement => {
+const Screens: FunctionComponent = (): ReactElement => {
     const { createNewTab } = useContext(BuilderActionsContext);
 
-    const handleNewPage = useCallback(() => {
-        createNewTab("New Page", true, "page");
+    const handleNewScreen = useCallback(() => {
+        createNewTab("New Screen", true, "new-screen");
     }, [createNewTab]);
 
-    const renderPage = (title: string) => (
+    const renderScreen = (title: string) => (
         <ListItem
             key={title}
             secondaryAction={
@@ -50,7 +50,7 @@ const Pages: FunctionComponent = (): ReactElement => {
 
     return (
         <div>
-            <List dense={true}>{["home", "users"].map(renderPage)}</List>
+            <List dense={true}>{["home", "users"].map(renderScreen)}</List>
             <Actions>
                 <Button
                     size="small"
@@ -58,13 +58,13 @@ const Pages: FunctionComponent = (): ReactElement => {
                     variant="outlined"
                     color="primary"
                     endIcon={<Icon>add</Icon>}
-                    onClick={handleNewPage}
+                    onClick={handleNewScreen}
                 >
-                    Create New Page
+                    Create New Screen
                 </Button>
             </Actions>
         </div>
     );
 };
 
-export default Pages;
+export default Screens;

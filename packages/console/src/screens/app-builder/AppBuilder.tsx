@@ -15,6 +15,7 @@ import { constants, templates } from "../../utils";
 import ResourceEditor from "../edit-resource";
 import NewQueryEditor from "../new-query";
 import NewResourceEditor from "../new-resource";
+import NewScreenEditor from "../new-screen";
 
 import CanvasEditor from "./CanvasEditor";
 import CodeEditor from "./CodeEditor";
@@ -200,7 +201,12 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                         path={activeTab as string}
                                     />
                                 )}
-                                {activeTabType === "page" && <CanvasEditor />}
+                                {activeTabType === "new-screen" && (
+                                    <NewScreenEditor />
+                                )}
+                                {activeTabType === "edit-screen" && (
+                                    <CanvasEditor />
+                                )}
                                 {activeTabType === "new-resource" && (
                                     <NewResourceEditor />
                                 )}
