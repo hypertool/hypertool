@@ -15,8 +15,6 @@ import { styled } from "@mui/material/styles";
 
 import { BuilderActionsContext } from "../../../../contexts";
 
-import NewControllerDialog from "./NewControllerDialog";
-
 const Actions = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
@@ -27,23 +25,10 @@ const Actions = styled("div")(({ theme }) => ({
 
 const Controllers: FunctionComponent = (): ReactElement => {
     const { createNewTab } = useContext(BuilderActionsContext);
-    const [newDialog, setNewDialog] = useState(false);
 
-    const handleCreateController = useCallback(
-        (name: string) => {
-            createNewTab(name, false, "controller");
-            setNewDialog(false);
-        },
-        [createNewTab],
-    );
-
-    const handleCloseNewDialog = useCallback(() => {
-        setNewDialog(false);
-    }, [setNewDialog]);
-
-    const handleOpenNewDialog = useCallback(() => {
-        setNewDialog(true);
-    }, [setNewDialog]);
+    const handleCreateController = useCallback(() => {
+        createNewTab("New Controller", true, "new-controller");
+    }, [createNewTab]);
 
     const renderController = (title: string) => (
         <ListItem
@@ -75,16 +60,11 @@ const Controllers: FunctionComponent = (): ReactElement => {
                     variant="outlined"
                     color="primary"
                     endIcon={<Icon>add</Icon>}
-                    onClick={handleOpenNewDialog}
+                    onClick={handleCreateController}
                 >
                     Create New Controller
                 </Button>
             </Actions>
-            <NewControllerDialog
-                open={newDialog}
-                onCreate={handleCreateController}
-                onClose={handleCloseNewDialog}
-            />
         </div>
     );
 };

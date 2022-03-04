@@ -13,6 +13,7 @@ import { nodeMappings } from "../../nodes";
 import type { IDeflatedArtifact, ITab, TTabType } from "../../types";
 import { constants, templates } from "../../utils";
 import ResourceEditor from "../edit-resource";
+import NewControllerEditor from "../new-controller";
 import NewQueryEditor from "../new-query";
 import NewResourceEditor from "../new-resource";
 import NewScreenEditor from "../new-screen";
@@ -195,7 +196,10 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         />
                         <Main>
                             <Content>
-                                {activeTabType === "controller" && (
+                                {activeTabType === "new-controller" && (
+                                    <NewControllerEditor />
+                                )}
+                                {activeTabType === "edit-controller" && (
                                     <CodeEditor
                                         onChange={handleMonacoChange as any}
                                         path={activeTab as string}
