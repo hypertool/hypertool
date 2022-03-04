@@ -1,7 +1,8 @@
 export const tabTypes = [
-    "query",
+    "edit-query",
+    "new-query",
     "controller",
     "page",
     "new-resource",
-    "resource",
+    "edit-resource",
 ];

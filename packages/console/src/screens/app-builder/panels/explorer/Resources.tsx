@@ -31,7 +31,7 @@ const Resources: FunctionComponent = (): ReactElement => {
     }, [createNewTab]);
 
     const handleEditResource = useCallback(() => {
-        createNewTab("Edit Resource", true, "resource");
+        createNewTab("Edit Resource", true, "edit-resource");
     }, [createNewTab]);
 
     const renderResource = (title: string) => (

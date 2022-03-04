@@ -13,6 +13,7 @@ import { nodeMappings } from "../../nodes";
 import type { IDeflatedArtifact, ITab, TTabType } from "../../types";
 import { constants, templates } from "../../utils";
 import ResourceEditor from "../edit-resource";
+import NewQueryEditor from "../new-query";
 import NewResourceEditor from "../new-resource";
 
 import CanvasEditor from "./CanvasEditor";
@@ -203,8 +204,11 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                 {activeTabType === "new-resource" && (
                                     <NewResourceEditor />
                                 )}
-                                {activeTabType === "resource" && (
+                                {activeTabType === "edit-resource" && (
                                     <ResourceEditor />
+                                )}
+                                {activeTabType === "new-query" && (
+                                    <NewQueryEditor />
                                 )}
                             </Content>
                         </Main>
