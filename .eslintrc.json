@@ -18,8 +18,6 @@
 
         // Disallows use of undeclared variables
         "no-undef": "error",
-        // Disallows use of variables before they are defined
-        "no-use-before-define": "error",
         // Disallows await in loop which might slow down processes.
         "no-await-in-loop": "error",
         // Disallows irregular whitespace outside of strings and comments.
@@ -133,6 +131,15 @@
          * indentation.
          */
         "indent": "off",
+
+        /* Disallows use of variables before they are defined.
+         *
+         * Using "no-use-before-define" from ESLint causes false positive errors
+         * for types. Therefore, use `@typescript-eslint/no-use-before-define`
+         * instead.
+         */
+        "no-use-before-define": "off",
+        "@typescript-eslint/no-use-before-define": "error",
 
         /* Disallow duplicate imports.
          *
