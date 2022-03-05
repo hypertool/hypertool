@@ -557,3 +557,18 @@ export interface IController {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface IExternalControllerPatch {
+    author: string;
+    content: string;
+    createdAt: Date;
+}
+
+export interface IExternalController {
+    id: string;
+    creator: string;
+    patches: IExternalControllerPatch[];
+    status: typeof controllerStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
