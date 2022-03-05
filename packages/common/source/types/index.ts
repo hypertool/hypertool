@@ -4,6 +4,7 @@ import {
     appStatuses,
     commentStatuses,
     componentOrigins,
+    controllerStatuses,
     conversationStatuses,
     countryCodes,
     genders,
@@ -19,7 +20,8 @@ import {
     userStatuses,
 } from "../utils/constants";
 
-/* General guidelines to keep in mind when writing interfaces for models.
+/*
+ * General guidelines to keep in mind when writing interfaces for models.
  * 1. All identifiers must be of type `ObjectId`. Do not use strings.
  * 2. The identifier attribute in external types must be `id`.
  * 3. The identifier attribute in internal types must be `_id`.
@@ -147,6 +149,7 @@ export interface User {
     createdAt: Date;
     updatedAt: Date;
 }
+
 export interface ExternalUser {
     id: string;
     firstName: string;
@@ -304,7 +307,8 @@ export interface Deployment {
 export interface Organization {
     id: string;
 
-    /* An identifier that helps humans identify the organization across
+    /*
+     * An identifier that helps humans identify the organization across
      * Hypertool.
      */
     name: string;
@@ -318,7 +322,8 @@ export interface Organization {
     /* The list of users that are part of the organization. */
     members: string[] | Membership[];
 
-    /* The status of the organization. Valid values are as follows: active,
+    /*
+     * The status of the organization. Valid values are as follows: active,
      * deleted, banned.
      */
     status: typeof organizationStatuses[number];
@@ -352,17 +357,20 @@ export type OrganizationPage = ExternalListPage<ExternalOrganization>;
 
 export interface Membership {
     id: string;
-    /* An identifier that points to the User whose membership is being
+    /**
+     * An identifier that points to the User whose membership is being
      * defined by the current document.
      */
     member: string | User;
 
-    /* An identifier that points to the User that invited the member to the
+    /**
+     * An identifier that points to the User that invited the member to the
      * class specified by division.
      */
     inviter: string | User;
 
-    /* An identifier that points to the division.
+    /**
+     * An identifier that points to the division.
      * This attribute is polymorphic, that is, its meaning is defined based
      * on the value of type attribute. For example, if type is organization,
      * then the identifier points to an organization document. On the other
@@ -370,12 +378,14 @@ export interface Membership {
      */
     division: string | Group | Organization;
 
-    /* The type of membership. Valid values are as follows: organization and
+    /**
+     * The type of membership. Valid values are as follows: organization and
      * group.
      */
     type: typeof membershipTypes[number];
 
-    /* The status of the membership. Valid values are as follows: accepted,
+    /**
+     * The status of the membership. Valid values are as follows: accepted,
      * deleted, banned, and invited.
      */
     status: typeof membershipStatuses[number];
@@ -405,14 +415,16 @@ export interface Comment {
     content: string;
 
     /* A boolean value that describes if the comment is edited or not. */
-    edited: Boolean;
+    edited: boolean;
 
-    /* An enumeration of string values that describes the status of the
+    /*
+     * An enumeration of string values that describes the status of the
      * comment.
      */
     status: typeof commentStatuses[number];
 
-    /* An identifier that points to the Conversation where the comment was
+    /*
+     * An identifier that points to the Conversation where the comment was
      * created.
      */
     conversation: ObjectId | Conversation;
@@ -428,7 +440,7 @@ export interface ExternalComment {
     id: string;
     author: string | User;
     content: string;
-    edited: Boolean;
+    edited: boolean;
     status: typeof commentStatuses[number];
     conversation: string | Conversation;
     createdAt: Date;
@@ -438,8 +450,8 @@ export interface ExternalComment {
 export type CommentPage = ExternalListPage<ExternalComment>;
 
 export interface Coordinates {
-    x: Number;
-    y: Number;
+    x: number;
+    y: number;
 }
 
 export interface Conversation {
@@ -452,7 +464,8 @@ export interface Conversation {
     /* The name of the Page where the comment was created. */
     page: ObjectId | Page;
 
-    /* An object that describes the x and y coordinates of the conversation in
+    /*
+     * An object that describes the x and y coordinates of the conversation in
      * the canvas.
      */
     coordinates: Coordinates;
@@ -460,12 +473,14 @@ export interface Conversation {
     /* A list of users who have participated in the conversation. */
     taggedUsers: [ObjectId | User];
 
-    /* A list of comments in the conversation. The first member is the
+    /*
+     * A list of comments in the conversation. The first member is the
      * initiator’s comment.
      */
     comments: ObjectId[] | Comment[];
 
-    /* An enumeration of string values that describes the status of the
+    /*
+     * An enumeration of string values that describes the status of the
      * conversation.
      */
     status: typeof conversationStatuses[number];
@@ -473,7 +488,8 @@ export interface Conversation {
     /* Specifies the timestamp that indicates when the conversation was created */
     createdAt: Date;
 
-    /* Specifies the timestamp that indicates when the conversation was last
+    /*
+     * Specifies the timestamp that indicates when the conversation was last
      * modified
      */
     updatedAt: Date;
@@ -526,3 +542,18 @@ export interface ExternalConversation {
 }
 
 export type ConversationPage = ExternalListPage<ExternalConversation>;
+
+export interface IControllerPatch {
+    author: ObjectId | User;
+    content: string;
+    createdAt: Date;
+}
+
+export interface IController {
+    _id?: ObjectId;
+    creator: ObjectId | User;
+    patches: IControllerPatch[];
+    status: typeof controllerStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
