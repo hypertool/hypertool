@@ -6,7 +6,6 @@ import type {
 import {
     BadRequestError,
     ControllerModel,
-    NotFoundError,
     constants,
     controller,
 } from "@hypertool/common";
@@ -146,30 +145,8 @@ export const listByIds = async (
 
 export const getById = async (
     context: any,
-    controllerId: string,
-): Promise<IExternalController> => {
-    if (!constants.identifierPattern.test(controllerId)) {
-        throw new BadRequestError(
-            "The specified controller identifier is invalid.",
-        );
-    }
-
-    // TODO: Update filters
-    const filters = {
-        _id: controllerId,
-        status: { $ne: "deleted" },
-    };
-    const controller = await ControllerModel.findOne(filters as any).exec();
-
-    /* We return a 404 error, if we did not find the controller. */
-    if (!controller) {
-        throw new NotFoundError(
-            "Cannot find a controller with the specified identifier.",
-        );
-    }
-
-    return toExternal(controller);
-};
+    id: string,
+): Promise<IExternalController> => helper.getById(context, id);
 
 export const getByName = async (
     context: any,
