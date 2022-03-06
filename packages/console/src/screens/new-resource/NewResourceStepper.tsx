@@ -1,5 +1,5 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 import {
     Button,
@@ -27,6 +27,7 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import { useNavigate } from "react-router";
 
+import { BuilderActionsContext } from "../../contexts";
 import type { ResourceType } from "../../types";
 
 import ConfigureStep from "./ConfigureStep";
@@ -308,6 +309,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
         },
     ] = useMutation(CREATE_RESOURCE);
     const navigate = useNavigate();
+    const { createNewTab } = useContext(BuilderActionsContext);
 
     const handleSubmit = useCallback(
         (values: any) => {
@@ -346,9 +348,12 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
 
     useEffect(() => {
         if (newResource) {
-            navigate(`/resources/${newResource.createResource.id}/edit`);
+            // navigate(`/resources/${newResource.createResource.id}/edit`);
+            createNewTab("edit-resource", {
+                resourceId: newResource.createResource.id,
+            });
         }
-    }, [navigate, newResource]);
+    }, [createNewTab, navigate, newResource]);
 
     const handleNext = () => {
         if (activeStep + 1 === steps.length) {

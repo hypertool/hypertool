@@ -158,8 +158,12 @@ const resourceFormByType: ResourceFormByType = {
     bigquery: BigQueryForm,
 };
 
-const EditResource: FunctionComponent = (): ReactElement => {
-    const { resourceId } = useParams();
+export interface Props {
+    resourceId: string;
+}
+
+const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
+    const { resourceId } = props;
     // TODO: Destructure `error`, check for non-null, send to sentry
     const { loading, data, refetch } = useQuery(GET_RESOURCE, {
         variables: {
