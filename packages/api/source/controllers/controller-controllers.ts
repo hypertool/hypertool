@@ -66,6 +66,12 @@ const toExternal = (controller: IController): IExternalController => {
     };
 };
 
+const helper = controller.createHelper({
+    entity: "controller",
+    model: ControllerModel,
+    toExternal,
+});
+
 export const create = async (
     context: any,
     attributes: any,
@@ -96,47 +102,7 @@ export const create = async (
 export const list = async (
     context: any,
     parameters: any,
-): Promise<TControllerPage> => {
-    const { error, value } = filterSchema.validate(parameters);
-    if (error) {
-        throw new BadRequestError(error.message);
-    }
-
-    // TODO: Update filters
-    const filters = {
-        status: {
-            $ne: "deleted",
-        },
-    };
-    const { page, limit } = value;
-
-    const controllers = await (ControllerModel as any).paginate(filters, {
-        limit,
-        page: page + 1,
-        lean: true,
-        leanWithId: true,
-        pagination: true,
-        sort: {
-            updatedAt: -1,
-        },
-    });
-
-    return {
-        totalRecords: controllers.totalDocs,
-        totalPages: controllers.totalPages,
-        previousPage: controllers.prevPage ? controllers.prevPage - 1 : -1,
-        nextPage: controllers.nextPage ? controllers.nextPage - 1 : -1,
-        hasPreviousPage: controllers.hasPrevPage,
-        hasNextPage: controllers.hasNextPage,
-        records: controllers.docs.map(toExternal),
-    };
-};
-
-const helper = controller.createHelper({
-    entity: "controller",
-    model: ControllerModel,
-    toExternal,
-});
+): Promise<TControllerPage> => helper.list(context, parameters, filterSchema);
 
 export const listByIds = async (
     context,
