@@ -8,6 +8,30 @@ export const createHelper = <T, E>(
 ): IControllerHelper<E> => {
     const { entity, model, toExternal } = requirements;
     return {
+        getById: async (context: any, id: string): Promise<E> => {
+            if (!constants.identifierPattern.test(id)) {
+                throw new BadRequestError(
+                    `The specified ${entity} identifier is invalid.`,
+                );
+            }
+
+            // TODO: Update filters
+            const filters = {
+                _id: id,
+                status: { $ne: "deleted" },
+            };
+            const document = await model.findOne(filters as any).exec();
+
+            /* We return a 404 error, if we did not find the entity. */
+            if (!document) {
+                throw new NotFoundError(
+                    `Could not find any ${entity} with the specified identifier.`,
+                );
+            }
+
+            return toExternal(document);
+        },
+
         listByIds: async (context, ids: string[]): Promise<E[]> => {
             const items = await model
                 .find({

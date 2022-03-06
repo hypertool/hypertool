@@ -585,6 +585,7 @@ export interface IControllerRequirements<T, E> {
 }
 
 export interface IControllerHelper<E> {
+    getById: (context: any, id: string) => Promise<E>;
     listByIds: (context: any, ids: string[]) => Promise<E[]>;
     getByName: (context: any, name: string) => Promise<E>;
     update: (
