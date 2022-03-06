@@ -133,20 +133,16 @@ export const list = async (
     };
 };
 
+const helper = controller.createHelper({
+    entity: "controller",
+    model: ControllerModel,
+    toExternal,
+});
+
 export const listByIds = async (
     context,
-    controllerIds: string[],
-): Promise<IExternalController[]> => {
-    const unorderedControllers = await ControllerModel.find({
-        _id: { $in: controllerIds },
-        status: { $ne: "deleted" },
-    }).exec();
-    const object = {};
-    for (const controller of unorderedControllers) {
-        object[controller._id.toString()] = controller;
-    }
-    return controllerIds.map((key) => toExternal(object[key]));
-};
+    ids: string[],
+): Promise<IExternalController[]> => helper.listByIds(context, ids);
 
 export const getById = async (
     context: any,
@@ -174,12 +170,6 @@ export const getById = async (
 
     return toExternal(controller);
 };
-
-const helper = controller.createHelper({
-    entity: "controller",
-    model: ControllerModel,
-    toExternal,
-});
 
 export const getByName = async (
     context: any,
