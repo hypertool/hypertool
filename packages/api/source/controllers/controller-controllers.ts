@@ -8,6 +8,7 @@ import {
     ControllerModel,
     NotFoundError,
     constants,
+    controller,
 } from "@hypertool/common";
 
 import joi from "joi";
@@ -164,3 +165,15 @@ export const getById = async (
 
     return toExternal(controller);
 };
+
+export const getByName = async (
+    context: any,
+    name: string,
+): Promise<IExternalController> =>
+    controller.getByName(
+        "controller",
+        ControllerModel,
+        toExternal,
+        context,
+        name,
+    );
