@@ -27,7 +27,7 @@ const Queries: FunctionComponent = (): ReactElement => {
     const { createNewTab } = useContext(BuilderActionsContext);
 
     const handleNewQuery = useCallback(() => {
-        createNewTab("New Query", true, "new-query");
+        createNewTab("new-query");
     }, [createNewTab]);
 
     const renderQuery = (title: string) => (

@@ -1,14 +1,10 @@
 import { createContext } from "react";
 
-import { IBuilderActionsContext, TTabType } from "../types";
+import { IBuilderActionsContext, TBundleType, TTabType } from "../types";
 
 const BuilderActionsContext = createContext<IBuilderActionsContext>({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createNewTab: (
-        _title: string,
-        _placeholderTitle: boolean,
-        _type: TTabType,
-    ) => {
+    createNewTab: (_type: TTabType, _bundle?: TBundleType) => {
         throw new Error("Implementation for this operation is missing.");
     },
     tabs: [],

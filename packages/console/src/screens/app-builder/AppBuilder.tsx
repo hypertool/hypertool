@@ -10,7 +10,14 @@ import { useMonaco } from "@monaco-editor/react";
 import { ArtifactsContext, BuilderActionsContext } from "../../contexts";
 import { useInflateArtifacts } from "../../hooks";
 import { nodeMappings } from "../../nodes";
-import type { IDeflatedArtifact, ITab, TTabType } from "../../types";
+import type {
+    IBuilderActionsContext,
+    IDeflatedArtifact,
+    IEditResourceBundle,
+    ITab,
+    TBundleType,
+    TTabType,
+} from "../../types";
 import { constants, templates } from "../../utils";
 import ResourceEditor from "../edit-resource";
 import NewControllerEditor from "../new-controller";
@@ -53,9 +60,44 @@ const Content = styled("section")(({ theme }) => ({
     padding: theme.spacing(0),
 }));
 
-const iconByType: { [key: string]: string } = {
-    controller: "code",
-    query: "category",
+interface TabTypeDetails {
+    icon: string;
+    title: string;
+}
+
+const tabDetailsByType: Record<string, TabTypeDetails> = {
+    "new-query": {
+        icon: "workspaces",
+        title: "New Query",
+    },
+    "edit-query": {
+        icon: "workspaces",
+        title: "Edit Query",
+    },
+    "new-controller": {
+        icon: "code",
+        title: "New Controller",
+    },
+    "edit-controller": {
+        icon: "code",
+        title: "Edit Controller",
+    },
+    "new-screen": {
+        icon: "wysiwyg",
+        title: "New Screen",
+    },
+    "edit-screen": {
+        icon: "wysiwyg",
+        title: "Edit Screen",
+    },
+    "new-resource": {
+        icon: "category",
+        title: "New Resource",
+    },
+    "edit-resource": {
+        icon: "category",
+        title: "Edit Resource",
+    },
 };
 
 const AppBuilder: FunctionComponent = (): ReactElement => {
@@ -74,7 +116,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     const artifacts = useInflateArtifacts(deflatedArtifacts);
     const monaco = useMonaco();
 
-    const { type: activeTabType } = useMemo(
+    const { type: activeTabType, bundle: activeTabBundle } = useMemo(
         () =>
             tabs.find((tab) => tab.id === activeTab) || {
                 type: undefined,
@@ -95,14 +137,18 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         const uri = monaco?.Uri.parse(tab.id);
                         const model = monaco?.editor.getModel(uri as any);
                         const code = model?.getValue() || "";
-                        return { id: tab.id, code, path: tab.bundle.path };
+                        return {
+                            id: tab.id,
+                            code,
+                            path: activeTab || "<invalid>",
+                        };
                     }
                     return null;
                 })
                 .filter(truthy);
             setDeflatedArtifacts(newDeflatedArtifacts);
         },
-        [monaco?.Uri, monaco?.editor],
+        [activeTab, monaco?.Uri, monaco?.editor],
     );
 
     const handleMonacoChange = useCallback(() => {
@@ -113,15 +159,13 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
      * TODO: For some reason, `useMemo` causes binding issues in callbacks
      * resulting in incomprehensible behavior.
      */
-    const builderActions = {
+    const builderActions: IBuilderActionsContext = {
         tabs,
         activeTab,
         setActiveTab,
-        createNewTab: (
-            title: string,
-            placeholderTitle: boolean,
-            type: TTabType,
-        ) => {
+        createNewTab: (type: TTabType, bundle?: TBundleType) => {
+            const tabDetails = tabDetailsByType[type];
+
             setCounts((oldCount) => {
                 const newCount = oldCount[type] + 1;
 
@@ -129,16 +173,11 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                     const newTabId = uuid.v4();
                     const newTab = {
                         id: newTabId,
-                        title: placeholderTitle
-                            ? `${title} ${newCount}`
-                            : title,
-                        icon: iconByType[type],
+                        title: `${tabDetails.title} ${newCount}`,
+                        icon: tabDetails.icon,
                         type,
-                        bundle: {
-                            ...(type === "controller" ? { path: title } : {}),
-                        },
+                        bundle,
                     };
-
                     setActiveTab(newTabId);
 
                     /*
@@ -151,10 +190,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                             {
                                 id: newTabId,
                                 code: templates.CONTROLLER_TEMPLATE,
-                                /* The title for new controller tabs carries the path
-                                 * of the controller.
-                                 */
-                                path: title,
+                                path: `${tabDetails.title} ${newCount}`,
                             },
                         ]);
                     }
@@ -215,7 +251,13 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                     <NewResourceEditor />
                                 )}
                                 {activeTabType === "edit-resource" && (
-                                    <ResourceEditor />
+                                    <ResourceEditor
+                                        resourceId={
+                                            (
+                                                activeTabBundle as IEditResourceBundle
+                                            ).resourceId
+                                        }
+                                    />
                                 )}
                                 {activeTabType === "new-query" && (
                                     <NewQueryEditor />
@@ -223,7 +265,12 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                             </Content>
                         </Main>
                         <RightDrawer
-                            open={rightDrawerOpen}
+                            open={
+                                rightDrawerOpen &&
+                                ["new-screen", "edit-screen"].includes(
+                                    activeTabType || "<invalid>",
+                                )
+                            }
                             onDrawerClose={handleRightDrawerClose}
                         />
                     </Root>

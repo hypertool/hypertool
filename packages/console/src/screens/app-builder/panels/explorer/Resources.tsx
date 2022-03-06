@@ -27,11 +27,11 @@ const Resources: FunctionComponent = (): ReactElement => {
     const { createNewTab } = useContext(BuilderActionsContext);
 
     const handleNewResource = useCallback(() => {
-        createNewTab("New Resource", true, "new-resource");
+        createNewTab("new-resource");
     }, [createNewTab]);
 
     const handleEditResource = useCallback(() => {
-        createNewTab("Edit Resource", true, "edit-resource");
+        createNewTab("Edit Resource", { resourceId: "<invalid>" });
     }, [createNewTab]);
 
     const renderResource = (title: string) => (

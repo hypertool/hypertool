@@ -27,7 +27,7 @@ const Controllers: FunctionComponent = (): ReactElement => {
     const { createNewTab } = useContext(BuilderActionsContext);
 
     const handleCreateController = useCallback(() => {
-        createNewTab("New Controller", true, "new-controller");
+        createNewTab("new-controller");
     }, [createNewTab]);
 
     const renderController = (title: string) => (

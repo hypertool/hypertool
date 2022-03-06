@@ -139,20 +139,40 @@ export type Color = "inherit" | BaseColor;
 
 export type TTabType = typeof consoleConstants.tabTypes[number];
 
+export interface ITabBundle {}
+
+export interface IEditQueryBundle extends ITabBundle {
+    queryId: string;
+}
+
+export interface IEditControllerBundle extends ITabBundle {
+    controllerId: string;
+}
+
+export interface IEditScreenBundle extends ITabBundle {
+    screenId: string;
+}
+
+export interface IEditResourceBundle extends ITabBundle {
+    resourceId: string;
+}
+
+export type TBundleType =
+    | IEditQueryBundle
+    | IEditControllerBundle
+    | IEditScreenBundle
+    | IEditResourceBundle;
+
 export interface ITab {
     id: string;
     title: string;
     icon: string;
     type: TTabType;
-    bundle?: any;
+    bundle?: TBundleType;
 }
 
 export interface IBuilderActionsContext {
-    createNewTab: (
-        title: string,
-        placeholderTitle: boolean,
-        type: TTabType,
-    ) => void;
+    createNewTab: (type: TTabType, bundle?: TBundleType) => void;
     tabs: ITab[];
     activeTab: string | null;
     setActiveTab: (activeTab: string) => void;

@@ -27,7 +27,7 @@ const Screens: FunctionComponent = (): ReactElement => {
     const { createNewTab } = useContext(BuilderActionsContext);
 
     const handleNewScreen = useCallback(() => {
-        createNewTab("New Screen", true, "new-screen");
+        createNewTab("new-screen");
     }, [createNewTab]);
 
     const renderScreen = (title: string) => (
