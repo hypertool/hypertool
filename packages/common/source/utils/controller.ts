@@ -8,6 +8,20 @@ export const createHelper = <T, E>(
 ): IControllerHelper<E> => {
     const { entity, model, toExternal } = requirements;
     return {
+        listByIds: async (context, ids: string[]): Promise<E[]> => {
+            const items = await model
+                .find({
+                    _id: { $in: ids },
+                    status: { $ne: "deleted" },
+                })
+                .exec();
+            const object = {};
+            for (const item of items) {
+                object[item._id.toString()] = item;
+            }
+            return ids.map((key) => toExternal(object[key]));
+        },
+
         getByName: async (context: any, name: string): Promise<E> => {
             if (!constants.namePattern.test(name)) {
                 throw new BadRequestError(
