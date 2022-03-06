@@ -3,7 +3,12 @@ import type {
     IExternalController,
     TControllerPage,
 } from "@hypertool/common";
-import { BadRequestError, ControllerModel, constants } from "@hypertool/common";
+import {
+    BadRequestError,
+    ControllerModel,
+    NotFoundError,
+    constants,
+} from "@hypertool/common";
 
 import joi from "joi";
 
@@ -96,7 +101,7 @@ export const list = async (
     };
     const { page, limit } = value;
 
-    const resources = await (ControllerModel as any).paginate(filters, {
+    const controllers = await (ControllerModel as any).paginate(filters, {
         limit,
         page: page + 1,
         lean: true,
@@ -108,27 +113,54 @@ export const list = async (
     });
 
     return {
-        totalRecords: resources.totalDocs,
-        totalPages: resources.totalPages,
-        previousPage: resources.prevPage ? resources.prevPage - 1 : -1,
-        nextPage: resources.nextPage ? resources.nextPage - 1 : -1,
-        hasPreviousPage: resources.hasPrevPage,
-        hasNextPage: resources.hasNextPage,
-        records: resources.docs.map(toExternal),
+        totalRecords: controllers.totalDocs,
+        totalPages: controllers.totalPages,
+        previousPage: controllers.prevPage ? controllers.prevPage - 1 : -1,
+        nextPage: controllers.nextPage ? controllers.nextPage - 1 : -1,
+        hasPreviousPage: controllers.hasPrevPage,
+        hasNextPage: controllers.hasNextPage,
+        records: controllers.docs.map(toExternal),
     };
 };
 
 export const listByIds = async (
     context,
-    resourceIds: string[],
+    controllerIds: string[],
 ): Promise<IExternalController[]> => {
     const unorderedControllers = await ControllerModel.find({
-        _id: { $in: resourceIds },
+        _id: { $in: controllerIds },
         status: { $ne: "deleted" },
     }).exec();
     const object = {};
-    for (const resource of unorderedControllers) {
-        object[resource._id.toString()] = resource;
+    for (const controller of unorderedControllers) {
+        object[controller._id.toString()] = controller;
     }
-    return resourceIds.map((key) => toExternal(object[key]));
+    return controllerIds.map((key) => toExternal(object[key]));
+};
+
+export const getById = async (
+    context: any,
+    controllerId: string,
+): Promise<IExternalController> => {
+    if (!constants.identifierPattern.test(controllerId)) {
+        throw new BadRequestError(
+            "The specified controller identifier is invalid.",
+        );
+    }
+
+    // TODO: Update filters
+    const filters = {
+        _id: controllerId,
+        status: { $ne: "deleted" },
+    };
+    const controller = await ControllerModel.findOne(filters as any).exec();
+
+    /* We return a 404 error, if we did not find the controller. */
+    if (!controller) {
+        throw new NotFoundError(
+            "Cannot find a controller with the specified identifier.",
+        );
+    }
+
+    return toExternal(controller);
 };
