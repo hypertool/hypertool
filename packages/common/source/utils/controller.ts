@@ -1,4 +1,8 @@
-import type { IControllerHelper, IControllerRequirements } from "../types";
+import type {
+    IControllerHelper,
+    IControllerRequirements,
+    IExternalListPage,
+} from "../types";
 
 import * as constants from "./constants";
 import { BadRequestError, NotFoundError } from "./errors";
@@ -30,6 +34,46 @@ export const createHelper = <T, E>(
             }
 
             return toExternal(document);
+        },
+
+        list: async (
+            context: any,
+            parameters: any,
+            filterSchema: any,
+        ): Promise<IExternalListPage<E>> => {
+            const { error, value } = filterSchema.validate(parameters);
+            if (error) {
+                throw new BadRequestError(error.message);
+            }
+
+            // TODO: Update filters
+            const filters = {
+                status: {
+                    $ne: "deleted",
+                },
+            };
+            const { page, limit } = value;
+
+            const documents = await (model as any).paginate(filters, {
+                limit,
+                page: page + 1,
+                lean: true,
+                leanWithId: true,
+                pagination: true,
+                sort: {
+                    updatedAt: -1,
+                },
+            });
+
+            return {
+                totalRecords: documents.totalDocs,
+                totalPages: documents.totalPages,
+                previousPage: documents.prevPage ? documents.prevPage - 1 : -1,
+                nextPage: documents.nextPage ? documents.nextPage - 1 : -1,
+                hasPreviousPage: documents.hasPrevPage,
+                hasNextPage: documents.hasNextPage,
+                records: documents.docs.map(toExternal),
+            };
         },
 
         listByIds: async (context, ids: string[]): Promise<E[]> => {

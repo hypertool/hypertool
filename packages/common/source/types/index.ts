@@ -586,6 +586,11 @@ export interface IControllerRequirements<T, E> {
 
 export interface IControllerHelper<E> {
     getById: (context: any, id: string) => Promise<E>;
+    list: (
+        context: any,
+        parameters: any,
+        filterSchema: any,
+    ) => Promise<IExternalListPage<E>>;
     listByIds: (context: any, ids: string[]) => Promise<E[]>;
     getByName: (context: any, name: string) => Promise<E>;
     update: (
