@@ -117,3 +117,18 @@ export const list = async (
         records: resources.docs.map(toExternal),
     };
 };
+
+export const listByIds = async (
+    context,
+    resourceIds: string[],
+): Promise<IExternalController[]> => {
+    const unorderedControllers = await ControllerModel.find({
+        _id: { $in: resourceIds },
+        status: { $ne: "deleted" },
+    }).exec();
+    const object = {};
+    for (const resource of unorderedControllers) {
+        object[resource._id.toString()] = resource;
+    }
+    return resourceIds.map((key) => toExternal(object[key]));
+};
