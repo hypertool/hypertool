@@ -1,4 +1,8 @@
-import type { IController, IExternalController } from "@hypertool/common";
+import type {
+    IController,
+    IExternalController,
+    TControllerPage,
+} from "@hypertool/common";
 import { BadRequestError, ControllerModel, constants } from "@hypertool/common";
 
 import joi from "joi";
@@ -11,6 +15,16 @@ const createSchema = joi.object({
             content: joi.string().allow(""),
         }),
     ),
+});
+
+const filterSchema = joi.object({
+    page: joi.number().integer().default(0),
+    limit: joi
+        .number()
+        .integer()
+        .min(constants.paginateMinLimit)
+        .max(constants.paginateMaxLimit)
+        .default(constants.paginateMinLimit),
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -63,4 +77,43 @@ export const create = async (
     await newController.save();
 
     return toExternal(newController);
+};
+
+export const list = async (
+    context: any,
+    parameters: any,
+): Promise<TControllerPage> => {
+    const { error, value } = filterSchema.validate(parameters);
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    // TODO: Update filters
+    const filters = {
+        status: {
+            $ne: "deleted",
+        },
+    };
+    const { page, limit } = value;
+
+    const resources = await (ControllerModel as any).paginate(filters, {
+        limit,
+        page: page + 1,
+        lean: true,
+        leanWithId: true,
+        pagination: true,
+        sort: {
+            updatedAt: -1,
+        },
+    });
+
+    return {
+        totalRecords: resources.totalDocs,
+        totalPages: resources.totalPages,
+        previousPage: resources.prevPage ? resources.prevPage - 1 : -1,
+        nextPage: resources.nextPage ? resources.nextPage - 1 : -1,
+        hasPreviousPage: resources.hasPrevPage,
+        hasNextPage: resources.hasNextPage,
+        records: resources.docs.map(toExternal),
+    };
 };
