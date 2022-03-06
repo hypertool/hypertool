@@ -40,6 +40,7 @@ export const runAsTransaction = async (callback) => {
 export * as constants from "./constants";
 export * as google from "./google";
 export * as session from "./session";
+export * as controller from "./controller";
 export { default as Client } from "./client";
 export { default as PublicClient } from "./public-client";
 export * from "./errors";
