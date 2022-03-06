@@ -578,10 +578,18 @@ export type TControllerPage = IExternalListPage<IExternalController>;
 
 export type TToExternalFunction<T, E> = (internal: T) => E;
 
-export type TGetByNameFunction = <T, E>(
-    entity: string,
-    model: Model<T>,
-    toExternal: TToExternalFunction<T, E>,
-    context: any,
-    name: string,
-) => Promise<E>;
+export interface IControllerRequirements<T, E> {
+    entity: string;
+    model: Model<T>;
+    toExternal: TToExternalFunction<T, E>;
+}
+
+export interface IControllerHelper<E> {
+    getByName: (context: any, name: string) => Promise<E>;
+    update: (
+        context: any,
+        id: string,
+        attributes: any,
+        updateSchema: any,
+    ) => Promise<E>;
+}

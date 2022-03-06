@@ -33,6 +33,15 @@ const filterSchema = joi.object({
         .default(constants.paginateMinLimit),
 });
 
+const updateSchema = joi.object({
+    patches: joi.array().items(
+        joi.object({
+            author: joi.string().regex(constants.identifierPattern),
+            content: joi.string().allow(""),
+        }),
+    ),
+});
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toExternal = (controller: IController): IExternalController => {
     const { _id, creator, patches, status, createdAt, updatedAt } = controller;
@@ -166,14 +175,16 @@ export const getById = async (
     return toExternal(controller);
 };
 
+const helper = controller.createHelper({
+    entity: "controller",
+    model: ControllerModel,
+    toExternal,
+});
+
 export const getByName = async (
     context: any,
     name: string,
-): Promise<IExternalController> =>
-    controller.getByName(
-        "controller",
-        ControllerModel,
-        toExternal,
-        context,
-        name,
-    );
+): Promise<IExternalController> => helper.getByName(context, name);
+
+export const update = async (context: any, id: string, attributes: any) =>
+    helper.update(context, id, attributes, updateSchema);
