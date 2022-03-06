@@ -1,49 +1,41 @@
 /* eslint-disable no-undef */
 import type { FunctionComponent, ReactElement } from "react";
-
-import { styled } from "@mui/material/styles";
-
-import { Navigate, Route, Routes } from "react-router-dom";
-
-import { VisitorLayout, WorkspaceLayout } from "./layouts";
-import {
-    AppBuilder,
-    AuthenticationServices,
-    CreateAccount,
-    EditResource,
-    Login,
-    NewApp,
-    NewOrganization,
-    NewPassword,
-    NewResource,
-    ResourceLibrary,
-    SingleApp,
-    UpdatePassword,
-    ViewApps,
-} from "./screens";
-
-import type { Session } from "@hypertool/common";
-
 import React, { useMemo, useState } from "react";
 
 import { CssBaseline } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
-import { setContext } from "@apollo/client/link/context";
 
 import {
     ApolloClient,
     ApolloProvider,
-    InMemoryCache,
     HttpLink,
+    InMemoryCache,
 } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+
+import type { Session } from "@hypertool/common";
 
 import ReactDOM from "react-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { BrowserRouter } from "react-router-dom";
 
 import SessionContext from "./contexts/SessionContext";
+import { VisitorLayout, WorkspaceLayout } from "./layouts";
 import reportWebVitals from "./reportWebVitals";
+import {
+    AppBuilder,
+    AuthenticationServices,
+    CreateAccount,
+    Login,
+    NewApp,
+    NewOrganization,
+    NewPassword,
+    SingleApp,
+    UpdatePassword,
+    ViewApps,
+} from "./screens";
 import { theme } from "./utils";
-
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -75,7 +67,10 @@ const App: FunctionComponent = (): ReactElement => {
     const { client, session } = useMemo(() => {
         const session = localStorage.getItem("session");
         if (session) {
-            return { client: createPrivateClient(JSON.parse(session)), session };
+            return {
+                client: createPrivateClient(JSON.parse(session)),
+                session,
+            };
         }
         return { client: null, session };
     }, [reload]);
@@ -83,50 +78,66 @@ const App: FunctionComponent = (): ReactElement => {
     const sessionContext = {
         reloadSession: () => {
             setReload(true);
-        }
-    }
+        },
+    };
 
     return (
         <Root>
             <SessionContext.Provider value={sessionContext}>
                 <Routes>
                     <Route path="/" element={<VisitorLayout />}>
-                        <Route path="/login" element={
-                            <Login />
-                        } />
-                        <Route path="/create-account" element={<CreateAccount />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route
+                            path="/create-account"
+                            element={<CreateAccount />}
+                        />
                     </Route>
                 </Routes>
 
-                {client && <ApolloProvider client={client as any}>
-                    <Routes>
-                        <Route path="/new-password" element={<NewPassword />} />
-                        <Route path="/" element={<WorkspaceLayout />}>
+                {client && (
+                    <ApolloProvider client={client as any}>
+                        <Routes>
                             <Route
-                                path="/organizations/new"
-                                element={<NewOrganization />}
+                                path="/new-password"
+                                element={<NewPassword />}
                             />
-                            <Route path="/apps" element={<ViewApps />} />
-                            <Route path="/apps/new" element={<NewApp />} />
-                            <Route path="/apps/:appId" element={<SingleApp />} />
-                            <Route
-                                path="/apps/:appId/authentication"
-                                element={<AuthenticationServices />}
-                            />
-                            <Route
-                                path="/update-password"
-                                element={<UpdatePassword />}
-                            />
-                        </Route>
+                            <Route path="/" element={<WorkspaceLayout />}>
+                                <Route
+                                    path="/organizations/new"
+                                    element={<NewOrganization />}
+                                />
+                                <Route path="/apps" element={<ViewApps />} />
+                                <Route path="/apps/new" element={<NewApp />} />
+                                <Route
+                                    path="/apps/:appId"
+                                    element={<SingleApp />}
+                                />
+                                <Route
+                                    path="/apps/:appId/authentication"
+                                    element={<AuthenticationServices />}
+                                />
+                                <Route
+                                    path="/update-password"
+                                    element={<UpdatePassword />}
+                                />
+                            </Route>
 
-                        <Route path="/apps/:appId/builder" element={<AppBuilder />} />
+                            <Route
+                                path="/apps/:appId/builder"
+                                element={<AppBuilder />}
+                            />
 
-                        <Route
-                            index={true}
-                            element={<Navigate to={session ? "/apps" : "/login"} />}
-                        />
-                    </Routes>
-                </ApolloProvider>}
+                            <Route
+                                index={true}
+                                element={
+                                    <Navigate
+                                        to={session ? "/apps" : "/login"}
+                                    />
+                                }
+                            />
+                        </Routes>
+                    </ApolloProvider>
+                )}
             </SessionContext.Provider>
         </Root>
     );
