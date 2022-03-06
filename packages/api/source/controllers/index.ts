@@ -11,3 +11,4 @@ export * as queries from "./query-engine-controllers";
 export * as comments from "./comment-controllers";
 export * as conversations from "./conversation-controllers";
 export * as pages from "./page-controllers";
+export * as controllers from "./controller-controllers";

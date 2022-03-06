@@ -9,6 +9,7 @@ import type {
     ExternalResource,
     Resource,
     ActivityLog,
+    ActivityLogPage
 } from "../types";
 
 const GET_APP_BY_NAME = gql`
@@ -713,8 +714,8 @@ export default class Client<T> {
     }
 
     async getActivityLogs(
-        page: Number,
-        limit: Number,
+        page: number,
+        limit: number,
     ): Promise<ActivityLogPage | null> {
         try {
             const activityLog = await this.client.query({

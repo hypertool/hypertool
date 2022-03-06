@@ -1,9 +1,11 @@
 import { ObjectId } from "mongoose";
+import type { Model } from "mongoose";
 
 import {
     appStatuses,
     commentStatuses,
     componentOrigins,
+    controllerStatuses,
     conversationStatuses,
     countryCodes,
     genders,
@@ -19,7 +21,8 @@ import {
     userStatuses,
 } from "../utils/constants";
 
-/* General guidelines to keep in mind when writing interfaces for models.
+/*
+ * General guidelines to keep in mind when writing interfaces for models.
  * 1. All identifiers must be of type `ObjectId`. Do not use strings.
  * 2. The identifier attribute in external types must be `id`.
  * 3. The identifier attribute in internal types must be `_id`.
@@ -116,7 +119,7 @@ export interface ExternalResource {
     updatedAt: Date;
 }
 
-export interface ExternalListPage<T> {
+export interface IExternalListPage<T> {
     totalRecords: number;
     totalPages: number;
     previousPage: number;
@@ -126,7 +129,7 @@ export interface ExternalListPage<T> {
     records: T[];
 }
 
-export type ResourcePage = ExternalListPage<ExternalResource>;
+export type ResourcePage = IExternalListPage<ExternalResource>;
 
 export interface User {
     _id: ObjectId;
@@ -147,6 +150,7 @@ export interface User {
     createdAt: Date;
     updatedAt: Date;
 }
+
 export interface ExternalUser {
     id: string;
     firstName: string;
@@ -166,7 +170,7 @@ export interface ExternalUser {
     updatedAt: Date;
 }
 
-export type UserPage = ExternalListPage<ExternalUser>;
+export type UserPage = IExternalListPage<ExternalUser>;
 
 export interface Group {
     _id: ObjectId;
@@ -192,7 +196,7 @@ export interface ExternalGroup {
     updatedAt: Date;
 }
 
-export type GroupPage = ExternalListPage<ExternalGroup>;
+export type GroupPage = IExternalListPage<ExternalGroup>;
 
 export interface App {
     _id: ObjectId;
@@ -255,9 +259,9 @@ export interface ExternalQuery {
     updatedAt: Date;
 }
 
-export type AppPage = ExternalListPage<ExternalApp>;
+export type AppPage = IExternalListPage<ExternalApp>;
 
-export type QueryPage = ExternalListPage<ExternalQuery>;
+export type QueryPage = IExternalListPage<ExternalQuery>;
 
 export interface Context {
     type?: string;
@@ -281,7 +285,7 @@ export interface ExternalActivityLog {
     updatedAt: Date;
 }
 
-export type ActivityLogPage = ExternalListPage<ExternalActivityLog>;
+export type ActivityLogPage = IExternalListPage<ExternalActivityLog>;
 
 interface ManifestValues {
     [key: string]: any;
@@ -304,7 +308,8 @@ export interface Deployment {
 export interface Organization {
     id: string;
 
-    /* An identifier that helps humans identify the organization across
+    /*
+     * An identifier that helps humans identify the organization across
      * Hypertool.
      */
     name: string;
@@ -318,7 +323,8 @@ export interface Organization {
     /* The list of users that are part of the organization. */
     members: string[] | Membership[];
 
-    /* The status of the organization. Valid values are as follows: active,
+    /*
+     * The status of the organization. Valid values are as follows: active,
      * deleted, banned.
      */
     status: typeof organizationStatuses[number];
@@ -348,21 +354,24 @@ export interface ExternalOrganization {
     updatedAt: Date;
 }
 
-export type OrganizationPage = ExternalListPage<ExternalOrganization>;
+export type OrganizationPage = IExternalListPage<ExternalOrganization>;
 
 export interface Membership {
     id: string;
-    /* An identifier that points to the User whose membership is being
+    /**
+     * An identifier that points to the User whose membership is being
      * defined by the current document.
      */
     member: string | User;
 
-    /* An identifier that points to the User that invited the member to the
+    /**
+     * An identifier that points to the User that invited the member to the
      * class specified by division.
      */
     inviter: string | User;
 
-    /* An identifier that points to the division.
+    /**
+     * An identifier that points to the division.
      * This attribute is polymorphic, that is, its meaning is defined based
      * on the value of type attribute. For example, if type is organization,
      * then the identifier points to an organization document. On the other
@@ -370,12 +379,14 @@ export interface Membership {
      */
     division: string | Group | Organization;
 
-    /* The type of membership. Valid values are as follows: organization and
+    /**
+     * The type of membership. Valid values are as follows: organization and
      * group.
      */
     type: typeof membershipTypes[number];
 
-    /* The status of the membership. Valid values are as follows: accepted,
+    /**
+     * The status of the membership. Valid values are as follows: accepted,
      * deleted, banned, and invited.
      */
     status: typeof membershipStatuses[number];
@@ -405,14 +416,16 @@ export interface Comment {
     content: string;
 
     /* A boolean value that describes if the comment is edited or not. */
-    edited: Boolean;
+    edited: boolean;
 
-    /* An enumeration of string values that describes the status of the
+    /*
+     * An enumeration of string values that describes the status of the
      * comment.
      */
     status: typeof commentStatuses[number];
 
-    /* An identifier that points to the Conversation where the comment was
+    /*
+     * An identifier that points to the Conversation where the comment was
      * created.
      */
     conversation: ObjectId | Conversation;
@@ -428,18 +441,18 @@ export interface ExternalComment {
     id: string;
     author: string | User;
     content: string;
-    edited: Boolean;
+    edited: boolean;
     status: typeof commentStatuses[number];
     conversation: string | Conversation;
     createdAt: Date;
     updatedAt: Date;
 }
 
-export type CommentPage = ExternalListPage<ExternalComment>;
+export type CommentPage = IExternalListPage<ExternalComment>;
 
 export interface Coordinates {
-    x: Number;
-    y: Number;
+    x: number;
+    y: number;
 }
 
 export interface Conversation {
@@ -452,7 +465,8 @@ export interface Conversation {
     /* The name of the Page where the comment was created. */
     page: ObjectId | Page;
 
-    /* An object that describes the x and y coordinates of the conversation in
+    /*
+     * An object that describes the x and y coordinates of the conversation in
      * the canvas.
      */
     coordinates: Coordinates;
@@ -460,12 +474,14 @@ export interface Conversation {
     /* A list of users who have participated in the conversation. */
     taggedUsers: [ObjectId | User];
 
-    /* A list of comments in the conversation. The first member is the
+    /*
+     * A list of comments in the conversation. The first member is the
      * initiator’s comment.
      */
     comments: ObjectId[] | Comment[];
 
-    /* An enumeration of string values that describes the status of the
+    /*
+     * An enumeration of string values that describes the status of the
      * conversation.
      */
     status: typeof conversationStatuses[number];
@@ -473,7 +489,8 @@ export interface Conversation {
     /* Specifies the timestamp that indicates when the conversation was created */
     createdAt: Date;
 
-    /* Specifies the timestamp that indicates when the conversation was last
+    /*
+     * Specifies the timestamp that indicates when the conversation was last
      * modified
      */
     updatedAt: Date;
@@ -511,7 +528,7 @@ export interface ExternalPage {
     updatedAt: Date;
 }
 
-export type PagePage = ExternalListPage<ExternalPage>;
+export type PagePage = IExternalListPage<ExternalPage>;
 
 export interface ExternalConversation {
     id: string;
@@ -525,4 +542,61 @@ export interface ExternalConversation {
     updatedAt: Date;
 }
 
-export type ConversationPage = ExternalListPage<ExternalConversation>;
+export type ConversationPage = IExternalListPage<ExternalConversation>;
+
+export interface IControllerPatch {
+    author: ObjectId | User;
+    content: string;
+    createdAt: Date;
+}
+
+export interface IController {
+    _id?: ObjectId;
+    creator: ObjectId | User;
+    patches: IControllerPatch[];
+    status: typeof controllerStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface IExternalControllerPatch {
+    author: string;
+    content: string;
+    createdAt: Date;
+}
+
+export interface IExternalController {
+    id: string;
+    creator: string;
+    patches: IExternalControllerPatch[];
+    status: typeof controllerStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export type TControllerPage = IExternalListPage<IExternalController>;
+
+export type TToExternalFunction<T, E> = (internal: T) => E;
+
+export interface IControllerRequirements<T, E> {
+    entity: string;
+    model: Model<T>;
+    toExternal: TToExternalFunction<T, E>;
+}
+
+export interface IControllerHelper<E> {
+    getById: (context: any, id: string) => Promise<E>;
+    list: (
+        context: any,
+        parameters: any,
+        filterSchema: any,
+    ) => Promise<IExternalListPage<E>>;
+    listByIds: (context: any, ids: string[]) => Promise<E[]>;
+    getByName: (context: any, name: string) => Promise<E>;
+    update: (
+        context: any,
+        id: string,
+        attributes: any,
+        updateSchema: any,
+    ) => Promise<E>;
+}

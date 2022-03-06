@@ -2,12 +2,12 @@ import { constants } from "@hypertool/common";
 
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
-import GraphQLJSON from "graphql-type-json";
 
 import {
     activityLogs,
     apps,
     comments,
+    controllers,
     conversations,
     deployments,
     groups,
@@ -28,7 +28,6 @@ const {
     resourceStatuses,
     organizationStatuses,
     groupTypes,
-    appStatuses,
     groupStatuses,
     queryStatuses,
     componentOrigins,
@@ -37,6 +36,7 @@ const {
     membershipStatuses,
     commentStatuses,
     conversationStatuses,
+    controllerStatuses,
 } = constants;
 
 const typeDefs = gql`
@@ -427,6 +427,40 @@ const typeDefs = gql`
         records: [Page!]!
     }
 
+    type ControllerStatus {
+        ${controllerStatuses.join("\n")}
+    }
+
+    type ControllerPatch {
+        author: User!
+        content: String!
+        createdAt: Date!
+    }
+
+    type Controller {
+        id: ID!
+        creator: User!
+        patches: [ControllerPatch!]!
+        status: ControllerStatus!
+        createdAt: Date!
+        updatedAt: Date!
+    }
+
+    type ControllerPage {
+        totalRecords: Int!
+        totalPages: Int!
+        previousPage: Int!
+        nextPage: Int!
+        hasPreviousPage: Int!
+        hasNextPage: Int!
+        records: [Controller!]!
+    }
+
+    input ControllerPatchInput {
+        author: ID!
+        content: String!
+    }
+
     type Mutation {
         createOrganization(
             name: String
@@ -607,14 +641,24 @@ const typeDefs = gql`
             title: String!
             slug: String
             description: String
-        ) : Page!
+        ): Page!
 
         updatePage(
             pageId: String!
             title: String!
             slug: String!
             description: String
-        ) : Page!
+        ): Page!
+
+        createController(
+            creator: ID!
+            patches: [ControllerPatchInput!]!
+        ): Controller!
+
+        updateController(
+            controllerId: ID!
+            patches: [ControllerPatchInput!]!
+        ): Controller!
     }
 
     type Query {
@@ -645,13 +689,18 @@ const typeDefs = gql`
         getQueryResult(name: String!, variables: GraphQLJSON!, format: QueryResultFormats!): QueryResult!
 
         listComments(page: Int, limit: Int): CommentPage!
-        listCommentsById(commentIds: [ID]): [Comment]!
+        listCommentsById(commentIds: [ID!]!): [Comment]!
 
         listConversations(page: Int, limit: Int): ConversationPage!
-        listConversationsById(conversationIds: [ID]): [Conversation]!
+        listConversationsById(conversationIds: [ID!]!): [Conversation]!
 
         listPages(app: ID!, page: Int, limit: Int): PagePage!
-        listPagesById(appId: ID!, pageIds: [ID]): [Page]!
+        listPagesById(appId: ID!, pageIds: [ID!]!): [Page]!
+
+        listControllers(app: ID!, page: Int, limit: Int): ControllerPage!
+        listControllersById(controllerIds: [ID!]): [Controller!]!
+        getControllerByName(name: String!): Controller!
+        getControllerById(controllerId: ID!): Controller!
     }
 `;
 
@@ -788,6 +837,12 @@ const resolvers = {
 
         updatePage: async (parent, values, context) =>
             pages.update(context.request, values.pageId, values),
+
+        createController: (parent, values, context) =>
+            controllers.create(context.request, values),
+
+        updateController: (parent, values, context) =>
+            controllers.update(context.request, values.controllerId, values),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>
@@ -861,6 +916,18 @@ const resolvers = {
 
         listPagesById: async (parent, values, context) =>
             pages.listById(context.request, values.appId, values.pageIds),
+
+        listControllers: async (parent, values, context) =>
+            controllers.list(context.request, values),
+
+        listControllersById: async (parent, values, context) =>
+            controllers.listByIds(context.request, values.controllerIds),
+
+        getControllerByName: async (parent, values, context) =>
+            controllers.getByName(context.request, values.name),
+
+        getControllerById: async (parent, values, context) =>
+            controllers.getById(context.request, values.controllerId),
     },
 };
 

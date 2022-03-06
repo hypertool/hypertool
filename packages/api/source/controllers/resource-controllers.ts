@@ -1,8 +1,4 @@
-import type {
-    ExternalResource,
-    Resource,
-    ResourcePage,
-} from "@hypertool/common";
+import type { ExternalResource, ResourcePage } from "@hypertool/common";
 import {
     BadRequestError,
     NotFoundError,
@@ -11,7 +7,6 @@ import {
 } from "@hypertool/common";
 
 import joi from "joi";
-import type { Document } from "mongoose";
 
 // TODO: Add limits to database configurations!
 const createSchema = joi.object({
@@ -151,9 +146,11 @@ const create = async (context, attributes): Promise<ExternalResource> => {
         throw new BadRequestError(error.message);
     }
 
-    // TODO: Add `resource` to `app.resources`
-    // TODO: Check if value.creator is correct.
-    // TODO: Check if value.name is unique across the organization and matches the identifier regex.
+    /*
+     * TODO: Add `resource` to `app.resources`
+     * TODO: Check if value.creator is correct.
+     * TODO: Check if value.name is unique across the organization and matches the identifier regex.
+     */
     const newResource = new ResourceModel({
         ...value,
         status: "enabled",

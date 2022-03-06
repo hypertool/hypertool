@@ -363,6 +363,8 @@ const conversationStatuses = tuple("pending", "resolved", "banned", "deleted");
 
 const commentStatuses = tuple("created", "banned", "deleted");
 
+const controllerStatuses = tuple("created", "banned", "deleted");
+
 export {
     paginateMaxLimit,
     paginateMinLimit,
@@ -388,4 +390,5 @@ export {
     membershipTypes,
     conversationStatuses,
     commentStatuses,
+    controllerStatuses,
 };
