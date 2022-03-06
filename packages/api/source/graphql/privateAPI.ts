@@ -2,7 +2,6 @@ import { constants } from "@hypertool/common";
 
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
-import GraphQLJSON from "graphql-type-json";
 
 import {
     activityLogs,
@@ -28,7 +27,6 @@ const {
     resourceStatuses,
     organizationStatuses,
     groupTypes,
-    appStatuses,
     groupStatuses,
     queryStatuses,
     componentOrigins,
@@ -37,6 +35,7 @@ const {
     membershipStatuses,
     commentStatuses,
     conversationStatuses,
+    controllerStatuses,
 } = constants;
 
 const typeDefs = gql`
@@ -425,6 +424,35 @@ const typeDefs = gql`
         hasPreviousPage: Int!
         hasNextPage: Int!
         records: [Page!]!
+    }
+
+    type ControllerStatus {
+        ${controllerStatuses.join("\n")}
+    }
+
+    type ControllerPatch {
+        author: User!
+        content: String!
+        createdAt: Date!
+    }
+
+    type Controller {
+        id: ID!
+        creator: User!
+        patches: [ControllerPatch!]!
+        status: ControllerStatus!
+        createdAt: Date!
+        updatedAt: Date!
+    }
+
+    type ControllerPage {
+        totalRecords: Int!
+        totalPages: Int!
+        previousPage: Int!
+        nextPage: Int!
+        hasPreviousPage: Int!
+        hasNextPage: Int!
+        records: [Controller!]!
     }
 
     type Mutation {
