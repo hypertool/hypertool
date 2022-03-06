@@ -1,4 +1,5 @@
 import { ObjectId } from "mongoose";
+import type { Model } from "mongoose";
 
 import {
     appStatuses,
@@ -574,3 +575,13 @@ export interface IExternalController {
 }
 
 export type TControllerPage = IExternalListPage<IExternalController>;
+
+export type TToExternalFunction<T, E> = (internal: T) => E;
+
+export type TGetByNameFunction = <T, E>(
+    entity: string,
+    model: Model<T>,
+    toExternal: TToExternalFunction<T, E>,
+    context: any,
+    name: string,
+) => Promise<E>;
