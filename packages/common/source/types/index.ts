@@ -118,7 +118,7 @@ export interface ExternalResource {
     updatedAt: Date;
 }
 
-export interface ExternalListPage<T> {
+export interface IExternalListPage<T> {
     totalRecords: number;
     totalPages: number;
     previousPage: number;
@@ -128,7 +128,7 @@ export interface ExternalListPage<T> {
     records: T[];
 }
 
-export type ResourcePage = ExternalListPage<ExternalResource>;
+export type ResourcePage = IExternalListPage<ExternalResource>;
 
 export interface User {
     _id: ObjectId;
@@ -169,7 +169,7 @@ export interface ExternalUser {
     updatedAt: Date;
 }
 
-export type UserPage = ExternalListPage<ExternalUser>;
+export type UserPage = IExternalListPage<ExternalUser>;
 
 export interface Group {
     _id: ObjectId;
@@ -195,7 +195,7 @@ export interface ExternalGroup {
     updatedAt: Date;
 }
 
-export type GroupPage = ExternalListPage<ExternalGroup>;
+export type GroupPage = IExternalListPage<ExternalGroup>;
 
 export interface App {
     _id: ObjectId;
@@ -258,9 +258,9 @@ export interface ExternalQuery {
     updatedAt: Date;
 }
 
-export type AppPage = ExternalListPage<ExternalApp>;
+export type AppPage = IExternalListPage<ExternalApp>;
 
-export type QueryPage = ExternalListPage<ExternalQuery>;
+export type QueryPage = IExternalListPage<ExternalQuery>;
 
 export interface Context {
     type?: string;
@@ -284,7 +284,7 @@ export interface ExternalActivityLog {
     updatedAt: Date;
 }
 
-export type ActivityLogPage = ExternalListPage<ExternalActivityLog>;
+export type ActivityLogPage = IExternalListPage<ExternalActivityLog>;
 
 interface ManifestValues {
     [key: string]: any;
@@ -353,7 +353,7 @@ export interface ExternalOrganization {
     updatedAt: Date;
 }
 
-export type OrganizationPage = ExternalListPage<ExternalOrganization>;
+export type OrganizationPage = IExternalListPage<ExternalOrganization>;
 
 export interface Membership {
     id: string;
@@ -447,7 +447,7 @@ export interface ExternalComment {
     updatedAt: Date;
 }
 
-export type CommentPage = ExternalListPage<ExternalComment>;
+export type CommentPage = IExternalListPage<ExternalComment>;
 
 export interface Coordinates {
     x: number;
@@ -527,7 +527,7 @@ export interface ExternalPage {
     updatedAt: Date;
 }
 
-export type PagePage = ExternalListPage<ExternalPage>;
+export type PagePage = IExternalListPage<ExternalPage>;
 
 export interface ExternalConversation {
     id: string;
@@ -541,7 +541,7 @@ export interface ExternalConversation {
     updatedAt: Date;
 }
 
-export type ConversationPage = ExternalListPage<ExternalConversation>;
+export type ConversationPage = IExternalListPage<ExternalConversation>;
 
 export interface IControllerPatch {
     author: ObjectId | User;
@@ -572,3 +572,5 @@ export interface IExternalController {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export type TControllerPage = IExternalListPage<IExternalController>;
