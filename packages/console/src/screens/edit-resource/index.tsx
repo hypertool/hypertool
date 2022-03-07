@@ -1,4 +1,5 @@
-import { FunctionComponent, ReactElement, useCallback } from "react";
+import type { FunctionComponent, ReactElement } from "react";
+import { useCallback, useContext, useEffect } from "react";
 
 import {
     AppBar,
@@ -15,8 +16,8 @@ import { styled } from "@mui/material/styles";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { Formik } from "formik";
-import { useParams } from "react-router";
 
+import { BuilderActionsContext, TabContext } from "../../contexts";
 import BigQueryForm from "../new-resource/BigQueryForm";
 import MongoDBForm from "../new-resource/MongoDBForm";
 import MySQLForm from "../new-resource/MySQLForm";
@@ -164,6 +165,8 @@ export interface Props {
 
 const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
     const { resourceId } = props;
+    const { setTabTitle } = useContext(BuilderActionsContext);
+    const { index } = useContext(TabContext) || { index: -1 };
     // TODO: Destructure `error`, check for non-null, send to sentry
     const { loading, data, refetch } = useQuery(GET_RESOURCE, {
         variables: {
@@ -174,14 +177,23 @@ const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
 
     const [updateResource] = useMutation(UPDATE_RESOURCE);
     const {
-        name = "<unavailable>",
+        name = "",
         description = "<unavailable>",
         type = "<unavailable>",
         ...others
     } = data?.getResourceById ?? {};
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const handleCreateNew = () => {};
+    useEffect(() => {
+        if (!name || index < 0) {
+            return;
+        }
+        setTabTitle(index, name);
+    }, [index, name, setTabTitle]);
+
+    const handleCreateNew = () => {
+        return null;
+    };
 
     const handleRefresh = useCallback(() => {
         refetch();
