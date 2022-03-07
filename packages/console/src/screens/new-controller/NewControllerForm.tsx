@@ -1,26 +1,25 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 import {
     Button,
     CircularProgress,
     Divider,
-    FormControl,
-    InputLabel,
     MenuItem,
-    Select,
     Typography,
 } from "@mui/material";
-import type { SelectChangeEvent } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 
+import { gql, useMutation } from "@apollo/client";
+
 import * as yup from "yup";
 import { Formik } from "formik";
 
-import { TextField } from "../../components";
+import { Select, TextField } from "../../components";
+import { controllerLanguages } from "../../utils/constants";
 
 const Root = styled("div")(({ theme }) => ({
     display: "flex",
@@ -36,9 +35,9 @@ const Left = styled("div")(({ theme }) => ({
     marginRight: theme.spacing(4),
 }));
 
-const Right = styled("div")(({ theme }) => ({
+const Right = styled("div")({
     width: "100%",
-}));
+});
 
 const Title = styled(Typography)(({ theme }) => ({
     fontSize: 20,
@@ -53,40 +52,35 @@ const Help = styled(Typography)(({ theme }) => ({
     marginTop: theme.spacing(1),
 })) as any;
 
-const ActionContainer = styled("div")(({ theme }) => ({
+const ActionContainer = styled("div")({
     display: "flex",
     flexDirection: "row",
     width: "100%",
     alignItems: "center",
     justifyContent: "space-between",
-}));
+});
 
-const CreateAction = styled(Button)(({ theme }) => ({
+const CreateAction = styled(Button)({
     width: 184,
-}));
+});
 
-const ControllerNameTextField = styled(TextField)(({ theme }) => ({
+const ControllerNameTextField = styled(TextField)({
     maxWidth: 400,
-})) as any;
+}) as any;
 
 const ControllerTitleTextField = styled(TextField)(({ theme }) => ({
     maxWidth: 400,
     marginTop: theme.spacing(3),
 })) as any;
 
-const TextFieldHelp = styled(Typography)(({ theme }) => ({
+const TextFieldHelp = styled(Typography)({
     display: "flex",
     marginTop: 4,
     flexDirection: "column",
     marginLeft: -8,
     marginBottom: 0,
     paddingBottom: 0,
-}));
-
-const LanguageFormControl = styled(FormControl)(({ theme }) => ({
-    marginTop: theme.spacing(3),
-    maxWidth: 400,
-}));
+});
 
 const FormRoot = styled("section")(({ theme }) => ({
     display: "flex",
@@ -97,14 +91,44 @@ const FormRoot = styled("section")(({ theme }) => ({
     width: "100%",
 }));
 
-interface InitialValues {
+const LanguageSelect = styled("div")(({ theme }) => ({
+    width: 400,
+    marginTop: theme.spacing(3),
+}));
+
+const CREATE_CONTROLLER = gql`
+    mutation CreateController(
+        $name: String!
+        $description: String!
+        $language: ControllerLanguage!
+        $patches: [ControllerPatchInput!]!
+    ) {
+        createController(
+            name: $name
+            description: $description
+            language: $language
+            patches: $patches
+        ) {
+            id
+        }
+    }
+`;
+
+interface IFormValues {
     name: string;
-    resource: null | string;
+    description: string;
+    language: string;
 }
 
-const initialValues: InitialValues = {
+const initialValues: IFormValues = {
     name: "",
-    resource: null,
+    description: "",
+    language: "javascript",
+};
+
+const labelByLanguage: Record<string, string> = {
+    javascript: "JavaScript",
+    typescript: "TypeScript",
 };
 
 const validationSchema = yup.object({
@@ -115,22 +139,24 @@ const validationSchema = yup.object({
     description: yup
         .string()
         .max(512, "Description should be 512 characters or less"),
-    language: yup.string().required(),
+    language: yup.string().oneOf(controllerLanguages).required(),
 });
 
-const languages = ["javascript", "typescript"];
-
 const NewControllerForm: FunctionComponent = (): ReactElement => {
-    const [language, setLanguage] = useState("javascript");
+    // TODO: Destructure `error`, check for non-null, send to Sentry
+    const [
+        createController,
+        { loading: creatingController, data: newController },
+    ] = useMutation(CREATE_CONTROLLER);
 
-    const handleSubmit = useCallback((values: any) => {}, []);
-
-    const handleLanguageChange = useCallback((event: SelectChangeEvent) => {
-        setLanguage(event.target.value);
+    const handleSubmit = useCallback((values: IFormValues) => {
+        createController({
+            variables: {
+                ...values,
+                patches: [],
+            },
+        });
     }, []);
-
-    const creatingController = false,
-        newController = false;
 
     return (
         <Root>
@@ -180,26 +206,35 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
                                     multiline={true}
                                     rows={4}
                                 />
-                                <LanguageFormControl fullWidth={true}>
-                                    <InputLabel id="language-label">
-                                        Language
-                                    </InputLabel>
+
+                                <LanguageSelect>
                                     <Select
-                                        labelId="language-label"
                                         id="language"
-                                        value={language}
+                                        name="language"
                                         label="Language"
-                                        onChange={handleLanguageChange}
                                         variant="outlined"
                                         size="small"
-                                    >
-                                        {languages.map((organization) => (
-                                            <MenuItem value={organization}>
-                                                {organization}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </LanguageFormControl>
+                                        help=""
+                                        renderMenuItems={() =>
+                                            controllerLanguages.map(
+                                                (controllerLanguage) => (
+                                                    <MenuItem
+                                                        key={controllerLanguage}
+                                                        value={
+                                                            controllerLanguage
+                                                        }
+                                                    >
+                                                        {
+                                                            labelByLanguage[
+                                                                controllerLanguage
+                                                            ]
+                                                        }
+                                                    </MenuItem>
+                                                ),
+                                            )
+                                        }
+                                    />
+                                </LanguageSelect>
                             </FormRoot>
                             <ActionContainer>
                                 <CreateAction
