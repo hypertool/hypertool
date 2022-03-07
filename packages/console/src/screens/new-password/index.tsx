@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import {
     FunctionComponent,
     ReactElement,
@@ -9,8 +10,6 @@ import {
 
 import { Button, Card, CardContent, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
-import { PublicClient } from "@hypertool/common";
 
 import * as yup from "yup";
 import { Formik } from "formik";
@@ -98,7 +97,6 @@ const NewPassword: FunctionComponent = (): ReactElement => {
     const { token } = useQueryParams();
 
     const appName = "manage-users"; /* Temporary Declaration */
-    // const publicClient = useMemo(() => new PublicClient(appName), [appName]);
 
     useEffect(() => {
         document.title = "New Password | Hypertool";
@@ -107,25 +105,19 @@ const NewPassword: FunctionComponent = (): ReactElement => {
         }
     }, [token]);
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const handleSubmit = () => {};
+    const handleSubmit = useCallback(
+        async (values: FormValues) => {
+            console.log(values);
+            // const data = await (publicClient as any).completePasswordReset({
+            //     token,
+            //     newPassword: values.newPassword,
+            // });
 
-    /*
-     * const handleSubmit = useCallback(
-     *     async (values: FormValues) => {
-     *         const data = await (publicClient as any).completePasswordReset({
-     *             token,
-     *             newPassword: values.newPassword,
-     *         });
-     */
-
-    /*
-     *         localStorage.setItem("session", JSON.stringify(data.jwtToken));
-     *         navigate("/organizations/new");
-     *     },
-     *     [navigate, publicClient, token],
-     * );
-     */
+            // localStorage.setItem("session", JSON.stringify(data.jwtToken));
+            // navigate("/organizations/new");
+        },
+        [navigate, token],
+    );
 
     return (
         <Root>

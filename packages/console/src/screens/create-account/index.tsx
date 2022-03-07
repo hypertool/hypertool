@@ -9,11 +9,10 @@ import {
 
 import { Button, Card, CardContent, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
-import { PublicClient } from "@hypertool/common";
-
+import { ApolloClient, createHttpLink, gql, InMemoryCache, useMutation } from "@apollo/client";
 import * as yup from "yup";
 import { Formik } from "formik";
+import { useNavigate } from "react-router-dom";
 
 import { TextField } from "../../components";
 
@@ -95,6 +94,35 @@ const initialValues: FormValues = {
 const regex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
+const httpLink = createHttpLink({
+    uri: `http://localhost:3001/graphql/v1/public`,
+});
+
+const client = new ApolloClient({
+    link: httpLink,
+    cache: new InMemoryCache(),
+});
+
+const CREATE_ACCOUNT = gql`
+    mutation SignUpWithEmail(
+        $firstName: String!
+        $lastName: String!
+        $role: String
+        $emailAddress: String!
+        $password: String!
+    ) {
+        signupWithEmail(
+            firstName: $firstName
+            lastName: $lastName
+            role: $role
+            emailAddress: $emailAddress
+            password: $password
+        ) {
+            emailAddress
+        }
+    }
+`;
+
 const validationSchema = yup.object({
     firstName: yup.string().required("First Name is required"),
     lastName: yup.string().required("Last Name is required"),
@@ -113,29 +141,28 @@ const validationSchema = yup.object({
 });
 
 const CreateAccount: FunctionComponent = (): ReactElement => {
+    const navigate = useNavigate();
+    const [createAccount, { loading, error }] = useMutation(CREATE_ACCOUNT, {
+        client,
+    });
+
     useEffect(() => {
         document.title = "Create Account | Hypertool";
     }, []);
     const appName = "manage-users"; /* Temporary Declaration */
-    // const publicClient = useMemo(() => new PublicClient(appName), [appName]);
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const handleSubmit = () => {};
+    const handleSubmit = useCallback(
+        async (values: FormValues) => {
+            createAccount({
+                mutation: CREATE_ACCOUNT,
+                variables: {
+                    ...values,
+                    role: "developer"
+                },
+            });
+            navigate("/login");
 
-    /*
-     * const handleSubmit = useCallback(
-     *     async (values: FormValues) => {
-     *         (publicClient as any).createAccount({
-     *             firstName: values.firstName,
-     *             lastName: values.lastName,
-     *             role: "developer",
-     *             emailAddress: values.emailAddress,
-     *             password: values.password,
-     *         });
-     *     },
-     *     [publicClient],
-     * );
-     */
+        }, [createAccount, navigate]);
 
     return (
         <Root>

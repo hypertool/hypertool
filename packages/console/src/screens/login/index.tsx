@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactElement, useCallback } from "react";
+import { FunctionComponent, ReactElement, useContext, useCallback } from "react";
 
 import { Button, Card, CardContent, Divider, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -11,6 +11,7 @@ import { useGoogleLogin } from "react-google-login";
 import { Link, useNavigate } from "react-router-dom";
 
 import { TextField } from "../../components";
+import { SessionContext } from "../../contexts";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -102,22 +103,22 @@ const LOGIN_WITH_EMAIL = gql`
 `;
 
 const client = new ApolloClient({
-    uri: `${process.env.REACT_APP_API_URL}/graphql/v1/public`,
+    uri: `http://localhost:3001/graphql/v1/public`,
     cache: new InMemoryCache(),
 });
 
 interface FormValues {
-    email: string;
+    emailAddress: string;
     password: string;
 }
 
 const initialValues: FormValues = {
-    email: "",
+    emailAddress: "",
     password: "",
 };
 
 const validationSchema = yup.object({
-    email: yup
+    emailAddress: yup
         .string()
         .email("Must be a valid Email")
         .required("Email is required"),
@@ -126,6 +127,7 @@ const validationSchema = yup.object({
 
 const Login: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
+    const { reloadSession } = useContext(SessionContext)
 
     const onSuccess = useCallback(
         async (response: any) => {
@@ -145,7 +147,7 @@ const Login: FunctionComponent = (): ReactElement => {
     );
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const onFailure = () => {};
+    const onFailure = () => { };
 
     const { signIn } = useGoogleLogin({
         onSuccess,
@@ -160,10 +162,20 @@ const Login: FunctionComponent = (): ReactElement => {
         signIn();
     }, [signIn]);
 
-    const handleBasicAuthSubmit = useCallback((values: FormValues) => {
-        console.log(values);
-        return null;
-    }, []);
+    const handleBasicAuthSubmit = useCallback(async (values: FormValues) => {
+        const result = await client.mutate({
+            mutation: LOGIN_WITH_EMAIL,
+            variables: { ...values },
+        });
+        delete result.data.loginWithEmail.__typename;
+        delete result.data.loginWithEmail.user.__typename;
+        localStorage.setItem(
+            "session",
+            JSON.stringify(result.data.loginWithEmail),
+        );
+        reloadSession();
+        navigate("/organizations/new");
+    }, [navigate, reloadSession]);
 
     return (
         <Root>
@@ -181,7 +193,7 @@ const Login: FunctionComponent = (): ReactElement => {
                                         id="Email"
                                         label="Email"
                                         variant="outlined"
-                                        name="email"
+                                        name="emailAddress"
                                         onChange={formik.handleChange}
                                         size="small"
                                         help=""
