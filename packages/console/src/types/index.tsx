@@ -173,6 +173,8 @@ export interface ITab {
 }
 
 export interface IBuilderActionsContext {
+    tabs: ITab[];
+    activeTab: string | null;
     insertTab: (
         index: number,
         replace: boolean,
@@ -182,9 +184,8 @@ export interface IBuilderActionsContext {
     createTab: (type: TTabType, bundle?: TBundleType) => void;
     replaceTab: (index: number, type: TTabType, bundle?: TBundleType) => void;
     setTabTitle: (index: number, title: string) => void;
-    tabs: ITab[];
-    activeTab: string | null;
     setActiveTab: (activeTab: string) => void;
+    closeTab: (index: number) => void;
 }
 
 export interface ISessionContext {

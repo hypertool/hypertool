@@ -120,7 +120,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     const artifacts = useInflateArtifacts(deflatedArtifacts);
     const monaco = useMonaco();
 
-    const { type: activeTabType, bundle: activeTabBundle } = useMemo(
+    const { type: activeTabType } = useMemo(
         () =>
             tabs.find((tab) => tab.id === activeTab) || {
                 type: undefined,
@@ -182,7 +182,8 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 const newCount = oldCount[type] + 1;
 
                 setTabs((oldTabs) => {
-                    /* Edit tabs will be reactivated if they were previously
+                    /*
+                     * Edit tabs will be reactivated if they were previously
                      * created.
                      */
                     const oldTab = oldTabs.find((oldTab) => {
@@ -205,7 +206,8 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         return false;
                     });
                     if (oldTab) {
-                        /* At this point, for the first time, `newCount` will be
+                        /*
+                         * At this point, for the first time, `newCount` will be
                          * off by one. On repeating `x` times, `newCount` will be
                          * off by `x`. However, we need not worry because `newCount`
                          * is temporarily used for `edit-*` tab types.
@@ -256,7 +258,8 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
 
         setTabTitle: (index: number, title: string): void => {
             setTabs((oldTabs) => {
-                /* Do not update the title, if the specified title is already
+                /*
+                 * Do not update the title, if the specified title is already
                  * equal to the current title. Otherwise, an infinite loop will
                  * be triggered.
                  */
@@ -270,6 +273,19 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                     ...oldTab,
                     title,
                 });
+                return result;
+            });
+        },
+
+        closeTab: (index: number): void => {
+            setTabs((oldTabs) => {
+                const result = [...oldTabs];
+                result.splice(index, 1);
+
+                if (result.length > 0) {
+                    setActiveTab(result[result.length - 1].id);
+                }
+
                 return result;
             });
         },
