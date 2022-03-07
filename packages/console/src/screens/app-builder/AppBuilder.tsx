@@ -174,6 +174,9 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             bundle?: TBundleType,
         ): void => {
             const tabDetails = tabDetailsByType[type];
+            if (!tabDetails) {
+                throw new Error(`Unknown tab type "${type}".`);
+            }
 
             setCounts((oldCount) => {
                 const newCount = oldCount[type] + 1;
