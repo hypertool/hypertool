@@ -1,5 +1,5 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback } from "react";
+import { useCallback, useContext, useEffect } from "react";
 
 import {
     Button,
@@ -19,6 +19,7 @@ import * as yup from "yup";
 import { Formik } from "formik";
 
 import { Select, TextField } from "../../components";
+import { BuilderActionsContext, TabContext } from "../../contexts";
 import { controllerLanguages } from "../../utils/constants";
 
 const Root = styled("div")(({ theme }) => ({
@@ -148,6 +149,20 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
         createController,
         { loading: creatingController, data: newController },
     ] = useMutation(CREATE_CONTROLLER);
+
+    const { replaceTab } = useContext(BuilderActionsContext);
+    const error = () => {
+        throw new Error("Tab context should not be null.");
+    };
+    const { index } = useContext(TabContext) || error();
+
+    useEffect(() => {
+        if (newController) {
+            replaceTab(index, "edit-controller", {
+                controllerId: newController.createController.id,
+            });
+        }
+    }, [index, newController, replaceTab]);
 
     const handleSubmit = useCallback((values: IFormValues) => {
         createController({
