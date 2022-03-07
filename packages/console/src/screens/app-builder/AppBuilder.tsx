@@ -182,6 +182,38 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 const newCount = oldCount[type] + 1;
 
                 setTabs((oldTabs) => {
+                    /* Edit tabs will be reactivated if they were previously
+                     * created.
+                     */
+                    const oldTab = oldTabs.find((oldTab) => {
+                        const { type: oldType, bundle: oldBundle } = oldTab;
+                        if (type !== oldType) {
+                            return false;
+                        }
+                        switch (type) {
+                            case "edit-resource": {
+                                if (
+                                    (bundle as IEditResourceBundle)
+                                        .resourceId ===
+                                    (oldBundle as IEditResourceBundle)
+                                        .resourceId
+                                ) {
+                                    return true;
+                                }
+                            }
+                        }
+                        return false;
+                    });
+                    if (oldTab) {
+                        /* At this point, for the first time, `newCount` will be
+                         * off by one. On repeating `x` times, `newCount` will be
+                         * off by `x`. However, we need not worry because `newCount`
+                         * is temporarily used for `edit-*` tab types.
+                         */
+                        setActiveTab(oldTab.id);
+                        return oldTabs;
+                    }
+
                     const newTabId = uuid.v4();
                     const newTab = {
                         id: newTabId,
