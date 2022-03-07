@@ -365,6 +365,8 @@ const commentStatuses = tuple("created", "banned", "deleted");
 
 const controllerStatuses = tuple("created", "banned", "deleted");
 
+export const controllerLanguages = tuple("javascript", "typescript");
+
 export {
     paginateMaxLimit,
     paginateMinLimit,
