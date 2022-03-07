@@ -5,11 +5,11 @@ import { styled } from "@mui/material/styles";
 
 import { TextField } from "../../components";
 
-const ResourceNameTextField = styled(TextField)(({ theme }) => ({
+const ResourceNameTextField = styled(TextField)(() => ({
     maxWidth: 400,
 })) as any;
 
-const TextFieldHelp = styled(Typography)(({ theme }) => ({
+const TextFieldHelp = styled(Typography)(() => ({
     display: "flex",
     marginTop: 4,
     flexDirection: "column",

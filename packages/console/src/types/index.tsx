@@ -18,19 +18,19 @@ export interface AuthenticationServicesType {
 export interface FormField {
     id: string;
     type:
-        | "text"
-        | "large_text"
-        | "number"
-        | "date"
-        | "time"
-        | "date_time"
-        | "switch"
-        | "date_range"
-        | "select"
-        | "multi_select"
-        | "email_address"
-        | "phone_number"
-        | "handler";
+    | "text"
+    | "large_text"
+    | "number"
+    | "date"
+    | "time"
+    | "date_time"
+    | "switch"
+    | "date_range"
+    | "select"
+    | "multi_select"
+    | "email_address"
+    | "phone_number"
+    | "handler";
     help: string;
 }
 
@@ -157,3 +157,9 @@ export interface IBuilderActionsContext {
     activeTab: string | null;
     setActiveTab: (activeTab: string) => void;
 }
+
+
+export interface ISessionContext {
+    reloadSession: () => void;
+}
+

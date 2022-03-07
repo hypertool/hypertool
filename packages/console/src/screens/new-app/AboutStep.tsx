@@ -19,7 +19,7 @@ const Root = styled("section")(({ theme }) => ({
     width: "100%",
 }));
 
-const Form = styled("form")(({ theme }) => ({
+const Form = styled("form")(() => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
@@ -27,7 +27,7 @@ const Form = styled("form")(({ theme }) => ({
     width: "100%",
 }));
 
-const NameTextField = styled(TextField)(({ theme }) => ({
+const NameTextField = styled(TextField)(() => ({
     maxWidth: 400,
 })) as any;
 
@@ -36,10 +36,12 @@ const DescriptionTextField = styled(TextField)(({ theme }) => ({
     maxWidth: 600,
 })) as any;
 
-// const FolderFormControl = styled(FormControl)(({ theme }) => ({
-//   marginTop: theme.spacing(3),
-//   maxWidth: 400,
-// }));
+/*
+ * const FolderFormControl = styled(FormControl)(({ theme }) => ({
+ *   marginTop: theme.spacing(3),
+ *   maxWidth: 400,
+ * }));
+ */
 
 // const dummyFolders = ["eCommerce", "content", "human-resource", "tech"];
 
@@ -51,9 +53,11 @@ const AboutStep: FunctionComponent = (): ReactElement => {
     const formik = useFormikContext<FormValues>();
     // const [folder, setFolder] = useState("root");
 
-    // const handleFolderChange = useCallback((event: SelectChangeEvent) => {
-    //   setFolder(event.target.value);
-    // }, []);
+    /*
+     * const handleFolderChange = useCallback((event: SelectChangeEvent) => {
+     *   setFolder(event.target.value);
+     * }, []);
+     */
 
     const slug = useMemo(
         () =>
@@ -87,8 +91,7 @@ const AboutStep: FunctionComponent = (): ReactElement => {
                                 marginLeft: -8,
                                 marginBottom: 0,
                                 paddingBottom: 0,
-                            }}
-                        >
+                            }}>
                             Good app names are short and memorable.
                             {slug && (
                                 <>
@@ -98,8 +101,7 @@ const AboutStep: FunctionComponent = (): ReactElement => {
                                         href="https://trell.hypertool.io/thumbnail-generator"
                                         target="_blank"
                                         rel="noreferrer"
-                                        style={{ color: "white" }}
-                                    >
+                                        style={{ color: "white" }}>
                                         https://trell.hypertool.io/{slug}
                                     </a>
                                 </>
@@ -126,8 +128,7 @@ const AboutStep: FunctionComponent = (): ReactElement => {
                                 marginLeft: -8,
                                 marginBottom: 0,
                                 paddingBottom: 0,
-                            }}
-                        >
+                            }}>
                             A good description will help your users know about
                             your app better.
                         </Typography>

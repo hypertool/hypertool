@@ -14,10 +14,12 @@ export class LayerHandlers extends DerivedCoreEventHandlers<{
         currentCanvasHovered: null,
     };
 
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     getLayer(id: NodeId) {
         return this.options.layerStore.getState().layers[id];
     }
 
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     handlers() {
         const editorStore = this.derived.options.store;
         const { layerStore } = this.options;
@@ -108,7 +110,7 @@ export class LayerHandlers extends DerivedCoreEventHandlers<{
 
                         if (!dragId) return;
 
-                        let target = layerId;
+                        const target = layerId;
 
                         const indicatorInfo =
                             editorStore.query.getDropPlaceholder(
@@ -222,7 +224,7 @@ export class LayerHandlers extends DerivedCoreEventHandlers<{
                     "dragend",
                     (e) => {
                         e.craft.stopPropagation();
-                        const events = LayerHandlers.events;
+                        const { events } = LayerHandlers;
 
                         if (events.indicator && !events.indicator.error) {
                             const { placement } = events.indicator;

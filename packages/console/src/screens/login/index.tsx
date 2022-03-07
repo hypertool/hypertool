@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactElement, useCallback } from "react";
+import { FunctionComponent, ReactElement, useContext, useCallback } from "react";
 
 import { Button, Card, CardContent, Divider, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -11,6 +11,7 @@ import { useGoogleLogin } from "react-google-login";
 import { Link, useNavigate } from "react-router-dom";
 
 import { TextField } from "../../components";
+import { SessionContext } from "../../contexts";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -66,7 +67,7 @@ const Links = styled("div")(({ theme }) => ({
     padding: `${theme.spacing(2)} 0px ${theme.spacing(2)} 0px`,
 }));
 
-const DecoratedLink = styled(Link)(({ theme }) => ({
+const DecoratedLink = styled(Link)(() => ({
     color: "white",
     fontSize: 12,
 }));
@@ -88,28 +89,45 @@ const LOGIN_WITH_GOOGLE = gql`
     }
 `;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const LOGIN_WITH_EMAIL = gql`
+    mutation LoginWithEmail($emailAddress: String!, $password: String!) {
+        loginWithEmail(emailAddress: $emailAddress, password: $password) {
+            jwtToken
+            user {
+                id
+            }
+            createdAt
+        }
+    }
+`;
+
 const client = new ApolloClient({
-    uri: `${process.env.REACT_APP_API_URL}/graphql/v1/public`,
+    uri: `http://localhost:3001/graphql/v1/public`,
     cache: new InMemoryCache(),
 });
 
 interface FormValues {
-    email: string;
+    emailAddress: string;
     password: string;
 }
 
 const initialValues: FormValues = {
-    email: "",
+    emailAddress: "",
     password: "",
 };
 
 const validationSchema = yup.object({
-    email: yup.string().required("Email is required"),
+    emailAddress: yup
+        .string()
+        .email("Must be a valid Email")
+        .required("Email is required"),
     password: yup.string().required("Password is required"),
 });
 
 const Login: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
+    const { reloadSession } = useContext(SessionContext)
 
     const onSuccess = useCallback(
         async (response: any) => {
@@ -128,7 +146,8 @@ const Login: FunctionComponent = (): ReactElement => {
         [navigate],
     );
 
-    const onFailure = (event: any) => {};
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const onFailure = () => { };
 
     const { signIn } = useGoogleLogin({
         onSuccess,
@@ -143,9 +162,20 @@ const Login: FunctionComponent = (): ReactElement => {
         signIn();
     }, [signIn]);
 
-    const handleBasicAuthSubmit = useCallback(() => {
-        return null;
-    }, []);
+    const handleBasicAuthSubmit = useCallback(async (values: FormValues) => {
+        const result = await client.mutate({
+            mutation: LOGIN_WITH_EMAIL,
+            variables: { ...values },
+        });
+        delete result.data.loginWithEmail.__typename;
+        delete result.data.loginWithEmail.user.__typename;
+        localStorage.setItem(
+            "session",
+            JSON.stringify(result.data.loginWithEmail),
+        );
+        reloadSession();
+        navigate("/organizations/new");
+    }, [navigate, reloadSession]);
 
     return (
         <Root>
@@ -156,15 +186,14 @@ const Login: FunctionComponent = (): ReactElement => {
                         <Formik
                             initialValues={initialValues}
                             onSubmit={handleBasicAuthSubmit as any}
-                            validationSchema={validationSchema}
-                        >
+                            validationSchema={validationSchema}>
                             {(formik) => (
                                 <>
                                     <InputField
                                         id="Email"
                                         label="Email"
                                         variant="outlined"
-                                        name="email"
+                                        name="emailAddress"
                                         onChange={formik.handleChange}
                                         size="small"
                                         help=""
@@ -181,8 +210,7 @@ const Login: FunctionComponent = (): ReactElement => {
                                     <PrimaryAction
                                         onClick={() => formik.submitForm()}
                                         variant="contained"
-                                        size="medium"
-                                    >
+                                        size="medium">
                                         Login
                                     </PrimaryAction>
                                 </>
@@ -205,8 +233,7 @@ const Login: FunctionComponent = (): ReactElement => {
                         variant="contained"
                         color="primary"
                         size="medium"
-                        onClick={handleContinueWithGoogle}
-                    >
+                        onClick={handleContinueWithGoogle}>
                         Continue with Google
                     </PrimaryAction>
                 </CardContent>

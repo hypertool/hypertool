@@ -15,7 +15,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
     marginRight: theme.spacing(2),
 }));
 
-const CardContent = styled(MuiCardContent)(({ theme }) => ({
+const CardContent = styled(MuiCardContent)(() => ({
     padding: "0 !important",
     paddingBottom: 2,
     minWidth: 384,

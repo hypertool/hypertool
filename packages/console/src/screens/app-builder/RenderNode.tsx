@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React, { useCallback, useEffect, useRef } from "react";
 
 import { styled } from "@mui/material/styles";
@@ -20,7 +21,7 @@ const Indicator = styled("div")(({ theme }) => ({
     position: "absolute",
 }));
 
-const IndicatorText = styled("div")(({ theme }) => ({
+const IndicatorText = styled("div")(() => ({
     marginRight: 8,
     fontSize: 16,
 }));

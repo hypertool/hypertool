@@ -36,6 +36,7 @@ const ItemButton = styled(MaterialButton)(({ theme }) => ({
     flexDirection: "column",
 }));
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const Components = () => {
     const { connectors } = useEditor();
 

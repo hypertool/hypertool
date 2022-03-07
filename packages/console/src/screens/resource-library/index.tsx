@@ -18,20 +18,20 @@ import { useNavigate } from "react-router";
 
 import ResourcesTable from "./ResourcesTable";
 
-const Root = styled("section")(({ theme }) => ({
+const Root = styled("section")(() => ({
     width: "100%",
 }));
 
-const Title = styled(Typography)(({ theme }) => ({}));
+const Title = styled(Typography)(() => ({}));
 
-const WorkspaceToolbar = styled(Toolbar)(({ theme }) => ({
+const WorkspaceToolbar = styled(Toolbar)(() => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
 }));
 
-const ActionContainer = styled("div")(({ theme }) => ({
+const ActionContainer = styled("div")(() => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",

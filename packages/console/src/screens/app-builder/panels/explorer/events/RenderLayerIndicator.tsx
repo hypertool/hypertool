@@ -1,4 +1,5 @@
 import type { FunctionComponent, ReactNode } from "react";
+// eslint-disable-next-line no-use-before-define
 import React, { useMemo } from "react";
 
 import { useEditor } from "@craftjs/core";
@@ -57,6 +58,7 @@ export const RenderLayerIndicator: FunctionComponent<Props> = (
                 if (where === "after" || !currentNode) {
                     top = pos.top + pos.height;
                 } else {
+                    // eslint-disable-next-line prefer-destructuring
                     top = pos.top;
                 }
 

@@ -427,7 +427,7 @@ const typeDefs = gql`
         records: [Page!]!
     }
 
-    type ControllerStatus {
+    enum ControllerStatus {
         ${controllerStatuses.join("\n")}
     }
 

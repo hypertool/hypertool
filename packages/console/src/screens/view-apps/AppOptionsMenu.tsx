@@ -18,6 +18,7 @@ interface Props {
 
 interface Group {
     title: string;
+    // eslint-disable-next-line no-use-before-define
     items: Item[];
 }
 
@@ -169,8 +170,7 @@ const AppOptionsMenu: FunctionComponent<Props> = (
                 },
             }}
             transformOrigin={{ horizontal: "right", vertical: "top" }}
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-        >
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>
             {groups.map(renderGroup)}
         </Menu>
     );

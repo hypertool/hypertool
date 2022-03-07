@@ -22,23 +22,23 @@ import MongoDBForm from "../new-resource/MongoDBForm";
 import MySQLForm from "../new-resource/MySQLForm";
 import PostgresForm from "../new-resource/PostgresForm";
 
-const Title = styled(Typography)(({ theme }) => ({}));
+const Title = styled(Typography)(() => ({}));
 
-const WorkspaceToolbar = styled(Toolbar)(({ theme }) => ({
+const WorkspaceToolbar = styled(Toolbar)(() => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
 }));
 
-const ActionContainer = styled("div")(({ theme }) => ({
+const ActionContainer = styled("div")(() => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
 }));
 
-const ProgressContainer = styled("div")(({ theme }) => ({
+const ProgressContainer = styled("div")(() => ({
     width: "100%",
     display: "flex",
     flexDirection: "column",
@@ -47,7 +47,7 @@ const ProgressContainer = styled("div")(({ theme }) => ({
     alignItems: "center",
 }));
 
-const Root = styled("div")(({ theme }) => ({
+const Root = styled("div")(() => ({
     width: "100%",
 }));
 
@@ -56,7 +56,7 @@ const Left = styled("div")(({ theme }) => ({
     marginRight: theme.spacing(4),
 }));
 
-const Right = styled("div")(({ theme }) => ({
+const Right = styled("div")(() => ({
     width: "100%",
     display: "flex",
     flexDirection: "column",
@@ -176,6 +176,7 @@ const EditResource: FunctionComponent = (): ReactElement => {
         ...others
     } = data?.getResourceById ?? {};
 
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     const handleCreateNew = () => {};
 
     const handleRefresh = useCallback(() => {
@@ -189,6 +190,7 @@ const EditResource: FunctionComponent = (): ReactElement => {
                 description,
                 ...configuration
             } = values;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { __typename, ...sanitizedConfiguration } = configuration;
             updateResource({
                 variables: {
@@ -226,8 +228,7 @@ const EditResource: FunctionComponent = (): ReactElement => {
                 /* Since the form expects flat data, spread the configuration. */
                 ...others[type],
             }}
-            onSubmit={handleSubmit}
-        >
+            onSubmit={handleSubmit}>
             {(formik) => (
                 <Root>
                     <AppBar position="static" elevation={1}>
@@ -239,8 +240,7 @@ const EditResource: FunctionComponent = (): ReactElement => {
                                     onClick={handleCreateNew}
                                     color="inherit"
                                     sx={{ mr: 2 }}
-                                    disabled={loading}
-                                >
+                                    disabled={loading}>
                                     <ActionIcon fontSize="small">
                                         cancel
                                     </ActionIcon>
@@ -251,8 +251,7 @@ const EditResource: FunctionComponent = (): ReactElement => {
                                     color="inherit"
                                     onClick={handleCreateNew}
                                     sx={{ mr: 2 }}
-                                    disabled={loading}
-                                >
+                                    disabled={loading}>
                                     <ActionIcon fontSize="small">
                                         delete
                                     </ActionIcon>
@@ -263,8 +262,7 @@ const EditResource: FunctionComponent = (): ReactElement => {
                                     onClick={handleRefresh}
                                     color="inherit"
                                     sx={{ mr: 2 }}
-                                    disabled={loading}
-                                >
+                                    disabled={loading}>
                                     <ActionIcon fontSize="small">
                                         refresh
                                     </ActionIcon>
@@ -274,8 +272,7 @@ const EditResource: FunctionComponent = (): ReactElement => {
                                     size="small"
                                     onClick={() => formik.submitForm()}
                                     color="inherit"
-                                    disabled={loading}
-                                >
+                                    disabled={loading}>
                                     <ActionIcon fontSize="small">
                                         save
                                     </ActionIcon>

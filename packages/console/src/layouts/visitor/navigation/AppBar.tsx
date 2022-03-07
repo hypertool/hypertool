@@ -10,7 +10,7 @@ interface PrimaryAppBarProps extends AppBarProps {
 
 const DecoratedAppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== "open",
-})<PrimaryAppBarProps>(({ theme, open }) => ({
+})<PrimaryAppBarProps>(({ theme }) => ({
     transition: theme.transitions.create(["width", "margin"], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -25,7 +25,7 @@ const Logo = styled("img")(({ theme }) => ({
     marginRight: theme.spacing(1),
 }));
 
-const ToolName = styled(Typography)(({ theme }) => ({
+const ToolName = styled(Typography)(() => ({
     fontSize: 18,
     fontWeight: "bold",
 }));

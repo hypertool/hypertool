@@ -19,7 +19,7 @@ const Root = styled("section")(({ theme }) => ({
     width: "100%",
 }));
 
-const Form = styled("form")(({ theme }) => ({
+const Form = styled("form")(() => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
@@ -27,7 +27,7 @@ const Form = styled("form")(({ theme }) => ({
     width: "100%",
 }));
 
-const NameTextField = styled(TextField)(({ theme }) => ({
+const NameTextField = styled(TextField)(() => ({
     maxWidth: 400,
 })) as any;
 
@@ -75,8 +75,7 @@ const OrganizationForm: FunctionComponent = (): ReactElement => {
                                 marginLeft: -8,
                                 marginBottom: 0,
                                 paddingBottom: 0,
-                            }}
-                        >
+                            }}>
                             {slug && (
                                 <>
                                     Your organization will be hosted at {slug}
@@ -105,8 +104,7 @@ const OrganizationForm: FunctionComponent = (): ReactElement => {
                                 marginLeft: -8,
                                 marginBottom: 0,
                                 paddingBottom: 0,
-                            }}
-                        >
+                            }}>
                             A description of your organization
                         </Typography>
                     }

@@ -48,7 +48,7 @@ const MenuButton = styled(IconButton)<MenuButtonProps>(({ theme, open }) => ({
     ...(open && { display: "none" }),
 }));
 
-const ToolName = styled(Typography)(({ theme }) => ({
+const ToolName = styled(Typography)(() => ({
     fontSize: 18,
 }));
 
@@ -67,8 +67,7 @@ const AppBar: FunctionComponent<Props> = (props: Props): ReactElement => {
                     size="small"
                     edge="start"
                     color="inherit"
-                    open={open}
-                >
+                    open={open}>
                     <MenuIcon />
                 </MenuButton>
                 <ToolName variant="h6" sx={{ flexGrow: 1 }}>

@@ -3,7 +3,7 @@ import { styled } from "@mui/material/styles";
 
 import { useFormikContext } from "formik";
 
-const TextFieldHelp = styled(Typography)(({ theme }) => ({
+const TextFieldHelp = styled(Typography)(() => ({
     display: "flex",
     marginTop: 4,
     flexDirection: "column",
@@ -18,7 +18,9 @@ interface Props {
     [key: string]: any;
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const TextField = (props: Props) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { name, help, ...otherProps } = props;
     const formik = useFormikContext();
 

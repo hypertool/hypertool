@@ -198,7 +198,6 @@ const listByIds = async (
     for (const user of unorderedUsers) {
         object[user._id.toString()] = user;
     }
-    // eslint-disable-next-line security/detect-object-injection
     return userIds.map((key) => toExternal(object[key]));
 };
 
@@ -321,7 +320,8 @@ const loginWithGoogle = async (
     /* If it's a new user, create the user. */
     if (!user) {
         const _id = new mongoose.Types.ObjectId();
-        /* Looks like this is the first time the user is accessing the service. Therefore,
+        /*
+         * Looks like this is the first time the user is accessing the service. Therefore,
          * we need to create a profile with default values for the user.
          */
         user = new UserModel({
@@ -341,7 +341,8 @@ const loginWithGoogle = async (
     }
 
     if (!user.emailVerified && emailVerified) {
-        /* If the email address has been verified since the last session,
+        /*
+         * If the email address has been verified since the last session,
          * update it.
          */
         user.emailVerified = true;
@@ -375,10 +376,11 @@ const signupWithEmail = async (
         );
     }
 
+    const hashedPassword = await hashPassword(password);
     user = new UserModel({
         firstName,
         lastName,
-        password: hashPassword(password),
+        password: hashedPassword,
         gender: undefined,
         countryCode: undefined,
         pictureURL: undefined,
@@ -418,7 +420,7 @@ const loginWithEmail = async (
     }
 
     const { emailAddress, password } = value;
-    let user = await UserModel.findOne({ emailAddress }).exec();
+    const user = await UserModel.findOne({ emailAddress }).exec();
 
     if (!user) {
         throw new NotFoundError(
@@ -491,10 +493,12 @@ const requestPasswordReset = async (
     const { emailAddress, appId } = value;
     const app = await AppModel.findById(appId);
 
-    /* Make sure that the user with the specified email address is registered
+    /*
+     * Make sure that the user with the specified email address is registered
      * on the app.
      */
-    /* TODO: organizations.includes(app.organization) --> The user of the app
+    /*
+     * TODO: organizations.includes(app.organization) --> The user of the app
      * should also be part of the organization! This is different from being
      * a registered user of the app. We need to figure out another way to associate
      * registered users of an app with the owning organization.
