@@ -39,7 +39,7 @@ const {
     controllerStatuses,
 } = constants;
 
-const typeDefs = gql`
+const typeDefs0 = `
     scalar GraphQLJSON
 
     ${types}
@@ -703,6 +703,8 @@ const typeDefs = gql`
         getControllerById(controllerId: ID!): Controller!
     }
 `;
+
+const typeDefs = gql(typeDefs0);
 
 const resolvers = {
     Date: new GraphQLScalarType({

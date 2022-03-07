@@ -92,14 +92,16 @@ const PropertiesForm: FunctionComponent<Props> = (
             variant={field.variant}
             fullWidth={true}
             required={field.required}
-            size={field.size}>
+            size={field.size}
+        >
             <InputLabel id={field.id}>{field.title}</InputLabel>
             <Select
                 labelId={field.id}
                 value={componentProps[field.id]}
                 onChange={makeChangeHandler(field)}
                 label={field.title}
-                name={field.id}>
+                name={field.id}
+            >
                 {field.options.map((option) => (
                     <MenuItem value={option.value}>{option.title}</MenuItem>
                 ))}
@@ -115,7 +117,8 @@ const PropertiesForm: FunctionComponent<Props> = (
         <DecoratedFormControl
             variant={field.variant}
             fullWidth={true}
-            size={field.size}>
+            size={field.size}
+        >
             <InputLabel id={field.id}>{field.title}</InputLabel>
             <Select
                 labelId={field.id}
@@ -132,7 +135,8 @@ const PropertiesForm: FunctionComponent<Props> = (
                             />
                         ))}
                     </div>
-                )}>
+                )}
+            >
                 {field.options.map((option) => (
                     <MenuItem value={option.value}>{option.title}</MenuItem>
                 ))}
@@ -442,82 +446,73 @@ const PropertiesForm: FunctionComponent<Props> = (
                     initialValues={componentProps}
                     enableReinitialize={true}
                     onSubmit={async () => null}
-                    validationSchema={validationSchema}>
+                    validationSchema={validationSchema}
+                >
                     <DecoratedForm>
                         {groups.map((group: FormFieldGroup) => (
                             <>
-                                {group.fields.map(
-                                    (field) =>
-                                        (console.log(field) as any) || (
-                                            <Fragment key={field.id}>
-                                                {field.type === "text" &&
-                                                    renderTextField(
-                                                        field as FormTextField,
-                                                    )}
+                                {group.fields.map((field) => (
+                                    <Fragment key={field.id}>
+                                        {field.type === "text" &&
+                                            renderTextField(
+                                                field as FormTextField,
+                                            )}
 
-                                                {field.type === "large_text" &&
-                                                    renderLargeTextField(
-                                                        field as FormLargeTextField,
-                                                    )}
+                                        {field.type === "large_text" &&
+                                            renderLargeTextField(
+                                                field as FormLargeTextField,
+                                            )}
 
-                                                {field.type === "number" &&
-                                                    renderNumberTextField(
-                                                        field as FormTextField,
-                                                    )}
+                                        {field.type === "number" &&
+                                            renderNumberTextField(
+                                                field as FormTextField,
+                                            )}
 
-                                                {field.type === "date" &&
-                                                    renderDateField(
-                                                        field as FormTextField,
-                                                    )}
+                                        {field.type === "date" &&
+                                            renderDateField(
+                                                field as FormTextField,
+                                            )}
 
-                                                {field.type === "time" &&
-                                                    renderTimeField(
-                                                        field as FormTextField,
-                                                    )}
+                                        {field.type === "time" &&
+                                            renderTimeField(
+                                                field as FormTextField,
+                                            )}
 
-                                                {field.type === "date_time" &&
-                                                    renderDateTimeField(
-                                                        field as FormTextField,
-                                                    )}
+                                        {field.type === "date_time" &&
+                                            renderDateTimeField(
+                                                field as FormTextField,
+                                            )}
 
-                                                {field.type === "switch" &&
-                                                    renderSwitch(
-                                                        field as FormSwitch,
-                                                    )}
+                                        {field.type === "switch" &&
+                                            renderSwitch(field as FormSwitch)}
 
-                                                {field.type === "date_range" &&
-                                                    renderDateRange(field)}
+                                        {field.type === "date_range" &&
+                                            renderDateRange(field)}
 
-                                                {field.type === "select" &&
-                                                    renderSelect(
-                                                        field as FormSelect,
-                                                    )}
+                                        {field.type === "select" &&
+                                            renderSelect(field as FormSelect)}
 
-                                                {field.type ===
-                                                    "multi_select" &&
-                                                    renderMultiSelect(
-                                                        field as FormSelect,
-                                                    )}
+                                        {field.type === "multi_select" &&
+                                            renderMultiSelect(
+                                                field as FormSelect,
+                                            )}
 
-                                                {field.type ===
-                                                    "email_address" &&
-                                                    renderEmailAddressField(
-                                                        field as FormTextField,
-                                                    )}
+                                        {field.type === "email_address" &&
+                                            renderEmailAddressField(
+                                                field as FormTextField,
+                                            )}
 
-                                                {field.type ===
-                                                    "phone_number" &&
-                                                    renderPhoneNumberField(
-                                                        field as FormTextField,
-                                                    )}
+                                        {field.type === "phone_number" &&
+                                            renderPhoneNumberField(
+                                                field as FormTextField,
+                                            )}
 
-                                                {field.type === "handler" &&
-                                                    renderHandlerField(
-                                                        field as FormTextField,
-                                                    )}
-                                            </Fragment>
-                                        ),
-                                )}
+                                        {field.type === "handler" &&
+                                            renderHandlerField(
+                                                field as FormTextField,
+                                            )}
+                                    </Fragment>
+                                ))}
                             </>
                         ))}
                     </DecoratedForm>

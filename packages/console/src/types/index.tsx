@@ -18,19 +18,19 @@ export interface AuthenticationServicesType {
 export interface FormField {
     id: string;
     type:
-    | "text"
-    | "large_text"
-    | "number"
-    | "date"
-    | "time"
-    | "date_time"
-    | "switch"
-    | "date_range"
-    | "select"
-    | "multi_select"
-    | "email_address"
-    | "phone_number"
-    | "handler";
+        | "text"
+        | "large_text"
+        | "number"
+        | "date"
+        | "time"
+        | "date_time"
+        | "switch"
+        | "date_range"
+        | "select"
+        | "multi_select"
+        | "email_address"
+        | "phone_number"
+        | "handler";
     help: string;
 }
 
@@ -139,27 +139,60 @@ export type Color = "inherit" | BaseColor;
 
 export type TTabType = typeof consoleConstants.tabTypes[number];
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ITabBundle {}
+
+export interface IEditQueryBundle extends ITabBundle {
+    queryId: string;
+}
+
+export interface IEditControllerBundle extends ITabBundle {
+    controllerId: string;
+}
+
+export interface IEditScreenBundle extends ITabBundle {
+    screenId: string;
+}
+
+export interface IEditResourceBundle extends ITabBundle {
+    resourceId: string;
+}
+
+export type TBundleType =
+    | IEditQueryBundle
+    | IEditControllerBundle
+    | IEditScreenBundle
+    | IEditResourceBundle;
+
 export interface ITab {
     id: string;
     title: string;
     icon: string;
     type: TTabType;
-    bundle?: any;
+    bundle?: TBundleType;
 }
 
 export interface IBuilderActionsContext {
-    createNewTab: (
-        title: string,
-        placeholderTitle: boolean,
+    insertTab: (
+        index: number,
+        replace: boolean,
         type: TTabType,
+        bundle?: TBundleType,
     ) => void;
+    createTab: (type: TTabType, bundle?: TBundleType) => void;
+    replaceTab: (index: number, type: TTabType, bundle?: TBundleType) => void;
+    setTabTitle: (index: number, title: string) => void;
     tabs: ITab[];
     activeTab: string | null;
     setActiveTab: (activeTab: string) => void;
 }
 
-
 export interface ISessionContext {
     reloadSession: () => void;
 }
 
+export interface ITabContext {
+    tab: ITab;
+    index: number;
+    active: boolean;
+}

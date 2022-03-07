@@ -24,11 +24,11 @@ const Actions = styled("div")(({ theme }) => ({
 }));
 
 const Screens: FunctionComponent = (): ReactElement => {
-    const { createNewTab } = useContext(BuilderActionsContext);
+    const { createTab } = useContext(BuilderActionsContext);
 
     const handleNewScreen = useCallback(() => {
-        createNewTab("New Screen", true, "new-screen");
-    }, [createNewTab]);
+        createTab("new-screen");
+    }, [createTab]);
 
     const renderScreen = (title: string) => (
         <ListItem
