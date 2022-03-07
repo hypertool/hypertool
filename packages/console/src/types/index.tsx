@@ -173,7 +173,14 @@ export interface ITab {
 }
 
 export interface IBuilderActionsContext {
-    createNewTab: (type: TTabType, bundle?: TBundleType) => void;
+    insertTab: (
+        index: number,
+        replace: boolean,
+        type: TTabType,
+        bundle?: TBundleType,
+    ) => void;
+    createTab: (type: TTabType, bundle?: TBundleType) => void;
+    replaceTab: (index: number, type: TTabType, bundle?: TBundleType) => void;
     tabs: ITab[];
     activeTab: string | null;
     setActiveTab: (activeTab: string) => void;

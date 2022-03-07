@@ -27,7 +27,7 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import { useNavigate } from "react-router";
 
-import { BuilderActionsContext } from "../../contexts";
+import { BuilderActionsContext, TabContext } from "../../contexts";
 import type { ResourceType } from "../../types";
 
 import ConfigureStep from "./ConfigureStep";
@@ -309,7 +309,11 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
         },
     ] = useMutation(CREATE_RESOURCE);
     const navigate = useNavigate();
-    const { createNewTab } = useContext(BuilderActionsContext);
+    const { replaceTab } = useContext(BuilderActionsContext);
+    const error = () => {
+        throw new Error("Tab context should not be null.");
+    };
+    const { index } = useContext(TabContext) || error();
 
     const handleSubmit = useCallback(
         (values: any) => {
@@ -348,12 +352,11 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
 
     useEffect(() => {
         if (newResource) {
-            // navigate(`/resources/${newResource.createResource.id}/edit`);
-            createNewTab("edit-resource", {
+            replaceTab(index, "edit-resource", {
                 resourceId: newResource.createResource.id,
             });
         }
-    }, [createNewTab, navigate, newResource]);
+    }, [index, navigate, newResource, replaceTab]);
 
     const handleNext = () => {
         if (activeStep + 1 === steps.length) {

@@ -1,5 +1,5 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext } from "react";
 
 import {
     Avatar,
@@ -24,11 +24,11 @@ const Actions = styled("div")(({ theme }) => ({
 }));
 
 const Controllers: FunctionComponent = (): ReactElement => {
-    const { createNewTab } = useContext(BuilderActionsContext);
+    const { createTab } = useContext(BuilderActionsContext);
 
     const handleCreateController = useCallback(() => {
-        createNewTab("new-controller");
-    }, [createNewTab]);
+        createTab("new-controller");
+    }, [createTab]);
 
     const renderController = (title: string) => (
         <ListItem

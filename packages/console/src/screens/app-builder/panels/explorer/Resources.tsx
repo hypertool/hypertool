@@ -24,15 +24,15 @@ const Actions = styled("div")(({ theme }) => ({
 }));
 
 const Resources: FunctionComponent = (): ReactElement => {
-    const { createNewTab } = useContext(BuilderActionsContext);
+    const { createTab } = useContext(BuilderActionsContext);
 
     const handleNewResource = useCallback(() => {
-        createNewTab("new-resource");
-    }, [createNewTab]);
+        createTab("new-resource");
+    }, [createTab]);
 
     const handleEditResource = useCallback(() => {
-        createNewTab("Edit Resource", { resourceId: "<invalid>" });
-    }, [createNewTab]);
+        createTab("Edit Resource", { resourceId: "<invalid>" });
+    }, [createTab]);
 
     const renderResource = (title: string) => (
         <ListItem

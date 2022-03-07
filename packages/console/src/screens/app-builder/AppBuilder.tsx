@@ -7,7 +7,11 @@ import * as uuid from "uuid";
 import { Editor } from "@craftjs/core";
 import { useMonaco } from "@monaco-editor/react";
 
-import { ArtifactsContext, BuilderActionsContext } from "../../contexts";
+import {
+    ArtifactsContext,
+    BuilderActionsContext,
+    TabContext,
+} from "../../contexts";
 import { useInflateArtifacts } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type {
@@ -163,13 +167,18 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         tabs,
         activeTab,
         setActiveTab,
-        createNewTab: (type: TTabType, bundle?: TBundleType) => {
+        insertTab: (
+            index: number,
+            replace: boolean,
+            type: TTabType,
+            bundle?: TBundleType,
+        ): void => {
             const tabDetails = tabDetailsByType[type];
 
             setCounts((oldCount) => {
                 const newCount = oldCount[type] + 1;
 
-                setTabs((tabs) => {
+                setTabs((oldTabs) => {
                     const newTabId = uuid.v4();
                     const newTab = {
                         id: newTabId,
@@ -195,11 +204,19 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         ]);
                     }
 
-                    return [...tabs, newTab];
+                    const result = [...oldTabs];
+                    result.splice(index, replace ? 1 : 0, newTab);
+                    return result;
                 });
 
                 return { ...oldCount, [type]: newCount };
             });
+        },
+        createTab: (type: TTabType, bundle?: TBundleType) => {
+            builderActions.insertTab(tabs.length, false, type, bundle);
+        },
+        replaceTab: (index: number, type: TTabType, bundle?: TBundleType) => {
+            builderActions.insertTab(index, true, type, bundle);
         },
     };
 
@@ -219,6 +236,46 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         setRightDrawerOpen(false);
     }, []);
 
+    const renderTabContent = (tab: ITab, index: number) => {
+        const active = tab.id === activeTab;
+        return (
+            <div
+                key={tab.id}
+                style={{
+                    display: active ? "block" : "none",
+                    width: "100%",
+                    height: "auto",
+                }}
+            >
+                <TabContext.Provider value={{ tab, index, active }}>
+                    {activeTabType === "new-controller" && (
+                        <NewControllerEditor />
+                    )}
+                    {activeTabType === "edit-controller" && (
+                        <CodeEditor
+                            onChange={handleMonacoChange as any}
+                            path={activeTab as string}
+                        />
+                    )}
+                    {activeTabType === "new-screen" && <NewScreenEditor />}
+                    {activeTabType === "edit-screen" && <CanvasEditor />}
+                    {activeTabType === "new-resource" && <NewResourceEditor />}
+                    {activeTabType === "edit-resource" && (
+                        <ResourceEditor
+                            resourceId={
+                                (activeTabBundle as IEditResourceBundle)
+                                    .resourceId
+                            }
+                        />
+                    )}
+                    {activeTabType === "new-query" && <NewQueryEditor />}
+                </TabContext.Provider>
+            </div>
+        );
+    };
+
+    console.log(tabs);
+
     return (
         <Editor resolver={nodeMappings} onRender={RenderNode}>
             <BuilderActionsContext.Provider value={builderActions}>
@@ -231,38 +288,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                             onDrawerClose={handleLeftDrawerClose}
                         />
                         <Main>
-                            <Content>
-                                {activeTabType === "new-controller" && (
-                                    <NewControllerEditor />
-                                )}
-                                {activeTabType === "edit-controller" && (
-                                    <CodeEditor
-                                        onChange={handleMonacoChange as any}
-                                        path={activeTab as string}
-                                    />
-                                )}
-                                {activeTabType === "new-screen" && (
-                                    <NewScreenEditor />
-                                )}
-                                {activeTabType === "edit-screen" && (
-                                    <CanvasEditor />
-                                )}
-                                {activeTabType === "new-resource" && (
-                                    <NewResourceEditor />
-                                )}
-                                {activeTabType === "edit-resource" && (
-                                    <ResourceEditor
-                                        resourceId={
-                                            (
-                                                activeTabBundle as IEditResourceBundle
-                                            ).resourceId
-                                        }
-                                    />
-                                )}
-                                {activeTabType === "new-query" && (
-                                    <NewQueryEditor />
-                                )}
-                            </Content>
+                            <Content>{tabs.map(renderTabContent)}</Content>
                         </Main>
                         <RightDrawer
                             open={
