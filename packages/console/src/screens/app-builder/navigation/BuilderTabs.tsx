@@ -25,13 +25,19 @@ const TabTitleText = styled("span")({
 });
 
 const BuilderTabs: FunctionComponent = (): ReactElement => {
-    const { tabs, activeTab, setActiveTab } = useContext(BuilderActionsContext);
+    const { tabs, activeTab, setActiveTab, closeTab } = useContext(
+        BuilderActionsContext,
+    );
 
     const handleChange = (_event: SyntheticEvent, newActiveTab: string) => {
         setActiveTab(newActiveTab);
     };
 
-    const renderTab = (tab: ITab) => (
+    const handleClose = (index: number) => () => {
+        closeTab(index);
+    };
+
+    const renderTab = (tab: ITab, index: number) => (
         <Tab
             key={tab.id}
             value={tab.id}
@@ -40,7 +46,7 @@ const BuilderTabs: FunctionComponent = (): ReactElement => {
             label={
                 <div>
                     <TabTitleText>{tab.title}</TabTitleText>
-                    <IconButton size="small">
+                    <IconButton size="small" onClick={handleClose(index)}>
                         <Icon fontSize="small" style={{ fontSize: 14 }}>
                             close
                         </Icon>
@@ -54,7 +60,8 @@ const BuilderTabs: FunctionComponent = (): ReactElement => {
         <StyledTabs
             value={activeTab}
             onChange={handleChange}
-            variant="scrollable">
+            variant="scrollable"
+        >
             {tabs.map(renderTab)}
         </StyledTabs>
     );
