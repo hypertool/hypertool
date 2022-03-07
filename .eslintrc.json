@@ -16,12 +16,9 @@
          */
 
         // Disallows use of undeclared variables
-        "no-undef": "error",
-<<<<<<< HEAD
+        "no-undef": "off",
         // Disallows await in loop which might slow down processes.
         "no-await-in-loop": "error",
-=======
->>>>>>> 19278be... fix: fixed all `eslint` errors
         // Disallows irregular whitespace outside of strings and comments.
         "no-irregular-whitespace": "error",
         // Disallows unreachable code after return, throw, continue, and break statements.
@@ -95,6 +92,6 @@
          * Using "no-unused-vars" from ESLint causes false positive errors for
          * function prototypes in interfaces.
          */
-        "@typescript-eslint/no-unused-vars": "off"
+        "@typescript-eslint/no-unused-vars": "error"
     }
 }
