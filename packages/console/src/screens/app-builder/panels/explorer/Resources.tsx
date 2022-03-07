@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import { gql, useQuery } from "@apollo/client";
+
 import { BuilderActionsContext } from "../../../../contexts";
 
 const Actions = styled("div")(({ theme }) => ({
@@ -23,39 +25,61 @@ const Actions = styled("div")(({ theme }) => ({
     )} ${theme.spacing(2)}`,
 }));
 
+const GET_RESOURCES = gql`
+    query GetResources($page: Int, $limit: Int) {
+        getResources(page: $page, limit: $limit) {
+            totalPages
+            records {
+                id
+                name
+                type
+                status
+                createdAt
+            }
+        }
+    }
+`;
+
 const Resources: FunctionComponent = (): ReactElement => {
     const { createTab } = useContext(BuilderActionsContext);
+    const { data } = useQuery(GET_RESOURCES, {
+        variables: {
+            page: 0,
+            limit: 20,
+        },
+    });
+    const { records } = data?.getResources || { records: [] };
 
     const handleNewResource = useCallback(() => {
         createTab("new-resource");
     }, [createTab]);
 
-    const handleEditResource = useCallback(() => {
-        createTab("Edit Resource", { resourceId: "<invalid>" });
-    }, [createTab]);
+    const handleEditResource = (resourceId: string) => () => {
+        createTab("edit-resource", { resourceId });
+    };
 
-    const renderResource = (title: string) => (
+    const renderResource = (record: any) => (
         <ListItem
-            key={title}
+            key={record.name}
             secondaryAction={
                 <IconButton edge="end">
                     <Icon fontSize="small">delete</Icon>
                 </IconButton>
             }
-            onClick={handleEditResource}
+            onClick={handleEditResource(record.id)}
         >
             <ListItemAvatar>
                 <Avatar sx={{ width: 28, height: 28 }}>
                     <Icon fontSize="small">category</Icon>
                 </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={title} />
+            <ListItemText primary={record.name} />
         </ListItem>
     );
 
     return (
         <div>
-            <List dense={true}>{["magento", "trell"].map(renderResource)}</List>
+            <List dense={true}>{records.map(renderResource)}</List>
             <Actions>
                 <Button
                     size="small"
