@@ -37,6 +37,7 @@ const {
     commentStatuses,
     conversationStatuses,
     controllerStatuses,
+    controllerLanguages,
 } = constants;
 
 const typeDefs0 = `
@@ -431,6 +432,10 @@ const typeDefs0 = `
         ${controllerStatuses.join("\n")}
     }
 
+    enum ControllerLanguage {
+        ${controllerLanguages.join("\n")}
+    }
+
     type ControllerPatch {
         author: User!
         content: String!
@@ -651,7 +656,9 @@ const typeDefs0 = `
         ): Page!
 
         createController(
-            creator: ID!
+            name: String!
+            description: String!
+            language: ControllerLanguage!
             patches: [ControllerPatchInput!]!
         ): Controller!
 
