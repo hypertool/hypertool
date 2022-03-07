@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
 import type { IController } from "../types";
-import { controllerStatuses } from "../utils/constants";
+import { controllerLanguages, controllerStatuses } from "../utils/constants";
 
 const patchSchema = new Schema({
     author: {
@@ -22,6 +22,24 @@ const patchSchema = new Schema({
 
 const controllerSchema = new Schema(
     {
+        name: {
+            type: String,
+            minlength: 1,
+            maxlength: 256,
+            trim: true,
+            required: true,
+        },
+        description: {
+            type: String,
+            minlength: 0,
+            maxlength: 512,
+            default: "",
+        },
+        language: {
+            type: String,
+            enum: controllerLanguages,
+            required: true,
+        },
         /* An identifier that points to the User who created the controller. */
         creator: {
             type: Schema.Types.ObjectId,
