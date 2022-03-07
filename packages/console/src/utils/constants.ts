@@ -8,3 +8,5 @@ export const tabTypes = [
     "new-resource",
     "edit-resource",
 ];
+
+export const controllerLanguages = ["javascript", "typescript"];
