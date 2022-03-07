@@ -1,5 +1,5 @@
-const privateAPI = require("./privateAPI");
-const publicAPI = require("./publicAPI");
+import * as privateAPI from "./privateAPI";
+import * as publicAPI from "./publicAPI";
 
 const attachRoutes = async (app: any) => {
     await publicAPI.attachRoutes(app);
