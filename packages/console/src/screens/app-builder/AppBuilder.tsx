@@ -253,6 +253,26 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         replaceTab: (index: number, type: TTabType, bundle?: TBundleType) => {
             builderActions.insertTab(index, true, type, bundle);
         },
+
+        setTabTitle: (index: number, title: string): void => {
+            setTabs((oldTabs) => {
+                /* Do not update the title, if the specified title is already
+                 * equal to the current title. Otherwise, an infinite loop will
+                 * be triggered.
+                 */
+                const oldTab = oldTabs[index];
+                if (oldTab.title === title) {
+                    return oldTabs;
+                }
+
+                const result = [...oldTabs];
+                result.splice(index, 1, {
+                    ...oldTab,
+                    title,
+                });
+                return result;
+            });
+        },
     };
 
     useEffect(() => {
@@ -272,7 +292,8 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     }, []);
 
     const renderTabContent = (tab: ITab, index: number) => {
-        const active = tab.id === activeTab;
+        const { id, type } = tab;
+        const active = id === activeTab;
         return (
             <div
                 key={tab.id}
@@ -283,33 +304,28 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 }}
             >
                 <TabContext.Provider value={{ tab, index, active }}>
-                    {activeTabType === "new-controller" && (
-                        <NewControllerEditor />
-                    )}
-                    {activeTabType === "edit-controller" && (
+                    {type === "new-controller" && <NewControllerEditor />}
+                    {type === "edit-controller" && (
                         <CodeEditor
                             onChange={handleMonacoChange as any}
                             path={activeTab as string}
                         />
                     )}
-                    {activeTabType === "new-screen" && <NewScreenEditor />}
-                    {activeTabType === "edit-screen" && <CanvasEditor />}
-                    {activeTabType === "new-resource" && <NewResourceEditor />}
-                    {activeTabType === "edit-resource" && (
+                    {type === "new-screen" && <NewScreenEditor />}
+                    {type === "edit-screen" && <CanvasEditor />}
+                    {type === "new-resource" && <NewResourceEditor />}
+                    {type === "edit-resource" && (
                         <ResourceEditor
                             resourceId={
-                                (activeTabBundle as IEditResourceBundle)
-                                    .resourceId
+                                (tab.bundle as IEditResourceBundle).resourceId
                             }
                         />
                     )}
-                    {activeTabType === "new-query" && <NewQueryEditor />}
+                    {type === "new-query" && <NewQueryEditor />}
                 </TabContext.Provider>
             </div>
         );
     };
-
-    console.log(tabs);
 
     return (
         <Editor resolver={nodeMappings} onRender={RenderNode}>

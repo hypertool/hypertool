@@ -31,6 +31,11 @@ const BuilderActionsContext = createContext<IBuilderActionsContext>({
     },
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setTabTitle: (_index: number, _title: string): void => {
+        throw new Error("Implementation for this operation is missing.");
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setActiveTab: (_activeTab: string) => {
         throw new Error("Implementation for this operation is missing.");
     },
