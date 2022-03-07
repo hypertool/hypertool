@@ -15,6 +15,11 @@
     "editor.rulers": [80],
     "editor.formatOnSave": true,
     "editor.tabSize": 4,
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true
+    },
     "[yaml]": {
         "editor.tabSize": 2
     }
