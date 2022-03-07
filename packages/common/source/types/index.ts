@@ -5,6 +5,7 @@ import {
     appStatuses,
     commentStatuses,
     componentOrigins,
+    controllerLanguages,
     controllerStatuses,
     conversationStatuses,
     countryCodes,
@@ -552,6 +553,9 @@ export interface IControllerPatch {
 
 export interface IController {
     _id?: ObjectId;
+    name: string;
+    description: string;
+    language: typeof controllerLanguages[number];
     creator: ObjectId | User;
     patches: IControllerPatch[];
     status: typeof controllerStatuses[number];
@@ -567,6 +571,9 @@ export interface IExternalControllerPatch {
 
 export interface IExternalController {
     id: string;
+    name: string;
+    description: string;
+    language: typeof controllerLanguages[number];
     creator: string;
     patches: IExternalControllerPatch[];
     status: typeof controllerStatuses[number];

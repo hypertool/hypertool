@@ -13,7 +13,12 @@ import {
 import joi from "joi";
 
 const createSchema = joi.object({
-    creator: joi.string().regex(constants.identifierPattern),
+    name: joi.string().max(256).required(),
+    description: joi.string().max(512).allow("").default(""),
+    language: joi
+        .string()
+        .valid(...constants.controllerLanguages)
+        .required(),
     patches: joi.array().items(
         joi.object({
             author: joi.string().regex(constants.identifierPattern),
@@ -43,7 +48,17 @@ const updateSchema = joi.object({
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toExternal = (controller: IController): IExternalController => {
-    const { _id, creator, patches, status, createdAt, updatedAt } = controller;
+    const {
+        _id,
+        name,
+        description,
+        language,
+        creator,
+        patches,
+        status,
+        createdAt,
+        updatedAt,
+    } = controller;
 
     /*
      * NOTE: At the moment, all the controllers provide unpopulated fields.
@@ -51,6 +66,9 @@ const toExternal = (controller: IController): IExternalController => {
      */
     return {
         id: _id.toString(),
+        name,
+        description,
+        language,
         creator: creator.toString(),
         patches: patches.map((patch) => {
             const { author, content, createdAt } = patch;
@@ -93,6 +111,7 @@ export const create = async (
     const newController = new ControllerModel({
         ...value,
         status: "created",
+        creator: context.user._id,
     });
     await newController.save();
 
