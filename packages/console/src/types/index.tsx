@@ -18,19 +18,19 @@ export interface AuthenticationServicesType {
 export interface FormField {
     id: string;
     type:
-    | "text"
-    | "large_text"
-    | "number"
-    | "date"
-    | "time"
-    | "date_time"
-    | "switch"
-    | "date_range"
-    | "select"
-    | "multi_select"
-    | "email_address"
-    | "phone_number"
-    | "handler";
+        | "text"
+        | "large_text"
+        | "number"
+        | "date"
+        | "time"
+        | "date_time"
+        | "switch"
+        | "date_range"
+        | "select"
+        | "multi_select"
+        | "email_address"
+        | "phone_number"
+        | "handler";
     help: string;
 }
 
@@ -139,6 +139,7 @@ export type Color = "inherit" | BaseColor;
 
 export type TTabType = typeof consoleConstants.tabTypes[number];
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ITabBundle {}
 
 export interface IEditQueryBundle extends ITabBundle {
@@ -178,8 +179,12 @@ export interface IBuilderActionsContext {
     setActiveTab: (activeTab: string) => void;
 }
 
-
 export interface ISessionContext {
     reloadSession: () => void;
 }
 
+export interface ITabContext {
+    tab: ITab;
+    index: number;
+    active: boolean;
+}
