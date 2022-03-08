@@ -26,7 +26,12 @@ const StyledAccordionDetails = styled(AccordionDetails)({
 });
 
 const ExplorerAccordions = () => {
-    const renderAccordion = (id: string, title: string, node: ReactNode) => (
+    const renderAccordion = (
+        id: string,
+        title: string,
+        icon: string,
+        node: ReactNode,
+    ) => (
         <StyledAccordion
             key={id}
             disableGutters={true}
@@ -37,6 +42,9 @@ const ExplorerAccordions = () => {
                 expandIcon={<Icon fontSize="small">expand_more</Icon>}
                 id={`${id}-header`}
             >
+                <Icon fontSize="small" sx={{ mr: 1 }}>
+                    {icon}
+                </Icon>
                 <AccordionTitle>{title}</AccordionTitle>
             </AccordionSummary>
             <StyledAccordionDetails>{node}</StyledAccordionDetails>
@@ -45,11 +53,21 @@ const ExplorerAccordions = () => {
 
     return (
         <div>
-            {renderAccordion("layers", "Layers", <Layers />)}
-            {renderAccordion("queries", "Queries", <Queries />)}
-            {renderAccordion("controllers", "Controllers", <Controllers />)}
-            {renderAccordion("screens", "Screens", <Screens />)}
-            {renderAccordion("resources", "Resources", <Resources />)}
+            {renderAccordion("layers", "Layers", "layers", <Layers />)}
+            {renderAccordion("queries", "Queries", "workspaces", <Queries />)}
+            {renderAccordion(
+                "controllers",
+                "Controllers",
+                "code",
+                <Controllers />,
+            )}
+            {renderAccordion("screens", "Screens", "wysiwyg", <Screens />)}
+            {renderAccordion(
+                "resources",
+                "Resources",
+                "category",
+                <Resources />,
+            )}
         </div>
     );
 };
