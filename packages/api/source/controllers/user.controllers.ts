@@ -26,7 +26,6 @@ const createSchema = joi.object({
     pictureURL: joi.string().allow(""),
     emailAddress: joi.string().max(256).required(),
     birthday: joi.date().allow(null),
-    role: joi.string().valid(...constants.userRoles),
 });
 
 const filterSchema = joi.object({
@@ -53,8 +52,6 @@ const updateSchema = joi.object({
     countryCode: joi.string().valid(...constants.countryCodes),
     pictureURL: joi.string().allow(""),
     birthday: joi.date().allow(null),
-    role: joi.string().valid(...constants.userRoles),
-    groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
 const passwordRegex =
@@ -65,10 +62,6 @@ const signUpWithEmailSchema = joi.object({
     lastName: joi.string().min(1).max(256).required(),
     emailAddress: joi.string().max(256).required(),
     password: joi.string().regex(passwordRegex).min(8).max(128).required(),
-    role: joi
-        .string()
-        .valid(...constants.userRoles)
-        .required(),
 });
 
 const loginWithEmailSchema = joi.object({
@@ -98,7 +91,7 @@ const toExternal = (user: any): ExternalUser => {
         firstName,
         lastName,
         description,
-        organization,
+        organizations,
         gender,
         countryCode,
         pictureURL,
@@ -106,8 +99,6 @@ const toExternal = (user: any): ExternalUser => {
         emailVerified,
         birthday,
         status,
-        role,
-        groups,
         createdAt,
         updatedAt,
     } = user;
@@ -117,7 +108,7 @@ const toExternal = (user: any): ExternalUser => {
         firstName,
         lastName,
         description,
-        organization,
+        organizations: extractIds(organizations),
         gender,
         countryCode,
         pictureURL,
@@ -125,8 +116,6 @@ const toExternal = (user: any): ExternalUser => {
         emailVerified,
         birthday,
         status,
-        role,
-        groups: extractIds(groups),
         createdAt,
         updatedAt,
     };
@@ -334,7 +323,6 @@ const loginWithGoogle = async (
             pictureURL,
             emailAddress,
             emailVerified,
-            role: "owner",
             birthday: null,
             status: "activated",
         });
@@ -368,7 +356,7 @@ const signupWithEmail = async (
         throw new BadRequestError(error.message);
     }
 
-    const { firstName, lastName, emailAddress, role, password } = value;
+    const { firstName, lastName, emailAddress, password } = value;
 
     let user = await UserModel.findOne({ emailAddress }).exec();
     if (user) {
@@ -387,7 +375,6 @@ const signupWithEmail = async (
         pictureURL: undefined,
         emailAddress,
         emailVerified: false,
-        role,
         birthday: null,
         status: "activated",
     });
