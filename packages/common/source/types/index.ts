@@ -10,15 +10,12 @@ import {
     conversationStatuses,
     countryCodes,
     genders,
-    groupStatuses,
-    groupTypes,
-    membershipStatuses,
-    membershipTypes,
     organizationStatuses,
     queryStatuses,
     resourceStatuses,
     resourceTypes,
     screenStatuses,
+    teamStatuses,
     userRoles,
     userStatuses,
 } from "../utils/constants";
@@ -145,7 +142,6 @@ export interface User {
     emailAddress: string;
     password: string;
     emailVerified: boolean;
-    groups: string[] | Group[];
     role: typeof userRoles[number];
     birthday: Date;
     status: typeof userStatuses[number];
@@ -164,7 +160,6 @@ export interface ExternalUser {
     pictureURL: string;
     emailAddress: string;
     emailVerified: boolean;
-    groups: string[] | Group[];
     role: typeof userRoles[number];
     birthday: Date;
     status: typeof userStatuses[number];
@@ -174,14 +169,13 @@ export interface ExternalUser {
 
 export type UserPage = IExternalListPage<ExternalUser>;
 
-export interface Group {
+export interface Team {
     _id: ObjectId;
     name: string;
-    type: typeof groupTypes[number];
     description: string;
     users: string[] | User[];
     apps: string[] | App[];
-    status: typeof groupStatuses[number];
+    status: typeof teamStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -189,11 +183,10 @@ export interface Group {
 export interface ExternalGroup {
     id: string;
     name: string;
-    type: typeof groupTypes[number];
     description: string;
     users: string[];
     apps: string[];
-    status: typeof groupStatuses[number];
+    status: typeof teamStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -208,7 +201,6 @@ export interface App {
     description: string;
     organization: string | Organization;
     deployments: ObjectId[] | Deployment[];
-    groups: string[] | Group[];
     resources: string[] | Resource[];
     creator: string[] | User;
     status: typeof appStatuses[number];
@@ -323,7 +315,7 @@ export interface Organization {
     description: string;
 
     /* The list of users that are part of the organization. */
-    members: string[] | Membership[];
+    members: string[];
 
     /*
      * The status of the organization. Valid values are as follows: active,
@@ -349,7 +341,7 @@ export interface ExternalOrganization {
     name: string;
     title: string;
     description: string;
-    members: string[] | Membership[];
+    members: string[];
     status: typeof organizationStatuses[number];
     apps: string[] | App[];
     createdAt: Date;
@@ -357,55 +349,6 @@ export interface ExternalOrganization {
 }
 
 export type OrganizationPage = IExternalListPage<ExternalOrganization>;
-
-export interface Membership {
-    id: string;
-    /**
-     * An identifier that points to the User whose membership is being
-     * defined by the current document.
-     */
-    member: string | User;
-
-    /**
-     * An identifier that points to the User that invited the member to the
-     * class specified by division.
-     */
-    inviter: string | User;
-
-    /**
-     * An identifier that points to the division.
-     * This attribute is polymorphic, that is, its meaning is defined based
-     * on the value of type attribute. For example, if type is organization,
-     * then the identifier points to an organization document. On the other
-     * hand, if type is group, then the identifier points to a group document.
-     */
-    division: string | Group | Organization;
-
-    /**
-     * The type of membership. Valid values are as follows: organization and
-     * group.
-     */
-    type: typeof membershipTypes[number];
-
-    /**
-     * The status of the membership. Valid values are as follows: accepted,
-     * deleted, banned, and invited.
-     */
-    status: typeof membershipStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export interface ExternalMembership {
-    id: string;
-    member: string | User;
-    inviter: string | User;
-    division: string | Group | Organization;
-    type: typeof membershipTypes[number];
-    status: typeof membershipStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-}
 
 export interface Comment {
     /* An identifier that uniquely identifies the comment across Hypertool. */

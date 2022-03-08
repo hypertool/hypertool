@@ -335,7 +335,7 @@ const resourceTypes = tuple(
     "circleci",
 );
 
-const groupStatuses = tuple("enabled", "disabled", "deleted", "banned");
+const teamStatuses = tuple("active", "deleted");
 
 const queryStatuses = tuple("enabled", "disabled", "deleted", "banned");
 
@@ -391,4 +391,5 @@ export {
     controllerStatuses,
     organizationMembershipTypes,
     teamMembershipTypes,
+    teamStatuses,
 };
