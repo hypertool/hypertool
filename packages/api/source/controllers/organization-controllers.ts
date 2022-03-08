@@ -129,7 +129,6 @@ const listByIds = async (
     for (const organization of unorderedOrganizations) {
         object[organization._id.toString()] = organization;
     }
-    // eslint-disable-next-line security/detect-object-injection
     return organizationIds.map((key) => toExternal(object[key]));
 };
 
