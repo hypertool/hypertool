@@ -1,6 +1,6 @@
 export * as resources from "./resource-controllers";
 export * as apps from "./app-controllers";
-export * as users from "./user-controllers";
+export * as users from "./user.controllers";
 export * as organizations from "./organization-controllers";
 export * as groups from "./group-controllers";
 export * as queryTemplates from "./query-template-controllers";
