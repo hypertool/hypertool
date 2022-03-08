@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import type { Page } from "../types";
+import type { IPage } from "../types";
 
 const pageSchema = new Schema(
     {
@@ -42,4 +42,4 @@ const pageSchema = new Schema(
 );
 
 pageSchema.plugin(paginate);
-export default model<Page>("Page", pageSchema);
+export default model<IPage>("Page", pageSchema);

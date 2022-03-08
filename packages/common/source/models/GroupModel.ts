@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import type { Group } from "../types";
+import type { IGroup } from "../types";
 import { groupStatuses, groupTypes } from "../utils/constants";
 
 const groupSchema = new Schema(
@@ -54,4 +54,4 @@ const groupSchema = new Schema(
 
 groupSchema.plugin(paginate);
 
-export default model<Group>("Group", groupSchema);
+export default model<IGroup>("Group", groupSchema);

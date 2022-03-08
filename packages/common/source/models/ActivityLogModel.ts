@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-import type { ActivityLog } from "../types";
+import type { IActivityLog } from "../types";
 import { componentOrigins } from "../utils/constants";
 
 const activityLogSchema = new Schema(
@@ -25,4 +25,4 @@ const activityLogSchema = new Schema(
     },
 );
 
-export default model<ActivityLog>("ActivityLog", activityLogSchema);
+export default model<IActivityLog>("ActivityLog", activityLogSchema);

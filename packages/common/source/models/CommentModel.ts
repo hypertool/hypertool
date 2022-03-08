@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import type { Comment } from "../types";
+import type { IComment } from "../types";
 import { commentStatuses } from "../utils/constants";
 
 const commentSchema = new Schema(
@@ -47,4 +47,4 @@ const commentSchema = new Schema(
 );
 
 commentSchema.plugin(paginate);
-export default model<Comment>("Comment", commentSchema);
+export default model<IComment>("Comment", commentSchema);

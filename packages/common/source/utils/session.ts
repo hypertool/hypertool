@@ -3,11 +3,11 @@ import { setContext } from "@apollo/client/link/context";
 
 import fetch from "cross-fetch";
 
-import type { Session } from "../types";
+import type { ISession } from "../types";
 
 import Client from "./client";
 
-const createPrivateClient = (session: Session) => {
+const createPrivateClient = (session: ISession) => {
     const httpLink = new HttpLink({
         uri: `http://localhost:3001/graphql/v1/private`,
         fetch,

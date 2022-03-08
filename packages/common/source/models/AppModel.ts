@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import type { App } from "../types";
+import type { IApp } from "../types";
 import { appStatuses } from "../utils/constants";
 
 const googleAuthSchema = new Schema(
@@ -106,4 +106,4 @@ const appSchema = new Schema(
 
 appSchema.plugin(paginate);
 
-export default model<App>("App", appSchema);
+export default model<IApp>("App", appSchema);

@@ -3,13 +3,13 @@ import { gql, ApolloError } from "@apollo/client/core";
 import lodash from "lodash";
 
 import type {
-    Manifest,
-    App,
-    Query as QueryTemplate,
-    ExternalResource,
-    Resource,
-    ActivityLog,
-    ActivityLogPage
+    IManifest,
+    IApp,
+    IQuery as QueryTemplate,
+    IExternalResource,
+    IResource,
+    IActivityLog,
+    TActivityLogPage
 } from "../types";
 
 const GET_APP_BY_NAME = gql`
@@ -302,7 +302,7 @@ export default class Client<T> {
         this.client = client;
     }
 
-    getAppByName = async (name: string): Promise<App | null> => {
+    getAppByName = async (name: string): Promise<IApp | null> => {
         try {
             const app = await this.client.query({
                 query: GET_APP_BY_NAME,
@@ -359,7 +359,7 @@ export default class Client<T> {
         }
     }
 
-    createApp = async (app: App): Promise<void> => {
+    createApp = async (app: IApp): Promise<void> => {
         await this.client.mutate({
             mutation: CREATE_APP,
             variables: {
@@ -376,7 +376,7 @@ export default class Client<T> {
         });
     }
 
-    updateApp = async (appId: string, app: App): Promise<void> => {
+    updateApp = async (appId: string, app: IApp): Promise<void> => {
         await this.client.mutate({
             mutation: UPDATE_APP,
             variables: {
@@ -449,7 +449,7 @@ export default class Client<T> {
         });
     }
 
-    getResourceByName = async (name: string): Promise<ExternalResource | null> => {
+    getResourceByName = async (name: string): Promise<IExternalResource | null> => {
         try {
             const resource = await this.client.query({
                 query: GET_RESOURCE_BY_NAME,
@@ -466,7 +466,7 @@ export default class Client<T> {
         }
     }
 
-    createResource = async (resource: Resource): Promise<void> => {
+    createResource = async (resource: IResource): Promise<void> => {
         await this.client.mutate({
             mutation: CREATE_RESOURCE,
             variables: {
@@ -480,7 +480,7 @@ export default class Client<T> {
 
     updateResource = async (
         resourceId: string,
-        resource: Resource,
+        resource: IResource,
     ): Promise<void> => {
         await this.client.mutate({
             mutation: UPDATE_RESOURCE,
@@ -493,7 +493,7 @@ export default class Client<T> {
         });
     }
 
-    patchApp = async (oldApp: App, newApp: App): Promise<boolean> => {
+    patchApp = async (oldApp: IApp, newApp: IApp): Promise<boolean> => {
         const keys = ["name", "slug", "description", "title", "groups"];
         const oldAppPicked = lodash.pick(oldApp, keys);
         const newAppPicked = lodash.pick(newApp, keys);
@@ -508,7 +508,7 @@ export default class Client<T> {
          * comparing.
          */
         newAppPicked.groups = await Promise.all(
-            (newAppPicked as App).groups.map((group) =>
+            (newAppPicked as IApp).groups.map((group) =>
                 this.convertNameToId(group, "group"),
             ),
         );
@@ -546,8 +546,8 @@ export default class Client<T> {
     }
 
     patchResource = async (
-        oldResource: Resource,
-        newResource: Resource,
+        oldResource: IResource,
+        newResource: IResource,
     ): Promise<boolean> => {
         /*
          * TODO: At the moment, the connection object does not have any optional keys.
@@ -617,7 +617,7 @@ export default class Client<T> {
         return true;
     }
 
-    syncManifest = async  (manifest: Manifest) => {
+    syncManifest = async  (manifest: IManifest) => {
         const { app, queries, resources } = manifest;
 
         const deployedApp = await this.getAppByName(app.name);
@@ -690,7 +690,7 @@ export default class Client<T> {
             });
         };
 
-    createActivityLog = async  (activityLog: ActivityLog): Promise<void> => {
+    createActivityLog = async  (activityLog: IActivityLog): Promise<void> => {
         await this.client.mutate({
             mutation: CREATE_ACTIVITY_LOG,
             variables: {
@@ -703,7 +703,7 @@ export default class Client<T> {
 
     async getActivityLogById(
         activityLogId: string,
-    ): Promise<ActivityLog | null> {
+    ): Promise<IActivityLog | null> {
         try {
             const activityLog = await this.client.query({
                 query: GET_ACTIVITY_LOG_BY_ID,
@@ -724,7 +724,7 @@ export default class Client<T> {
     async getActivityLogs(
         page: number,
         limit: number,
-    ): Promise<ActivityLogPage | null> {
+    ): Promise<TActivityLogPage | null> {
         try {
             const activityLog = await this.client.query({
                 query: GET_ACTIVITY_LOGS,

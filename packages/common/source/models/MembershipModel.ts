@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-import type { Membership } from "../types";
+import type { IMembership } from "../types";
 import { membershipStatuses, membershipTypes } from "../utils/constants";
 
 const membershipSchema = new Schema(
@@ -54,4 +54,4 @@ const membershipSchema = new Schema(
     },
 );
 
-export default model<Membership>("Membership", membershipSchema);
+export default model<IMembership>("Membership", membershipSchema);

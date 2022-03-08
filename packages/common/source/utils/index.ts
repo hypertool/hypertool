@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
-export interface ObjectWithID {
+export interface IObjectWithID {
     id?: string;
     _id?: mongoose.Types.ObjectId;
 }
 
-export const extractIds = (items: ObjectWithID[] | string[]): string[] => {
+export const extractIds = (items: IObjectWithID[] | string[]): string[] => {
     if (items.length === 0) {
         return [];
     }
@@ -14,7 +14,7 @@ export const extractIds = (items: ObjectWithID[] | string[]): string[] => {
         return items as string[];
     }
 
-    return (items as ObjectWithID[]).map((item: ObjectWithID) => {
+    return (items as IObjectWithID[]).map((item: IObjectWithID) => {
         if (item instanceof mongoose.Types.ObjectId) {
             return item.toString();
         }

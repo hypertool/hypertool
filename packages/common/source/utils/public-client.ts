@@ -5,7 +5,7 @@ import {
     gql,
 } from "@apollo/client/core";
 
-import type { Session } from "../types";
+import type { ISession } from "../types";
 
 import { googleClientTypes } from "./constants";
 
@@ -94,7 +94,7 @@ export default class PublicClient {
     loginWithGoogle = async (
         token: string,
         client: typeof googleClientTypes[number],
-    ): Promise<Session> => {
+    ): Promise<ISession> => {
         const {
             data: { loginWithGoogle: session },
         } = await this.client.mutate({
@@ -149,7 +149,7 @@ export default class PublicClient {
     completePasswordReset = async ({
         token,
         newPassword,
-    }): Promise<Session> => {
+    }): Promise<ISession> => {
         const { data } = await this.client.mutate({
             mutation: COMPLETE_PASSWORD_RESET,
             variables: {

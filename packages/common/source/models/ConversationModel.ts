@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import type { Conversation } from "../types";
+import type { IConversation } from "../types";
 import { conversationStatuses } from "../utils/constants";
 
 const conversationSchema = new Schema(
@@ -75,4 +75,4 @@ const conversationSchema = new Schema(
 );
 
 conversationSchema.plugin(paginate);
-export default model<Conversation>("Conversation", conversationSchema);
+export default model<IConversation>("Conversation", conversationSchema);

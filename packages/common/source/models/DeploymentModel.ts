@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import type { Deployment } from "../types";
+import type { IDeployment } from "../types";
 
 const deploymentSchema = new Schema(
     {
@@ -18,4 +18,4 @@ const deploymentSchema = new Schema(
 
 deploymentSchema.plugin(paginate);
 
-export default model<Deployment>("Deployment", deploymentSchema);
+export default model<IDeployment>("Deployment", deploymentSchema);
