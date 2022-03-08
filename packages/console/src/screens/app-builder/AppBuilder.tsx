@@ -18,12 +18,14 @@ import type {
     IBuilderActionsContext,
     IDeflatedArtifact,
     IEditControllerBundle,
+    IEditQueryBundle,
     IEditResourceBundle,
     ITab,
     TBundleType,
     TTabType,
 } from "../../types";
 import { constants, templates } from "../../utils";
+import QueryEditor from "../edit-query";
 import ResourceEditor from "../edit-resource";
 import NewControllerEditor from "../new-controller";
 import NewQueryEditor from "../new-query";
@@ -195,27 +197,30 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
 
                         switch (type) {
                             case "edit-resource": {
-                                if (
+                                return (
                                     (bundle as IEditResourceBundle)
                                         .resourceId ===
                                     (oldBundle as IEditResourceBundle)
                                         .resourceId
-                                ) {
-                                    return true;
-                                }
-                                break;
+                                );
                             }
 
                             case "edit-controller": {
-                                if (
+                                return (
                                     (bundle as IEditControllerBundle)
                                         .controllerId ===
                                     (oldBundle as IEditControllerBundle)
                                         .controllerId
-                                ) {
-                                    return true;
-                                }
-                                break;
+                                );
+                            }
+
+                            case "edit-query": {
+                                return (
+                                    (bundle as IEditQueryBundle)
+                                        .queryTemplateId ===
+                                    (oldBundle as IEditQueryBundle)
+                                        .queryTemplateId
+                                );
                             }
                         }
 
@@ -353,6 +358,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                             }
                         />
                     )}
+                    {type === "edit-query" && <QueryEditor />}
                     {type === "new-query" && <NewQueryEditor />}
                 </TabContext.Provider>
             </div>

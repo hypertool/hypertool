@@ -4,9 +4,9 @@ import { styled } from "@mui/material/styles";
 
 import { TextField } from "../../components";
 
-const ResourceNameTextField = styled(TextField)(({ theme }) => ({
+const ResourceNameTextField = styled(TextField)({
     maxWidth: 600,
-})) as any;
+}) as any;
 
 const Root = styled("section")(({ theme }) => ({
     display: "flex",
@@ -18,15 +18,15 @@ const Root = styled("section")(({ theme }) => ({
     width: "100%",
 }));
 
-const ConfigureStep: FunctionComponent = (): ReactElement => {
+const OperationStep: FunctionComponent = (): ReactElement => {
     return (
         <Root>
             <ResourceNameTextField
-                name="query"
+                name="content"
                 required={true}
                 multiline={true}
                 rows={10}
-                id="query"
+                id="content"
                 label="Query"
                 size="small"
                 variant="outlined"
@@ -36,4 +36,4 @@ const ConfigureStep: FunctionComponent = (): ReactElement => {
     );
 };
 
-export default ConfigureStep;
+export default OperationStep;

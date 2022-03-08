@@ -11,7 +11,6 @@ import { Explorer } from "../panels/explorer";
 import Components from "./Components";
 import Deployment from "./Deployment";
 import LeftDrawerItem from "./LeftDrawerItem";
-import Resources from "./Resources";
 import Teams from "./Teams";
 
 const drawerWidth = 304;
@@ -205,7 +204,6 @@ const LeftDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                     <NavigationContainer>
                         {active === "explorer" && <Explorer />}
                         {active === "components" && <Components />}
-                        {active === "resources" && <Resources />}
                         {active === "teams" && <Teams />}
                         {active === "deployment" && <Deployment />}
                     </NavigationContainer>

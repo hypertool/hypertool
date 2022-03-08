@@ -1,5 +1,5 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 import {
     Button,
@@ -21,8 +21,12 @@ import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 
+import { gql, useMutation, useQuery } from "@apollo/client";
+
 import * as yup from "yup";
 import { Formik } from "formik";
+
+import { BuilderActionsContext, TabContext } from "../../contexts";
 
 import ConfigureStep from "./ConfigureStep";
 import OperationStep from "./OperationStep";
@@ -41,7 +45,7 @@ const Left = styled("div")(({ theme }) => ({
     marginRight: theme.spacing(4),
 }));
 
-const Right = styled("div")(({ theme }) => ({
+const Right = styled("div")(() => ({
     width: "100%",
 }));
 
@@ -64,7 +68,7 @@ const StepContainer = styled("div")(({ theme }) => ({
     padding: theme.spacing(1),
 }));
 
-const ActionContainer = styled("div")(({ theme }) => ({
+const ActionContainer = styled("div")(() => ({
     display: "flex",
     flexDirection: "row",
     width: "100%",
@@ -72,18 +76,18 @@ const ActionContainer = styled("div")(({ theme }) => ({
     justifyContent: "space-between",
 }));
 
-const LeftActionContainer = styled("div")(({ theme }) => ({
+const LeftActionContainer = styled("div")(() => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
 }));
 
-const StepperAction = styled(Button)(({ theme }) => ({
+const StepperAction = styled(Button)(() => ({
     width: 120,
 }));
 
-const CreateAction = styled(Button)(({ theme }) => ({
+const CreateAction = styled(Button)(() => ({
     width: 184,
 }));
 
@@ -106,12 +110,12 @@ const steps: StepStructure[] = [
     },
 ];
 
-interface InitialValues {
+interface IFormValues {
     name: string;
     resource: null | string;
 }
 
-const initialValues: InitialValues = {
+const initialValues: IFormValues = {
     name: "",
     resource: null,
 };
@@ -127,11 +131,77 @@ const validationSchema = yup.object({
     resource: yup.string().required(),
 });
 
-const NewResourceStepper: FunctionComponent = (): ReactElement => {
+const CREATE_QUERY_TEMPLATE = gql`
+    mutation CreateQueryTemplate(
+        $name: String!
+        $description: String!
+        $resource: ID!
+        $app: ID!
+        $content: String!
+    ) {
+        createQueryTemplate(
+            name: $name
+            description: $description
+            resource: $resource
+            app: $app
+            content: $content
+        ) {
+            id
+        }
+    }
+`;
+const GET_RESOURCES = gql`
+    query GetResources($page: Int, $limit: Int) {
+        getResources(page: $page, limit: $limit) {
+            totalPages
+            records {
+                id
+                name
+                type
+                status
+                createdAt
+            }
+        }
+    }
+`;
+
+const NewQueryStepper: FunctionComponent = (): ReactElement => {
     const [activeStep, setActiveStep] = useState(0);
     const theme = useTheme();
+    // TODO: Destructure `error`, check for non-null, send to Sentry
+    const [createQuery, { loading: creatingQuery, data: newQuery }] =
+        useMutation(CREATE_QUERY_TEMPLATE);
 
-    const handleSubmit = useCallback((values: any) => {}, []);
+    const { data } = useQuery(GET_RESOURCES, {
+        variables: {
+            page: 0,
+            limit: 20,
+        },
+    });
+    const { records } = data?.getResources || { records: [] };
+
+    const { replaceTab } = useContext(BuilderActionsContext);
+    const error = () => {
+        throw new Error("Tab context should not be null.");
+    };
+    const { index } = useContext(TabContext) || error();
+
+    const handleSubmit = useCallback((values: IFormValues) => {
+        createQuery({
+            variables: {
+                ...values,
+                app: "62259a10e33b279935a8b951",
+            },
+        });
+    }, []);
+
+    useEffect(() => {
+        if (newQuery) {
+            replaceTab(index, "edit-query", {
+                queryTemplateId: newQuery.createQueryTemplate.id,
+            });
+        }
+    }, [index, newQuery, replaceTab]);
 
     const handleNext = () => {
         if (activeStep + 1 === steps.length) {
@@ -176,9 +246,6 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
 
     const renderStepperItems = () => steps.map(renderStepperItem);
 
-    const creatingQuery = false,
-        newQuery = false;
-
     return (
         <Root>
             <Left>
@@ -216,13 +283,15 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
 
                 <Formik
                     initialValues={initialValues}
-                    onSubmit={handleSubmit}
+                    onSubmit={handleSubmit as any}
                     validationSchema={validationSchema}
                 >
                     {(formik) => (
                         <>
                             <StepContainer>
-                                {activeStep === 0 && <ConfigureStep />}
+                                {activeStep === 0 && (
+                                    <ConfigureStep resources={records} />
+                                )}
                                 {activeStep === 1 && <OperationStep />}
                             </StepContainer>
 
@@ -366,4 +435,4 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
     );
 };
 
-export default NewResourceStepper;
+export default NewQueryStepper;

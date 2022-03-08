@@ -1,35 +1,27 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useState } from "react";
 
-import {
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
-    Typography,
-} from "@mui/material";
-import type { SelectChangeEvent } from "@mui/material";
+import { MenuItem, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { TextField } from "../../components";
+import { Select, TextField } from "../../components";
 
-const ResourceNameTextField = styled(TextField)(({ theme }) => ({
+const NameTextField = styled(TextField)({
     maxWidth: 400,
-})) as any;
+}) as any;
 
-const TextFieldHelp = styled(Typography)(({ theme }) => ({
+const DescriptionTextField = styled(TextField)(({ theme }) => ({
+    maxWidth: 400,
+    marginTop: theme.spacing(3),
+}));
+
+const TextFieldHelp = styled(Typography)({
     display: "flex",
     marginTop: 4,
     flexDirection: "column",
     marginLeft: -8,
     marginBottom: 0,
     paddingBottom: 0,
-}));
-
-const ResourceFormControl = styled(FormControl)(({ theme }) => ({
-    marginTop: theme.spacing(4),
-    maxWidth: 400,
-}));
+});
 
 const Root = styled("section")(({ theme }) => ({
     display: "flex",
@@ -41,25 +33,23 @@ const Root = styled("section")(({ theme }) => ({
     width: "100%",
 }));
 
-const resources = [
-    "trell",
-    "itsacademyjs",
-    "hypertool",
-    "paywall",
-    "itshubble",
-    "madewithonecube",
-];
+const ResourceSelect = styled("div")(({ theme }) => ({
+    width: 400,
+    marginTop: theme.spacing(3),
+}));
 
-const ConfigureStep: FunctionComponent = (): ReactElement => {
-    const [resource, setResource] = useState("itssamuelrowe");
+export interface IProps {
+    resources: any[];
+}
 
-    const handleResourceChange = useCallback((event: SelectChangeEvent) => {
-        setResource(event.target.value);
-    }, []);
+const ConfigureStep: FunctionComponent<IProps> = (
+    props: IProps,
+): ReactElement => {
+    const { resources } = props;
 
     return (
         <Root>
-            <ResourceNameTextField
+            <NameTextField
                 name="name"
                 required={true}
                 id="name"
@@ -75,22 +65,35 @@ const ConfigureStep: FunctionComponent = (): ReactElement => {
                 }
             />
 
-            <ResourceFormControl fullWidth={true}>
-                <InputLabel id="resource-label">Resource</InputLabel>
+            <DescriptionTextField
+                name="description"
+                id="description"
+                label="Description"
+                size="small"
+                variant="outlined"
+                multiline={true}
+                rows={4}
+                fullWidth={true}
+                help=""
+            />
+
+            <ResourceSelect>
                 <Select
-                    labelId="resource-label"
                     id="resource"
-                    value={resource}
+                    name="resource"
                     label="Resource"
-                    onChange={handleResourceChange}
                     variant="outlined"
                     size="small"
-                >
-                    {resources.map((resource) => (
-                        <MenuItem value={resource}>{resource}</MenuItem>
-                    ))}
-                </Select>
-            </ResourceFormControl>
+                    help=""
+                    renderMenuItems={() =>
+                        resources.map((resource) => (
+                            <MenuItem value={resource.id}>
+                                {resource.name}
+                            </MenuItem>
+                        ))
+                    }
+                />
+            </ResourceSelect>
         </Root>
     );
 };

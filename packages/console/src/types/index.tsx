@@ -143,7 +143,7 @@ export type TTabType = typeof consoleConstants.tabTypes[number];
 export interface ITabBundle {}
 
 export interface IEditQueryBundle extends ITabBundle {
-    queryId: string;
+    queryTemplateId: string;
 }
 
 export interface IEditControllerBundle extends ITabBundle {
