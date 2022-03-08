@@ -1,5 +1,5 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 import {
     Button,
@@ -25,6 +25,8 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 
 import * as yup from "yup";
 import { Formik } from "formik";
+
+import { BuilderActionsContext, TabContext } from "../../contexts";
 
 import ConfigureStep from "./ConfigureStep";
 import OperationStep from "./OperationStep";
@@ -178,6 +180,12 @@ const NewQueryStepper: FunctionComponent = (): ReactElement => {
     });
     const { records } = data?.getResources || { records: [] };
 
+    const { replaceTab } = useContext(BuilderActionsContext);
+    const error = () => {
+        throw new Error("Tab context should not be null.");
+    };
+    const { index } = useContext(TabContext) || error();
+
     const handleSubmit = useCallback((values: IFormValues) => {
         createQuery({
             variables: {
@@ -186,6 +194,14 @@ const NewQueryStepper: FunctionComponent = (): ReactElement => {
             },
         });
     }, []);
+
+    useEffect(() => {
+        if (newQuery) {
+            replaceTab(index, "edit-query", {
+                queryId: newQuery.createQueryTemplate.id,
+            });
+        }
+    }, [index, newQuery, replaceTab]);
 
     const handleNext = () => {
         if (activeStep + 1 === steps.length) {
