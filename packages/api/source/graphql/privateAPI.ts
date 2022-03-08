@@ -689,7 +689,7 @@ const typeDefs0 = `
         getResourceById(resourceId: ID!): Resource!
         getResourceByName(name: String!): Resource!
 
-        getQueryTemplateByAppId(page: Int, limit: Int, app: ID!): QueryTemplatePage!
+        getQueryTemplates(app: ID!, page: Int, limit: Int): QueryTemplatePage!
         getQueryTemplateById(queryTemplateId: ID!): QueryTemplate!
         getQueryTemplateByName(name: String!): QueryTemplate!
 
@@ -893,7 +893,7 @@ const resolvers = {
         getResourceByName: async (parent, values, context) =>
             resources.getByName(context.request, values.name),
 
-        getQueryTemplateByAppId: async (parent, values, context) =>
+        getQueryTemplates: async (parent, values, context) =>
             queryTemplates.listByAppId(context.request, values),
 
         getQueryTemplateById: async (parent, values, context) =>
