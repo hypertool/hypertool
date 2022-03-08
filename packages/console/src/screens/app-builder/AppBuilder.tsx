@@ -215,8 +215,10 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
 
                             case "edit-query": {
                                 return (
-                                    (bundle as IEditQueryBundle).queryId ===
-                                    (oldBundle as IEditQueryBundle).queryId
+                                    (bundle as IEditQueryBundle)
+                                        .queryTemplateId ===
+                                    (oldBundle as IEditQueryBundle)
+                                        .queryTemplateId
                                 );
                             }
                         }

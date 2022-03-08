@@ -198,7 +198,7 @@ const NewQueryStepper: FunctionComponent = (): ReactElement => {
     useEffect(() => {
         if (newQuery) {
             replaceTab(index, "edit-query", {
-                queryId: newQuery.createQueryTemplate.id,
+                queryTemplateId: newQuery.createQueryTemplate.id,
             });
         }
     }, [index, newQuery, replaceTab]);

@@ -52,8 +52,8 @@ const Queries: FunctionComponent = (): ReactElement => {
         createTab("new-query");
     }, [createTab]);
 
-    const handleEditQuery = (queryId: string) => () => {
-        createTab("edit-query", { queryId });
+    const handleEditQuery = (queryTemplateId: string) => () => {
+        createTab("edit-query", { queryTemplateId });
     };
 
     const renderQuery = (record: any) => (
