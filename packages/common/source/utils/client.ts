@@ -20,7 +20,6 @@ const GET_APP_BY_NAME = gql`
             title
             slug
             description
-            groups
             resources
             status
             createdAt
@@ -35,14 +34,12 @@ const CREATE_APP = gql`
         $title: String!
         $slug: String!
         $description: String
-        $groups: [ID!]
     ) {
         createApp(
             name: $name
             title: $title
             slug: $slug
             description: $description
-            groups: $groups
         ) {
             id
         }
@@ -56,7 +53,6 @@ const UPDATE_APP = gql`
         $title: String
         $slug: String
         $description: String
-        $groups: [ID!]
     ) {
         updateApp(
             appId: $appId
@@ -64,7 +60,6 @@ const UPDATE_APP = gql`
             title: $title
             slug: $slug
             description: $description
-            groups: $groups
         ) {
             id
         }
@@ -367,11 +362,6 @@ export default class Client<T> {
                 title: app.title,
                 slug: app.slug,
                 description: app.description,
-                groups: await Promise.all(
-                    app.groups.map((group) =>
-                        this.convertNameToId(group, "group"),
-                    ),
-                ),
             },
         });
     }
@@ -385,15 +375,6 @@ export default class Client<T> {
                 title: app.title,
                 slug: app.slug,
                 description: app.description,
-                /*
-                 * Any implicit value injection to the manifests must be done
-                 * during compilation by the compiler, not when syncing changes.
-                 */
-                groups: await Promise.all(
-                    app.groups.map((group) =>
-                        this.convertNameToId(group, "group"),
-                    ),
-                ),
             },
         });
     }
@@ -494,24 +475,13 @@ export default class Client<T> {
     }
 
     patchApp = async (oldApp: App, newApp: App): Promise<boolean> => {
-        const keys = ["name", "slug", "description", "title", "groups"];
+        const keys = ["name", "slug", "description", "title"];
         const oldAppPicked = lodash.pick(oldApp, keys);
         const newAppPicked = lodash.pick(newApp, keys);
 
         if (!oldAppPicked || !newAppPicked) {
             throw new Error("lodash.pick() returned undefined for some reason");
         }
-
-        /*
-         * `oldAppPicked.groups` contains IDs, not names. Therefore, convert
-         * names in `newAppPicked.groups` to their corresponding IDs before
-         * comparing.
-         */
-        newAppPicked.groups = await Promise.all(
-            (newAppPicked as App).groups.map((group) =>
-                this.convertNameToId(group, "group"),
-            ),
-        );
 
         if (lodash.isEqual(oldAppPicked, newAppPicked)) {
             return false;
