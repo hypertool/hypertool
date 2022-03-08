@@ -1,21 +1,18 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useState } from "react";
 
-import {
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
-    Typography,
-} from "@mui/material";
-import type { SelectChangeEvent } from "@mui/material";
+import { MenuItem, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { TextField } from "../../components";
+import { Select, TextField } from "../../components";
 
-const ResourceNameTextField = styled(TextField)({
+const NameTextField = styled(TextField)({
     maxWidth: 400,
 }) as any;
+
+const DescriptionTextField = styled(TextField)(({ theme }) => ({
+    maxWidth: 400,
+    marginTop: theme.spacing(3),
+}));
 
 const TextFieldHelp = styled(Typography)({
     display: "flex",
@@ -25,11 +22,6 @@ const TextFieldHelp = styled(Typography)({
     marginBottom: 0,
     paddingBottom: 0,
 });
-
-const ResourceFormControl = styled(FormControl)(({ theme }) => ({
-    marginTop: theme.spacing(4),
-    maxWidth: 400,
-}));
 
 const Root = styled("section")(({ theme }) => ({
     display: "flex",
@@ -41,6 +33,11 @@ const Root = styled("section")(({ theme }) => ({
     width: "100%",
 }));
 
+const ResourceSelect = styled("div")(({ theme }) => ({
+    width: 400,
+    marginTop: theme.spacing(3),
+}));
+
 export interface IProps {
     resources: any[];
 }
@@ -48,16 +45,11 @@ export interface IProps {
 const ConfigureStep: FunctionComponent<IProps> = (
     props: IProps,
 ): ReactElement => {
-    const [resource, setResource] = useState("itssamuelrowe");
     const { resources } = props;
-
-    const handleResourceChange = useCallback((event: SelectChangeEvent) => {
-        setResource(event.target.value);
-    }, []);
 
     return (
         <Root>
-            <ResourceNameTextField
+            <NameTextField
                 name="name"
                 required={true}
                 id="name"
@@ -73,22 +65,35 @@ const ConfigureStep: FunctionComponent<IProps> = (
                 }
             />
 
-            <ResourceFormControl fullWidth={true}>
-                <InputLabel id="resource-label">Resource</InputLabel>
+            <DescriptionTextField
+                name="description"
+                id="description"
+                label="Description"
+                size="small"
+                variant="outlined"
+                multiline={true}
+                rows={4}
+                fullWidth={true}
+                help=""
+            />
+
+            <ResourceSelect>
                 <Select
-                    labelId="resource-label"
                     id="resource"
-                    value={resource}
+                    name="resource"
                     label="Resource"
-                    onChange={handleResourceChange}
                     variant="outlined"
                     size="small"
-                >
-                    {resources.map((resource) => (
-                        <MenuItem value={resource.id}>{resource.name}</MenuItem>
-                    ))}
-                </Select>
-            </ResourceFormControl>
+                    help=""
+                    renderMenuItems={() =>
+                        resources.map((resource) => (
+                            <MenuItem value={resource.id}>
+                                {resource.name}
+                            </MenuItem>
+                        ))
+                    }
+                />
+            </ResourceSelect>
         </Root>
     );
 };
