@@ -444,6 +444,9 @@ const typeDefs0 = `
 
     type Controller {
         id: ID!
+        name: String!
+        description: String!
+        language: ControllerLanguage!
         creator: User!
         patches: [ControllerPatch!]!
         status: ControllerStatus!
@@ -704,8 +707,8 @@ const typeDefs0 = `
         listPages(app: ID!, page: Int, limit: Int): PagePage!
         listPagesById(appId: ID!, pageIds: [ID!]!): [Page]!
 
-        listControllers(app: ID!, page: Int, limit: Int): ControllerPage!
-        listControllersById(controllerIds: [ID!]): [Controller!]!
+        getControllers(page: Int, limit: Int): ControllerPage!
+        getControllersById(controllerIds: [ID!]): [Controller!]!
         getControllerByName(name: String!): Controller!
         getControllerById(controllerId: ID!): Controller!
     }
@@ -926,10 +929,10 @@ const resolvers = {
         listPagesById: async (parent, values, context) =>
             pages.listById(context.request, values.appId, values.pageIds),
 
-        listControllers: async (parent, values, context) =>
+        getControllers: async (parent, values, context) =>
             controllers.list(context.request, values),
 
-        listControllersById: async (parent, values, context) =>
+        getControllersById: async (parent, values, context) =>
             controllers.listByIds(context.request, values.controllerIds),
 
         getControllerByName: async (parent, values, context) =>
