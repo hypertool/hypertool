@@ -17,6 +17,7 @@ import { nodeMappings } from "../../nodes";
 import type {
     IBuilderActionsContext,
     IDeflatedArtifact,
+    IEditControllerBundle,
     IEditResourceBundle,
     ITab,
     TBundleType,
@@ -191,6 +192,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         if (type !== oldType) {
                             return false;
                         }
+
                         switch (type) {
                             case "edit-resource": {
                                 if (
@@ -201,8 +203,22 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                 ) {
                                     return true;
                                 }
+                                break;
+                            }
+
+                            case "edit-controller": {
+                                if (
+                                    (bundle as IEditControllerBundle)
+                                        .controllerId ===
+                                    (oldBundle as IEditControllerBundle)
+                                        .controllerId
+                                ) {
+                                    return true;
+                                }
+                                break;
                             }
                         }
+
                         return false;
                     });
                     if (oldTab) {
