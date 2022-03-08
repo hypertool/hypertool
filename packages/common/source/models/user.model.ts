@@ -88,19 +88,6 @@ const userSchema = new Schema(
             enum: userStatuses,
             default: "active",
         },
-        role: {
-            type: String,
-            enum: userRoles,
-            required: true,
-        },
-        groups: {
-            type: [
-                {
-                    type: Schema.Types.ObjectId,
-                    ref: "Group",
-                },
-            ],
-        },
     },
     {
         timestamps: true,
