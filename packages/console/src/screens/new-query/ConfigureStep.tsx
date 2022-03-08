@@ -13,18 +13,18 @@ import { styled } from "@mui/material/styles";
 
 import { TextField } from "../../components";
 
-const ResourceNameTextField = styled(TextField)(({ theme }) => ({
+const ResourceNameTextField = styled(TextField)({
     maxWidth: 400,
-})) as any;
+}) as any;
 
-const TextFieldHelp = styled(Typography)(({ theme }) => ({
+const TextFieldHelp = styled(Typography)({
     display: "flex",
     marginTop: 4,
     flexDirection: "column",
     marginLeft: -8,
     marginBottom: 0,
     paddingBottom: 0,
-}));
+});
 
 const ResourceFormControl = styled(FormControl)(({ theme }) => ({
     marginTop: theme.spacing(4),
@@ -41,17 +41,15 @@ const Root = styled("section")(({ theme }) => ({
     width: "100%",
 }));
 
-const resources = [
-    "trell",
-    "itsacademyjs",
-    "hypertool",
-    "paywall",
-    "itshubble",
-    "madewithonecube",
-];
+export interface IProps {
+    resources: any[];
+}
 
-const ConfigureStep: FunctionComponent = (): ReactElement => {
+const ConfigureStep: FunctionComponent<IProps> = (
+    props: IProps,
+): ReactElement => {
     const [resource, setResource] = useState("itssamuelrowe");
+    const { resources } = props;
 
     const handleResourceChange = useCallback((event: SelectChangeEvent) => {
         setResource(event.target.value);
@@ -87,7 +85,7 @@ const ConfigureStep: FunctionComponent = (): ReactElement => {
                     size="small"
                 >
                     {resources.map((resource) => (
-                        <MenuItem value={resource}>{resource}</MenuItem>
+                        <MenuItem value={resource.id}>{resource.name}</MenuItem>
                     ))}
                 </Select>
             </ResourceFormControl>
