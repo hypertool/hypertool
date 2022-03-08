@@ -11,7 +11,7 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import { useParams } from "react-router";
 
-import { AuthenticationServicesType } from "../../types";
+import { IAuthenticationServicesType } from "../../types";
 
 const Root = styled("div")(({ theme }) => ({
     color: theme.palette.getContrastText(theme.palette.background.default),
@@ -103,12 +103,12 @@ const CreateAction = styled(Button)(() => ({
     width: 144,
 }));
 
-interface FormValues {
+interface IFormValues {
     clientId: string;
     secret: string;
 }
 
-const initialValues: FormValues = {
+const initialValues: IFormValues = {
     clientId: "",
     secret: "",
 };
@@ -118,8 +118,8 @@ const validationSchema = yup.object({
     secret: yup.string().required("Client Secret is required"),
 });
 
-interface Props {
-    authService: AuthenticationServicesType;
+interface IProps {
+    authService: IAuthenticationServicesType;
 }
 
 const UPDATE_APP = gql`
@@ -130,8 +130,8 @@ const UPDATE_APP = gql`
     }
 `;
 
-const Authentication: FunctionComponent<Props> = (
-    props: Props,
+const Authentication: FunctionComponent<IProps> = (
+    props: IProps,
 ): ReactElement => {
     const { name } = props.authService;
     const { appId } = useParams();
@@ -143,7 +143,7 @@ const Authentication: FunctionComponent<Props> = (
     const [updateApp, { loading: updatingApp, data: updatedApp, error }] =
         useMutation(UPDATE_APP);
 
-    const handleSubmit = (values: FormValues) => {
+    const handleSubmit = (values: IFormValues) => {
         updateApp({
             variables: {
                 appId: appId,

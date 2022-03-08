@@ -36,12 +36,12 @@ const DescriptionTextField = styled(TextField)(({ theme }) => ({
     maxWidth: 600,
 })) as any;
 
-interface FormValues {
+interface IFormValues {
     name: string;
 }
 
 const OrganizationForm: FunctionComponent = (): ReactElement => {
-    const formik = useFormikContext<FormValues>();
+    const formik = useFormikContext<IFormValues>();
 
     const slug = useMemo(
         () =>

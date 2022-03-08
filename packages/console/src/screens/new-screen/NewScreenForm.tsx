@@ -89,12 +89,12 @@ const FormRoot = styled("section")(({ theme }) => ({
     width: "100%",
 }));
 
-interface InitialValues {
+interface IInitialValues {
     name: string;
     resource: null | string;
 }
 
-const initialValues: InitialValues = {
+const initialValues: IInitialValues = {
     name: "",
     resource: null,
 };
@@ -132,8 +132,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                 <Formik
                     initialValues={initialValues}
                     onSubmit={handleSubmit}
-                    validationSchema={validationSchema}
-                >
+                    validationSchema={validationSchema}>
                     {(formik) => (
                         <>
                             <FormRoot>
@@ -199,8 +198,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                     onClick={() => formik.submitForm()}
                                     variant="contained"
                                     size="small"
-                                    disabled={false}
-                                >
+                                    disabled={false}>
                                     Create Screen
                                     {!creatingScreen && !newScreen && (
                                         <CheckCircleOutline

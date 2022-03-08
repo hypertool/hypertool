@@ -5,15 +5,15 @@ import { useNode } from "@craftjs/core";
 import ContentEditable from "react-contenteditable";
 
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
-import { CraftComponent } from "../types";
+import { TCraftComponent } from "../types";
 
-interface TextProps {
+interface ITextProps {
     text?: string;
     fontSize?: string | number;
 }
 
-export const Text: CraftComponent<TextProps> = (
-    props: TextProps,
+export const Text: TCraftComponent<ITextProps> = (
+    props: ITextProps,
 ): ReactElement => {
     const {
         connectors: { connect, drag },

@@ -12,14 +12,14 @@ const TextFieldHelp = styled(Typography)(() => ({
     paddingBottom: 0,
 }));
 
-interface Props {
+interface IProps {
     name: string;
     help: string;
     [key: string]: any;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const TextField = (props: Props) => {
+const TextField = (props: IProps) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { name, help, ...otherProps } = props;
     const formik = useFormikContext();

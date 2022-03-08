@@ -3,12 +3,12 @@ import { useContext, useMemo } from "react";
 import { useEditor } from "@craftjs/core";
 import { wrapConnectorHooks } from "@craftjs/utils";
 
-import { Layer } from "../interfaces";
+import { TLayer } from "../interfaces";
 import { useLayerManager } from "../manager";
 
 import { LayerContext } from "./LayerContext";
 
-export function useLayer<S = null>(collect?: (layer: Layer) => S) {
+export function useLayer<S = null>(collect?: (layer: TLayer) => S) {
     const {
         id,
         depth,

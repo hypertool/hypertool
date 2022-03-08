@@ -1,4 +1,9 @@
-import { FunctionComponent, ReactElement, useContext, useCallback } from "react";
+import {
+    FunctionComponent,
+    ReactElement,
+    useCallback,
+    useContext,
+} from "react";
 
 import { Button, Card, CardContent, Divider, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -107,12 +112,12 @@ const client = new ApolloClient({
     cache: new InMemoryCache(),
 });
 
-interface FormValues {
+interface IFormValues {
     emailAddress: string;
     password: string;
 }
 
-const initialValues: FormValues = {
+const initialValues: IFormValues = {
     emailAddress: "",
     password: "",
 };
@@ -127,7 +132,7 @@ const validationSchema = yup.object({
 
 const Login: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
-    const { reloadSession } = useContext(SessionContext)
+    const { reloadSession } = useContext(SessionContext);
 
     const onSuccess = useCallback(
         async (response: any) => {
@@ -147,7 +152,7 @@ const Login: FunctionComponent = (): ReactElement => {
     );
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const onFailure = () => { };
+    const onFailure = () => {};
 
     const { signIn } = useGoogleLogin({
         onSuccess,
@@ -162,20 +167,23 @@ const Login: FunctionComponent = (): ReactElement => {
         signIn();
     }, [signIn]);
 
-    const handleBasicAuthSubmit = useCallback(async (values: FormValues) => {
-        const result = await client.mutate({
-            mutation: LOGIN_WITH_EMAIL,
-            variables: { ...values },
-        });
-        delete result.data.loginWithEmail.__typename;
-        delete result.data.loginWithEmail.user.__typename;
-        localStorage.setItem(
-            "session",
-            JSON.stringify(result.data.loginWithEmail),
-        );
-        reloadSession();
-        navigate("/organizations/new");
-    }, [navigate, reloadSession]);
+    const handleBasicAuthSubmit = useCallback(
+        async (values: IFormValues) => {
+            const result = await client.mutate({
+                mutation: LOGIN_WITH_EMAIL,
+                variables: { ...values },
+            });
+            delete result.data.loginWithEmail.__typename;
+            delete result.data.loginWithEmail.user.__typename;
+            localStorage.setItem(
+                "session",
+                JSON.stringify(result.data.loginWithEmail),
+            );
+            reloadSession();
+            navigate("/organizations/new");
+        },
+        [navigate, reloadSession],
+    );
 
     return (
         <Root>

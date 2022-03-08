@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { ButtonBase, Typography, useTheme } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import type { ResourceType } from "../../types";
+import type { TResourceType } from "../../types";
 
 const Root = styled(ButtonBase)(({ theme }) => ({
     width: 144,
@@ -21,15 +21,17 @@ const Title = styled(Typography)(({ theme }) => ({
     fontSize: 12,
 }));
 
-interface Props {
+interface IProps {
     title: string;
-    type: ResourceType;
+    type: TResourceType;
     imageURL: string;
     selected: boolean;
-    onClick: (type: ResourceType) => void;
+    onClick: (type: TResourceType) => void;
 }
 
-const ResourceItem: FunctionComponent<Props> = (props: Props): ReactElement => {
+const ResourceItem: FunctionComponent<IProps> = (
+    props: IProps,
+): ReactElement => {
     const { title, type, onClick, selected } = props;
     const theme = useTheme();
 
@@ -44,8 +46,7 @@ const ResourceItem: FunctionComponent<Props> = (props: Props): ReactElement => {
                 backgroundColor: selected
                     ? theme.palette.primary.main
                     : undefined,
-            }}
-        >
+            }}>
             <Title>{title}</Title>
         </Root>
     );

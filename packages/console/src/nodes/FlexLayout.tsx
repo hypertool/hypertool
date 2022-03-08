@@ -3,9 +3,9 @@ import { ReactElement } from "react";
 import { useNode } from "@craftjs/core";
 
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
-import { CraftComponent } from "../types";
+import { TCraftComponent } from "../types";
 
-export interface Props {
+export interface IProps {
     disabled?: boolean;
     background?: string | number;
     paddingLeft?: string | number;
@@ -28,7 +28,7 @@ export interface Props {
     columnGap?: string | number;
 }
 
-const FlexLayout: CraftComponent<Props> = (props: Props): ReactElement => {
+const FlexLayout: TCraftComponent<IProps> = (props: IProps): ReactElement => {
     const {
         connectors: { connect, drag },
     } = useNode();

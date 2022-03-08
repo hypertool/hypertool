@@ -61,12 +61,12 @@ const CreateAction = styled(Button)(() => ({
     width: 144,
 }));
 
-interface FormValues {
+interface IFormValues {
     name: string;
     description: string;
 }
 
-const initialValues: FormValues = {
+const initialValues: IFormValues = {
     name: "",
     description: "",
 };
@@ -99,12 +99,12 @@ const CREATE_APP = gql`
     }
 `;
 
-interface StepModel {
+interface IStepModel {
     title: string;
     optional: boolean;
 }
 
-const steps: StepModel[] = [
+const steps: IStepModel[] = [
     { title: "Tell us about your app", optional: false },
     {
         title: "Connect your repository",
@@ -133,7 +133,7 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
     }, []);
 
     const handleSubmit = useCallback(
-        (values: FormValues): void => {
+        (values: IFormValues): void => {
             createApp({
                 variables: {
                     ...values,
@@ -181,7 +181,7 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
     };
 
     const renderStepperItem = (
-        step: StepModel,
+        step: IStepModel,
         index: number,
         context: any,
     ) => {
@@ -200,7 +200,7 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
     };
 
     const renderStepperItems = (context: any) =>
-        steps.map((step: StepModel, index: number) =>
+        steps.map((step: IStepModel, index: number) =>
             renderStepperItem(step, index, context),
         );
 

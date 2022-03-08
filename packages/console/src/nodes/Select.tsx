@@ -8,27 +8,29 @@ import { useNode } from "@craftjs/core";
 
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
-    Color,
-    CraftComponent,
-    SelectMargin,
-    SelectSize,
-    SelectVariant,
+    TColor,
+    TCraftComponent,
+    TSelectMargin,
+    TSelectSize,
+    TSelectVariant,
 } from "../types";
 
-interface Props {
-    size?: SelectSize;
+interface IProps {
+    size?: TSelectSize;
     menuItems?: string;
     autoWidth?: boolean;
     multiple?: boolean;
-    variant?: SelectVariant;
-    margin?: SelectMargin;
-    color?: Color | string;
+    variant?: TSelectVariant;
+    margin?: TSelectMargin;
+    color?: TColor | string;
 
     startAdornment?: string;
     endAndornment?: string;
 }
 
-export const Select: CraftComponent<Props> = (props: Props): ReactElement => {
+export const Select: TCraftComponent<IProps> = (
+    props: IProps,
+): ReactElement => {
     const { menuItems, autoWidth, multiple, variant } = props;
     const menuItemsArray = menuItems?.trim()?.split(",");
     const [property, setProperty] = useState<string[]>([]);
@@ -68,7 +70,7 @@ export const Select: CraftComponent<Props> = (props: Props): ReactElement => {
     );
 };
 
-const defaultProps: Props = {
+const defaultProps: IProps = {
     size: "normal",
     menuItems: "",
     autoWidth: false,

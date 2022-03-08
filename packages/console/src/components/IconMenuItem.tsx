@@ -26,7 +26,7 @@ const FlexBox = styled(Box)({
     display: "flex",
 });
 
-export interface Props {
+export interface IProps {
     leftIcon?: ReactNode;
     rightIcon?: ReactNode;
     // eslint-disable-next-line no-undef
@@ -37,7 +37,9 @@ export interface Props {
     ref?: unknown;
 }
 
-const IconMenuItem: FunctionComponent<Props> = (props: Props): ReactElement => {
+const IconMenuItem: FunctionComponent<IProps> = (
+    props: IProps,
+): ReactElement => {
     const {
         leftIcon,
         rightIcon,

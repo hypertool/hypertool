@@ -4,16 +4,16 @@ import { FormControl, FormLabel, Paper, Slider } from "@mui/material";
 
 import { useNode } from "@craftjs/core";
 
-import { CraftComponent } from "../types";
+import { TCraftComponent } from "../types";
 
-interface ContainerProps {
+interface IContainerProps {
     background?: string;
     padding?: string | number;
     children?: ReactElement | any;
 }
 
-export const Container: CraftComponent<ContainerProps> = (
-    props: ContainerProps,
+export const Container: TCraftComponent<IContainerProps> = (
+    props: IContainerProps,
 ): ReactElement => {
     const {
         connectors: { connect, drag },

@@ -3,14 +3,14 @@ import React from "react";
 import { useMethods } from "@craftjs/utils";
 
 import { LayerEventContextProvider } from "../events";
-import { LayerOptions } from "../interfaces";
+import { TLayerOptions } from "../interfaces";
 import { DefaultLayer } from "../layers";
 
 import { LayerMethods } from "./actions";
 import { LayerManagerContext, LayerStore } from "./context";
 
 export const LayerManagerProvider: React.FC<{
-    options: Partial<LayerOptions>;
+    options: Partial<TLayerOptions>;
 }> = ({ children, options }) => {
     // TODO: fix type
     const store = useMethods(LayerMethods, {

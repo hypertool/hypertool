@@ -7,17 +7,17 @@ import { useNode } from "@craftjs/core";
 import { useArtifactReference } from "../hooks";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
-    ButtonSize,
-    ButtonVariant,
-    Color,
-    CraftComponent,
     IArtifactReference,
+    TButtonSize,
+    TButtonVariant,
+    TColor,
+    TCraftComponent,
 } from "../types";
 
-interface Props {
-    size?: ButtonSize;
-    variant?: ButtonVariant;
-    color?: Color;
+interface IProps {
+    size?: TButtonSize;
+    variant?: TButtonVariant;
+    color?: TColor;
     text?: string;
     disabled?: boolean;
     disableElevation?: boolean;
@@ -26,7 +26,9 @@ interface Props {
     onClick?: IArtifactReference;
 }
 
-export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
+export const Button: TCraftComponent<IProps> = (
+    props: IProps,
+): ReactElement => {
     const {
         size,
         variant,
@@ -60,7 +62,7 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
     );
 };
 
-const defaultProps: Props = {
+const defaultProps: IProps = {
     size: "small",
     variant: "contained",
     color: "primary",

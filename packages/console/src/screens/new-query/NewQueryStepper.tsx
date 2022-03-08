@@ -87,13 +87,13 @@ const CreateAction = styled(Button)(({ theme }) => ({
     width: 184,
 }));
 
-interface StepStructure {
+interface IStepStructure {
     title: string;
     optional: boolean;
     component: FunctionComponent<any>;
 }
 
-const steps: StepStructure[] = [
+const steps: IStepStructure[] = [
     {
         title: "Configure query details",
         optional: false,
@@ -106,12 +106,12 @@ const steps: StepStructure[] = [
     },
 ];
 
-interface InitialValues {
+interface IInitialValues {
     name: string;
     resource: null | string;
 }
 
-const initialValues: InitialValues = {
+const initialValues: IInitialValues = {
     name: "",
     resource: null,
 };
@@ -158,7 +158,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
         }
     };
 
-    const renderStepperItem = (step: StepStructure, index: number) => {
+    const renderStepperItem = (step: IStepStructure, index: number) => {
         return (
             <Step key={step.title} completed={isStepComplete(index)}>
                 <StepLabel
@@ -166,8 +166,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                         step.optional && (
                             <Typography variant="caption">Optional</Typography>
                         )
-                    }
-                >
+                    }>
                     {step.title}
                 </StepLabel>
             </Step>
@@ -208,8 +207,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                             height: 50,
                             p: 2,
                             backgroundColor: "#000000",
-                        }}
-                    >
+                        }}>
                         <Typography>{steps[activeStep].title}</Typography>
                     </Paper>
                 </Hidden>
@@ -217,8 +215,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                 <Formik
                     initialValues={initialValues}
                     onSubmit={handleSubmit}
-                    validationSchema={validationSchema}
-                >
+                    validationSchema={validationSchema}>
                     {(formik) => (
                         <>
                             <StepContainer>
@@ -236,8 +233,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                                 onClick={handleBack}
                                                 sx={{ mr: 1 }}
                                                 variant="contained"
-                                                size="small"
-                                            >
+                                                size="small">
                                                 {theme.direction === "rtl" ? (
                                                     <KeyboardArrowRight />
                                                 ) : (
@@ -253,8 +249,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                             onClick={handleNext}
                                             variant="contained"
                                             size="small"
-                                            disabled={false}
-                                        >
+                                            disabled={false}>
                                             Next
                                             {theme.direction === "rtl" ? (
                                                 <KeyboardArrowLeft />
@@ -275,8 +270,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                                     (!formik.dirty ||
                                                         !formik.isValid)) ||
                                                 creatingQuery
-                                            }
-                                        >
+                                            }>
                                             Create Query
                                             {!creatingQuery && !newQuery && (
                                                 <CheckCircleOutline
@@ -311,8 +305,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                         height: 50,
                                         bgcolor: "background.default",
                                         padding: 0,
-                                    }}
-                                >
+                                    }}>
                                     <MobileStepper
                                         variant="text"
                                         steps={steps.length}
@@ -331,8 +324,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                                 disabled={
                                                     activeStep ===
                                                     steps.length - 1
-                                                }
-                                            >
+                                                }>
                                                 Next
                                                 {theme.direction === "rtl" ? (
                                                     <KeyboardArrowLeft />
@@ -345,8 +337,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                             <Button
                                                 size="small"
                                                 onClick={handleBack}
-                                                disabled={activeStep === 0}
-                                            >
+                                                disabled={activeStep === 0}>
                                                 {theme.direction === "rtl" ? (
                                                     <KeyboardArrowRight />
                                                 ) : (

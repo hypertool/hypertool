@@ -11,23 +11,25 @@ import { useNode } from "@craftjs/core";
 import { useArtifactReference } from "../hooks";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
-    BaseColor,
-    CheckboxSize,
-    CraftComponent,
     IArtifactReference,
+    TBaseColor,
+    TCheckboxSize,
+    TCraftComponent,
 } from "../types";
 
-interface Props {
+interface IProps {
     label?: string;
-    color?: BaseColor;
+    color?: TBaseColor;
     disabled?: boolean;
     checked?: boolean;
     disableRipple?: boolean;
     onChange?: IArtifactReference;
-    size?: CheckboxSize;
+    size?: TCheckboxSize;
 }
 
-export const Checkbox: CraftComponent<Props> = (props: Props): ReactElement => {
+export const Checkbox: TCraftComponent<IProps> = (
+    props: IProps,
+): ReactElement => {
     const { label, color, disabled, checked, disableRipple, onChange, size } =
         props;
     const {
@@ -55,7 +57,7 @@ export const Checkbox: CraftComponent<Props> = (props: Props): ReactElement => {
     );
 };
 
-const defaultProps: Props = {
+const defaultProps: IProps = {
     size: "small",
     checked: false,
     color: "primary",

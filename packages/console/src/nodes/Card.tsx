@@ -3,7 +3,7 @@ import { ReactElement } from "react";
 
 import { Element, useNode } from "@craftjs/core";
 
-import type { CraftComponent } from "../types";
+import type { TCraftComponent } from "../types";
 
 import { Button } from "./Button";
 import {
@@ -13,17 +13,17 @@ import {
 } from "./Container";
 import { Text } from "./Text";
 
-interface PartialCardProps {
+interface IPartialCardProps {
     children: ReactElement;
 }
 
-interface CardProps {
+interface ICardProps {
     background?: string;
     padding?: string | number;
 }
 
-export const CardTop: CraftComponent<PartialCardProps> = (
-    props: PartialCardProps,
+export const CardTop: TCraftComponent<IPartialCardProps> = (
+    props: IPartialCardProps,
 ): ReactElement => {
     const {
         connectors: { connect },
@@ -35,8 +35,8 @@ export const CardTop: CraftComponent<PartialCardProps> = (
     );
 };
 
-export const CardBottom: CraftComponent<PartialCardProps> = (
-    props: PartialCardProps,
+export const CardBottom: TCraftComponent<IPartialCardProps> = (
+    props: IPartialCardProps,
 ): ReactElement => {
     const {
         connectors: { connect },
@@ -44,8 +44,8 @@ export const CardBottom: CraftComponent<PartialCardProps> = (
     return <div ref={connect as any}>{props.children}</div>;
 };
 
-export const Card: CraftComponent<CardProps> = (
-    props: CardProps,
+export const Card: TCraftComponent<ICardProps> = (
+    props: ICardProps,
 ): ReactElement => {
     const { background, padding } = props;
     return (

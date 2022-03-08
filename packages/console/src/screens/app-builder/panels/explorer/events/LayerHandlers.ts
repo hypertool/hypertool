@@ -1,13 +1,13 @@
 import { DerivedCoreEventHandlers, Node, NodeId } from "@craftjs/core";
 
-import { LayerIndicator } from "../interfaces";
+import { TLayerIndicator } from "../interfaces";
 
 export class LayerHandlers extends DerivedCoreEventHandlers<{
     layerStore: any;
 }> {
     static draggedElement: any;
     static events: {
-        indicator: LayerIndicator | null;
+        indicator: TLayerIndicator | null;
         currentCanvasHovered: Node | null;
     } = {
         indicator: null,

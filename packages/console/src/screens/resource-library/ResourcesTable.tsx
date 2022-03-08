@@ -3,7 +3,7 @@ import { useCallback } from "react";
 
 import { styled } from "@mui/material/styles";
 
-import type { Resource } from "@hypertool/common";
+import type { IResource } from "@hypertool/common";
 
 import type { GridRowParams } from "@mui/x-data-grid";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -24,20 +24,20 @@ const columns: GridColDef[] = [
     { field: "createdBy", headerName: "Created By", width: 400 },
 ];
 
-interface Props {
+interface IProps {
     selectable: boolean;
-    resources: Resource[];
-    onRowClick: (resource: Resource) => void;
+    resources: IResource[];
+    onRowClick: (resource: IResource) => void;
 }
 
-const ResourcesTable: FunctionComponent<Props> = (
-    props: Props,
+const ResourcesTable: FunctionComponent<IProps> = (
+    props: IProps,
 ): ReactElement => {
     const { selectable, resources, onRowClick } = props;
 
     const handleRowClick = useCallback(
         (params: GridRowParams) => {
-            onRowClick(params.row as Resource);
+            onRowClick(params.row as IResource);
         },
         [onRowClick],
     );

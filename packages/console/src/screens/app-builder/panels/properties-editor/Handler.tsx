@@ -20,13 +20,13 @@ const DecoratedTextField = styled(TextField)(({ theme }) => ({
     },
 }));
 
-export interface Props {
+export interface IProps {
     title: string;
     onSelect: (reference: IArtifactReference) => void;
     value?: IArtifactReference;
 }
 
-const Handler: FunctionComponent<Props> = (props: Props) => {
+const Handler: FunctionComponent<IProps> = (props: IProps) => {
     const { title, onSelect, value } = props;
 
     const [anchor, setAnchor] = useState<(EventTarget & Element) | null>(null);
@@ -54,8 +54,7 @@ const Handler: FunctionComponent<Props> = (props: Props) => {
             leftIcon={<Icon fontSize="small">functions</Icon>}
             rightIcon={<Icon fontSize="small">chevron_right</Icon>}
             label={artifact.path}
-            parentMenuOpen={open}
-        >
+            parentMenuOpen={open}>
             {Object.keys(artifact.object).map((target) => (
                 <IconMenuItem
                     onClick={makeSelectHandler(artifact, target)}

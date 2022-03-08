@@ -33,11 +33,11 @@ const Button = styled("a")(({ theme }) => ({
     marginRight: theme.spacing(1),
 }));
 
-interface RenderNodeProps {
+interface IRenderNodeProps {
     render: any;
 }
 
-export const RenderNode = (props: RenderNodeProps) => {
+export const RenderNode = (props: IRenderNodeProps) => {
     const { render } = props;
     const { id } = useNode();
     const { actions, query, isActive } = useEditor((_, query) => ({
@@ -113,8 +113,7 @@ export const RenderNode = (props: RenderNodeProps) => {
                               left: getPos(dom as any).left,
                               top: getPos(dom as any).top,
                               zIndex: 9999,
-                          }}
-                      >
+                          }}>
                           {moveable ? (
                               <Button ref={drag as any}>
                                   <ControlCamera fontSize="small" />
@@ -124,8 +123,7 @@ export const RenderNode = (props: RenderNodeProps) => {
                               <Button
                                   onClick={() => {
                                       actions.selectNode(parent);
-                                  }}
-                              >
+                                  }}>
                                   <ArrowUpward fontSize="small" />
                               </Button>
                           )}
@@ -134,8 +132,7 @@ export const RenderNode = (props: RenderNodeProps) => {
                                   onMouseDown={(event: React.MouseEvent) => {
                                       event.stopPropagation();
                                       actions.delete(id);
-                                  }}
-                              >
+                                  }}>
                                   <Delete fontSize="small" />
                               </Button>
                           ) : null}

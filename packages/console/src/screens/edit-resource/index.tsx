@@ -148,22 +148,24 @@ const UPDATE_RESOURCE = gql`
     }
 `;
 
-interface ResourceFormByType {
+interface IResourceFormByType {
     [key: string]: FunctionComponent;
 }
 
-const resourceFormByType: ResourceFormByType = {
+const resourceFormByType: IResourceFormByType = {
     mysql: MySQLForm,
     postgres: PostgresForm,
     mongodb: MongoDBForm,
     bigquery: BigQueryForm,
 };
 
-export interface Props {
+export interface IProps {
     resourceId: string;
 }
 
-const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
+const EditResource: FunctionComponent<IProps> = (
+    props: IProps,
+): ReactElement => {
     const { resourceId } = props;
     const { setTabTitle } = useContext(BuilderActionsContext);
     const { index } = useContext(TabContext) || { index: -1 };

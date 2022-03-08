@@ -3,7 +3,7 @@ import { useCallback } from "react";
 
 import { Divider, Icon, ListItemIcon, Menu, MenuItem } from "@mui/material";
 
-interface Props {
+interface IProps {
     id: string;
     open: boolean;
     onClose: () => void;
@@ -16,20 +16,20 @@ interface Props {
     onDelete: (id: string) => void;
 }
 
-interface Group {
+interface IGroup {
     title: string;
     // eslint-disable-next-line no-use-before-define
-    items: Item[];
+    items: IItem[];
 }
 
-interface Item {
+interface IItem {
     title: string;
     icon: string;
     action: (id: string) => void;
 }
 
-const AppOptionsMenu: FunctionComponent<Props> = (
-    props: Props,
+const AppOptionsMenu: FunctionComponent<IProps> = (
+    props: IProps,
 ): ReactElement => {
     const {
         id,
@@ -74,7 +74,7 @@ const AppOptionsMenu: FunctionComponent<Props> = (
         onClose();
     }, [id, onClose, onDelete]);
 
-    const groups: Group[] = [
+    const groups: IGroup[] = [
         {
             title: "General",
             items: [
@@ -122,7 +122,7 @@ const AppOptionsMenu: FunctionComponent<Props> = (
         },
     ];
 
-    const renderItem = (item: Item) => (
+    const renderItem = (item: IItem) => (
         <MenuItem key={item.title} onClick={item.action as any}>
             <ListItemIcon>
                 <Icon fontSize="small">{item.icon}</Icon>
@@ -131,7 +131,7 @@ const AppOptionsMenu: FunctionComponent<Props> = (
         </MenuItem>
     );
 
-    const renderGroup = (group: Group, index: number) => (
+    const renderGroup = (group: IGroup, index: number) => (
         <>
             {group.items.map(renderItem)}
             {index + 1 < groups.length && <Divider />}

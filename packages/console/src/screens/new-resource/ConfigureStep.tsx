@@ -2,7 +2,7 @@ import type { FunctionComponent, ReactElement } from "react";
 
 import { styled } from "@mui/material/styles";
 
-import { ResourceType } from "../../types";
+import { TResourceType } from "../../types";
 
 import BigQueryForm from "./BigQueryForm";
 import MongoDBForm from "./MongoDBForm";
@@ -19,12 +19,12 @@ const Root = styled("section")(({ theme }) => ({
     width: "100%",
 }));
 
-interface Props {
-    activeType: ResourceType;
+interface IProps {
+    activeType: TResourceType;
 }
 
-const ConfigureStep: FunctionComponent<Props> = (
-    props: Props,
+const ConfigureStep: FunctionComponent<IProps> = (
+    props: IProps,
 ): ReactElement => {
     const { activeType } = props;
     return (

@@ -57,12 +57,12 @@ const organizations = [
     "madewithonecube",
 ];
 
-type ConnectionType = "create_repository" | "import_repository";
+type TConnectionType = "create_repository" | "import_repository";
 
 const GitHubForm: FunctionComponent = (): ReactElement => {
     const [authenticated, setAuthenticated] = useState(false);
     const [connection, setConnection] =
-        useState<ConnectionType>("create_repository");
+        useState<TConnectionType>("create_repository");
     const [owner, setOwner] = useState("itssamuelrowe");
 
     const handleAuthentication = useCallback(() => {
@@ -70,7 +70,7 @@ const GitHubForm: FunctionComponent = (): ReactElement => {
     }, []);
 
     const handleConnectionChange = useCallback(
-        (event: MouseEvent<HTMLElement>, value: ConnectionType) => {
+        (event: MouseEvent<HTMLElement>, value: TConnectionType) => {
             setConnection(value);
         },
         [],
@@ -102,8 +102,7 @@ const GitHubForm: FunctionComponent = (): ReactElement => {
                     label="Owner"
                     onChange={handleOwnerChange}
                     variant="outlined"
-                    size="small"
-                >
+                    size="small">
                     <MenuItem value="itssamuelrowe">itssamuelrowe</MenuItem>
                     {organizations.map((organization) => (
                         <MenuItem value={organization}>{organization}</MenuItem>
@@ -143,8 +142,7 @@ const GitHubForm: FunctionComponent = (): ReactElement => {
                 <AuthenticateButton
                     variant="contained"
                     size="small"
-                    onClick={handleAuthentication}
-                >
+                    onClick={handleAuthentication}>
                     Authenticate GitHub
                 </AuthenticateButton>
             )}
@@ -154,8 +152,7 @@ const GitHubForm: FunctionComponent = (): ReactElement => {
                         size="small"
                         value={connection}
                         onChange={handleConnectionChange}
-                        exclusive={true}
-                    >
+                        exclusive={true}>
                         <ToggleButton value="create_repository">
                             Create Repository
                         </ToggleButton>

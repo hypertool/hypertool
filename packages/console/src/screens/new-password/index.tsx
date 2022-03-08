@@ -4,7 +4,6 @@ import {
     ReactElement,
     useCallback,
     useEffect,
-    useMemo,
     useState,
 } from "react";
 
@@ -69,11 +68,11 @@ const InputField = styled(TextField)(({ theme }) => ({
     },
 }));
 
-interface FormValues {
+interface IFormValues {
     newPassword: string;
 }
 
-const initialValues: FormValues = {
+const initialValues: IFormValues = {
     newPassword: "",
 };
 const regex =
@@ -106,7 +105,7 @@ const NewPassword: FunctionComponent = (): ReactElement => {
     }, [token]);
 
     const handleSubmit = useCallback(
-        async (values: FormValues) => {
+        async (values: IFormValues) => {
             console.log(values);
             // const data = await (publicClient as any).completePasswordReset({
             //     token,
@@ -130,8 +129,7 @@ const NewPassword: FunctionComponent = (): ReactElement => {
                                 <Formik
                                     initialValues={initialValues}
                                     onSubmit={handleSubmit}
-                                    validationSchema={validationSchema}
-                                >
+                                    validationSchema={validationSchema}>
                                     {(formik) => (
                                         <>
                                             <InputField
@@ -149,8 +147,7 @@ const NewPassword: FunctionComponent = (): ReactElement => {
                                                 size="medium"
                                                 onClick={() =>
                                                     formik.submitForm()
-                                                }
-                                            >
+                                                }>
                                                 Submit
                                             </PrimaryAction>
                                         </>

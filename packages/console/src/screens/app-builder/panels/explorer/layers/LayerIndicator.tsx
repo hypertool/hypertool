@@ -2,13 +2,13 @@ import type { FunctionComponent, ReactElement } from "react";
 
 import { Indicator, useEditor } from "@craftjs/core";
 
-export interface Props {
+export interface IProps {
     placeholder: Indicator;
     suggestedStyles: any;
 }
 
-export const LayerIndicator: FunctionComponent<Props> = (
-    props: Props,
+export const LayerIndicator: FunctionComponent<IProps> = (
+    props: IProps,
 ): ReactElement => {
     const { placeholder, suggestedStyles } = props;
     const { indicator } = useEditor((state) => ({
@@ -28,7 +28,6 @@ export const LayerIndicator: FunctionComponent<Props> = (
                 borderWidth: "1px",
                 zIndex: "99999",
                 ...suggestedStyles,
-            }}
-        ></div>
+            }}></div>
     );
 };

@@ -45,12 +45,12 @@ const DescriptionTextField = styled(TextField)(({ theme }) => ({
 
 // const dummyFolders = ["eCommerce", "content", "human-resource", "tech"];
 
-interface FormValues {
+interface IFormValues {
     name: string;
 }
 
 const AboutStep: FunctionComponent = (): ReactElement => {
-    const formik = useFormikContext<FormValues>();
+    const formik = useFormikContext<IFormValues>();
     // const [folder, setFolder] = useState("root");
 
     /*

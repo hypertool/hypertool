@@ -1,31 +1,31 @@
 import { Indicator, NodeId } from "@craftjs/core";
 
-export type Layer = {
+export type TLayer = {
     id: NodeId;
     dom: HTMLElement;
     headingDom: HTMLElement;
     expanded: boolean;
-    event: LayerRefEvents;
+    event: TLayerRefEvents;
 };
 
-export type LayerRefEvents = Record<LayerEvents, boolean>;
+export type TLayerRefEvents = Record<TLayerEvents, boolean>;
 
-export type LayerEvents = "selected" | "hovered";
+export type TLayerEvents = "selected" | "hovered";
 
-export type LayerOptions = {
+export type TLayerOptions = {
     expandRootOnLoad: boolean;
     renderLayer: React.ElementType;
 };
 
-export type LayerIndicator = Indicator & {
+export type TLayerIndicator = Indicator & {
     onCanvas: boolean;
 };
 
-export type LayerState = {
-    layers: Record<NodeId, Layer>;
-    events: Record<LayerEvents, NodeId | null> & {
-        indicator: LayerIndicator;
+export type TLayerState = {
+    layers: Record<NodeId, TLayer>;
+    events: Record<TLayerEvents, NodeId | null> & {
+        indicator: TLayerIndicator;
     };
 
-    options: LayerOptions;
+    options: TLayerOptions;
 };

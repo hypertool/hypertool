@@ -2,12 +2,12 @@ import { Checkbox as MuiCheckbox } from "@mui/material";
 
 import { useFormikContext } from "formik";
 
-interface Props {
+interface IProps {
     name: string;
     [key: string]: any;
 }
 
-const Checkbox = (props: Props) => {
+const Checkbox = (props: IProps) => {
     const { name, ...otherProps } = props;
     const formik = useFormikContext();
 

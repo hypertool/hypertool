@@ -20,7 +20,7 @@ import { Icon, Menu } from "@mui/material";
 
 import IconMenuItem from "./IconMenuItem";
 
-export interface Props {
+export interface IProps {
     parentMenuOpen: boolean;
     label?: string;
     rightIcon?: ReactNode;
@@ -33,8 +33,8 @@ export interface Props {
     disabled?: boolean;
 }
 
-const NestedMenuItem: ForwardRefRenderFunction<Props, any> = (
-    props: Props,
+const NestedMenuItem: ForwardRefRenderFunction<IProps, any> = (
+    props: IProps,
     ref: ForwardedRef<any>,
 ): ReactElement => {
     const {

@@ -6,16 +6,16 @@ import { constants as consoleConstants } from "../utils";
 
 const { resourceStatuses, resourceTypes } = constants;
 
-export type ResourceType = typeof resourceTypes[number];
+export type TResourceType = typeof resourceTypes[number];
 
-export type ResourceStatus = typeof resourceStatuses[number];
-export interface AuthenticationServicesType {
+export type TResourceStatus = typeof resourceStatuses[number];
+export interface IAuthenticationServicesType {
     id: number;
     name: string;
     description: string;
 }
 
-export interface FormField {
+export interface IFormField {
     id: string;
     type:
         | "text"
@@ -34,59 +34,59 @@ export interface FormField {
     help: string;
 }
 
-export interface FormSelectOption {
+export interface IFormSelectOption {
     value: string;
     title: string;
 }
 
-export interface FormSelect extends FormField {
+export interface IFormSelect extends IFormField {
     required: boolean;
     title: string;
-    options: FormSelectOption[];
+    options: IFormSelectOption[];
     size: "small" | "medium";
     variant: "standard" | "outlined" | "filled";
 }
 
-export interface FormTextField extends FormField {
+export interface IFormTextField extends IFormField {
     required: boolean;
     title: string;
     variant: "standard" | "outlined" | "filled";
     size: "small" | "medium" | "large";
 }
 
-export interface FormLargeTextField extends FormTextField {
+export interface IFormLargeTextField extends IFormTextField {
     rows?: number;
 }
 
-export interface FormSwitch extends FormField {
+export interface IFormSwitch extends IFormField {
     title: string;
     size: "small" | "medium";
 }
 
-export type FormFieldType =
-    | FormSelect
-    | FormTextField
-    | FormLargeTextField
-    | FormSwitch;
+export type TFormFieldType =
+    | IFormSelect
+    | IFormTextField
+    | IFormLargeTextField
+    | IFormSwitch;
 
-export interface FormFieldGroup {
+export interface IFormFieldGroup {
     title: string;
-    fields: FormFieldType[];
+    fields: TFormFieldType[];
 }
 
-export interface FormDescription {
-    groups: FormFieldGroup[];
+export interface IFormDescription {
+    groups: IFormFieldGroup[];
 }
 
-export interface CraftProps {
+export interface ICraftProps {
     craft: any;
 }
 
-export type CraftComponent<P> = FunctionComponent<P> & CraftProps;
+export type TCraftComponent<P> = FunctionComponent<P> & ICraftProps;
 
-export type ButtonVariant = "text" | "outlined" | "contained";
+export type TButtonVariant = "text" | "outlined" | "contained";
 
-export type ButtonSize = "small" | "medium" | "large";
+export type TButtonSize = "small" | "medium" | "large";
 
 /**
  * Inflating basically refers to evaluating the source code of an artifact.
@@ -119,15 +119,15 @@ export interface IArtifactReference {
     target: string;
 }
 
-export type SelectSize = "small" | "normal";
+export type TSelectSize = "small" | "normal";
 
-export type SelectVariant = "filled" | "standard" | "outlined";
+export type TSelectVariant = "filled" | "standard" | "outlined";
 
-export type SelectMargin = "none" | "dense" | "normal";
+export type TSelectMargin = "none" | "dense" | "normal";
 
-export type CheckboxSize = "small" | "medium";
+export type TCheckboxSize = "small" | "medium";
 
-export type BaseColor =
+export type TBaseColor =
     | "primary"
     | "secondary"
     | "success"
@@ -135,7 +135,7 @@ export type BaseColor =
     | "info"
     | "warning";
 
-export type Color = "inherit" | BaseColor;
+export type TColor = "inherit" | TBaseColor;
 
 export type TTabType = typeof consoleConstants.tabTypes[number];
 

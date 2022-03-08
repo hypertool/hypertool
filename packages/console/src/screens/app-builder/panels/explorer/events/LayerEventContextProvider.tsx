@@ -9,12 +9,12 @@ import { LayerEventHandlerContext } from "./LayerEventContext";
 import { LayerHandlers } from "./LayerHandlers";
 import { RenderLayerIndicator } from "./RenderLayerIndicator";
 
-export interface Props {
+export interface IProps {
     children?: ReactNode;
 }
 
-export const LayerEventContextProvider: FunctionComponent<Props> = (
-    props: Props,
+export const LayerEventContextProvider: FunctionComponent<IProps> = (
+    props: IProps,
 ): ReactElement => {
     const { children } = props;
     const { store } = useLayerManager();

@@ -64,12 +64,12 @@ const Content = styled("section")(({ theme }) => ({
     padding: theme.spacing(0),
 }));
 
-interface TabTypeDetails {
+interface ITabTypeDetails {
     icon: string;
     title: string;
 }
 
-const tabDetailsByType: Record<string, TabTypeDetails> = {
+const tabDetailsByType: Record<string, ITabTypeDetails> = {
     "new-query": {
         icon: "workspaces",
         title: "New Query",
@@ -317,8 +317,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                     display: active ? "block" : "none",
                     width: "100%",
                     height: "auto",
-                }}
-            >
+                }}>
                 <TabContext.Provider value={{ tab, index, active }}>
                     {type === "new-controller" && <NewControllerEditor />}
                     {type === "edit-controller" && (

@@ -6,13 +6,13 @@ import { styled } from "@mui/material/styles";
 
 import BuilderTabs from "./BuilderTabs";
 
-interface PrimaryAppBarProps extends AppBarProps {
+interface IPrimaryAppBarProps extends AppBarProps {
     open?: boolean;
 }
 
 const StyledAppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== "open",
-})<PrimaryAppBarProps>(({ theme, open }: any) => ({
+})<IPrimaryAppBarProps>(({ theme, open }: any) => ({
     transition: theme.transitions.create(["width", "margin"], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -30,11 +30,11 @@ const StyledAppBar = styled(MuiAppBar, {
 
 const StyledToolbar = styled(Toolbar)({});
 
-interface Props {
+interface IProps {
     open: boolean;
 }
 
-const AppBar: FunctionComponent<Props> = (props: Props): ReactElement => {
+const AppBar: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     const { open } = props;
     return (
         <StyledAppBar open={open}>

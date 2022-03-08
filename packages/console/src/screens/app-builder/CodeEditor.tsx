@@ -16,12 +16,12 @@ const Root = styled("section")(({ theme }) => ({
     padding: theme.spacing(0),
 }));
 
-export interface Props {
+export interface IProps {
     onChange: (value?: string) => void;
     path: string;
 }
 
-const CodeEditor: FunctionComponent<Props> = (props: Props): ReactElement => {
+const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     const { path, onChange } = props;
 
     return (

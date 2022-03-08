@@ -3,7 +3,7 @@ import type { FunctionComponent, ReactElement } from "react";
 import { Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import type { ResourceType } from "../../types";
+import type { TResourceType } from "../../types";
 
 import ResourceItem from "./ResourceItem";
 
@@ -38,7 +38,7 @@ const CategoryTitle = styled(Typography)(({ theme }) => ({
 }));
 
 interface Resource {
-    type: ResourceType;
+    type: TResourceType;
     title: string;
     imageURL: string;
 }
@@ -267,8 +267,8 @@ const categories: CategoryModel[] = [
 ];
 
 interface Props {
-    onChange: (type: ResourceType) => void;
-    activeType: ResourceType | undefined;
+    onChange: (type: TResourceType) => void;
+    activeType: TResourceType | undefined;
 }
 
 const SelectStep: FunctionComponent<Props> = (props: Props): ReactElement => {

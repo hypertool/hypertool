@@ -14,7 +14,7 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
-import type { Session } from "@hypertool/common";
+import type { ISession } from "@hypertool/common";
 
 import ReactDOM from "react-dom";
 import { Navigate, Route, Routes } from "react-router-dom";
@@ -42,7 +42,7 @@ const Root = styled("div")(({ theme }) => ({
     minHeight: "100vh",
 }));
 
-const createPrivateClient = (session: Session) => {
+const createPrivateClient = (session: ISession) => {
     const httpLink = new HttpLink({
         uri: `http://localhost:3001/graphql/v1/private`,
         fetch,

@@ -31,7 +31,7 @@ const columns: GridColDef[] = [
     { field: "type", headerName: "Type", width: 200 },
 ];
 
-interface Props {
+interface IProps {
     selectable: boolean;
     onResourcesSelected: (resources: string[]) => void;
     selectedResources: string[];
@@ -50,8 +50,8 @@ const GET_RESOURCES = gql`
     }
 `;
 
-const ResourcesTable: FunctionComponent<Props> = (
-    props: Props,
+const ResourcesTable: FunctionComponent<IProps> = (
+    props: IProps,
 ): ReactElement => {
     const { selectable, onResourcesSelected, selectedResources } = props;
     // TODO: Destructure `error`, check for non-null, send to sentry

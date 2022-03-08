@@ -79,25 +79,25 @@ const Drawer = styled(MuiDrawer)(({ theme, open }) => ({
     }),
 }));
 
-interface Props {
+interface IProps {
     open: boolean;
     onDrawerClose: () => void;
     onDrawerOpen: () => void;
 }
 
-interface Item {
+interface IItem {
     title: string;
     id: string;
     url?: string;
     icon: string;
 }
 
-interface Group {
+interface IGroup {
     title: string;
-    items: Item[];
+    items: IItem[];
 }
 
-const groups: Group[] = [
+const groups: IGroup[] = [
     {
         title: "General",
         items: [
@@ -147,7 +147,7 @@ const groups: Group[] = [
     },
 ];
 
-const LeftDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
+const LeftDrawer: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     const { open, onDrawerOpen, onDrawerClose } = props;
     const [active, setActive] = useState<string>("explorer");
     const navigate = useNavigate();
@@ -177,8 +177,7 @@ const LeftDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
             variant="permanent"
             open={open}
             anchor="left"
-            onClose={onDrawerClose}
-        >
+            onClose={onDrawerClose}>
             <Root>
                 <Navigation>
                     {groups.map((group, index: number) => (

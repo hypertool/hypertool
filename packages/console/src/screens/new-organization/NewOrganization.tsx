@@ -48,12 +48,12 @@ const CreateAction = styled(Button)(({ theme }) => ({
     marginLeft: theme.spacing(2),
 }));
 
-interface FormValues {
+interface IFormValues {
     name: string;
     description: string;
 }
 
-const initialValues: FormValues = {
+const initialValues: IFormValues = {
     name: "",
     description: "",
 };
@@ -120,7 +120,7 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
     }, [navigate, newOrganization, session, updateUser, updatedUser]);
 
     const handleSubmit = useCallback(
-        (values: FormValues): any => {
+        (values: IFormValues): any => {
             if (session) {
                 createOrganization({
                     variables: {

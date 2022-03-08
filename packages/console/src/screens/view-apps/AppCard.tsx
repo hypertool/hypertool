@@ -50,14 +50,14 @@ const ActionIcon = styled(Icon)(() => ({
     fontSize: 16,
 }));
 
-interface Props {
+interface IProps {
     id: string;
     name: string;
     description: string;
     onLaunch: (id: string) => void;
 }
 
-const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
+const AppCard: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     const { id, name, description, onLaunch } = props;
     const [anchor, setAnchor] = useState<null | HTMLElement>(null);
 

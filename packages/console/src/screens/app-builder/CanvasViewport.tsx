@@ -29,12 +29,12 @@ const CanvasContainer = styled("div")(() => ({
     width: "100%",
 }));
 
-interface ViewportProps {
+interface IViewportProps {
     children: any;
 }
 
-const CanvasViewport: FunctionComponent<ViewportProps> = (
-    props: ViewportProps,
+const CanvasViewport: FunctionComponent<IViewportProps> = (
+    props: IViewportProps,
 ) => {
     const { connectors } = useEditor((state) => ({
         enabled: state.options.enabled,

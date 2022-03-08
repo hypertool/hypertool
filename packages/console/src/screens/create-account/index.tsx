@@ -9,7 +9,15 @@ import {
 
 import { Button, Card, CardContent, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { ApolloClient, createHttpLink, gql, InMemoryCache, useMutation } from "@apollo/client";
+
+import {
+    ApolloClient,
+    InMemoryCache,
+    createHttpLink,
+    gql,
+    useMutation,
+} from "@apollo/client";
+
 import * as yup from "yup";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
@@ -77,14 +85,14 @@ const PrimaryAction = styled(Button)(({ theme }) => ({
     width: "100%",
 }));
 
-interface FormValues {
+interface IFormValues {
     firstName: string;
     lastName: string;
     emailAddress: string;
     password: string;
 }
 
-const initialValues: FormValues = {
+const initialValues: IFormValues = {
     firstName: "",
     lastName: "",
     emailAddress: "",
@@ -152,17 +160,18 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
     const appName = "manage-users"; /* Temporary Declaration */
 
     const handleSubmit = useCallback(
-        async (values: FormValues) => {
+        async (values: IFormValues) => {
             createAccount({
                 mutation: CREATE_ACCOUNT,
                 variables: {
                     ...values,
-                    role: "developer"
+                    role: "developer",
                 },
             });
             navigate("/login");
-
-        }, [createAccount, navigate]);
+        },
+        [createAccount, navigate],
+    );
 
     return (
         <Root>
@@ -175,8 +184,7 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                         <Formik
                             initialValues={initialValues}
                             onSubmit={handleSubmit}
-                            validationSchema={validationSchema}
-                        >
+                            validationSchema={validationSchema}>
                             {(formik) => (
                                 <>
                                     <InputField
@@ -220,8 +228,7 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                                         variant="contained"
                                         color="primary"
                                         size="medium"
-                                        onClick={() => formik.submitForm()}
-                                    >
+                                        onClick={() => formik.submitForm()}>
                                         Create Account
                                     </PrimaryAction>
                                 </>

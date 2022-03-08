@@ -21,13 +21,13 @@ import { Formik } from "formik";
 
 import { TextField } from "../../../../components";
 import type {
-    FormField,
-    FormFieldGroup,
-    FormLargeTextField,
-    FormSelect,
-    FormSwitch,
-    FormTextField,
     IArtifactReference,
+    IFormField,
+    IFormFieldGroup,
+    IFormLargeTextField,
+    IFormSelect,
+    IFormSwitch,
+    IFormTextField,
 } from "../../../../types";
 
 import Handler from "./Handler";
@@ -56,13 +56,13 @@ const DecoratedFormGroup = styled(FormGroup)(({ theme }) => ({
     margin: `${theme.spacing(1.5)} 0px`,
 }));
 
-export interface Props {
-    groups: FormFieldGroup[];
+export interface IProps {
+    groups: IFormFieldGroup[];
     validationSchema: any;
 }
 
-const PropertiesForm: FunctionComponent<Props> = (
-    props: Props,
+const PropertiesForm: FunctionComponent<IProps> = (
+    props: IProps,
 ): ReactElement => {
     const { groups, validationSchema } = props;
     const {
@@ -73,7 +73,7 @@ const PropertiesForm: FunctionComponent<Props> = (
     }));
 
     const makeChangeHandler =
-        (field: FormField, valueField: "value" | "checked" = "value") =>
+        (field: IFormField, valueField: "value" | "checked" = "value") =>
         (event: any) => {
             setProp((props: any) => {
                 props[field.id] = event.target[valueField];
@@ -81,27 +81,25 @@ const PropertiesForm: FunctionComponent<Props> = (
         };
 
     const makeHandlerChangeHandler =
-        (field: FormField) => (reference: IArtifactReference) => {
+        (field: IFormField) => (reference: IArtifactReference) => {
             setProp((props: any) => {
                 props[field.id] = reference;
             });
         };
 
-    const renderSelect = (field: FormSelect): ReactElement => (
+    const renderSelect = (field: IFormSelect): ReactElement => (
         <DecoratedFormControl
             variant={field.variant}
             fullWidth={true}
             required={field.required}
-            size={field.size}
-        >
+            size={field.size}>
             <InputLabel id={field.id}>{field.title}</InputLabel>
             <Select
                 labelId={field.id}
                 value={componentProps[field.id]}
                 onChange={makeChangeHandler(field)}
                 label={field.title}
-                name={field.id}
-            >
+                name={field.id}>
                 {field.options.map((option) => (
                     <MenuItem value={option.value}>{option.title}</MenuItem>
                 ))}
@@ -109,16 +107,15 @@ const PropertiesForm: FunctionComponent<Props> = (
         </DecoratedFormControl>
     );
 
-    const getSelectedTitle = (field: FormSelect, selected: string): string =>
+    const getSelectedTitle = (field: IFormSelect, selected: string): string =>
         field.options.find((option) => option.value === selected)?.title ??
         "<invalid>";
 
-    const renderMultiSelect = (field: FormSelect) => (
+    const renderMultiSelect = (field: IFormSelect) => (
         <DecoratedFormControl
             variant={field.variant}
             fullWidth={true}
-            size={field.size}
-        >
+            size={field.size}>
             <InputLabel id={field.id}>{field.title}</InputLabel>
             <Select
                 labelId={field.id}
@@ -135,8 +132,7 @@ const PropertiesForm: FunctionComponent<Props> = (
                             />
                         ))}
                     </div>
-                )}
-            >
+                )}>
                 {field.options.map((option) => (
                     <MenuItem value={option.value}>{option.title}</MenuItem>
                 ))}
@@ -144,7 +140,7 @@ const PropertiesForm: FunctionComponent<Props> = (
         </DecoratedFormControl>
     );
 
-    const renderTextField = (field: FormTextField): ReactElement => (
+    const renderTextField = (field: IFormTextField): ReactElement => (
         <DecoratedTextField
             label={field.title}
             id={field.id}
@@ -160,7 +156,7 @@ const PropertiesForm: FunctionComponent<Props> = (
         />
     );
 
-    const renderLargeTextField = (field: FormLargeTextField) => (
+    const renderLargeTextField = (field: IFormLargeTextField) => (
         <DecoratedTextField
             id={field.id}
             label={field.title}
@@ -178,7 +174,7 @@ const PropertiesForm: FunctionComponent<Props> = (
         />
     );
 
-    const renderNumberTextField = (field: FormTextField) => (
+    const renderNumberTextField = (field: IFormTextField) => (
         <DecoratedTextField
             id={field.id}
             label={field.title}
@@ -195,7 +191,7 @@ const PropertiesForm: FunctionComponent<Props> = (
     );
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const renderDateField = (field: FormTextField) =>
+    const renderDateField = (field: IFormTextField) =>
         // <DatePicker
         //     id={field.id}
         //     label={field.title}
@@ -211,7 +207,7 @@ const PropertiesForm: FunctionComponent<Props> = (
         null;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const renderTimeField = (field: FormTextField) =>
+    const renderTimeField = (field: IFormTextField) =>
         // <TimePicker
         //     id={field.id}
         //     label={field.title}
@@ -226,7 +222,7 @@ const PropertiesForm: FunctionComponent<Props> = (
         null;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const renderDateTimeField = (field: FormTextField) =>
+    const renderDateTimeField = (field: IFormTextField) =>
         // <DateTimePicker
         //     id={field.identifier}
         //     label={field.label}
@@ -245,7 +241,7 @@ const PropertiesForm: FunctionComponent<Props> = (
         // />
         null;
 
-    const renderSwitch = (field: FormSwitch) => (
+    const renderSwitch = (field: IFormSwitch) => (
         <DecoratedFormGroup>
             <FormControlLabel
                 id={field.id}
@@ -315,7 +311,7 @@ const PropertiesForm: FunctionComponent<Props> = (
          */
         null;
 
-    const renderEmailAddressField = (field: FormTextField) => (
+    const renderEmailAddressField = (field: IFormTextField) => (
         <DecoratedTextField
             id={field.id}
             label={field.title}
@@ -331,7 +327,7 @@ const PropertiesForm: FunctionComponent<Props> = (
         />
     );
 
-    const renderPhoneNumberField = (field: FormTextField) => (
+    const renderPhoneNumberField = (field: IFormTextField) => (
         <DecoratedTextField
             id={field.id}
             label={field.title}
@@ -347,7 +343,7 @@ const PropertiesForm: FunctionComponent<Props> = (
         />
     );
 
-    const renderHandlerField = (field: FormTextField) => (
+    const renderHandlerField = (field: IFormTextField) => (
         <Handler
             title={field.title}
             onSelect={makeHandlerChangeHandler(field)}
@@ -446,70 +442,69 @@ const PropertiesForm: FunctionComponent<Props> = (
                     initialValues={componentProps}
                     enableReinitialize={true}
                     onSubmit={async () => null}
-                    validationSchema={validationSchema}
-                >
+                    validationSchema={validationSchema}>
                     <DecoratedForm>
-                        {groups.map((group: FormFieldGroup) => (
+                        {groups.map((group: IFormFieldGroup) => (
                             <>
                                 {group.fields.map((field) => (
                                     <Fragment key={field.id}>
                                         {field.type === "text" &&
                                             renderTextField(
-                                                field as FormTextField,
+                                                field as IFormTextField,
                                             )}
 
                                         {field.type === "large_text" &&
                                             renderLargeTextField(
-                                                field as FormLargeTextField,
+                                                field as IFormLargeTextField,
                                             )}
 
                                         {field.type === "number" &&
                                             renderNumberTextField(
-                                                field as FormTextField,
+                                                field as IFormTextField,
                                             )}
 
                                         {field.type === "date" &&
                                             renderDateField(
-                                                field as FormTextField,
+                                                field as IFormTextField,
                                             )}
 
                                         {field.type === "time" &&
                                             renderTimeField(
-                                                field as FormTextField,
+                                                field as IFormTextField,
                                             )}
 
                                         {field.type === "date_time" &&
                                             renderDateTimeField(
-                                                field as FormTextField,
+                                                field as IFormTextField,
                                             )}
 
                                         {field.type === "switch" &&
-                                            renderSwitch(field as FormSwitch)}
+                                            renderSwitch(field as IFormSwitch)}
 
                                         {field.type === "date_range" &&
                                             renderDateRange(field)}
 
                                         {field.type === "select" &&
-                                            renderSelect(field as FormSelect)}
+                                            renderSelect(field as IFormSelect)}
 
                                         {field.type === "multi_select" &&
                                             renderMultiSelect(
-                                                field as FormSelect,
+                                                field as IFormSelect,
                                             )}
 
                                         {field.type === "email_address" &&
                                             renderEmailAddressField(
-                                                field as FormTextField,
+                                                field as IFormTextField,
                                             )}
 
                                         {field.type === "phone_number" &&
                                             renderPhoneNumberField(
-                                                field as FormTextField,
+                                                field as IFormTextField,
                                             )}
 
                                         {field.type === "handler" &&
                                             renderHandlerField(
-                                                field as FormTextField,
+                                                field as IFormTextField,
                                             )}
                                     </Fragment>
                                 ))}

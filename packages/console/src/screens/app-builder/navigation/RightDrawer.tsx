@@ -59,16 +59,18 @@ const Drawer = styled(MuiDrawer)(({ theme, open }) => ({
         "& .MuiDrawer-paper": closedMixin(theme),
     }),
 }));
-interface Props {
+interface IProps {
     open: boolean;
     onDrawerClose: () => void;
 }
 
-type TabIdentifier = "properties" | "comments";
+type TTabIdentifier = "properties" | "comments";
 
-const RightDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
+const RightDrawer: FunctionComponent<IProps> = (
+    props: IProps,
+): ReactElement => {
     const { open, onDrawerClose } = props;
-    const [active, setActive] = useState<TabIdentifier>("properties");
+    const [active, setActive] = useState<TTabIdentifier>("properties");
     const selected = useEditor((state) => state.events.selected);
 
     const handleChange = useCallback((event, newValue) => {

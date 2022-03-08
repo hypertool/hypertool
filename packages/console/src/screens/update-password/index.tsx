@@ -60,13 +60,13 @@ const InputField = styled(TextField)(({ theme }) => ({
     },
 }));
 
-interface FormValues {
+interface IFormValues {
     oldPassword: string;
     newPassword1: string;
     newPassword2: string;
 }
 
-const initialValues: FormValues = {
+const initialValues: IFormValues = {
     oldPassword: "",
     newPassword1: "",
     newPassword2: "",
@@ -113,7 +113,7 @@ const UpdatePassword: FunctionComponent = (): ReactElement => {
     // const client = new Client();
 
     const handleSubmit = useCallback(
-        async (values: FormValues) => {
+        async (values: IFormValues) => {
             if (values.newPassword1 === values.newPassword2) {
                 /*
                  * client.updatePassword({

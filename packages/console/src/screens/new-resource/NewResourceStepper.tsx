@@ -27,7 +27,7 @@ import * as yup from "yup";
 import { Formik } from "formik";
 
 import { BuilderActionsContext, TabContext } from "../../contexts";
-import type { ResourceType } from "../../types";
+import type { TResourceType } from "../../types";
 
 import ConfigureStep from "./ConfigureStep";
 import SelectStep from "./SelectStep";
@@ -92,13 +92,13 @@ const CreateAction = styled(Button)(() => ({
     width: 184,
 }));
 
-interface StepStructure {
+interface IStepStructure {
     title: string;
     optional: boolean;
     component: FunctionComponent<any>;
 }
 
-const steps: StepStructure[] = [
+const steps: IStepStructure[] = [
     {
         title: "Select your resource type",
         optional: false,
@@ -111,7 +111,7 @@ const steps: StepStructure[] = [
     },
 ];
 
-interface PostgresFormValues {
+interface IPostgresFormValues {
     resourceName: string;
     host: string;
     port: string;
@@ -121,7 +121,7 @@ interface PostgresFormValues {
     connectUsingSSL: boolean;
 }
 
-interface MySQLFormValues {
+interface IMySQLFormValues {
     resourceName: string;
     host: string;
     port: string;
@@ -131,7 +131,7 @@ interface MySQLFormValues {
     connectUsingSSL: boolean;
 }
 
-interface MongoDBFormValues {
+interface IMongoDBFormValues {
     resourceName: string;
     host: string;
     port: string;
@@ -141,19 +141,19 @@ interface MongoDBFormValues {
     connectUsingSSL: boolean;
 }
 
-interface BigQueryFormValues {
+interface IBigQueryFormValues {
     resourceName: string;
     serviceAccountKey: string;
 }
 
-interface InitialValues {
-    postgres: PostgresFormValues;
-    mysql: MySQLFormValues;
-    mongodb: MongoDBFormValues;
-    bigquery: BigQueryFormValues;
+interface IInitialValues {
+    postgres: IPostgresFormValues;
+    mysql: IMySQLFormValues;
+    mongodb: IMongoDBFormValues;
+    bigquery: IBigQueryFormValues;
 }
 
-const initialValues: InitialValues = {
+const initialValues: IInitialValues = {
     postgres: {
         resourceName: "",
         host: "",
@@ -295,7 +295,7 @@ const CREATE_RESOURCE = gql`
 
 const NewResourceStepper: FunctionComponent = (): ReactElement => {
     const [activeStep, setActiveStep] = useState(0);
-    const [resourceType, setResourceType] = useState<ResourceType | undefined>(
+    const [resourceType, setResourceType] = useState<TResourceType | undefined>(
         undefined,
     );
     const theme = useTheme();
@@ -369,7 +369,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
     };
 
     const handleResourceTypeChange = useCallback(
-        (newResourceType: ResourceType) => {
+        (newResourceType: TResourceType) => {
             setResourceType(newResourceType);
         },
         [],
@@ -388,7 +388,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
         }
     };
 
-    const renderStepperItem = (step: StepStructure, index: number) => {
+    const renderStepperItem = (step: IStepStructure, index: number) => {
         return (
             <Step key={step.title} completed={isStepComplete(index)}>
                 <StepLabel
@@ -396,8 +396,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                         step.optional && (
                             <Typography variant="caption">Optional</Typography>
                         )
-                    }
-                >
+                    }>
                     {step.title}
                 </StepLabel>
             </Step>
@@ -435,8 +434,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                             height: 50,
                             p: 2,
                             backgroundColor: "#000000",
-                        }}
-                    >
+                        }}>
                         <Typography>{steps[activeStep].title}</Typography>
                     </Paper>
                 </Hidden>
@@ -445,17 +443,16 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                     initialValues={
                         activeStep > 0
                             ? (initialValues as any)[
-                                  resourceType as ResourceType
+                                  resourceType as TResourceType
                               ]
                             : {}
                     }
                     onSubmit={handleSubmit}
                     validationSchema={
                         activeStep > 0
-                            ? validationSchemas[resourceType as ResourceType]
+                            ? validationSchemas[resourceType as TResourceType]
                             : undefined
-                    }
-                >
+                    }>
                     {(formik) => (
                         <>
                             <StepContainer>
@@ -481,8 +478,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                                 onClick={handleBack}
                                                 sx={{ mr: 1 }}
                                                 variant="contained"
-                                                size="small"
-                                            >
+                                                size="small">
                                                 {theme.direction === "rtl" ? (
                                                     <KeyboardArrowRight />
                                                 ) : (
@@ -504,8 +500,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                                 (activeStep === 1 &&
                                                     (!formik.dirty ||
                                                         !formik.isValid))
-                                            }
-                                        >
+                                            }>
                                             Next
                                             {theme.direction === "rtl" ? (
                                                 <KeyboardArrowLeft />
@@ -527,8 +522,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                                     (!formik.dirty ||
                                                         !formik.isValid)) ||
                                                 creatingResource
-                                            }
-                                        >
+                                            }>
                                             Create Resource
                                             {!creatingResource &&
                                                 !newResource && (
@@ -565,8 +559,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                         height: 50,
                                         bgcolor: "background.default",
                                         padding: 0,
-                                    }}
-                                >
+                                    }}>
                                     <MobileStepper
                                         variant="text"
                                         steps={steps.length}
@@ -585,8 +578,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                                 disabled={
                                                     activeStep ===
                                                     steps.length - 1
-                                                }
-                                            >
+                                                }>
                                                 Next
                                                 {theme.direction === "rtl" ? (
                                                     <KeyboardArrowLeft />
@@ -599,8 +591,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                             <Button
                                                 size="small"
                                                 onClick={handleBack}
-                                                disabled={activeStep === 0}
-                                            >
+                                                disabled={activeStep === 0}>
                                                 {theme.direction === "rtl" ? (
                                                     <KeyboardArrowRight />
                                                 ) : (

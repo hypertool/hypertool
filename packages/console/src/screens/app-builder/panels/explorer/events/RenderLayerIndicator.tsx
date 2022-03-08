@@ -7,12 +7,12 @@ import { RenderIndicator } from "@craftjs/utils";
 
 import { useLayerManager } from "../manager/useLayerManager";
 
-interface Props {
+interface IProps {
     children?: ReactNode;
 }
 
-export const RenderLayerIndicator: FunctionComponent<Props> = (
-    props: Props,
+export const RenderLayerIndicator: FunctionComponent<IProps> = (
+    props: IProps,
 ) => {
     const { children } = props;
     const { layers, events } = useLayerManager((state) => state);

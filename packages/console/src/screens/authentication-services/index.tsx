@@ -2,11 +2,11 @@ import { FunctionComponent, ReactElement } from "react";
 
 import { styled } from "@mui/material/styles";
 
-import { AuthenticationServicesType } from "../../types";
+import { IAuthenticationServicesType } from "../../types";
 
 import Authentication from "./Authentication";
 
-const authServicesArray: AuthenticationServicesType[] = [
+const authServicesArray: IAuthenticationServicesType[] = [
     {
         id: 1,
         name: "Google Authentication",
@@ -37,7 +37,7 @@ const AuthenticationServices: FunctionComponent = (): ReactElement => {
         <Root>
             <Title>Authentication Services</Title>
             {authServicesArray.map(
-                (authService: AuthenticationServicesType) => {
+                (authService: IAuthenticationServicesType) => {
                     return (
                         <Authentication
                             key={authService.id}

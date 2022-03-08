@@ -5,7 +5,7 @@ import { Icon, ListItem, ListItemIcon, Tooltip } from "@mui/material";
 
 import Wrap from "../../../components/Wrap";
 
-interface Props {
+interface IProps {
     open: boolean;
     title: string;
     id: string;
@@ -15,8 +15,8 @@ interface Props {
     onClick: (id: string, url?: string) => void;
 }
 
-const LeftDrawerItem: FunctionComponent<Props> = (
-    props: Props,
+const LeftDrawerItem: FunctionComponent<IProps> = (
+    props: IProps,
 ): ReactElement => {
     const { open, title, id, url, icon, onClick, selected } = props;
     const handleClick = useCallback(() => {
