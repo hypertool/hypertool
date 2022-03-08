@@ -353,9 +353,9 @@ const componentOrigins = tuple(
     "api",
 );
 
-const organizationMembershipTypes = tuple("owner", "member");
+const organizationRoles = tuple("owner", "member");
 
-const teamMembershipTypes = tuple("maintainer", "member");
+const teamRoles = tuple("maintainer", "member");
 
 const conversationStatuses = tuple("pending", "resolved", "banned", "deleted");
 
@@ -389,7 +389,7 @@ export {
     conversationStatuses,
     commentStatuses,
     controllerStatuses,
-    organizationMembershipTypes,
-    teamMembershipTypes,
+    organizationRoles,
+    teamRoles,
     teamStatuses,
 };

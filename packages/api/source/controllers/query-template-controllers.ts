@@ -129,7 +129,6 @@ const listByIds = async (
     for (const query of unorderedQueries) {
         object[query._id.toString()] = query;
     }
-    // eslint-disable-next-line security/detect-object-injection
     return queryTemplateIds.map((key) => toExternal(object[key]));
 };
 
