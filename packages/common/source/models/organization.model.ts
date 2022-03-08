@@ -2,11 +2,31 @@ import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
 import type { Organization } from "../types";
-import { organizationStatuses } from "../utils/constants";
+import {
+    organizationMembershipTypes,
+    organizationStatuses,
+} from "../utils/constants";
+
+const organizationMembershipSchema = new Schema({
+    user: {
+        type: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+    },
+    role: {
+        type: String,
+        enum: organizationMembershipTypes,
+        default: "member",
+    },
+});
 
 const organizationSchema = new Schema(
     {
-        /* An identifier that helps humans identify the organization across
+        /*
+         * An identifier that helps humans identify the organization across
          * Hypertool.
          */
         name: {
@@ -33,13 +53,7 @@ const organizationSchema = new Schema(
         },
         /* The list of users that are part of the organization. */
         members: {
-            type: [
-                {
-                    type: Schema.Types.ObjectId,
-                    ref: "Membership",
-                },
-            ],
-            required: true,
+            type: [organizationMembershipSchema],
         },
         /* The list of apps that are part of the organization. */
         apps: {
@@ -49,9 +63,17 @@ const organizationSchema = new Schema(
                     ref: "App",
                 },
             ],
-            required: true,
         },
-        /* The status of the organization. Valid values are as follows: active,
+        teams: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "Team",
+                },
+            ],
+        },
+        /*
+         * The status of the organization. Valid values are as follows: active,
          * deleted, banned.
          */
         status: {
