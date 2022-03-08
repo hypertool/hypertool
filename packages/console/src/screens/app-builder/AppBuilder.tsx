@@ -25,6 +25,7 @@ import type {
     TTabType,
 } from "../../types";
 import { constants, templates } from "../../utils";
+import QueryEditor from "../edit-query";
 import ResourceEditor from "../edit-resource";
 import NewControllerEditor from "../new-controller";
 import NewQueryEditor from "../new-query";
@@ -357,6 +358,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                             }
                         />
                     )}
+                    {type === "edit-query" && <QueryEditor />}
                     {type === "new-query" && <NewQueryEditor />}
                 </TabContext.Provider>
             </div>
