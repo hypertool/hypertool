@@ -9,6 +9,7 @@ import {
     TextFields,
 } from "@mui/icons-material";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import Crop169Icon from "@mui/icons-material/Crop169";
 
 import { Element, useEditor } from "@craftjs/core";
 
@@ -16,6 +17,7 @@ import {
     Button,
     Card,
     Checkbox,
+    Chip,
     FlexLayout,
     Select,
     Text,
@@ -48,7 +50,8 @@ const Components = () => {
             <Grid item={true} xs={6}>
                 <ItemButton
                     ref={(ref) => connectors.create(ref as any, <Button />)}
-                    variant="contained">
+                    variant="contained"
+                >
                     <FormatShapes fontSize="large" />
                     Button
                 </ItemButton>
@@ -56,7 +59,8 @@ const Components = () => {
             <Grid item={true} xs={6}>
                 <ItemButton
                     ref={(ref) => connectors.create(ref as any, <Text />)}
-                    variant="contained">
+                    variant="contained"
+                >
                     <TextFields fontSize="large" />
                     Text
                 </ItemButton>
@@ -69,7 +73,8 @@ const Components = () => {
                             <Element is={FlexLayout} canvas={true} />,
                         )
                     }
-                    variant="contained">
+                    variant="contained"
+                >
                     <AddBoxOutlined fontSize="large" />
                     Flex Layout
                 </ItemButton>
@@ -77,7 +82,8 @@ const Components = () => {
             <Grid item={true} xs={6}>
                 <ItemButton
                     ref={(ref) => connectors.create(ref as any, <Card />)}
-                    variant="contained">
+                    variant="contained"
+                >
                     <AddBoxTwoTone fontSize="large" />
                     Card
                 </ItemButton>
@@ -85,7 +91,8 @@ const Components = () => {
             <Grid item={true} xs={6}>
                 <ItemButton
                     ref={(ref) => connectors.create(ref as any, <Select />)}
-                    variant="contained">
+                    variant="contained"
+                >
                     <ArrowDropDownCircle fontSize="large" />
                     Select
                 </ItemButton>
@@ -93,9 +100,19 @@ const Components = () => {
             <Grid item={true} xs={6}>
                 <ItemButton
                     ref={(ref) => connectors.create(ref as any, <Checkbox />)}
-                    variant="contained">
+                    variant="contained"
+                >
                     <CheckBoxIcon fontSize="large" />
-                    Select
+                    Checkbox
+                </ItemButton>
+            </Grid>
+            <Grid item={true} xs={6}>
+                <ItemButton
+                    ref={(ref) => connectors.create(ref as any, <Chip />)}
+                    variant="contained"
+                >
+                    <Crop169Icon fontSize="large" />
+                    Chip
                 </ItemButton>
             </Grid>
         </ContianerGrid>

@@ -1,6 +1,7 @@
 import { Button } from "./Button";
 import { Card, CardBottom, CardTop } from "./Card";
 import { Checkbox } from "./Checkbox";
+import { Chip } from "./Chip";
 import { Container } from "./Container";
 import FlexLayout from "./FlexLayout";
 import { Select } from "./Select";
@@ -16,6 +17,7 @@ export const nodeMappings = {
     FlexLayout,
     Select,
     Checkbox,
+    Chip,
 };
 
 export * from "./Text";
@@ -25,3 +27,4 @@ export * from "./Card";
 export { FlexLayout };
 export * from "./Select";
 export * from "./Checkbox";
+export * from "./Chip";

@@ -197,3 +197,5 @@ export interface ITabContext {
     index: number;
     active: boolean;
 }
+
+export type ChipVariant = "filled" | "outlined";
