@@ -60,7 +60,7 @@ const Resources: FunctionComponent = (): ReactElement => {
 
     const renderResource = (record: any) => (
         <ListItem
-            key={record.name}
+            key={record.id}
             secondaryAction={
                 <IconButton edge="end">
                     <Icon fontSize="small">delete</Icon>

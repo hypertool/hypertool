@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import { gql, useQuery } from "@apollo/client";
+
 import { BuilderActionsContext } from "../../../../contexts";
 
 const Actions = styled("div")(({ theme }) => ({
@@ -23,16 +25,36 @@ const Actions = styled("div")(({ theme }) => ({
     )} ${theme.spacing(2)}`,
 }));
 
+const GET_CONTROLLERS = gql`
+    query GetControllers($page: Int, $limit: Int) {
+        getControllers(page: $page, limit: $limit) {
+            totalPages
+            records {
+                id
+                name
+                language
+            }
+        }
+    }
+`;
+
 const Controllers: FunctionComponent = (): ReactElement => {
     const { createTab } = useContext(BuilderActionsContext);
+    const { data } = useQuery(GET_CONTROLLERS, {
+        variables: {
+            page: 0,
+            limit: 20,
+        },
+    });
+    const { records } = data?.getControllers || { records: [] };
 
     const handleCreateController = useCallback(() => {
         createTab("new-controller");
     }, [createTab]);
 
-    const renderController = (title: string) => (
+    const renderController = (record: any) => (
         <ListItem
-            key={title}
+            key={record.id}
             secondaryAction={
                 <IconButton edge="end">
                     <Icon fontSize="small">delete</Icon>
@@ -44,15 +66,13 @@ const Controllers: FunctionComponent = (): ReactElement => {
                     <Icon fontSize="small">code</Icon>
                 </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={title} />
+            <ListItemText primary={record.name} />
         </ListItem>
     );
 
     return (
         <div>
-            <List dense={true}>
-                {["home-controller", "users-controller"].map(renderController)}
-            </List>
+            <List dense={true}>{records.map(renderController)}</List>
             <Actions>
                 <Button
                     size="small"
