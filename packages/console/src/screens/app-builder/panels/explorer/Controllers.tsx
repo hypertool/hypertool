@@ -52,6 +52,10 @@ const Controllers: FunctionComponent = (): ReactElement => {
         createTab("new-controller");
     }, [createTab]);
 
+    const handleEditController = (controllerId: string) => () => {
+        createTab("edit-controller", { controllerId });
+    };
+
     const renderController = (record: any) => (
         <ListItem
             key={record.id}
@@ -60,6 +64,7 @@ const Controllers: FunctionComponent = (): ReactElement => {
                     <Icon fontSize="small">delete</Icon>
                 </IconButton>
             }
+            onClick={handleEditController(record.id)}
         >
             <ListItemAvatar>
                 <Avatar sx={{ width: 28, height: 28 }}>
