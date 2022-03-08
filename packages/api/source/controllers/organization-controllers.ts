@@ -1,8 +1,4 @@
-import type {
-    ExternalOrganization,
-    Organization,
-    OrganizationPage,
-} from "@hypertool/common";
+import type { ExternalOrganization, OrganizationPage } from "@hypertool/common";
 import {
     BadRequestError,
     NotFoundError,
@@ -12,12 +8,17 @@ import {
 } from "@hypertool/common";
 
 import joi from "joi";
-import type { Document } from "mongoose";
 
 const createSchema = joi.object({
     name: joi.string().max(256).allow(""),
+    title: joi.string().max(512).allow(""),
     description: joi.string().max(512).allow(""),
-    members: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    members: joi.array().items(
+        joi.object({
+            user: joi.string().regex(constants.identifierPattern),
+            role: joi.string().valid(...constants.organizationRoles),
+        }),
+    ),
 });
 
 const filterSchema = joi.object({
@@ -32,8 +33,16 @@ const filterSchema = joi.object({
 
 const updateSchema = joi.object({
     name: joi.string().max(256).allow(""),
+    title: joi.string().max(512).allow(""),
     description: joi.string().max(512).allow(""),
-    members: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    members: joi.array().items(
+        joi.object({
+            user: joi.string().regex(constants.identifierPattern),
+            role: joi.string().valid(...constants.organizationRoles),
+        }),
+    ),
+    apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    teams: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
 const toExternal = (organization: any): ExternalOrganization => {
@@ -41,22 +50,24 @@ const toExternal = (organization: any): ExternalOrganization => {
         id,
         _id,
         name,
+        title,
         description,
         members,
+        apps,
+        teams,
         status,
         createdAt,
         updatedAt,
-        title,
-        apps,
     } = organization;
 
     return {
         id: id || _id.toString(),
         name,
-        description,
         title,
+        description,
+        members,
         apps: extractIds(apps),
-        members: extractIds(members),
+        teams: extractIds(teams),
         status,
         createdAt,
         updatedAt,
