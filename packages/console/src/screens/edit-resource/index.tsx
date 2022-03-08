@@ -183,7 +183,6 @@ const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
         ...others
     } = data?.getResourceById ?? {};
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     useEffect(() => {
         if (!name || index < 0) {
             return;
@@ -244,7 +243,8 @@ const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
                 /* Since the form expects flat data, spread the configuration. */
                 ...others[type],
             }}
-            onSubmit={handleSubmit}>
+            onSubmit={handleSubmit}
+        >
             {(formik) => (
                 <Root>
                     <AppBar position="static" elevation={1}>
@@ -256,7 +256,8 @@ const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
                                     onClick={handleCreateNew}
                                     color="inherit"
                                     sx={{ mr: 2 }}
-                                    disabled={loading}>
+                                    disabled={loading}
+                                >
                                     <ActionIcon fontSize="small">
                                         cancel
                                     </ActionIcon>
@@ -267,7 +268,8 @@ const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
                                     color="inherit"
                                     onClick={handleCreateNew}
                                     sx={{ mr: 2 }}
-                                    disabled={loading}>
+                                    disabled={loading}
+                                >
                                     <ActionIcon fontSize="small">
                                         delete
                                     </ActionIcon>
@@ -278,7 +280,8 @@ const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
                                     onClick={handleRefresh}
                                     color="inherit"
                                     sx={{ mr: 2 }}
-                                    disabled={loading}>
+                                    disabled={loading}
+                                >
                                     <ActionIcon fontSize="small">
                                         refresh
                                     </ActionIcon>
@@ -288,7 +291,8 @@ const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
                                     size="small"
                                     onClick={() => formik.submitForm()}
                                     color="inherit"
-                                    disabled={loading}>
+                                    disabled={loading}
+                                >
                                     <ActionIcon fontSize="small">
                                         save
                                     </ActionIcon>
