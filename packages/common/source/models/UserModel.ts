@@ -38,6 +38,16 @@ const userSchema = new Schema(
                     ref: "Organization",
                 },
             ],
+            default: [],
+        },
+        apps: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "App",
+                },
+            ],
+            default: [],
         },
         gender: {
             type: String,

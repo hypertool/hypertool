@@ -21,14 +21,12 @@ const createSchema = joi.object({
     firstName: joi.string().min(1).max(256).required(),
     lastName: joi.string().min(1).max(256).required(),
     description: joi.string().max(512).allow(""),
-    organization: joi.string().regex(constants.identifierPattern),
     gender: joi.string().valid(...constants.genders),
     countryCode: joi.string().valid(...constants.countryCodes),
     pictureURL: joi.string().allow(""),
     emailAddress: joi.string().max(256).required(),
     birthday: joi.date().allow(null),
     role: joi.string().valid(...constants.userRoles),
-    groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
 const filterSchema = joi.object({
@@ -47,7 +45,10 @@ const updateSchema = joi.object({
     firstName: joi.string().min(1).max(256),
     lastName: joi.string().min(1).max(256),
     description: joi.string().max(512).allow(""),
-    organization: joi.string().regex(constants.identifierPattern),
+    organizations: joi
+        .array()
+        .items(joi.string().regex(constants.identifierPattern)),
+    apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
     gender: joi.string().valid(...constants.genders),
     countryCode: joi.string().valid(...constants.countryCodes),
     pictureURL: joi.string().allow(""),
