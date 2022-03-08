@@ -1,11 +1,8 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import type { Organization } from "../types";
-import {
-    organizationMembershipTypes,
-    organizationStatuses,
-} from "../utils/constants";
+import type { IOrganization } from "../types";
+import { organizationRoles, organizationStatuses } from "../utils/constants";
 
 const organizationMembershipSchema = new Schema({
     user: {
@@ -18,7 +15,7 @@ const organizationMembershipSchema = new Schema({
     },
     role: {
         type: String,
-        enum: organizationMembershipTypes,
+        enum: organizationRoles,
         default: "member",
     },
 });
@@ -93,4 +90,4 @@ organizationSchema.index({
 });
 organizationSchema.plugin(paginate);
 
-export default model<Organization>("Organization", organizationSchema);
+export default model<IOrganization>("Organization", organizationSchema);

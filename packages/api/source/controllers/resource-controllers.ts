@@ -1,4 +1,7 @@
-import type { ExternalResource, ResourcePage } from "@hypertool/common";
+import type {
+    ExternalResource,
+    IBigQueryConfiguration,
+} from "@hypertool/common";
 import {
     BadRequestError,
     NotFoundError,
@@ -160,7 +163,7 @@ const create = async (context, attributes): Promise<ExternalResource> => {
     return toExternal(newResource);
 };
 
-const list = async (context, parameters): Promise<ResourcePage> => {
+const list = async (context, parameters): Promise<IBigQueryConfiguration> => {
     const { error, value } = filterSchema.validate(parameters);
     if (error) {
         throw new BadRequestError(error.message);
@@ -209,7 +212,6 @@ const listByIds = async (
     for (const resource of unorderedResources) {
         object[resource._id.toString()] = resource;
     }
-    // eslint-disable-next-line security/detect-object-injection
     return resourceIds.map((key) => toExternal(object[key]));
 };
 

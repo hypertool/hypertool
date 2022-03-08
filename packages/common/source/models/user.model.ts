@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import type { User } from "../types";
+import type { IUser } from "../types";
 import {
     countryCodes,
     genders,
@@ -101,4 +101,4 @@ userSchema.index({
 });
 userSchema.plugin(paginate);
 
-export default model<User>("User", userSchema);
+export default model<IUser>("User", userSchema);

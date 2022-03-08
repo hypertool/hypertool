@@ -16,7 +16,6 @@ import {
     resourceTypes,
     screenStatuses,
     teamStatuses,
-    userRoles,
     userStatuses,
 } from "../utils/constants";
 
@@ -25,117 +24,26 @@ import {
  * 1. All identifiers must be of type `ObjectId`. Do not use strings.
  * 2. The identifier attribute in external types must be `id`.
  * 3. The identifier attribute in internal types must be `_id`.
+ * 4. Please maintain the following order while creating interfaces:
+ *   - Users
+ *   - Organizations
+ *   - Teams
+ *   - Apps
+ *   - Resources
+ *   - Queries
+ *   - Conversations
+ *   - Comments
+ *   - Controllers
+ *   - Activity Logs
  */
 
-export interface MySQLConfiguration {
-    host: string;
-    port: number;
-    databaseName: string;
-    databaseUserName: string;
-    databasePassword: string;
-    connectUsingSSL: boolean;
-}
-
-export interface PostgresConfiguration {
-    host: string;
-    port: number;
-    databaseName: string;
-    databaseUserName: string;
-    databasePassword: string;
-    connectUsingSSL: boolean;
-}
-
-export interface MongoDBConfiguration {
-    host: string;
-    port: number;
-    databaseName: string;
-    databaseUserName: string;
-    databasePassword: string;
-    connectUsingSSL: boolean;
-}
-
-export interface BigQueryConfiguration {
-    [key: string]: any;
-}
-
-export interface Resource {
-    _id: ObjectId;
-    name: string;
-    description: string;
-    type: typeof resourceTypes[number];
-    mysql: MySQLConfiguration | undefined;
-    postgres: PostgresConfiguration | undefined;
-    mongodb: MongoDBConfiguration | undefined;
-    bigquery: BigQueryConfiguration | undefined;
-    status: typeof resourceStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-    connection?: string;
-}
-
-export interface ExternalMySQLConfiguration {
-    host: string;
-    port: number;
-    databaseName: string;
-    databaseUserName: string;
-    databasePassword: string;
-    connectUsingSSL: boolean;
-}
-
-export interface ExternalPostgresConfiguration {
-    host: string;
-    port: number;
-    databaseName: string;
-    databaseUserName: string;
-    databasePassword: string;
-    connectUsingSSL: boolean;
-}
-
-export interface ExternalMongoDBConfiguration {
-    host: string;
-    port: number;
-    databaseName: string;
-    databaseUserName: string;
-    databasePassword: string;
-    connectUsingSSL: boolean;
-}
-
-export interface ExternalBigQueryConfiguration {
-    [key: string]: any;
-}
-
-export interface ExternalResource {
-    id: string;
-    name: string;
-    description: string;
-    type: string;
-    mysql: ExternalMySQLConfiguration | undefined;
-    postgres: ExternalPostgresConfiguration | undefined;
-    mongodb: ExternalMongoDBConfiguration | undefined;
-    bigquery: ExternalBigQueryConfiguration | undefined;
-    status: string;
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export interface IExternalListPage<T> {
-    totalRecords: number;
-    totalPages: number;
-    previousPage: number;
-    nextPage: number;
-    hasPreviousPage: number;
-    hasNextPage: number;
-    records: T[];
-}
-
-export type ResourcePage = IExternalListPage<ExternalResource>;
-
-export interface User {
+/* Interfaces associated with the `User` model. */
+export interface IUser {
     _id: ObjectId;
     firstName: string;
     lastName: string;
     description: string;
-    organizations: string[] | Organization[];
+    organizations: string[] | IOrganization[];
     gender: typeof genders[number];
     countryCode: typeof countryCodes[number];
     pictureURL: string;
@@ -148,7 +56,7 @@ export interface User {
     updatedAt: Date;
 }
 
-export interface ExternalUser {
+export interface IExternalUser {
     id: string;
     firstName: string;
     lastName: string;
@@ -165,48 +73,60 @@ export interface ExternalUser {
     updatedAt: Date;
 }
 
-export type UserPage = IExternalListPage<ExternalUser>;
-
-export interface Team {
-    _id: ObjectId;
-    name: string;
-    description: string;
-    users: string[] | User[];
-    apps: string[] | App[];
-    status: typeof teamStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
+export type TUserPage = IExternalListPage<IExternalUser>;
+export interface MySQLConfiguration {
+    host: string;
+    port: number;
+    databaseName: string;
+    databaseUserName: string;
+    databasePassword: string;
+    connectUsingSSL: boolean;
 }
 
-export interface ExternalGroup {
+/* Interfaces associated with the `Organization` model. */
+export interface IOrganization {
     id: string;
     name: string;
+    title: string;
     description: string;
-    users: string[];
-    apps: string[];
-    status: typeof teamStatuses[number];
+    members: string[];
+    status: typeof organizationStatuses[number];
+    apps: string[] | IApp[];
     createdAt: Date;
     updatedAt: Date;
 }
 
-export type GroupPage = IExternalListPage<ExternalGroup>;
+export interface IExternalOrganization {
+    id: string;
+    name: string;
+    title: string;
+    description: string;
+    members: string[];
+    status: typeof organizationStatuses[number];
+    apps: string[] | IApp[];
+    createdAt: Date;
+    updatedAt: Date;
+}
 
-export interface App {
+export type TOrganizationPage = IExternalListPage<IExternalOrganization>;
+
+/* Interfaces associated with the `App` model. */
+export interface IApp {
     _id: ObjectId;
     name: string;
     title: string;
     slug: string;
     description: string;
-    organization: string | Organization;
+    organization: string | IOrganization;
     deployments: ObjectId[] | Deployment[];
-    resources: string[] | Resource[];
-    creator: string[] | User;
+    resources: string[] | IResource[];
+    creator: string[] | IUser;
     status: typeof appStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
 
-export interface ExternalApp {
+export interface IExternalApp {
     id: string;
     name: string;
     title: string;
@@ -221,9 +141,131 @@ export interface ExternalApp {
     updatedAt: Date;
 }
 
+export type AppPage = IExternalListPage<IExternalApp>;
+
+/* Interfaces associated with the `Team` model. */
+export interface ITeam {
+    _id: ObjectId;
+    name: string;
+    description: string;
+    users: string[] | IUser[];
+    apps: string[] | IApp[];
+    status: typeof teamStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface IExternalTeam {
+    id: string;
+    name: string;
+    description: string;
+    users: string[];
+    apps: string[];
+    status: typeof teamStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export type TTeamPage = IExternalListPage<IExternalTeam>;
+
+/* Interfaces associated with the `Resource` model. */
+export interface IPostgresConfiguration {
+    host: string;
+    port: number;
+    databaseName: string;
+    databaseUserName: string;
+    databasePassword: string;
+    connectUsingSSL: boolean;
+}
+
+export interface IMongoDBConfiguration {
+    host: string;
+    port: number;
+    databaseName: string;
+    databaseUserName: string;
+    databasePassword: string;
+    connectUsingSSL: boolean;
+}
+
+export interface IBigQueryConfiguration {
+    [key: string]: any;
+}
+
+export interface IResource {
+    _id: ObjectId;
+    name: string;
+    description: string;
+    type: typeof resourceTypes[number];
+    mysql: MySQLConfiguration | undefined;
+    postgres: IPostgresConfiguration | undefined;
+    mongodb: IMongoDBConfiguration | undefined;
+    bigquery: IBigQueryConfiguration | undefined;
+    status: typeof resourceStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+    connection?: string;
+}
+
+export interface IExternalMySQLConfiguration {
+    host: string;
+    port: number;
+    databaseName: string;
+    databaseUserName: string;
+    databasePassword: string;
+    connectUsingSSL: boolean;
+}
+
+export interface IExternalPostgresConfiguration {
+    host: string;
+    port: number;
+    databaseName: string;
+    databaseUserName: string;
+    databasePassword: string;
+    connectUsingSSL: boolean;
+}
+
+export interface IExternalMongoDBConfiguration {
+    host: string;
+    port: number;
+    databaseName: string;
+    databaseUserName: string;
+    databasePassword: string;
+    connectUsingSSL: boolean;
+}
+
+export interface IExternalBigQueryConfiguration {
+    [key: string]: any;
+}
+
+export interface IExternalResource {
+    id: string;
+    name: string;
+    description: string;
+    type: string;
+    mysql: IExternalMySQLConfiguration | undefined;
+    postgres: IExternalPostgresConfiguration | undefined;
+    mongodb: IExternalMongoDBConfiguration | undefined;
+    bigquery: IExternalBigQueryConfiguration | undefined;
+    status: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface IExternalListPage<T> {
+    totalRecords: number;
+    totalPages: number;
+    previousPage: number;
+    nextPage: number;
+    hasPreviousPage: number;
+    hasNextPage: number;
+    records: T[];
+}
+
+export type TResourcePage = IExternalListPage<IExternalResource>;
+
 export interface Session {
     jwtToken: string;
-    user: ExternalUser;
+    user: IExternalUser;
     createdAt: Date;
 }
 
@@ -231,8 +273,8 @@ export interface Query {
     _id: ObjectId;
     name: string;
     description: string;
-    resource: string | Resource;
-    app: string | App;
+    resource: string | IResource;
+    app: string | IApp;
     content: string;
     status: typeof queryStatuses[number];
     createdAt: Date;
@@ -243,15 +285,13 @@ export interface ExternalQuery {
     id: string;
     name: string;
     description: string;
-    resource: string | ExternalResource;
-    app: string | ExternalApp;
+    resource: string | IExternalResource;
+    app: string | IExternalApp;
     content: string;
     status: typeof queryStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
-
-export type AppPage = IExternalListPage<ExternalApp>;
 
 export type QueryPage = IExternalListPage<ExternalQuery>;
 
@@ -285,75 +325,31 @@ interface ManifestValues {
 
 export interface Manifest {
     queries: Query[];
-    resources: Resource[];
-    app: App;
+    resources: IResource[];
+    app: IApp;
     file?: string;
     values?: ManifestValues;
 }
 
 export interface Deployment {
     _id: ObjectId;
-    app: ObjectId | App;
+    app: ObjectId | IApp;
     createdAt: Date;
     updatedAt: Date;
 }
-export interface Organization {
-    id: string;
-
-    /*
-     * An identifier that helps humans identify the organization across
-     * Hypertool.
-     */
-    name: string;
-
-    /* The display name of the organization. */
-    title: string;
-
-    /* A brief description of the organization. */
-    description: string;
-
-    /* The list of users that are part of the organization. */
-    members: string[];
-
-    /*
-     * The status of the organization. Valid values are as follows: active,
-     * deleted, banned.
-     */
-    status: typeof organizationStatuses[number];
-
-    /* The list of apps that are part of the organization. */
-    apps: string[] | App[];
-
-    createdAt: Date;
-    updatedAt: Date;
-}
-
 export interface ExternalDeployment {
     id: string;
     app: string;
     createdAt: Date;
     updatedAt: Date;
 }
-export interface ExternalOrganization {
-    id: string;
-    name: string;
-    title: string;
-    description: string;
-    members: string[];
-    status: typeof organizationStatuses[number];
-    apps: string[] | App[];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export type OrganizationPage = IExternalListPage<ExternalOrganization>;
 
 export interface Comment {
     /* An identifier that uniquely identifies the comment across Hypertool. */
     _id: string;
 
     /* An identifier that points to the User whose created the comment. */
-    author: ObjectId | User;
+    author: ObjectId | IUser;
 
     /* A string that describes the contents of the comment. */
     content: string;
@@ -382,7 +378,7 @@ export interface Comment {
 
 export interface ExternalComment {
     id: string;
-    author: string | User;
+    author: string | IUser;
     content: string;
     edited: boolean;
     status: typeof commentStatuses[number];
@@ -403,7 +399,7 @@ export interface Conversation {
     _id: string;
 
     /* An identifier that points to the App where the comment was created. */
-    app: ObjectId | App;
+    app: ObjectId | IApp;
 
     /* The name of the Page where the comment was created. */
     page: ObjectId | IScreen;
@@ -415,7 +411,7 @@ export interface Conversation {
     coordinates: Coordinates;
 
     /* A list of users who have participated in the conversation. */
-    taggedUsers: [ObjectId | User];
+    taggedUsers: [ObjectId | IUser];
 
     /*
      * A list of comments in the conversation. The first member is the
@@ -442,10 +438,8 @@ export interface Conversation {
 export interface IScreen {
     _id: ObjectId;
 
-    /**
-     * An identifier that points to the App where the comment was created.
-     */
-    app: ObjectId | App;
+    /* An identifier that points to the App where the comment was created. */
+    app: ObjectId | IApp;
 
     /**
      * The name of the screen, that uniquely identifies the screen across the
@@ -503,7 +497,7 @@ export interface ExternalConversation {
     app: string;
     page: string;
     coordinates: Coordinates;
-    taggedUsers: [string | User];
+    taggedUsers: [string | IUser];
     comments: [string | Comment];
     status: typeof conversationStatuses[number];
     createdAt: Date;
@@ -513,7 +507,7 @@ export interface ExternalConversation {
 export type ConversationPage = IExternalListPage<ExternalConversation>;
 
 export interface IControllerPatch {
-    author: ObjectId | User;
+    author: ObjectId | IUser;
     content: string;
     createdAt: Date;
 }
@@ -523,7 +517,7 @@ export interface IController {
     name: string;
     description: string;
     language: typeof controllerLanguages[number];
-    creator: ObjectId | User;
+    creator: ObjectId | IUser;
     patches: IControllerPatch[];
     status: typeof controllerStatuses[number];
     createdAt: Date;

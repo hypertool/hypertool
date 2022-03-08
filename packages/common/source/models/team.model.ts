@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
 import type { Team } from "../types";
-import { teamMembershipTypes, teamStatuses } from "../utils/constants";
+import { teamRoles, teamStatuses } from "../utils/constants";
 
 const teamMembershipSchema = new Schema({
     user: {
@@ -15,7 +15,7 @@ const teamMembershipSchema = new Schema({
     },
     role: {
         type: String,
-        enum: teamMembershipTypes,
+        enum: teamRoles,
         default: "member",
     },
 });
