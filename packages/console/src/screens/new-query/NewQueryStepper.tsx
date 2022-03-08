@@ -21,7 +21,7 @@ import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
 import * as yup from "yup";
 import { Formik } from "formik";
@@ -108,12 +108,12 @@ const steps: StepStructure[] = [
     },
 ];
 
-interface InitialValues {
+interface IFormValues {
     name: string;
     resource: null | string;
 }
 
-const initialValues: InitialValues = {
+const initialValues: IFormValues = {
     name: "",
     resource: null,
 };
@@ -129,6 +129,25 @@ const validationSchema = yup.object({
     resource: yup.string().required(),
 });
 
+const CREATE_QUERY_TEMPLATE = gql`
+    mutation CreateQueryTemplate(
+        $name: String!
+        $description: String!
+        $resource: ID!
+        $app: ID!
+        $content: String!
+    ) {
+        createQueryTemplate(
+            name: $name
+            description: $description
+            resource: $resource
+            app: $app
+            content: $content
+        ) {
+            id
+        }
+    }
+`;
 const GET_RESOURCES = gql`
     query GetResources($page: Int, $limit: Int) {
         getResources(page: $page, limit: $limit) {
@@ -147,6 +166,10 @@ const GET_RESOURCES = gql`
 const NewQueryStepper: FunctionComponent = (): ReactElement => {
     const [activeStep, setActiveStep] = useState(0);
     const theme = useTheme();
+    // TODO: Destructure `error`, check for non-null, send to Sentry
+    const [createQuery, { loading: creatingQuery, data: newQuery }] =
+        useMutation(CREATE_QUERY_TEMPLATE);
+
     const { data } = useQuery(GET_RESOURCES, {
         variables: {
             page: 0,
@@ -155,9 +178,13 @@ const NewQueryStepper: FunctionComponent = (): ReactElement => {
     });
     const { records } = data?.getResources || { records: [] };
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const handleSubmit = useCallback(() => {
-        return null;
+    const handleSubmit = useCallback((values: IFormValues) => {
+        createQuery({
+            variables: {
+                ...values,
+                app: "62259a10e33b279935a8b951",
+            },
+        });
     }, []);
 
     const handleNext = () => {
@@ -202,9 +229,6 @@ const NewQueryStepper: FunctionComponent = (): ReactElement => {
     };
 
     const renderStepperItems = () => steps.map(renderStepperItem);
-
-    const creatingQuery = false,
-        newQuery = false;
 
     return (
         <Root>
