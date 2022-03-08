@@ -18,6 +18,7 @@ import type {
     IBuilderActionsContext,
     IDeflatedArtifact,
     IEditControllerBundle,
+    IEditQueryBundle,
     IEditResourceBundle,
     ITab,
     TBundleType,
@@ -195,27 +196,28 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
 
                         switch (type) {
                             case "edit-resource": {
-                                if (
+                                return (
                                     (bundle as IEditResourceBundle)
                                         .resourceId ===
                                     (oldBundle as IEditResourceBundle)
                                         .resourceId
-                                ) {
-                                    return true;
-                                }
-                                break;
+                                );
                             }
 
                             case "edit-controller": {
-                                if (
+                                return (
                                     (bundle as IEditControllerBundle)
                                         .controllerId ===
                                     (oldBundle as IEditControllerBundle)
                                         .controllerId
-                                ) {
-                                    return true;
-                                }
-                                break;
+                                );
+                            }
+
+                            case "edit-query": {
+                                return (
+                                    (bundle as IEditQueryBundle).queryId ===
+                                    (oldBundle as IEditQueryBundle).queryId
+                                );
                             }
                         }
 
