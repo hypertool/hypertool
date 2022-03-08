@@ -1,10 +1,10 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import type { Team } from "../types";
+import type { ITeam } from "../types";
 import { teamRoles, teamStatuses } from "../utils/constants";
 
-const teamMembershipSchema = new Schema({
+const membershipSchema = new Schema({
     user: {
         type: [
             {
@@ -36,7 +36,7 @@ const teamSchema = new Schema(
             default: "",
         },
         members: {
-            type: [teamMembershipSchema],
+            type: [membershipSchema],
         },
         apps: {
             type: [
@@ -60,4 +60,4 @@ const teamSchema = new Schema(
 
 teamSchema.plugin(paginate);
 
-export default model<Team>("Team", teamSchema);
+export default model<ITeam>("Team", teamSchema);

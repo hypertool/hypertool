@@ -4,7 +4,7 @@ import paginate from "mongoose-paginate-v2";
 import type { IOrganization } from "../types";
 import { organizationRoles, organizationStatuses } from "../utils/constants";
 
-const organizationMembershipSchema = new Schema({
+const membershipSchema = new Schema({
     user: {
         type: [
             {
@@ -50,7 +50,7 @@ const organizationSchema = new Schema(
         },
         /* The list of users that are part of the organization. */
         members: {
-            type: [organizationMembershipSchema],
+            type: [membershipSchema],
         },
         /* The list of apps that are part of the organization. */
         apps: {
