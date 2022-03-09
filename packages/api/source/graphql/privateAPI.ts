@@ -26,7 +26,6 @@ const {
     resourceTypes,
     resourceStatuses,
     organizationStatuses,
-    teamTypes,
     teamStatuses,
     queryStatuses,
     componentOrigins,
@@ -233,10 +232,6 @@ const typeDefs = gql`
         records: [App!]!
     }
 
-    enum TeamType {
-        ${teamTypes.join("\n")}
-    }
-
     enum TeamStatus {
         ${teamStatuses.join("\n")}
     }
@@ -249,7 +244,6 @@ const typeDefs = gql`
         id: ID!
         name: String!
         description: String!
-        type: TeamType!
         users: [User!]!
         apps: [App!]!
         status: TeamStatus!
