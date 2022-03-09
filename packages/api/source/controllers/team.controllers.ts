@@ -12,7 +12,12 @@ import joi from "joi";
 const createSchema = joi.object({
     name: joi.string().max(256).allow(""),
     description: joi.string().max(512).allow(""),
-    users: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    members: joi.array().items(
+        joi.object({
+            user: joi.string().regex(constants.identifierPattern),
+            role: joi.string().valid(...constants.organizationRoles),
+        }),
+    ),
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
@@ -29,7 +34,12 @@ const filterSchema = joi.object({
 const updateSchema = joi.object({
     name: joi.string().max(256).allow(""),
     description: joi.string().max(512).allow(""),
-    users: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    members: joi.array().items(
+        joi.object({
+            user: joi.string().regex(constants.identifierPattern),
+            role: joi.string().valid(...constants.organizationRoles),
+        }),
+    ),
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
