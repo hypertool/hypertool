@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import { gql, useQuery } from "@apollo/client";
+
 import { BuilderActionsContext } from "../../../../contexts";
 
 const Actions = styled("div")(({ theme }) => ({
@@ -23,16 +25,36 @@ const Actions = styled("div")(({ theme }) => ({
     )} ${theme.spacing(2)}`,
 }));
 
+const GET_SCREENS = gql`
+    query GetScreens($appId: ID!, $page: Int, $limit: Int) {
+        getScreens(appId: $appId, page: $page, limit: $limit) {
+            totalPages
+            records {
+                id
+                name
+            }
+        }
+    }
+`;
+
 const Screens: FunctionComponent = (): ReactElement => {
     const { createTab } = useContext(BuilderActionsContext);
+    const { data } = useQuery(GET_SCREENS, {
+        variables: {
+            page: 0,
+            limit: 20,
+            appId: "61c93a931da4a79d3a109947",
+        },
+    });
+    const { records } = data?.getScreens || { records: [] };
 
     const handleNewScreen = useCallback(() => {
         createTab("new-screen");
     }, [createTab]);
 
-    const renderScreen = (title: string) => (
+    const renderScreen = (record: any) => (
         <ListItem
-            key={title}
+            key={record.id}
             secondaryAction={
                 <IconButton edge="end">
                     <Icon fontSize="small">delete</Icon>
@@ -44,13 +66,13 @@ const Screens: FunctionComponent = (): ReactElement => {
                     <Icon fontSize="small">wysiwyg</Icon>
                 </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={title} />
+            <ListItemText primary={record.name} />
         </ListItem>
     );
 
     return (
         <div>
-            <List dense={true}>{["home", "users"].map(renderScreen)}</List>
+            <List dense={true}>{records.map(renderScreen)}</List>
             <Actions>
                 <Button
                     size="small"
