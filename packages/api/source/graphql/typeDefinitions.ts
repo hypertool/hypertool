@@ -31,9 +31,9 @@ const types = `
         firstName: String!
         lastName: String!
         description: String!
-        # Organization points to User directly, making each other mutually recursive.
+        # Organizations points to User directly, making each other mutually recursive.
         # Therefore, we flatten the data structure here.
-        organization: ID!
+        organizations: [ID!]!
         gender: Gender
         countryCode: Country
         pictureURL: String
@@ -41,10 +41,6 @@ const types = `
         emailVerified: Boolean!
         birthday: Date
         status: UserStatus!
-        role: UserRole!
-        # Group points to User directly, making each other mutually recursive.
-        # Therefore, we flatten the data structure here.
-        groups: [ID!]!
         createdAt: Date!
         updatedAt: Date!
     }

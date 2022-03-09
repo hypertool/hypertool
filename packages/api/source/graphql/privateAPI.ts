@@ -10,13 +10,12 @@ import {
     controllers,
     conversations,
     deployments,
-    groups,
-    memberships,
     organizations,
     queries,
     queryTemplates,
     resources,
     screens,
+    teams,
     users,
 } from "../controllers";
 import { jwtAuth } from "../middleware";
@@ -27,13 +26,11 @@ const {
     resourceTypes,
     resourceStatuses,
     organizationStatuses,
-    groupTypes,
-    groupStatuses,
+    teamTypes,
+    teamStatuses,
     queryStatuses,
     componentOrigins,
     queryResultFormats,
-    membershipTypes,
-    membershipStatuses,
     commentStatuses,
     conversationStatuses,
     controllerStatuses,
@@ -211,13 +208,13 @@ const typeDefs = gql`
         title: String!
         slug: String!
         description: String!
-        # Group points to App directly, making each other mutually recursive.
+        # Team points to App directly, making each other mutually recursive.
         # Therefore, we flatten the data structure here.
-        groups: [ID!]!
+        teams: [ID!]!
         # Resource points to App directly, making each other mutually recursive.
         # Therefore, we flatten the data structure here.
         resources: [ID!]!
-        # User points to App indirectly via groups attribute. Since groups is flattened
+        # User points to App indirectly via teams attribute. Since teams is flattened
         # in User, we can use an aggregate type here.
         creator: User!
         status: AppStatus!
@@ -236,38 +233,38 @@ const typeDefs = gql`
         records: [App!]!
     }
 
-    enum GroupType {
-        ${groupTypes.join("\n")}
+    enum TeamType {
+        ${teamTypes.join("\n")}
     }
 
-    enum GroupStatus {
-        ${groupStatuses.join("\n")}
+    enum TeamStatus {
+        ${teamStatuses.join("\n")}
     }
 
     enum QueryStatus {
         ${queryStatuses.join("\n")}
     }
 
-    type Group {
+    type Team {
         id: ID!
         name: String!
         description: String!
-        type: GroupType!
+        type: TeamType!
         users: [User!]!
         apps: [App!]!
-        status: GroupStatus!
+        status: TeamStatus!
         createdAt: Date!
         updatedAt: Date!
     }
 
-    type GroupPage {
+    type TeamPage {
         totalRecords: Int!
         totalPages: Int!
         previousPage: Int!
         nextPage: Int!
         hasPreviousPage: Int!
         hasNextPage: Int!
-        records: [Group!]!
+        records: [Team!]!
     }
 
     type QueryTemplate {
@@ -338,25 +335,6 @@ const typeDefs = gql`
     type GenerateSignedURLsResult {
         signedURLs: [String!]!
         deployment: Deployment!
-    }
-
-    enum MembershipTypes {
-        ${membershipTypes.join("\n")}
-    }
-
-    enum MembershipStatuses {
-        ${membershipStatuses.join("\n")}
-    }
-
-    type Membership {
-        id: ID!
-        member: User!
-        inviter: User!
-        division: ID!
-        type: MembershipTypes!
-        status: MembershipStatuses!
-        createdAt: Date!
-        updatedAt: Date!
     }
 
     enum CommentStatuses {
@@ -503,7 +481,7 @@ const typeDefs = gql`
             emailAddress: String!
             birthday: Date,
             role: UserRole,
-            groups: [ID!]
+            teams: [ID!]
         ): User!
 
         updateUser(
@@ -517,7 +495,7 @@ const typeDefs = gql`
             pictureURL: String,
             birthday: Date,
             role: UserRole,
-            groups: [ID!]
+            teams: [ID!]
         ): User!
 
         updatePassword(
@@ -527,29 +505,29 @@ const typeDefs = gql`
 
         deleteUser(userId: ID!): RemoveResult!
 
-        createGroup(
+        createTeam(
             name: String
             description: String
             users: [ID!]
             apps: [ID!]
-        ): Group!
+        ): Team!
 
-        updateGroup(
-            groupId: ID!
+        updateTeam(
+            teamId: ID!
             name: String
             description: String
             users: [ID!]
             apps: [ID!]
-        ): Group!
+        ): Team!
 
-        deleteGroup(groupId: ID!): RemoveResult!
+        deleteTeam(teamId: ID!): RemoveResult!
 
         createApp(
             name: String!
             title: String!
             slug: String!
             description: String
-            groups: [ID!]
+            teams: [ID!]
         ): App!
 
         updateApp(
@@ -558,7 +536,7 @@ const typeDefs = gql`
             title: String
             slug: String
             description: String
-            groups: [ID!]
+            teams: [ID!]
             authServices: AuthServicesInput
         ): App!
 
@@ -687,8 +665,8 @@ const typeDefs = gql`
         getUsers(page: Int, limit: Int): UserPage!
         getUserById(userId: ID!): User!
 
-        getGroups(page: Int, limit: Int): GroupPage!
-        getGroupById(groupId: ID!): Group!
+        getTeams(page: Int, limit: Int): TeamPage!
+        getTeamById(teamId: ID!): Team!
 
         getApps(page: Int, limit: Int): AppPage!
         getAppById(appId: ID!): App!
@@ -761,14 +739,14 @@ const resolvers = {
         updatePassword: async (parent, values, context) =>
             users.updatePassword(context.request, values),
 
-        createGroup: async (parent, values, context) =>
-            groups.create(context.request, values),
+        createTeam: async (parent, values, context) =>
+            teams.create(context.request, values),
 
-        updateGroup: async (parent, values, context) =>
-            groups.update(context.request, values.groupId, values),
+        updateTeam: async (parent, values, context) =>
+            teams.update(context.request, values.teamId, values),
 
-        deleteGroup: async (parent, values, context) =>
-            groups.remove(context.request, context.groupId),
+        deleteTeam: async (parent, values, context) =>
+            teams.remove(context.request, context.teamId),
 
         createApp: async (parent, values, context) =>
             apps.create(context.request, values),
@@ -806,9 +784,6 @@ const resolvers = {
 
         createActivityLog: async (parent, values, context) =>
             activityLogs.create(context.request, values),
-
-        createMembership: async (parent, values, context) =>
-            memberships.create(context.request, values),
 
         createComment: async (parent, values, context) =>
             comments.create(context.request, values),
@@ -878,11 +853,11 @@ const resolvers = {
         getUserById: async (parent, values, context) =>
             users.getById(context.request, values.userId),
 
-        getGroups: async (parent, values, context) =>
-            groups.list(context.request, values),
+        getTeams: async (parent, values, context) =>
+            teams.list(context.request, values),
 
-        getGroupById: async (parent, values, context) =>
-            groups.getById(context.request, values.groupId),
+        getTeamById: async (parent, values, context) =>
+            teams.getById(context.request, values.teamId),
 
         getApps: async (parent, values, context) =>
             apps.list(context.request, values),
