@@ -18,6 +18,7 @@ import {
     queryStatuses,
     resourceStatuses,
     resourceTypes,
+    screenStatuses,
     userRoles,
     userStatuses,
 } from "../utils/constants";
@@ -498,7 +499,7 @@ export interface Conversation {
 }
 
 export interface IScreen {
-    _id: string;
+    _id: ObjectId;
 
     /**
      * An identifier that points to the App where the comment was created.
@@ -527,6 +528,11 @@ export interface IScreen {
     slug: string;
 
     /**
+     * The status of the screen.
+     */
+    status: typeof screenStatuses[number];
+
+    /**
      * Specifies the timestamp that indicates when the screen was created.
      */
     createdAt: Date;
@@ -540,9 +546,11 @@ export interface IScreen {
 export interface IExternalScreen {
     id: string;
     app: string;
+    name: string;
     title: string;
     description: string;
     slug: string;
+    status: typeof screenStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
