@@ -14,6 +14,8 @@ import { styled } from "@mui/material/styles";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 
+import { gql, useMutation } from "@apollo/client";
+
 import * as yup from "yup";
 import { Formik } from "formik";
 
@@ -126,20 +128,46 @@ const validationSchema = yup.object({
         .required(),
     slug: yup
         .string()
-        .max(256, "Slug should be 256 characters or less")
+        .max(128, "Slug should be 128 characters or less")
         .required(),
     description: yup
         .string()
         .max(512, "Description should be 512 characters or less"),
 });
 
-const NewResourceStepper: FunctionComponent = (): ReactElement => {
-    const handleSubmit = useCallback(() => {
-        return null;
-    }, []);
+const CREATE_SCREEN = gql`
+    mutation CreateScreen(
+        $app: ID!
+        $name: String!
+        $title: String!
+        $slug: String
+        $description: String!
+    ) {
+        createScreen(
+            app: $app
+            name: $name
+            title: $title
+            slug: $slug
+            description: $description
+        ) {
+            id
+        }
+    }
+`;
 
-    const creatingScreen = false,
-        newScreen = false;
+const NewResourceStepper: FunctionComponent = (): ReactElement => {
+    // TODO: Destructure `error`, check for non-null, send to Sentry
+    const [createScreen, { loading: creatingScreen, data: newScreen }] =
+        useMutation(CREATE_SCREEN);
+
+    const handleSubmit = useCallback((values: IFormValues) => {
+        createScreen({
+            variables: {
+                ...values,
+                app: "61c93a931da4a79d3a109947",
+            },
+        });
+    }, []);
 
     return (
         <Root>
