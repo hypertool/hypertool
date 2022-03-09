@@ -164,12 +164,12 @@ export type TBundleType =
     | IEditScreenBundle
     | IEditResourceBundle;
 
-export interface ITab {
+export interface ITab<T = TBundleType> {
     id: string;
     title: string;
     icon: string;
     type: TTabType;
-    bundle?: TBundleType;
+    bundle?: T;
 }
 
 export interface IBuilderActionsContext {
@@ -192,8 +192,8 @@ export interface ISessionContext {
     reloadSession: () => void;
 }
 
-export interface ITabContext {
-    tab: ITab;
+export interface ITabContext<T = TBundleType> {
+    tab: ITab<T>;
     index: number;
     active: boolean;
 }
