@@ -382,9 +382,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         <RightDrawer
                             open={
                                 rightDrawerOpen &&
-                                ["new-screen", "edit-screen"].includes(
-                                    activeTabType || "<invalid>",
-                                )
+                                "edit-screen" === activeTabType
                             }
                             onDrawerClose={handleRightDrawerClose}
                         />
