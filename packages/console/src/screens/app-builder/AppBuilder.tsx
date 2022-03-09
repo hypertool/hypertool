@@ -270,9 +270,11 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 return { ...oldCount, [type]: newCount };
             });
         },
+
         createTab: (type: TTabType, bundle?: TBundleType) => {
             builderActions.insertTab(tabs.length, false, type, bundle);
         },
+
         replaceTab: (index: number, type: TTabType, bundle?: TBundleType) => {
             builderActions.insertTab(index, true, type, bundle);
         },
