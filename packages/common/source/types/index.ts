@@ -149,14 +149,13 @@ export interface IExternalApp {
     description: string;
     resources: string[];
     deployments: string[];
-    groups: string[];
     creator: string;
     status: typeof appStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
 
-export type AppPage = IExternalListPage<IExternalApp>;
+export type TAppPage = IExternalListPage<IExternalApp>;
 
 /* Interfaces associated with the `Team` model. */
 export interface ITeamMember {

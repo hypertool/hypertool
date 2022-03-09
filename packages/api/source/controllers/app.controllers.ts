@@ -1,4 +1,4 @@
-import type { AppPage, IExternalApp, IUser } from "@hypertool/common";
+import type { IExternalApp, IUser, TAppPage } from "@hypertool/common";
 import {
     AppModel,
     BadRequestError,
@@ -14,10 +14,10 @@ const createSchema = joi.object({
     title: joi.string().max(256).required(),
     slug: joi.string().max(128).required(),
     description: joi.string().max(512).allow("").default(""),
-    groups: joi
+    organization: joi.string().regex(constants.identifierPattern),
+    resources: joi
         .array()
-        .items(joi.string().regex(constants.identifierPattern))
-        .default([]),
+        .items(joi.string().regex(constants.identifierPattern)),
 });
 
 const updateSchema = joi.object({
@@ -25,7 +25,6 @@ const updateSchema = joi.object({
     title: joi.string().max(256),
     slug: joi.string().max(128),
     description: joi.string().max(512).allow(""),
-    groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
     authServices: joi.object({
         googleAuth: joi.object({
             enabled: joi.boolean().required(),
@@ -33,6 +32,9 @@ const updateSchema = joi.object({
             secret: joi.string().required(),
         }),
     }),
+    resources: joi
+        .array()
+        .items(joi.string().regex(constants.identifierPattern)),
 });
 
 const filterSchema = joi.object({
@@ -53,7 +55,7 @@ const toExternal = (app: any): IExternalApp => {
         title,
         slug,
         description,
-        groups,
+        organization,
         resources,
         creator,
         status,
@@ -68,13 +70,12 @@ const toExternal = (app: any): IExternalApp => {
         title,
         slug,
         description,
-        groups: extractIds(groups),
+        organization,
         resources: extractIds(resources),
-        // TODO: Remove the hard coded string.
         creator:
             typeof creator === "string"
                 ? creator
-                : "<todo>" || (creator as IUser)._id.toString(),
+                : (creator as IUser)._id.toString(),
         status,
         createdAt,
         updatedAt,
@@ -103,7 +104,7 @@ const create = async (context, attributes): Promise<IExternalApp> => {
     return toExternal(newApp);
 };
 
-const list = async (context, parameters): Promise<AppPage> => {
+const list = async (context, parameters): Promise<TAppPage> => {
     const { error, value } = filterSchema.validate(parameters);
     if (error) {
         throw new BadRequestError(error.message);
