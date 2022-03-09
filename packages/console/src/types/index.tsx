@@ -197,3 +197,7 @@ export interface ITabContext {
     index: number;
     active: boolean;
 }
+
+export type IconColor = Color | "action" | "disabled";
+
+export type IconFontSize = "inherit" | "large" | "medium" | "small";

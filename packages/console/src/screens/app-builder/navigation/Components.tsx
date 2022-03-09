@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import {
     AddBoxOutlined,
     AddBoxTwoTone,
+    Apps,
     ArrowDropDownCircle,
     FormatShapes,
     TextFields,
@@ -17,6 +18,7 @@ import {
     Card,
     Checkbox,
     FlexLayout,
+    Icon,
     Select,
     Text,
 } from "../../../nodes";
@@ -96,6 +98,14 @@ const Components = () => {
                     variant="contained">
                     <CheckBoxIcon fontSize="large" />
                     Select
+                </ItemButton>
+            </Grid>
+            <Grid item={true} xs={6}>
+                <ItemButton
+                    ref={(ref) => connectors.create(ref as any, <Icon />)}
+                    variant="contained">
+                    <Apps fontSize="large" />
+                    Icon
                 </ItemButton>
             </Grid>
         </ContianerGrid>
