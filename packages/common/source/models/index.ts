@@ -1,5 +1,5 @@
 export { default as AppModel } from "./app.model";
-export { default as GroupModel } from "./team.model";
+export { default as TeamModel } from "./team.model";
 export { default as OrganizationModel } from "./organization.model";
 export { default as ResourceModel } from "./resource.model";
 export { default as UserModel } from "./user.model";
