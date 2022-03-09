@@ -34,6 +34,7 @@ const types = `
         # Organizations points to User directly, making each other mutually recursive.
         # Therefore, we flatten the data structure here.
         organizations: [ID!]!
+        apps: [ID!]!
         gender: Gender
         countryCode: Country
         pictureURL: String

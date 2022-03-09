@@ -1,4 +1,5 @@
 import { constants } from "@hypertool/common";
+import { organizationRoles } from "@hypertool/common/dist/utils/constants";
 
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
@@ -56,11 +57,28 @@ const typeDefs = gql`
         ${organizationStatuses.join("\n")}
     }
 
+    enum OrganizationRole {
+        ${organizationRoles.join("\n")}
+    }
+
+    type OrganizationMember {
+        user: ID!
+        role: OrganizationRole!
+    }
+
+    input OrganizationMemberInput {
+        user: ID!
+        role: OrganizationRole!
+    }
+
     type Organization {
         id: ID!
         name: String!
+        title: String!
         description: String!
-        users: [User!]!
+        members: [OrganizationMember!]!
+        apps: [ID!]!
+        teams: [ID!]!
         status: OrganizationStatus!
         createdAt: Date!
         updatedAt: Date!
@@ -451,15 +469,21 @@ const typeDefs = gql`
     type Mutation {
         createOrganization(
             name: String
+            title: String
             description: String
-            users: [ID!]
+            members: [OrganizationMemberInput!]!
+            apps: [ID!]!
+            teams: [ID!]!        
         ): Organization!
 
         updateOrganization(
             organizationId: ID!
             name: String
+            title: String
             description: String
-            users: [ID!]
+            members: [OrganizationMemberInput!]!
+            apps: [ID!]!
+            teams: [ID!]!   
         ): Organization!
 
         deleteOrganization(organizationId: ID!): RemoveResult!

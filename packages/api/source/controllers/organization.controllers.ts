@@ -22,6 +22,8 @@ const createSchema = joi.object({
             role: joi.string().valid(...constants.organizationRoles),
         }),
     ),
+    apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    teams: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
 const filterSchema = joi.object({
