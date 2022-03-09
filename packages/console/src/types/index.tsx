@@ -172,6 +172,29 @@ export interface ITab {
     bundle?: TBundleType;
 }
 
+export type TypoGraphyVariant =
+    | "body1"
+    | "body2"
+    | "button"
+    | "caption"
+    | "h1"
+    | "h2"
+    | "h3"
+    | "h4"
+    | "h5"
+    | "h6"
+    | "inherit"
+    | "overline"
+    | "subtitle1"
+    | "subtitle2";
+
+export type TypographyAlign =
+    | "center"
+    | "inherit"
+    | "justify"
+    | "left"
+    | "right";
+
 export interface IBuilderActionsContext {
     tabs: ITab[];
     activeTab: string | null;
