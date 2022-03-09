@@ -9,5 +9,5 @@ export { default as DeploymentModel } from "./DeploymentModel";
 export { default as MembershipModel } from "./MembershipModel";
 export { default as ConversationModel } from "./ConversationModel";
 export { default as CommentModel } from "./CommentModel";
-export { default as PageModel } from "./PageModel";
+export { default as ScreenModel } from "./screen.model";
 export { default as ControllerModel } from "./controller-model";

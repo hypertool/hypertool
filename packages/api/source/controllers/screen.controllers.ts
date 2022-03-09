@@ -1,8 +1,8 @@
-import type { ExternalPage, Page, PagePage } from "@hypertool/common";
+import type { IExternalScreen, TScreenPage } from "@hypertool/common";
 import {
     BadRequestError,
     NotFoundError,
-    PageModel,
+    ScreenModel,
     constants,
 } from "@hypertool/common";
 
@@ -10,15 +10,17 @@ import joi from "joi";
 
 const createSchema = joi.object({
     app: joi.string().regex(constants.identifierPattern).required(),
-    title: joi.string().max(128).min(1).required(),
-    slug: joi.string().max(128).min(1).required(),
-    description: joi.string().max(512).min(1),
+    name: joi.string().regex(constants.namePattern).min(1).max(256).required(),
+    title: joi.string().min(1).max(256).required(),
+    description: joi.string().min(1).max(512).default(""),
+    slug: joi.string().min(1).max(128).required(),
 });
 
 const updateSchema = joi.object({
-    title: joi.string().max(128).min(1).required(),
-    slug: joi.string().max(128).min(1).required(),
-    description: joi.string().max(512).min(1),
+    name: joi.string().regex(constants.namePattern).min(1).max(256),
+    title: joi.string().min(1).max(256),
+    description: joi.string().min(1).max(512),
+    slug: joi.string().min(1).max(128),
 });
 
 const filterSchema = joi.object({
@@ -32,7 +34,7 @@ const filterSchema = joi.object({
         .default(constants.paginateMinLimit),
 });
 
-const toExternal = (page: any): ExternalPage => {
+const toExternal = (page: any): IExternalScreen => {
     const { _id, id, app, title, description, slug, createdAt, updatedAt } =
         page;
     return {
@@ -46,7 +48,7 @@ const toExternal = (page: any): ExternalPage => {
     };
 };
 
-const create = async (context, attributes): Promise<ExternalPage> => {
+const create = async (context, attributes): Promise<IExternalScreen> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -55,18 +57,17 @@ const create = async (context, attributes): Promise<ExternalPage> => {
         throw new BadRequestError(error.message);
     }
 
-    const newPage = new PageModel({ ...value });
+    const newScreen = new ScreenModel({ ...value, status: "created" });
+    await newScreen.save();
 
-    await newPage.save();
-
-    return toExternal(newPage);
+    return toExternal(newScreen);
 };
 
 const update = async (
     context,
     pageId: string,
     attributes,
-): Promise<ExternalPage> => {
+): Promise<IExternalScreen> => {
     const { error, value } = updateSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -75,7 +76,7 @@ const update = async (
         throw new BadRequestError(error.message);
     }
 
-    const updatedPage = await PageModel.findByIdAndUpdate(
+    const updatedPage = await ScreenModel.findByIdAndUpdate(
         pageId,
         { ...value },
         { new: true },
@@ -90,7 +91,7 @@ const update = async (
     return toExternal(updatedPage);
 };
 
-const list = async (context, parameters): Promise<PagePage> => {
+const list = async (context, parameters): Promise<TScreenPage> => {
     const { error, value } = filterSchema.validate(parameters);
     if (error) {
         throw new BadRequestError(error.message);
@@ -99,7 +100,7 @@ const list = async (context, parameters): Promise<PagePage> => {
 
     const filters = { app };
 
-    const pages = await (PageModel as any).paginate(filters, {
+    const pages = await (ScreenModel as any).paginate(filters, {
         limit,
         page: page + 1,
         lean: true,
@@ -125,8 +126,8 @@ const listById = async (
     context,
     appId: string,
     pageIds: string[],
-): Promise<ExternalPage[]> => {
-    const unorderedPages = await PageModel.find({
+): Promise<IExternalScreen[]> => {
+    const unorderedPages = await ScreenModel.find({
         _id: { $in: pageIds },
         app: appId,
     }).exec();
@@ -138,7 +139,6 @@ const listById = async (
         object[page._id.toString()] = page;
     }
 
-    // eslint-disable-next-line security/detect-object-injection
     return pageIds.map((key) => toExternal(object[key]));
 };
 

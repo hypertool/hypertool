@@ -464,7 +464,7 @@ export interface Conversation {
     app: ObjectId | App;
 
     /* The name of the Page where the comment was created. */
-    page: ObjectId | Page;
+    page: ObjectId | IScreen;
 
     /*
      * An object that describes the x and y coordinates of the conversation in
@@ -497,29 +497,47 @@ export interface Conversation {
     updatedAt: Date;
 }
 
-export interface Page {
+export interface IScreen {
     _id: string;
 
-    /* An identifier that points to the App where the comment was created. */
+    /**
+     * An identifier that points to the App where the comment was created.
+     */
     app: ObjectId | App;
 
-    /* The title of the page. */
+    /**
+     * The name of the screen, that uniquely identifies the screen across the
+     * application.
+     */
+    name: string;
+
+    /**
+     * The title of the screen.
+     */
     title: string;
 
-    /* Optional description of the page. */
+    /**
+     * Optional description of the screen.
+     */
     description: string;
 
-    /* The slug of the page. */
+    /**
+     * The slug of the screen.
+     */
     slug: string;
 
-    /* Specifies the timestamp that indicates when the page was created */
+    /**
+     * Specifies the timestamp that indicates when the screen was created.
+     */
     createdAt: Date;
 
-    /* Specifies the timestamp that indicates when the page was last modified */
+    /**
+     * Specifies the timestamp that indicates when the screen was last modified.
+     */
     updatedAt: Date;
 }
 
-export interface ExternalPage {
+export interface IExternalScreen {
     id: string;
     app: string;
     title: string;
@@ -529,7 +547,7 @@ export interface ExternalPage {
     updatedAt: Date;
 }
 
-export type PagePage = IExternalListPage<ExternalPage>;
+export type TScreenPage = IExternalListPage<IExternalScreen>;
 
 export interface ExternalConversation {
     id: string;

@@ -1,10 +1,10 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import type { Page } from "../types";
-import { screenStatues } from "../utils/constants";
+import type { IScreen } from "../types";
+import { screenStatuses } from "../utils/constants";
 
-const pageSchema = new Schema(
+const screenSchema = new Schema(
     {
         /* An identifier that points to the app where the comment was created. */
         app: {
@@ -26,7 +26,7 @@ const pageSchema = new Schema(
             required: true,
         },
 
-        /* The title of the page. */
+        /* The title of the screen. */
         title: {
             type: String,
             minlength: 1,
@@ -34,14 +34,14 @@ const pageSchema = new Schema(
             required: true,
         },
 
-        /* Optional description of the page. */
+        /* Optional description of the screen. */
         description: {
             type: String,
             minlength: 1,
             maxlength: 512,
         },
 
-        /* The slug of the page. */
+        /* The slug of the screen. */
         slug: {
             type: String,
             minlength: 1,
@@ -53,7 +53,7 @@ const pageSchema = new Schema(
         /* The status of the screen. */
         status: {
             type: String,
-            enum: screenStatues,
+            enum: screenStatuses,
             required: true,
         },
 
@@ -62,5 +62,6 @@ const pageSchema = new Schema(
     { timestamps: true },
 );
 
-pageSchema.plugin(paginate);
-export default model<Page>("Page", pageSchema);
+screenSchema.plugin(paginate);
+
+export default model<IScreen>("Screen", screenSchema);
