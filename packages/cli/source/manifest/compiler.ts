@@ -1,4 +1,4 @@
-import type { Manifest, Query, Resource } from "@hypertool/common";
+import type { Manifest, Query, IResource } from "@hypertool/common";
 
 import yaml from "js-yaml";
 import fs from "fs";
@@ -133,7 +133,7 @@ const compile = async (): Promise<Manifest> => {
         return manifest;
     });
 
-    let manifestResult: {
+    const manifestResult: {
         app: object;
         queries: object;
         resources: object;
@@ -147,8 +147,8 @@ const compile = async (): Promise<Manifest> => {
         file: "",
     };
 
-    let queries: Query[] = [];
-    let resources: Resource[] = [];
+    const queries: Query[] = [];
+    const resources: IResource[] = [];
 
     for (const manifest of manifests) {
         for (const key in manifest) {

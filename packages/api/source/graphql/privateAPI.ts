@@ -492,14 +492,13 @@ const typeDefs = gql`
             firstName: String!
             lastName: String!
             description: String
-            organization: ID
+            organizations: [ID]
             gender: Gender
             countryCode: Country
             pictureURL: String
             emailAddress: String!
             birthday: Date,
-            role: UserRole,
-            teams: [ID!]
+            teams: [ID]
         ): User!
 
         updateUser(
@@ -507,12 +506,11 @@ const typeDefs = gql`
             firstName: String,
             lastName: String,
             description: String,
-            organization: ID,
+            organization: [ID],
             gender: Gender,
             countryCode: Country,
             pictureURL: String,
             birthday: Date,
-            role: UserRole,
             teams: [ID!]
         ): User!
 
