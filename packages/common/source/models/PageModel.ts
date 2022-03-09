@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
 import type { Page } from "../types";
+import { screenStatues } from "../utils/constants";
 
 const pageSchema = new Schema(
     {
@@ -13,11 +14,23 @@ const pageSchema = new Schema(
             immutable: true,
         },
 
+        /*
+         * The name of the screen, that uniquely identifies the screen across
+         * the application.
+         */
+        name: {
+            type: String,
+            minlength: 1,
+            maxlength: 256,
+            trim: true,
+            required: true,
+        },
+
         /* The title of the page. */
         title: {
             type: String,
             minlength: 1,
-            maxlength: 128,
+            maxlength: 256,
             required: true,
         },
 
@@ -36,6 +49,14 @@ const pageSchema = new Schema(
             required: true,
             trim: true,
         },
+
+        /* The status of the screen. */
+        status: {
+            type: String,
+            enum: screenStatues,
+            required: true,
+        },
+
         createdAt: { type: Date, immutable: true },
     },
     { timestamps: true },
