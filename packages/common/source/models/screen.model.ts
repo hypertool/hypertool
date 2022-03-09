@@ -37,7 +37,6 @@ const screenSchema = new Schema(
         /* Optional description of the screen. */
         description: {
             type: String,
-            minlength: 1,
             maxlength: 512,
         },
 
