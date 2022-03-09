@@ -1,5 +1,8 @@
 import { constants } from "@hypertool/common";
-import { organizationRoles } from "@hypertool/common/dist/utils/constants";
+import {
+    organizationRoles,
+    teamRoles,
+} from "@hypertool/common/dist/utils/constants";
 
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
@@ -225,14 +228,9 @@ const typeDefs = gql`
         title: String!
         slug: String!
         description: String!
-        # Team points to App directly, making each other mutually recursive.
-        # Therefore, we flatten the data structure here.
-        teams: [ID!]!
         # Resource points to App directly, making each other mutually recursive.
         # Therefore, we flatten the data structure here.
         resources: [ID!]!
-        # User points to App indirectly via teams attribute. Since teams is flattened
-        # in User, we can use an aggregate type here.
         creator: User!
         status: AppStatus!
         createdAt: Date!
@@ -254,16 +252,27 @@ const typeDefs = gql`
         ${teamStatuses.join("\n")}
     }
 
-    enum QueryStatus {
-        ${queryStatuses.join("\n")}
+    enum TeamRole {
+        ${teamRoles.join("\n")}
+    }
+
+    type TeamMember {
+        user: ID!
+        role: TeamRole!
+    }
+
+    input TeamMemberInput {
+        user: ID!
+        role: TeamRole!
     }
 
     type Team {
         id: ID!
         name: String!
-        description: String!
-        users: [User!]!
-        apps: [App!]!
+        description: String
+        organization: ID!
+        members: [TeamMember!]
+        apps: [App!]
         status: TeamStatus!
         createdAt: Date!
         updatedAt: Date!
@@ -277,6 +286,10 @@ const typeDefs = gql`
         hasPreviousPage: Int!
         hasNextPage: Int!
         records: [Team!]!
+    }
+
+    enum QueryStatus {
+        ${queryStatuses.join("\n")}
     }
 
     type QueryTemplate {
@@ -471,9 +484,9 @@ const typeDefs = gql`
             name: String
             title: String
             description: String
-            members: [OrganizationMemberInput!]!
-            apps: [ID!]!
-            teams: [ID!]!        
+            members: [OrganizationMemberInput!]
+            apps: [ID!]
+            teams: [ID!]     
         ): Organization!
 
         updateOrganization(
@@ -481,9 +494,9 @@ const typeDefs = gql`
             name: String
             title: String
             description: String
-            members: [OrganizationMemberInput!]!
-            apps: [ID!]!
-            teams: [ID!]!   
+            members: [OrganizationMemberInput!]
+            apps: [ID!]
+            teams: [ID!]  
         ): Organization!
 
         deleteOrganization(organizationId: ID!): RemoveResult!
@@ -498,7 +511,6 @@ const typeDefs = gql`
             pictureURL: String
             emailAddress: String!
             birthday: Date,
-            teams: [ID]
         ): User!
 
         updateUser(
@@ -511,7 +523,6 @@ const typeDefs = gql`
             countryCode: Country,
             pictureURL: String,
             birthday: Date,
-            teams: [ID!]
         ): User!
 
         updatePassword(
@@ -524,15 +535,16 @@ const typeDefs = gql`
         createTeam(
             name: String
             description: String
-            users: [ID!]
+            organization: ID!
+            members: [TeamMemberInput!]
             apps: [ID!]
         ): Team!
 
         updateTeam(
-            teamId: ID!
             name: String
             description: String
-            users: [ID!]
+            organization: ID!
+            members: [TeamMemberInput!]
             apps: [ID!]
         ): Team!
 
@@ -543,7 +555,6 @@ const typeDefs = gql`
             title: String!
             slug: String!
             description: String
-            teams: [ID!]
         ): App!
 
         updateApp(
@@ -552,7 +563,6 @@ const typeDefs = gql`
             title: String
             slug: String
             description: String
-            teams: [ID!]
             authServices: AuthServicesInput
         ): App!
 
