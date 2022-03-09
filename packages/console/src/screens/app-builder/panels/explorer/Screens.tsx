@@ -52,6 +52,10 @@ const Screens: FunctionComponent = (): ReactElement => {
         createTab("new-screen");
     }, [createTab]);
 
+    const handleEditScreen = (screenId: string) => () => {
+        createTab("edit-screen", { screenId });
+    };
+
     const renderScreen = (record: any) => (
         <ListItem
             key={record.id}
@@ -60,6 +64,7 @@ const Screens: FunctionComponent = (): ReactElement => {
                     <Icon fontSize="small">delete</Icon>
                 </IconButton>
             }
+            onClick={handleEditScreen(record.id)}
         >
             <ListItemAvatar>
                 <Avatar sx={{ width: 28, height: 28 }}>
