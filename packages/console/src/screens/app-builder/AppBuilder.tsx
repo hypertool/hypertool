@@ -20,6 +20,7 @@ import type {
     IEditControllerBundle,
     IEditQueryBundle,
     IEditResourceBundle,
+    IEditScreenBundle,
     ITab,
     TBundleType,
     TTabType,
@@ -220,6 +221,13 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                         .queryTemplateId ===
                                     (oldBundle as IEditQueryBundle)
                                         .queryTemplateId
+                                );
+                            }
+
+                            case "edit-screen": {
+                                return (
+                                    (bundle as IEditScreenBundle).screenId ===
+                                    (oldBundle as IEditScreenBundle).screenId
                                 );
                             }
                         }
