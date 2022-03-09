@@ -1,4 +1,4 @@
-import type { App, AppPage, ExternalApp, User } from "@hypertool/common";
+import type { AppPage, IExternalApp, IUser } from "@hypertool/common";
 import {
     AppModel,
     BadRequestError,
@@ -8,7 +8,6 @@ import {
 } from "@hypertool/common";
 
 import joi from "joi";
-import type { Document } from "mongoose";
 
 const createSchema = joi.object({
     name: joi.string().max(128).required(),
@@ -46,7 +45,7 @@ const filterSchema = joi.object({
         .default(constants.paginateMinLimit),
 });
 
-const toExternal = (app: any): ExternalApp => {
+const toExternal = (app: any): IExternalApp => {
     const {
         id,
         _id,
@@ -75,7 +74,7 @@ const toExternal = (app: any): ExternalApp => {
         creator:
             typeof creator === "string"
                 ? creator
-                : "<todo>" || (creator as User)._id.toString(),
+                : "<todo>" || (creator as IUser)._id.toString(),
         status,
         createdAt,
         updatedAt,
@@ -85,7 +84,7 @@ const toExternal = (app: any): ExternalApp => {
     return result;
 };
 
-const create = async (context, attributes): Promise<ExternalApp> => {
+const create = async (context, attributes): Promise<IExternalApp> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -140,7 +139,10 @@ const list = async (context, parameters): Promise<AppPage> => {
     };
 };
 
-const listByIds = async (context, appIds: string[]): Promise<ExternalApp[]> => {
+const listByIds = async (
+    context,
+    appIds: string[],
+): Promise<IExternalApp[]> => {
     const unorderedApps = await AppModel.find({
         _id: { $in: appIds },
         status: { $ne: "deleted" },
@@ -150,11 +152,10 @@ const listByIds = async (context, appIds: string[]): Promise<ExternalApp[]> => {
     for (const app of unorderedApps) {
         object[app._id.toString()] = app;
     }
-    // eslint-disable-next-line security/detect-object-injection
     return appIds.map((key) => toExternal(object[key]));
 };
 
-const getById = async (context, appId: string): Promise<ExternalApp> => {
+const getById = async (context, appId: string): Promise<IExternalApp> => {
     if (!constants.identifierPattern.test(appId)) {
         throw new BadRequestError("The specified app identifier is invalid.");
     }
@@ -176,7 +177,7 @@ const getById = async (context, appId: string): Promise<ExternalApp> => {
     return toExternal(app);
 };
 
-const getByName = async (context, name: string): Promise<ExternalApp> => {
+const getByName = async (context, name: string): Promise<IExternalApp> => {
     if (!constants.namePattern.test(name)) {
         throw new BadRequestError("The specified app name is invalid.");
     }
@@ -200,7 +201,7 @@ const update = async (
     context,
     appId: string,
     attributes,
-): Promise<ExternalApp> => {
+): Promise<IExternalApp> => {
     if (!constants.identifierPattern.test(appId)) {
         throw new BadRequestError("The specified app identifier is invalid.");
     }
@@ -212,7 +213,6 @@ const update = async (
         throw new BadRequestError(error.message);
     }
 
-    // TODO: Update filters
     // TODO: Check if value.members and value.resources are correct.
     const app = await AppModel.findOneAndUpdate(
         {
@@ -235,7 +235,7 @@ const update = async (
     return toExternal(app);
 };
 
-const publish = async (context, appId: string): Promise<ExternalApp> => {
+const publish = async (context, appId: string): Promise<IExternalApp> => {
     if (!constants.identifierPattern.test(appId)) {
         throw new BadRequestError("The specified app identifier is invalid.");
     }
@@ -264,7 +264,7 @@ const publish = async (context, appId: string): Promise<ExternalApp> => {
     return toExternal(app);
 };
 
-const unpublish = async (context, appId: string): Promise<ExternalApp> => {
+const unpublish = async (context, appId: string): Promise<IExternalApp> => {
     if (!constants.identifierPattern.test(appId)) {
         throw new BadRequestError("The specified app identifier is invalid.");
     }

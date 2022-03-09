@@ -1,5 +1,5 @@
 export * as resources from "./resource-controllers";
-export * as apps from "./app-controllers";
+export * as apps from "./app.controllers";
 export * as users from "./user.controllers";
 export * as organizations from "./organization.controllers";
 export * as teams from "./team.controllers";
