@@ -1,4 +1,9 @@
-import type { IExternalScreen, TScreenPage } from "@hypertool/common";
+import {
+    IExternalScreen,
+    IScreen,
+    TScreenPage,
+    controller,
+} from "@hypertool/common";
 import {
     BadRequestError,
     NotFoundError,
@@ -12,14 +17,14 @@ const createSchema = joi.object({
     app: joi.string().regex(constants.identifierPattern).required(),
     name: joi.string().regex(constants.namePattern).min(1).max(256).required(),
     title: joi.string().min(1).max(256).required(),
-    description: joi.string().min(1).max(512).default(""),
+    description: joi.string().max(512).allow("").default(""),
     slug: joi.string().min(1).max(128).required(),
 });
 
 const updateSchema = joi.object({
     name: joi.string().regex(constants.namePattern).min(1).max(256),
     title: joi.string().min(1).max(256),
-    description: joi.string().min(1).max(512),
+    description: joi.string().max(512),
     slug: joi.string().min(1).max(128),
 });
 
@@ -34,15 +39,26 @@ const filterSchema = joi.object({
         .default(constants.paginateMinLimit),
 });
 
-const toExternal = (page: any): IExternalScreen => {
-    const { _id, id, app, title, description, slug, createdAt, updatedAt } =
-        page;
-    return {
-        id: _id.toString() || id,
+const toExternal = (screen: IScreen): IExternalScreen => {
+    const {
+        _id,
         app,
+        name,
         title,
         description,
         slug,
+        status,
+        createdAt,
+        updatedAt,
+    } = screen;
+    return {
+        id: _id.toString(),
+        app: app.toString(),
+        name,
+        title,
+        description,
+        slug,
+        status,
         createdAt,
         updatedAt,
     };
@@ -141,5 +157,23 @@ const listById = async (
 
     return pageIds.map((key) => toExternal(object[key]));
 };
+
+const helper = controller.createHelper({
+    entity: "screen",
+    model: ScreenModel,
+    toExternal,
+});
+
+export const getById = async (
+    context: any,
+    appId: string,
+    screenId: string,
+): Promise<IExternalScreen> => helper.getById(context, screenId);
+
+export const getByName = async (
+    context: any,
+    appId: string,
+    name: string,
+): Promise<IExternalScreen> => helper.getByName(context, name);
 
 export { create, update, list, listById };
