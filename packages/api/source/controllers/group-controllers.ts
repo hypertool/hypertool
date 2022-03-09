@@ -128,7 +128,6 @@ const listByIds = async (
     for (const group of unorderedGroups) {
         object[group._id.toString()] = group;
     }
-    // eslint-disable-next-line security/detect-object-injection
     return groupIds.map((key) => toExternal(object[key]));
 };
 

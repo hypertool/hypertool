@@ -1,4 +1,4 @@
-import type { ExternalUser, Session, UserPage } from "@hypertool/common";
+import type { IExternalUser, Session, TUserPage } from "@hypertool/common";
 import {
     AppModel,
     BadRequestError,
@@ -84,7 +84,7 @@ const updatePasswordSchema = joi.object({
     newPassword: joi.string().regex(passwordRegex).min(8).max(128).required(),
 });
 
-const toExternal = (user: any): ExternalUser => {
+const toExternal = (user: any): IExternalUser => {
     const {
         id,
         _id,
@@ -92,6 +92,7 @@ const toExternal = (user: any): ExternalUser => {
         lastName,
         description,
         organizations,
+        apps,
         gender,
         countryCode,
         pictureURL,
@@ -109,6 +110,7 @@ const toExternal = (user: any): ExternalUser => {
         lastName,
         description,
         organizations: extractIds(organizations),
+        apps: extractIds(apps),
         gender,
         countryCode,
         pictureURL,
@@ -121,7 +123,7 @@ const toExternal = (user: any): ExternalUser => {
     };
 };
 
-const create = async (context, attributes): Promise<ExternalUser> => {
+const create = async (context, attributes): Promise<IExternalUser> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -139,7 +141,7 @@ const create = async (context, attributes): Promise<ExternalUser> => {
     return toExternal(newUser);
 };
 
-const list = async (context, parameters): Promise<UserPage> => {
+const list = async (context, parameters): Promise<TUserPage> => {
     const { error, value } = filterSchema.validate(parameters);
     if (error) {
         throw new BadRequestError(error.message);
@@ -178,7 +180,7 @@ const list = async (context, parameters): Promise<UserPage> => {
 const listByIds = async (
     context,
     userIds: string[],
-): Promise<ExternalUser[]> => {
+): Promise<IExternalUser[]> => {
     const unorderedUsers = await UserModel.find({
         _id: { $in: userIds },
         status: { $ne: "cancelled" },
@@ -191,7 +193,7 @@ const listByIds = async (
     return userIds.map((key) => toExternal(object[key]));
 };
 
-const getById = async (context, userId: string): Promise<ExternalUser> => {
+const getById = async (context, userId: string): Promise<IExternalUser> => {
     if (!constants.identifierPattern.test(userId)) {
         throw new BadRequestError("The specified user identifier is invalid.");
     }
@@ -217,7 +219,7 @@ const update = async (
     context,
     userId: string,
     attributes,
-): Promise<ExternalUser> => {
+): Promise<IExternalUser> => {
     if (!constants.identifierPattern.test(userId)) {
         throw new BadRequestError("The specified user identifier is invalid.");
     }
@@ -347,7 +349,7 @@ const loginWithGoogle = async (
 const signupWithEmail = async (
     context: any,
     attributes: any,
-): Promise<ExternalUser> => {
+): Promise<IExternalUser> => {
     const { error, value } = signUpWithEmailSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -438,7 +440,7 @@ const loginWithEmail = async (
 const updatePassword = async (
     context: any,
     attributes: any,
-): Promise<ExternalUser> => {
+): Promise<IExternalUser> => {
     const { error, value } = updatePasswordSchema.validate(attributes, {
         stripUnknown: true,
     });
