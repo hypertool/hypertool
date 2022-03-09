@@ -29,7 +29,7 @@ const updateSchema = joi.object({
 });
 
 const filterSchema = joi.object({
-    app: joi.string().regex(constants.identifierPattern).required(),
+    appId: joi.string().regex(constants.identifierPattern).required(),
     page: joi.number().integer().default(0),
     limit: joi
         .number()
@@ -112,9 +112,14 @@ const list = async (context, parameters): Promise<TScreenPage> => {
     if (error) {
         throw new BadRequestError(error.message);
     }
-    const { page, limit, app } = value;
+    const { page, limit /*appId*/ } = value;
 
-    const filters = { app };
+    const filters = {
+        /*
+         * TODO: Filter based on app IDs
+         * app: appId,
+         */
+    };
 
     const pages = await (ScreenModel as any).paginate(filters, {
         limit,
