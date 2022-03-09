@@ -41,7 +41,7 @@ const {
     screenStatuses,
 } = constants;
 
-const typeDefs0 = `
+const typeDefs = gql`
     scalar GraphQLJSON
 
     ${types}
@@ -713,8 +713,10 @@ const typeDefs0 = `
         listConversations(page: Int, limit: Int): ConversationPage!
         listConversationsById(conversationIds: [ID!]!): [Conversation]!
 
-        listPages(app: ID!, page: Int, limit: Int): ScreenPage!
-        listPagesById(appId: ID!, pageIds: [ID!]!): [Screen!]!
+        getScreens(appId: ID!, page: Int, limit: Int): ScreenPage!
+        getScreensByIds(appId: ID!, pageIds: [ID!]!): [Screen!]!
+        getScreenByName(appId: ID!, name: String!): Screen!
+        getScreenById(appId: ID!, screenId: ID!): Screen!
 
         getControllers(page: Int, limit: Int): ControllerPage!
         getControllersById(controllerIds: [ID!]): [Controller!]!
@@ -722,8 +724,6 @@ const typeDefs0 = `
         getControllerById(controllerId: ID!): Controller!
     }
 `;
-
-const typeDefs = gql(typeDefs0);
 
 const resolvers = {
     Date: new GraphQLScalarType({
@@ -932,11 +932,17 @@ const resolvers = {
         listConversationsById: async (parent, values, context) =>
             conversations.listById(context.request, values.conversationIds),
 
-        listPages: async (parent, values, context) =>
+        getScreens: async (parent, values, context) =>
             screens.list(context.request, values),
 
-        listPagesById: async (parent, values, context) =>
+        getScreensByIds: async (parent, values, context) =>
             screens.listById(context.request, values.appId, values.pageIds),
+
+        getScreenByName: async (parent, values, context) =>
+            screens.getByName(context.request, values.appId, values.name),
+
+        getScreenById: async (parent, values, context) =>
+            screens.getById(context.request, values.appId, values.screenId),
 
         getControllers: async (parent, values, context) =>
             controllers.list(context.request, values),
