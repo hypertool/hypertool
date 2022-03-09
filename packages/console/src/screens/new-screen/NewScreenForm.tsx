@@ -20,6 +20,7 @@ import * as yup from "yup";
 import { Formik } from "formik";
 
 import { TextField } from "../../components";
+import { useReplaceTab } from "../../hooks";
 
 const Root = styled("div")(({ theme }) => ({
     display: "flex",
@@ -155,10 +156,14 @@ const CREATE_SCREEN = gql`
     }
 `;
 
-const NewResourceStepper: FunctionComponent = (): ReactElement => {
+const NewScreenForm: FunctionComponent = (): ReactElement => {
     // TODO: Destructure `error`, check for non-null, send to Sentry
     const [createScreen, { loading: creatingScreen, data: newScreen }] =
         useMutation(CREATE_SCREEN);
+
+    useReplaceTab(Boolean(newScreen), "edit-screen", {
+        screenId: newScreen?.createScreen.id,
+    });
 
     const handleSubmit = useCallback((values: IFormValues) => {
         createScreen({
@@ -283,4 +288,4 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
     );
 };
 
-export default NewResourceStepper;
+export default NewScreenForm;
