@@ -10,16 +10,14 @@ import {
     conversationStatuses,
     countryCodes,
     genders,
-    groupStatuses,
-    groupTypes,
-    membershipStatuses,
-    membershipTypes,
+    organizationRoles,
     organizationStatuses,
     queryStatuses,
     resourceStatuses,
     resourceTypes,
     screenStatuses,
-    userRoles,
+    teamRoles,
+    teamStatuses,
     userStatuses,
 } from "../utils/constants";
 
@@ -28,8 +26,58 @@ import {
  * 1. All identifiers must be of type `ObjectId`. Do not use strings.
  * 2. The identifier attribute in external types must be `id`.
  * 3. The identifier attribute in internal types must be `_id`.
+ * 4. Please maintain the following order while creating interfaces:
+ *   - Users
+ *   - Organizations
+ *   - Teams
+ *   - Apps
+ *   - Resources
+ *   - Queries
+ *   - Conversations
+ *   - Comments
+ *   - Controllers
+ *   - Activity Logs
  */
 
+/* Interfaces associated with the `User` model. */
+export interface IUser {
+    _id: ObjectId;
+    firstName: string;
+    lastName: string;
+    description: string;
+    organizations: string[] | IOrganization[];
+    apps: string[] | IApp[];
+    gender: typeof genders[number];
+    countryCode: typeof countryCodes[number];
+    pictureURL: string;
+    emailAddress: string;
+    password: string;
+    emailVerified: boolean;
+    birthday: Date;
+    status: typeof userStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface IExternalUser {
+    id: string;
+    firstName: string;
+    lastName: string;
+    description: string;
+    organizations: string[];
+    apps: string[];
+    gender: typeof genders[number];
+    countryCode: typeof countryCodes[number];
+    pictureURL: string;
+    emailAddress: string;
+    emailVerified: boolean;
+    birthday: Date;
+    status: typeof userStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export type TUserPage = IExternalListPage<IExternalUser>;
 export interface MySQLConfiguration {
     host: string;
     port: number;
@@ -39,7 +87,114 @@ export interface MySQLConfiguration {
     connectUsingSSL: boolean;
 }
 
-export interface PostgresConfiguration {
+/* Interfaces associated with the `Organization` model. */
+export interface IOrganizationMember {
+    user: string | IUser;
+    role: typeof organizationRoles[number];
+}
+export interface IOrganization {
+    _id: ObjectId;
+    name: string;
+    title: string;
+    description: string;
+    members: IOrganizationMember[];
+    apps: string[] | IApp[];
+    teams: string[] | ITeam[];
+    status: typeof organizationStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface IExternalOrganizationMember {
+    user: string;
+    role: typeof organizationRoles[number];
+}
+
+export interface IExternalOrganization {
+    id: string;
+    name: string;
+    title: string;
+    description: string;
+    members: IExternalOrganizationMember[];
+    apps: string[];
+    teams: string[];
+    status: typeof organizationStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export type TOrganizationPage = IExternalListPage<IExternalOrganization>;
+
+/* Interfaces associated with the `App` model. */
+export interface IApp {
+    _id: ObjectId;
+    name: string;
+    title: string;
+    slug: string;
+    description: string;
+    organization: string | IOrganization;
+    deployments: ObjectId[] | Deployment[];
+    resources: string[] | IResource[];
+    creator: string[] | IUser;
+    status: typeof appStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface IExternalApp {
+    id: string;
+    name: string;
+    title: string;
+    slug: string;
+    description: string;
+    resources: string[];
+    deployments: string[];
+    creator: string;
+    status: typeof appStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export type TAppPage = IExternalListPage<IExternalApp>;
+
+/* Interfaces associated with the `Team` model. */
+export interface ITeamMember {
+    user: string | IUser;
+    role: typeof teamRoles[number];
+}
+export interface ITeam {
+    _id: ObjectId;
+    name: string;
+    description: string;
+    organization: string | IOrganization;
+    members: ITeamMember[];
+    apps: string[] | IApp[];
+    status: typeof teamStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface IExternalTeamMember {
+    user: string;
+    role: typeof teamRoles[number];
+}
+
+export interface IExternalTeam {
+    id: string;
+    name: string;
+    description: string;
+    organization: string;
+    members: IExternalTeamMember[];
+    apps: string[];
+    status: typeof teamStatuses[number];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export type TTeamPage = IExternalListPage<IExternalTeam>;
+
+/* Interfaces associated with the `Resource` model. */
+export interface IPostgresConfiguration {
     host: string;
     port: number;
     databaseName: string;
@@ -48,7 +203,7 @@ export interface PostgresConfiguration {
     connectUsingSSL: boolean;
 }
 
-export interface MongoDBConfiguration {
+export interface IMongoDBConfiguration {
     host: string;
     port: number;
     databaseName: string;
@@ -57,26 +212,26 @@ export interface MongoDBConfiguration {
     connectUsingSSL: boolean;
 }
 
-export interface BigQueryConfiguration {
+export interface IBigQueryConfiguration {
     [key: string]: any;
 }
 
-export interface Resource {
+export interface IResource {
     _id: ObjectId;
     name: string;
     description: string;
     type: typeof resourceTypes[number];
     mysql: MySQLConfiguration | undefined;
-    postgres: PostgresConfiguration | undefined;
-    mongodb: MongoDBConfiguration | undefined;
-    bigquery: BigQueryConfiguration | undefined;
+    postgres: IPostgresConfiguration | undefined;
+    mongodb: IMongoDBConfiguration | undefined;
+    bigquery: IBigQueryConfiguration | undefined;
     status: typeof resourceStatuses[number];
     createdAt: Date;
     updatedAt: Date;
     connection?: string;
 }
 
-export interface ExternalMySQLConfiguration {
+export interface IExternalMySQLConfiguration {
     host: string;
     port: number;
     databaseName: string;
@@ -85,7 +240,7 @@ export interface ExternalMySQLConfiguration {
     connectUsingSSL: boolean;
 }
 
-export interface ExternalPostgresConfiguration {
+export interface IExternalPostgresConfiguration {
     host: string;
     port: number;
     databaseName: string;
@@ -94,7 +249,7 @@ export interface ExternalPostgresConfiguration {
     connectUsingSSL: boolean;
 }
 
-export interface ExternalMongoDBConfiguration {
+export interface IExternalMongoDBConfiguration {
     host: string;
     port: number;
     databaseName: string;
@@ -103,19 +258,19 @@ export interface ExternalMongoDBConfiguration {
     connectUsingSSL: boolean;
 }
 
-export interface ExternalBigQueryConfiguration {
+export interface IExternalBigQueryConfiguration {
     [key: string]: any;
 }
 
-export interface ExternalResource {
+export interface IExternalResource {
     id: string;
     name: string;
     description: string;
     type: string;
-    mysql: ExternalMySQLConfiguration | undefined;
-    postgres: ExternalPostgresConfiguration | undefined;
-    mongodb: ExternalMongoDBConfiguration | undefined;
-    bigquery: ExternalBigQueryConfiguration | undefined;
+    mysql: IExternalMySQLConfiguration | undefined;
+    postgres: IExternalPostgresConfiguration | undefined;
+    mongodb: IExternalMongoDBConfiguration | undefined;
+    bigquery: IExternalBigQueryConfiguration | undefined;
     status: string;
     createdAt: Date;
     updatedAt: Date;
@@ -131,109 +286,11 @@ export interface IExternalListPage<T> {
     records: T[];
 }
 
-export type ResourcePage = IExternalListPage<ExternalResource>;
-
-export interface User {
-    _id: ObjectId;
-    firstName: string;
-    lastName: string;
-    description: string;
-    organizations: string[];
-    gender: typeof genders[number];
-    countryCode: typeof countryCodes[number];
-    pictureURL: string;
-    emailAddress: string;
-    password: string;
-    emailVerified: boolean;
-    groups: string[] | Group[];
-    role: typeof userRoles[number];
-    birthday: Date;
-    status: typeof userStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export interface ExternalUser {
-    id: string;
-    firstName: string;
-    lastName: string;
-    description: string;
-    organization: string;
-    gender: typeof genders[number];
-    countryCode: typeof countryCodes[number];
-    pictureURL: string;
-    emailAddress: string;
-    emailVerified: boolean;
-    groups: string[] | Group[];
-    role: typeof userRoles[number];
-    birthday: Date;
-    status: typeof userStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export type UserPage = IExternalListPage<ExternalUser>;
-
-export interface Group {
-    _id: ObjectId;
-    name: string;
-    type: typeof groupTypes[number];
-    description: string;
-    users: string[] | User[];
-    apps: string[] | App[];
-    status: typeof groupStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export interface ExternalGroup {
-    id: string;
-    name: string;
-    type: typeof groupTypes[number];
-    description: string;
-    users: string[];
-    apps: string[];
-    status: typeof groupStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export type GroupPage = IExternalListPage<ExternalGroup>;
-
-export interface App {
-    _id: ObjectId;
-    name: string;
-    title: string;
-    slug: string;
-    description: string;
-    organization: string | Organization;
-    deployments: ObjectId[] | Deployment[];
-    groups: string[] | Group[];
-    resources: string[] | Resource[];
-    creator: string[] | User;
-    status: typeof appStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export interface ExternalApp {
-    id: string;
-    name: string;
-    title: string;
-    slug: string;
-    description: string;
-    resources: string[];
-    deployments: string[];
-    groups: string[];
-    creator: string;
-    status: typeof appStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-}
+export type TResourcePage = IExternalListPage<IExternalResource>;
 
 export interface Session {
     jwtToken: string;
-    user: ExternalUser;
+    user: IExternalUser;
     createdAt: Date;
 }
 
@@ -241,8 +298,8 @@ export interface Query {
     _id: ObjectId;
     name: string;
     description: string;
-    resource: string | Resource;
-    app: string | App;
+    resource: string | IResource;
+    app: string | IApp;
     content: string;
     status: typeof queryStatuses[number];
     createdAt: Date;
@@ -253,15 +310,13 @@ export interface ExternalQuery {
     id: string;
     name: string;
     description: string;
-    resource: string | ExternalResource;
-    app: string | ExternalApp;
+    resource: string | IExternalResource;
+    app: string | IExternalApp;
     content: string;
     status: typeof queryStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
-
-export type AppPage = IExternalListPage<ExternalApp>;
 
 export type QueryPage = IExternalListPage<ExternalQuery>;
 
@@ -295,114 +350,21 @@ interface ManifestValues {
 
 export interface Manifest {
     queries: Query[];
-    resources: Resource[];
-    app: App;
+    resources: IResource[];
+    app: IApp;
     file?: string;
     values?: ManifestValues;
 }
 
 export interface Deployment {
     _id: ObjectId;
-    app: ObjectId | App;
+    app: ObjectId | IApp;
     createdAt: Date;
     updatedAt: Date;
 }
-export interface Organization {
-    id: string;
-
-    /*
-     * An identifier that helps humans identify the organization across
-     * Hypertool.
-     */
-    name: string;
-
-    /* The display name of the organization. */
-    title: string;
-
-    /* A brief description of the organization. */
-    description: string;
-
-    /* The list of users that are part of the organization. */
-    members: string[] | Membership[];
-
-    /*
-     * The status of the organization. Valid values are as follows: active,
-     * deleted, banned.
-     */
-    status: typeof organizationStatuses[number];
-
-    /* The list of apps that are part of the organization. */
-    apps: string[] | App[];
-
-    createdAt: Date;
-    updatedAt: Date;
-}
-
 export interface ExternalDeployment {
     id: string;
     app: string;
-    createdAt: Date;
-    updatedAt: Date;
-}
-export interface ExternalOrganization {
-    id: string;
-    name: string;
-    title: string;
-    description: string;
-    members: string[] | Membership[];
-    status: typeof organizationStatuses[number];
-    apps: string[] | App[];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export type OrganizationPage = IExternalListPage<ExternalOrganization>;
-
-export interface Membership {
-    id: string;
-    /**
-     * An identifier that points to the User whose membership is being
-     * defined by the current document.
-     */
-    member: string | User;
-
-    /**
-     * An identifier that points to the User that invited the member to the
-     * class specified by division.
-     */
-    inviter: string | User;
-
-    /**
-     * An identifier that points to the division.
-     * This attribute is polymorphic, that is, its meaning is defined based
-     * on the value of type attribute. For example, if type is organization,
-     * then the identifier points to an organization document. On the other
-     * hand, if type is group, then the identifier points to a group document.
-     */
-    division: string | Group | Organization;
-
-    /**
-     * The type of membership. Valid values are as follows: organization and
-     * group.
-     */
-    type: typeof membershipTypes[number];
-
-    /**
-     * The status of the membership. Valid values are as follows: accepted,
-     * deleted, banned, and invited.
-     */
-    status: typeof membershipStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export interface ExternalMembership {
-    id: string;
-    member: string | User;
-    inviter: string | User;
-    division: string | Group | Organization;
-    type: typeof membershipTypes[number];
-    status: typeof membershipStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -412,7 +374,7 @@ export interface Comment {
     _id: string;
 
     /* An identifier that points to the User whose created the comment. */
-    author: ObjectId | User;
+    author: ObjectId | IUser;
 
     /* A string that describes the contents of the comment. */
     content: string;
@@ -441,7 +403,7 @@ export interface Comment {
 
 export interface ExternalComment {
     id: string;
-    author: string | User;
+    author: string | IUser;
     content: string;
     edited: boolean;
     status: typeof commentStatuses[number];
@@ -462,7 +424,7 @@ export interface Conversation {
     _id: string;
 
     /* An identifier that points to the App where the comment was created. */
-    app: ObjectId | App;
+    app: ObjectId | IApp;
 
     /* The name of the Page where the comment was created. */
     page: ObjectId | IScreen;
@@ -474,7 +436,7 @@ export interface Conversation {
     coordinates: Coordinates;
 
     /* A list of users who have participated in the conversation. */
-    taggedUsers: [ObjectId | User];
+    taggedUsers: [ObjectId | IUser];
 
     /*
      * A list of comments in the conversation. The first member is the
@@ -501,10 +463,8 @@ export interface Conversation {
 export interface IScreen {
     _id: ObjectId;
 
-    /**
-     * An identifier that points to the App where the comment was created.
-     */
-    app: ObjectId | App;
+    /* An identifier that points to the App where the comment was created. */
+    app: ObjectId | IApp;
 
     /**
      * The name of the screen, that uniquely identifies the screen across the
@@ -562,7 +522,7 @@ export interface ExternalConversation {
     app: string;
     page: string;
     coordinates: Coordinates;
-    taggedUsers: [string | User];
+    taggedUsers: [string | IUser];
     comments: [string | Comment];
     status: typeof conversationStatuses[number];
     createdAt: Date;
@@ -572,7 +532,7 @@ export interface ExternalConversation {
 export type ConversationPage = IExternalListPage<ExternalConversation>;
 
 export interface IControllerPatch {
-    author: ObjectId | User;
+    author: ObjectId | IUser;
     content: string;
     createdAt: Date;
 }
@@ -582,7 +542,7 @@ export interface IController {
     name: string;
     description: string;
     language: typeof controllerLanguages[number];
-    creator: ObjectId | User;
+    creator: ObjectId | IUser;
     patches: IControllerPatch[];
     status: typeof controllerStatuses[number];
     createdAt: Date;

@@ -1,4 +1,4 @@
-import type { ExternalUser, Session, UserPage } from "@hypertool/common";
+import type { IExternalUser, Session, TUserPage } from "@hypertool/common";
 import {
     AppModel,
     BadRequestError,
@@ -21,14 +21,14 @@ const createSchema = joi.object({
     firstName: joi.string().min(1).max(256).required(),
     lastName: joi.string().min(1).max(256).required(),
     description: joi.string().max(512).allow(""),
-    organization: joi.string().regex(constants.identifierPattern),
+    organizations: joi
+        .array()
+        .items(joi.string().regex(constants.identifierPattern)),
     gender: joi.string().valid(...constants.genders),
     countryCode: joi.string().valid(...constants.countryCodes),
     pictureURL: joi.string().allow(""),
     emailAddress: joi.string().max(256).required(),
     birthday: joi.date().allow(null),
-    role: joi.string().valid(...constants.userRoles),
-    groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
 const filterSchema = joi.object({
@@ -47,13 +47,14 @@ const updateSchema = joi.object({
     firstName: joi.string().min(1).max(256),
     lastName: joi.string().min(1).max(256),
     description: joi.string().max(512).allow(""),
-    organization: joi.string().regex(constants.identifierPattern),
+    organizations: joi
+        .array()
+        .items(joi.string().regex(constants.identifierPattern)),
+    apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
     gender: joi.string().valid(...constants.genders),
     countryCode: joi.string().valid(...constants.countryCodes),
     pictureURL: joi.string().allow(""),
     birthday: joi.date().allow(null),
-    role: joi.string().valid(...constants.userRoles),
-    groups: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
 const passwordRegex =
@@ -64,10 +65,6 @@ const signUpWithEmailSchema = joi.object({
     lastName: joi.string().min(1).max(256).required(),
     emailAddress: joi.string().max(256).required(),
     password: joi.string().regex(passwordRegex).min(8).max(128).required(),
-    role: joi
-        .string()
-        .valid(...constants.userRoles)
-        .required(),
 });
 
 const loginWithEmailSchema = joi.object({
@@ -90,14 +87,15 @@ const updatePasswordSchema = joi.object({
     newPassword: joi.string().regex(passwordRegex).min(8).max(128).required(),
 });
 
-const toExternal = (user: any): ExternalUser => {
+const toExternal = (user: any): IExternalUser => {
     const {
         id,
         _id,
         firstName,
         lastName,
         description,
-        organization,
+        organizations,
+        apps,
         gender,
         countryCode,
         pictureURL,
@@ -105,8 +103,6 @@ const toExternal = (user: any): ExternalUser => {
         emailVerified,
         birthday,
         status,
-        role,
-        groups,
         createdAt,
         updatedAt,
     } = user;
@@ -116,7 +112,8 @@ const toExternal = (user: any): ExternalUser => {
         firstName,
         lastName,
         description,
-        organization,
+        organizations: extractIds(organizations),
+        apps: extractIds(apps),
         gender,
         countryCode,
         pictureURL,
@@ -124,14 +121,12 @@ const toExternal = (user: any): ExternalUser => {
         emailVerified,
         birthday,
         status,
-        role,
-        groups: extractIds(groups),
         createdAt,
         updatedAt,
     };
 };
 
-const create = async (context, attributes): Promise<ExternalUser> => {
+const create = async (context, attributes): Promise<IExternalUser> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -149,7 +144,7 @@ const create = async (context, attributes): Promise<ExternalUser> => {
     return toExternal(newUser);
 };
 
-const list = async (context, parameters): Promise<UserPage> => {
+const list = async (context, parameters): Promise<TUserPage> => {
     const { error, value } = filterSchema.validate(parameters);
     if (error) {
         throw new BadRequestError(error.message);
@@ -188,7 +183,7 @@ const list = async (context, parameters): Promise<UserPage> => {
 const listByIds = async (
     context,
     userIds: string[],
-): Promise<ExternalUser[]> => {
+): Promise<IExternalUser[]> => {
     const unorderedUsers = await UserModel.find({
         _id: { $in: userIds },
         status: { $ne: "cancelled" },
@@ -201,7 +196,7 @@ const listByIds = async (
     return userIds.map((key) => toExternal(object[key]));
 };
 
-const getById = async (context, userId: string): Promise<ExternalUser> => {
+const getById = async (context, userId: string): Promise<IExternalUser> => {
     if (!constants.identifierPattern.test(userId)) {
         throw new BadRequestError("The specified user identifier is invalid.");
     }
@@ -227,7 +222,7 @@ const update = async (
     context,
     userId: string,
     attributes,
-): Promise<ExternalUser> => {
+): Promise<IExternalUser> => {
     if (!constants.identifierPattern.test(userId)) {
         throw new BadRequestError("The specified user identifier is invalid.");
     }
@@ -333,7 +328,6 @@ const loginWithGoogle = async (
             pictureURL,
             emailAddress,
             emailVerified,
-            role: "owner",
             birthday: null,
             status: "activated",
         });
@@ -358,7 +352,7 @@ const loginWithGoogle = async (
 const signupWithEmail = async (
     context: any,
     attributes: any,
-): Promise<ExternalUser> => {
+): Promise<IExternalUser> => {
     const { error, value } = signUpWithEmailSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -367,7 +361,7 @@ const signupWithEmail = async (
         throw new BadRequestError(error.message);
     }
 
-    const { firstName, lastName, emailAddress, role, password } = value;
+    const { firstName, lastName, emailAddress, password } = value;
 
     let user = await UserModel.findOne({ emailAddress }).exec();
     if (user) {
@@ -386,7 +380,6 @@ const signupWithEmail = async (
         pictureURL: undefined,
         emailAddress,
         emailVerified: false,
-        role,
         birthday: null,
         status: "activated",
     });
@@ -450,7 +443,7 @@ const loginWithEmail = async (
 const updatePassword = async (
     context: any,
     attributes: any,
-): Promise<ExternalUser> => {
+): Promise<IExternalUser> => {
     const { error, value } = updatePasswordSchema.validate(attributes, {
         stripUnknown: true,
     });

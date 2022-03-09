@@ -1,4 +1,4 @@
-import type { App, ExternalDeployment, Deployment } from "@hypertool/common";
+import type { IApp, ExternalDeployment, Deployment } from "@hypertool/common";
 
 import joi from "joi";
 import {
@@ -38,7 +38,7 @@ const toExternal = (deployment: Deployment): ExternalDeployment => {
                 ? app
                 : app instanceof mongoose.Types.ObjectId
                 ? app.toString()
-                : (<App>app)._id.toString(),
+                : (<IApp>app)._id.toString(),
         createdAt,
         updatedAt,
     };

@@ -1,10 +1,8 @@
 /* eslint-disable no-undef */
 import type { FunctionComponent, ReactElement } from "react";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
-import { CssBaseline } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { ThemeProvider } from "@mui/material/styles";
 
 import {
     ApolloClient,
@@ -16,13 +14,10 @@ import { setContext } from "@apollo/client/link/context";
 
 import type { Session } from "@hypertool/common";
 
-import ReactDOM from "react-dom";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { BrowserRouter } from "react-router-dom";
 
 import SessionContext from "./contexts/SessionContext";
 import { VisitorLayout, WorkspaceLayout } from "./layouts";
-import reportWebVitals from "./reportWebVitals";
 import {
     AppBuilder,
     AuthenticationServices,
@@ -91,16 +86,13 @@ const App: FunctionComponent = (): ReactElement => {
                             path="/create-account"
                             element={<CreateAccount />}
                         />
+                        <Route path="/new-password" element={<NewPassword />} />
                     </Route>
                 </Routes>
 
                 {client && (
                     <ApolloProvider client={client as any}>
                         <Routes>
-                            <Route
-                                path="/new-password"
-                                element={<NewPassword />}
-                            />
                             <Route path="/" element={<WorkspaceLayout />}>
                                 <Route
                                     path="/organizations/new"
@@ -129,6 +121,15 @@ const App: FunctionComponent = (): ReactElement => {
 
                             <Route
                                 index={true}
+                                element={
+                                    <Navigate
+                                        to={session ? "/apps" : "/login"}
+                                    />
+                                }
+                            />
+
+                            <Route
+                                path="/login"
                                 element={
                                     <Navigate
                                         to={session ? "/apps" : "/login"}

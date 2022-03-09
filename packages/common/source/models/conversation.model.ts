@@ -22,7 +22,8 @@ const conversationSchema = new Schema(
             immutable: true,
         },
 
-        /* An object that describes the x and y coordinates of the conversation
+        /*
+         * An object that describes the x and y coordinates of the conversation
          * in the canvas.
          */
         coordinates: {
@@ -42,7 +43,8 @@ const conversationSchema = new Schema(
             },
         ],
 
-        /* A list of comments in the conversation. The first member is the
+        /*
+         * A list of comments in the conversation. The first member is the
          * initiator’s comment.
          */
         comments: {
@@ -61,7 +63,8 @@ const conversationSchema = new Schema(
             required: true,
         },
 
-        /* A enumeration of string values that describes the status of the
+        /*
+         * A enumeration of string values that describes the status of the
          * conversation.
          */
         status: {

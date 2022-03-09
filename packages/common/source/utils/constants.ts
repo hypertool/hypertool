@@ -284,8 +284,6 @@ const userRoles = tuple("owner", "developer", "viewer");
 
 const organizationStatuses = tuple("active", "deleted", "banned");
 
-const groupTypes = tuple("default", "custom");
-
 const appStatuses = tuple("private", "public", "deleted", "archived", "banned");
 
 const resourceStatuses = tuple("enabled", "disabled", "deleted", "banned");
@@ -337,7 +335,7 @@ const resourceTypes = tuple(
     "circleci",
 );
 
-const groupStatuses = tuple("enabled", "disabled", "deleted", "banned");
+const teamStatuses = tuple("active", "deleted");
 
 const queryStatuses = tuple("enabled", "disabled", "deleted", "banned");
 
@@ -355,9 +353,9 @@ const componentOrigins = tuple(
     "api",
 );
 
-const membershipStatuses = tuple("accepted", "invited", "deleted", "banned");
+const organizationRoles = tuple("owner", "member");
 
-const membershipTypes = tuple("group", "organization");
+const teamRoles = tuple("maintainer", "member");
 
 const conversationStatuses = tuple("pending", "resolved", "banned", "deleted");
 
@@ -384,15 +382,14 @@ export {
     appStatuses,
     resourceStatuses,
     resourceTypes,
-    groupTypes,
-    groupStatuses,
     queryStatuses,
     googleClientTypes,
     componentOrigins,
     queryResultFormats,
-    membershipStatuses,
-    membershipTypes,
     conversationStatuses,
     commentStatuses,
     controllerStatuses,
+    organizationRoles,
+    teamRoles,
+    teamStatuses,
 };

@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import type { User } from "../types";
+import type { IUser } from "../types";
 import {
     countryCodes,
     genders,
@@ -38,6 +38,16 @@ const userSchema = new Schema(
                     ref: "Organization",
                 },
             ],
+            default: [],
+        },
+        apps: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "App",
+                },
+            ],
+            default: [],
         },
         gender: {
             type: String,
@@ -78,19 +88,6 @@ const userSchema = new Schema(
             enum: userStatuses,
             default: "active",
         },
-        role: {
-            type: String,
-            enum: userRoles,
-            required: true,
-        },
-        groups: {
-            type: [
-                {
-                    type: Schema.Types.ObjectId,
-                    ref: "Group",
-                },
-            ],
-        },
     },
     {
         timestamps: true,
@@ -104,4 +101,4 @@ userSchema.index({
 });
 userSchema.plugin(paginate);
 
-export default model<User>("User", userSchema);
+export default model<IUser>("User", userSchema);

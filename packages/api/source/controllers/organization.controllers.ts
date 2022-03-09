@@ -1,7 +1,6 @@
 import type {
-    ExternalOrganization,
-    Organization,
-    OrganizationPage,
+    IExternalOrganization,
+    TOrganizationPage,
 } from "@hypertool/common";
 import {
     BadRequestError,
@@ -12,12 +11,19 @@ import {
 } from "@hypertool/common";
 
 import joi from "joi";
-import type { Document } from "mongoose";
 
 const createSchema = joi.object({
     name: joi.string().max(256).allow(""),
+    title: joi.string().max(512).allow(""),
     description: joi.string().max(512).allow(""),
-    members: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    members: joi.array().items(
+        joi.object({
+            user: joi.string().regex(constants.identifierPattern),
+            role: joi.string().valid(...constants.organizationRoles),
+        }),
+    ),
+    apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    teams: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
 const filterSchema = joi.object({
@@ -32,38 +38,48 @@ const filterSchema = joi.object({
 
 const updateSchema = joi.object({
     name: joi.string().max(256).allow(""),
+    title: joi.string().max(512).allow(""),
     description: joi.string().max(512).allow(""),
-    members: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    members: joi.array().items(
+        joi.object({
+            user: joi.string().regex(constants.identifierPattern),
+            role: joi.string().valid(...constants.organizationRoles),
+        }),
+    ),
+    apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
+    teams: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const toExternal = (organization: any): ExternalOrganization => {
+const toExternal = (organization: any): IExternalOrganization => {
     const {
         id,
         _id,
         name,
+        title,
         description,
         members,
+        apps,
+        teams,
         status,
         createdAt,
         updatedAt,
-        title,
-        apps,
     } = organization;
 
     return {
         id: id || _id.toString(),
         name,
-        description,
         title,
+        description,
+        members,
         apps: extractIds(apps),
-        members: extractIds(members),
+        teams: extractIds(teams),
         status,
         createdAt,
         updatedAt,
     };
 };
 
-const create = async (context, attributes): Promise<ExternalOrganization> => {
+const create = async (context, attributes): Promise<IExternalOrganization> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -81,7 +97,7 @@ const create = async (context, attributes): Promise<ExternalOrganization> => {
     return toExternal(newOrganization);
 };
 
-const list = async (context, parameters): Promise<OrganizationPage> => {
+const list = async (context, parameters): Promise<TOrganizationPage> => {
     const { error, value } = filterSchema.validate(parameters);
     if (error) {
         throw new BadRequestError(error.message);
@@ -119,7 +135,7 @@ const list = async (context, parameters): Promise<OrganizationPage> => {
 const listByIds = async (
     context,
     organizationIds: string[],
-): Promise<ExternalOrganization[]> => {
+): Promise<IExternalOrganization[]> => {
     const unorderedOrganizations = await OrganizationModel.find({
         _id: { $in: organizationIds },
         status: { $ne: "deleted" },
@@ -129,14 +145,13 @@ const listByIds = async (
     for (const organization of unorderedOrganizations) {
         object[organization._id.toString()] = organization;
     }
-    // eslint-disable-next-line security/detect-object-injection
     return organizationIds.map((key) => toExternal(object[key]));
 };
 
 const getById = async (
     context,
     organizationId: string,
-): Promise<ExternalOrganization> => {
+): Promise<IExternalOrganization> => {
     if (!constants.identifierPattern.test(organizationId)) {
         throw new BadRequestError(
             "The specified organization identifier is invalid.",
@@ -163,7 +178,7 @@ const update = async (
     context,
     organizationId: string,
     attributes,
-): Promise<ExternalOrganization> => {
+): Promise<IExternalOrganization> => {
     if (!constants.identifierPattern.test(organizationId)) {
         throw new BadRequestError(
             "The specified organization identifier is invalid.",

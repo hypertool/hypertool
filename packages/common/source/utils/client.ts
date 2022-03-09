@@ -4,10 +4,10 @@ import lodash from "lodash";
 
 import type {
     Manifest,
-    App,
+    IApp,
     Query as QueryTemplate,
-    ExternalResource,
-    Resource,
+    IExternalResource,
+    IResource,
     ActivityLog,
     ActivityLogPage
 } from "../types";
@@ -20,7 +20,6 @@ const GET_APP_BY_NAME = gql`
             title
             slug
             description
-            groups
             resources
             status
             createdAt
@@ -35,14 +34,12 @@ const CREATE_APP = gql`
         $title: String!
         $slug: String!
         $description: String
-        $groups: [ID!]
     ) {
         createApp(
             name: $name
             title: $title
             slug: $slug
             description: $description
-            groups: $groups
         ) {
             id
         }
@@ -56,7 +53,6 @@ const UPDATE_APP = gql`
         $title: String
         $slug: String
         $description: String
-        $groups: [ID!]
     ) {
         updateApp(
             appId: $appId
@@ -64,7 +60,6 @@ const UPDATE_APP = gql`
             title: $title
             slug: $slug
             description: $description
-            groups: $groups
         ) {
             id
         }
@@ -302,7 +297,7 @@ export default class Client<T> {
         this.client = client;
     }
 
-    getAppByName = async (name: string): Promise<App | null> => {
+    getAppByName = async (name: string): Promise<IApp | null> => {
         try {
             const app = await this.client.query({
                 query: GET_APP_BY_NAME,
@@ -359,7 +354,7 @@ export default class Client<T> {
         }
     }
 
-    createApp = async (app: App): Promise<void> => {
+    createApp = async (app: IApp): Promise<void> => {
         await this.client.mutate({
             mutation: CREATE_APP,
             variables: {
@@ -367,16 +362,11 @@ export default class Client<T> {
                 title: app.title,
                 slug: app.slug,
                 description: app.description,
-                groups: await Promise.all(
-                    app.groups.map((group) =>
-                        this.convertNameToId(group, "group"),
-                    ),
-                ),
             },
         });
     }
 
-    updateApp = async (appId: string, app: App): Promise<void> => {
+    updateApp = async (appId: string, app: IApp): Promise<void> => {
         await this.client.mutate({
             mutation: UPDATE_APP,
             variables: {
@@ -385,15 +375,6 @@ export default class Client<T> {
                 title: app.title,
                 slug: app.slug,
                 description: app.description,
-                /*
-                 * Any implicit value injection to the manifests must be done
-                 * during compilation by the compiler, not when syncing changes.
-                 */
-                groups: await Promise.all(
-                    app.groups.map((group) =>
-                        this.convertNameToId(group, "group"),
-                    ),
-                ),
             },
         });
     }
@@ -449,7 +430,7 @@ export default class Client<T> {
         });
     }
 
-    getResourceByName = async (name: string): Promise<ExternalResource | null> => {
+    getResourceByName = async (name: string): Promise<IExternalResource | null> => {
         try {
             const resource = await this.client.query({
                 query: GET_RESOURCE_BY_NAME,
@@ -466,7 +447,7 @@ export default class Client<T> {
         }
     }
 
-    createResource = async (resource: Resource): Promise<void> => {
+    createResource = async (resource: IResource): Promise<void> => {
         await this.client.mutate({
             mutation: CREATE_RESOURCE,
             variables: {
@@ -480,7 +461,7 @@ export default class Client<T> {
 
     updateResource = async (
         resourceId: string,
-        resource: Resource,
+        resource: IResource,
     ): Promise<void> => {
         await this.client.mutate({
             mutation: UPDATE_RESOURCE,
@@ -493,25 +474,14 @@ export default class Client<T> {
         });
     }
 
-    patchApp = async (oldApp: App, newApp: App): Promise<boolean> => {
-        const keys = ["name", "slug", "description", "title", "groups"];
+    patchApp = async (oldApp: IApp, newApp: IApp): Promise<boolean> => {
+        const keys = ["name", "slug", "description", "title"];
         const oldAppPicked = lodash.pick(oldApp, keys);
         const newAppPicked = lodash.pick(newApp, keys);
 
         if (!oldAppPicked || !newAppPicked) {
             throw new Error("lodash.pick() returned undefined for some reason");
         }
-
-        /*
-         * `oldAppPicked.groups` contains IDs, not names. Therefore, convert
-         * names in `newAppPicked.groups` to their corresponding IDs before
-         * comparing.
-         */
-        newAppPicked.groups = await Promise.all(
-            (newAppPicked as App).groups.map((group) =>
-                this.convertNameToId(group, "group"),
-            ),
-        );
 
         if (lodash.isEqual(oldAppPicked, newAppPicked)) {
             return false;
@@ -546,8 +516,8 @@ export default class Client<T> {
     }
 
     patchResource = async (
-        oldResource: Resource,
-        newResource: Resource,
+        oldResource: IResource,
+        newResource: IResource,
     ): Promise<boolean> => {
         /*
          * TODO: At the moment, the connection object does not have any optional keys.
