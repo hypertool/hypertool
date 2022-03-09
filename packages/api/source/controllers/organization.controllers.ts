@@ -95,7 +95,7 @@ const create = async (context, attributes): Promise<IExternalOrganization> => {
     return toExternal(newOrganization);
 };
 
-const list = async (context, parameters): Promise<OrganizationPage> => {
+const list = async (context, parameters): Promise<TOrganizationPage> => {
     const { error, value } = filterSchema.validate(parameters);
     if (error) {
         throw new BadRequestError(error.message);

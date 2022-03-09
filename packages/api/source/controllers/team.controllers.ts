@@ -1,14 +1,13 @@
-import type { ExternalGroup, Group, GroupPage } from "@hypertool/common";
+import type { IExternalTeam, TTeamPage } from "@hypertool/common";
 import {
     BadRequestError,
-    GroupModel,
     NotFoundError,
+    TeamModel,
     constants,
     extractIds,
 } from "@hypertool/common";
 
 import joi from "joi";
-import type { Document } from "mongoose";
 
 const createSchema = joi.object({
     name: joi.string().max(256).allow(""),
@@ -34,26 +33,26 @@ const updateSchema = joi.object({
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const toExternal = (group: any): ExternalGroup => {
+const toExternal = (team: any): IExternalTeam => {
     const {
         id,
         _id,
         name,
         description,
-        type,
-        users,
+        organization,
+        members,
         apps,
         status,
         createdAt,
         updatedAt,
-    } = group;
+    } = team;
 
     return {
         id: id || _id.toString(),
         name,
         description,
-        type,
-        users: extractIds(users),
+        organization,
+        members,
         apps: extractIds(apps),
         status,
         createdAt,
@@ -61,7 +60,7 @@ const toExternal = (group: any): ExternalGroup => {
     };
 };
 
-const create = async (context, attributes): Promise<ExternalGroup> => {
+const create = async (context, attributes): Promise<IExternalTeam> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -70,17 +69,17 @@ const create = async (context, attributes): Promise<ExternalGroup> => {
         throw new BadRequestError(error.message);
     }
 
-    // Add `group` to `app.groups`.
-    const newGroup = new GroupModel({
+    // Add `team` to `app.teams`.
+    const newTeam = new TeamModel({
         ...value,
         status: "enabled",
     });
-    await newGroup.save();
+    await newTeam.save();
 
-    return toExternal(newGroup);
+    return toExternal(newTeam);
 };
 
-const list = async (context, parameters): Promise<GroupPage> => {
+const list = async (context, parameters): Promise<TTeamPage> => {
     const { error, value } = filterSchema.validate(parameters);
     if (error) {
         throw new BadRequestError(error.message);
@@ -93,7 +92,7 @@ const list = async (context, parameters): Promise<GroupPage> => {
     };
     const { page, limit } = value;
 
-    const groups = await (GroupModel as any).paginate(filters, {
+    const teams = await (TeamModel as any).paginate(filters, {
         limit,
         page: page + 1,
         lean: true,
@@ -105,60 +104,60 @@ const list = async (context, parameters): Promise<GroupPage> => {
     });
 
     return {
-        totalRecords: groups.totalDocs,
-        totalPages: groups.totalPages,
-        previousPage: groups.prevPage ? groups.prevPage - 1 : -1,
-        nextPage: groups.nextPage ? groups.nextPage - 1 : -1,
-        hasPreviousPage: groups.hasPrevPage,
-        hasNextPage: groups.hasNextPage,
-        records: groups.docs.map(toExternal),
+        totalRecords: teams.totalDocs,
+        totalPages: teams.totalPages,
+        previousPage: teams.prevPage ? teams.prevPage - 1 : -1,
+        nextPage: teams.nextPage ? teams.nextPage - 1 : -1,
+        hasPreviousPage: teams.hasPrevPage,
+        hasNextPage: teams.hasNextPage,
+        records: teams.docs.map(toExternal),
     };
 };
 
 const listByIds = async (
     context,
-    groupIds: string[],
-): Promise<ExternalGroup[]> => {
-    const unorderedGroups = await GroupModel.find({
-        _id: { $in: groupIds },
+    teamIds: string[],
+): Promise<IExternalTeam[]> => {
+    const unorderedTeams = await TeamModel.find({
+        _id: { $in: teamIds },
         status: { $ne: "deleted" },
     }).exec();
     const object = {};
     // eslint-disable-next-line no-restricted-syntax
-    for (const group of unorderedGroups) {
-        object[group._id.toString()] = group;
+    for (const team of unorderedTeams) {
+        object[team._id.toString()] = team;
     }
-    return groupIds.map((key) => toExternal(object[key]));
+    return teamIds.map((key) => toExternal(object[key]));
 };
 
-const getById = async (context, groupId: string): Promise<ExternalGroup> => {
-    if (!constants.identifierPattern.test(groupId)) {
-        throw new BadRequestError("The specified group identifier is invalid.");
+const getById = async (context, teamId: string): Promise<IExternalTeam> => {
+    if (!constants.identifierPattern.test(teamId)) {
+        throw new BadRequestError("The specified team identifier is invalid.");
     }
 
     // TODO: Update filters
     const filters = {
-        _id: groupId,
+        _id: teamId,
     };
-    const group = await GroupModel.findOne(filters as any).exec();
+    const team = await TeamModel.findOne(filters as any).exec();
 
-    /* We return a 404 error, if we did not find the group. */
-    if (!group) {
+    /* We return a 404 error, if we did not find the team. */
+    if (!team) {
         throw new NotFoundError(
-            "Cannot find a group with the specified identifier.",
+            "Cannot find a team with the specified identifier.",
         );
     }
 
-    return toExternal(group);
+    return toExternal(team);
 };
 
 const update = async (
     context,
-    groupId: string,
+    teamId: string,
     attributes,
-): Promise<ExternalGroup> => {
-    if (!constants.identifierPattern.test(groupId)) {
-        throw new BadRequestError("The specified group identifier is invalid.");
+): Promise<IExternalTeam> => {
+    if (!constants.identifierPattern.test(teamId)) {
+        throw new BadRequestError("The specified team identifier is invalid.");
     }
 
     const { error, value } = updateSchema.validate(attributes, {
@@ -169,9 +168,9 @@ const update = async (
     }
 
     // TODO: Update filters
-    const group = await GroupModel.findOneAndUpdate(
+    const team = await TeamModel.findOneAndUpdate(
         {
-            _id: groupId,
+            _id: teamId,
         },
         value,
         {
@@ -180,27 +179,27 @@ const update = async (
         },
     ).exec();
 
-    if (!group) {
+    if (!team) {
         throw new NotFoundError(
-            "A group with the specified identifier does not exist.",
+            "A team with the specified identifier does not exist.",
         );
     }
 
-    return toExternal(group);
+    return toExternal(team);
 };
 
 const remove = async (
     context,
-    groupId: string,
+    teamId: string,
 ): Promise<{ success: boolean }> => {
-    if (!constants.identifierPattern.test(groupId)) {
-        throw new BadRequestError("The specified group identifier is invalid.");
+    if (!constants.identifierPattern.test(teamId)) {
+        throw new BadRequestError("The specified team identifier is invalid.");
     }
 
     // TODO: Update filters
-    const group = await GroupModel.findOneAndUpdate(
+    const team = await TeamModel.findOneAndUpdate(
         {
-            _id: groupId,
+            _id: teamId,
             status: { $ne: "deleted" },
         },
         {
@@ -212,9 +211,9 @@ const remove = async (
         },
     );
 
-    if (!group) {
+    if (!team) {
         throw new NotFoundError(
-            "A group with the specified identifier does not exist.",
+            "A team with the specified identifier does not exist.",
         );
     }
 

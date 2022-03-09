@@ -181,6 +181,7 @@ export interface IExternalTeamMember {
 }
 
 export interface IExternalTeam {
+    id: string;
     name: string;
     description: string;
     organization: string;

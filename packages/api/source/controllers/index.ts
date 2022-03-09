@@ -1,12 +1,11 @@
 export * as resources from "./resource-controllers";
 export * as apps from "./app-controllers";
 export * as users from "./user.controllers";
-export * as organizations from "./organization-controllers";
-export * as groups from "./group-controllers";
+export * as organizations from "./organization.controllers";
+export * as teams from "./team.controllers";
 export * as queryTemplates from "./query-template-controllers";
 export * as deployments from "./deployment-controllers";
 export * as activityLogs from "./activity-log-controllers";
-export * as memberships from "./membership-controllers";
 export * as queries from "./query-engine-controllers";
 export * as comments from "./comment-controllers";
 export * as conversations from "./conversation-controllers";
