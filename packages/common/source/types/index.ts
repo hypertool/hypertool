@@ -10,6 +10,7 @@ import {
     conversationStatuses,
     countryCodes,
     genders,
+    organizationRoles,
     organizationStatuses,
     queryStatuses,
     resourceStatuses,
@@ -44,6 +45,7 @@ export interface IUser {
     lastName: string;
     description: string;
     organizations: string[] | IOrganization[];
+    apps: string[] | IApp[];
     gender: typeof genders[number];
     countryCode: typeof countryCodes[number];
     pictureURL: string;
@@ -62,6 +64,7 @@ export interface IExternalUser {
     lastName: string;
     description: string;
     organizations: string[];
+    apps: string[];
     gender: typeof genders[number];
     countryCode: typeof countryCodes[number];
     pictureURL: string;
@@ -84,16 +87,26 @@ export interface MySQLConfiguration {
 }
 
 /* Interfaces associated with the `Organization` model. */
+export interface IOrganizationMember {
+    user: string;
+    role: typeof organizationRoles[number];
+}
 export interface IOrganization {
-    id: string;
+    _id: ObjectId;
     name: string;
     title: string;
     description: string;
-    members: string[];
-    status: typeof organizationStatuses[number];
+    members: IOrganizationMember[];
     apps: string[] | IApp[];
+    teams: string[] | ITeam[];
+    status: typeof organizationStatuses[number];
     createdAt: Date;
     updatedAt: Date;
+}
+
+export interface IExternalOrganizationMember {
+    user: string;
+    role: typeof organizationRoles[number];
 }
 
 export interface IExternalOrganization {
@@ -101,9 +114,10 @@ export interface IExternalOrganization {
     name: string;
     title: string;
     description: string;
-    members: string[];
+    members: IExternalOrganizationMember[];
+    apps: string[];
+    teams: string[];
     status: typeof organizationStatuses[number];
-    apps: string[] | IApp[];
     createdAt: Date;
     updatedAt: Date;
 }

@@ -1,4 +1,7 @@
-import type { ExternalOrganization, OrganizationPage } from "@hypertool/common";
+import type {
+    IExternalOrganization,
+    TOrganizationPage,
+} from "@hypertool/common";
 import {
     BadRequestError,
     NotFoundError,
@@ -45,7 +48,7 @@ const updateSchema = joi.object({
     teams: joi.array().items(joi.string().regex(constants.identifierPattern)),
 });
 
-const toExternal = (organization: any): ExternalOrganization => {
+const toExternal = (organization: any): IExternalOrganization => {
     const {
         id,
         _id,
@@ -74,7 +77,7 @@ const toExternal = (organization: any): ExternalOrganization => {
     };
 };
 
-const create = async (context, attributes): Promise<ExternalOrganization> => {
+const create = async (context, attributes): Promise<IExternalOrganization> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -130,7 +133,7 @@ const list = async (context, parameters): Promise<OrganizationPage> => {
 const listByIds = async (
     context,
     organizationIds: string[],
-): Promise<ExternalOrganization[]> => {
+): Promise<IExternalOrganization[]> => {
     const unorderedOrganizations = await OrganizationModel.find({
         _id: { $in: organizationIds },
         status: { $ne: "deleted" },
@@ -146,7 +149,7 @@ const listByIds = async (
 const getById = async (
     context,
     organizationId: string,
-): Promise<ExternalOrganization> => {
+): Promise<IExternalOrganization> => {
     if (!constants.identifierPattern.test(organizationId)) {
         throw new BadRequestError(
             "The specified organization identifier is invalid.",
@@ -173,7 +176,7 @@ const update = async (
     context,
     organizationId: string,
     attributes,
-): Promise<ExternalOrganization> => {
+): Promise<IExternalOrganization> => {
     if (!constants.identifierPattern.test(organizationId)) {
         throw new BadRequestError(
             "The specified organization identifier is invalid.",
