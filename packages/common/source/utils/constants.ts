@@ -367,6 +367,8 @@ const controllerStatuses = tuple("created", "banned", "deleted");
 
 export const controllerLanguages = tuple("javascript", "typescript");
 
+export const screenStatuses = tuple("created", "banned", "deleted");
+
 export {
     paginateMaxLimit,
     paginateMinLimit,

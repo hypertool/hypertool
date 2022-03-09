@@ -1,8 +1,4 @@
-import type {
-    Conversation,
-    ConversationPage,
-    ExternalConversation,
-} from "@hypertool/common";
+import type { ConversationPage, ExternalConversation } from "@hypertool/common";
 import {
     BadRequestError,
     CommentModel,
@@ -188,7 +184,6 @@ const listById = async (
         object[conversation._id.toString()] = conversation;
     }
 
-    // eslint-disable-next-line security/detect-object-injection
     const result = conversationIds.map((key) => toExternal(object[key]));
     return result;
 };

@@ -13,10 +13,10 @@ import {
     groups,
     memberships,
     organizations,
-    pages,
     queries,
     queryTemplates,
     resources,
+    screens,
     users,
 } from "../controllers";
 import { jwtAuth } from "../middleware";
@@ -38,9 +38,10 @@ const {
     conversationStatuses,
     controllerStatuses,
     controllerLanguages,
+    screenStatuses,
 } = constants;
 
-const typeDefs0 = `
+const typeDefs = gql`
     scalar GraphQLJSON
 
     ${types}
@@ -410,22 +411,28 @@ const typeDefs0 = `
         records: [Conversation!]!
     }
 
-    type Page {
-        id: ID!
-        app: String!
-        title: String!
-        description: String
-        slug: String!
+    enum ScreenStatus {
+        ${screenStatuses.join("\n")}
     }
 
-    type PagePage {
+    type Screen {
+        id: ID!
+        app: App!
+        name: String!
+        title: String!
+        description: String!
+        slug: String!
+        status: ScreenStatus!
+    }
+
+    type ScreenPage {
         totalRecords: Int!
         totalPages: Int!
         previousPage: Int!
         nextPage: Int!
         hasPreviousPage: Int!
         hasNextPage: Int!
-        records: [Page!]!
+        records: [Screen!]!
     }
 
     enum ControllerStatus {
@@ -644,19 +651,21 @@ const typeDefs0 = `
 
         unresolveConversation(conversationId: String!): Conversation!
 
-        createPage(
+        createScreen(
             app: ID!
+            name: String!
             title: String!
             slug: String
             description: String
-        ): Page!
+        ): Screen!
 
-        updatePage(
-            pageId: String!
-            title: String!
-            slug: String!
+        updateScreen(
+            screenId: String!
+            name: String
+            title: String
+            slug: String
             description: String
-        ): Page!
+        ): Screen!
 
         createController(
             name: String!
@@ -704,8 +713,10 @@ const typeDefs0 = `
         listConversations(page: Int, limit: Int): ConversationPage!
         listConversationsById(conversationIds: [ID!]!): [Conversation]!
 
-        listPages(app: ID!, page: Int, limit: Int): PagePage!
-        listPagesById(appId: ID!, pageIds: [ID!]!): [Page]!
+        getScreens(appId: ID!, page: Int, limit: Int): ScreenPage!
+        getScreensByIds(appId: ID!, pageIds: [ID!]!): [Screen!]!
+        getScreenByName(appId: ID!, name: String!): Screen!
+        getScreenById(appId: ID!, screenId: ID!): Screen!
 
         getControllers(page: Int, limit: Int): ControllerPage!
         getControllersById(controllerIds: [ID!]): [Controller!]!
@@ -713,8 +724,6 @@ const typeDefs0 = `
         getControllerById(controllerId: ID!): Controller!
     }
 `;
-
-const typeDefs = gql(typeDefs0);
 
 const resolvers = {
     Date: new GraphQLScalarType({
@@ -844,11 +853,11 @@ const resolvers = {
                 ["pending", "deleted"],
             ),
 
-        createPage: async (parent, values, context) =>
-            pages.create(context.request, values),
+        createScreen: async (parent, values, context) =>
+            screens.create(context.request, values),
 
-        updatePage: async (parent, values, context) =>
-            pages.update(context.request, values.pageId, values),
+        updateScreen: async (parent, values, context) =>
+            screens.update(context.request, values.pageId, values),
 
         createController: (parent, values, context) =>
             controllers.create(context.request, values),
@@ -923,11 +932,17 @@ const resolvers = {
         listConversationsById: async (parent, values, context) =>
             conversations.listById(context.request, values.conversationIds),
 
-        listPages: async (parent, values, context) =>
-            pages.list(context.request, values),
+        getScreens: async (parent, values, context) =>
+            screens.list(context.request, values),
 
-        listPagesById: async (parent, values, context) =>
-            pages.listById(context.request, values.appId, values.pageIds),
+        getScreensByIds: async (parent, values, context) =>
+            screens.listById(context.request, values.appId, values.pageIds),
+
+        getScreenByName: async (parent, values, context) =>
+            screens.getByName(context.request, values.appId, values.name),
+
+        getScreenById: async (parent, values, context) =>
+            screens.getById(context.request, values.appId, values.screenId),
 
         getControllers: async (parent, values, context) =>
             controllers.list(context.request, values),

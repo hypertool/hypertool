@@ -20,6 +20,7 @@ import type {
     IEditControllerBundle,
     IEditQueryBundle,
     IEditResourceBundle,
+    IEditScreenBundle,
     ITab,
     TBundleType,
     TTabType,
@@ -222,6 +223,13 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                         .queryTemplateId
                                 );
                             }
+
+                            case "edit-screen": {
+                                return (
+                                    (bundle as IEditScreenBundle).screenId ===
+                                    (oldBundle as IEditScreenBundle).screenId
+                                );
+                            }
                         }
 
                         return false;
@@ -270,9 +278,11 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 return { ...oldCount, [type]: newCount };
             });
         },
+
         createTab: (type: TTabType, bundle?: TBundleType) => {
             builderActions.insertTab(tabs.length, false, type, bundle);
         },
+
         replaceTab: (index: number, type: TTabType, bundle?: TBundleType) => {
             builderActions.insertTab(index, true, type, bundle);
         },
@@ -382,9 +392,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         <RightDrawer
                             open={
                                 rightDrawerOpen &&
-                                ["new-screen", "edit-screen"].includes(
-                                    activeTabType || "<invalid>",
-                                )
+                                "edit-screen" === activeTabType
                             }
                             onDrawerClose={handleRightDrawerClose}
                         />

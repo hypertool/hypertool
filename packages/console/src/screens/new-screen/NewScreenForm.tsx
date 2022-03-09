@@ -14,10 +14,13 @@ import { styled } from "@mui/material/styles";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 
+import { gql, useMutation } from "@apollo/client";
+
 import * as yup from "yup";
 import { Formik } from "formik";
 
 import { TextField } from "../../components";
+import { useReplaceTab } from "../../hooks";
 
 const Root = styled("div")(({ theme }) => ({
     display: "flex",
@@ -33,9 +36,9 @@ const Left = styled("div")(({ theme }) => ({
     marginRight: theme.spacing(4),
 }));
 
-const Right = styled("div")(({ theme }) => ({
+const Right = styled("div")({
     width: "100%",
-}));
+});
 
 const Title = styled(Typography)(({ theme }) => ({
     fontSize: 20,
@@ -50,35 +53,45 @@ const Help = styled(Typography)(({ theme }) => ({
     marginTop: theme.spacing(1),
 })) as any;
 
-const ActionContainer = styled("div")(({ theme }) => ({
+const ActionContainer = styled("div")({
     display: "flex",
     flexDirection: "row",
     width: "100%",
     alignItems: "center",
     justifyContent: "space-between",
-}));
+});
 
-const CreateAction = styled(Button)(({ theme }) => ({
+const CreateAction = styled(Button)({
     width: 184,
-}));
+});
 
-const ScreenNameTextField = styled(TextField)(({ theme }) => ({
+const NameTextField = styled(TextField)({
     maxWidth: 400,
-})) as any;
+}) as any;
 
-const ScreenTitleTextField = styled(TextField)(({ theme }) => ({
+const TitleTextField = styled(TextField)(({ theme }) => ({
     maxWidth: 400,
     marginTop: theme.spacing(2),
 })) as any;
 
-const TextFieldHelp = styled(Typography)(({ theme }) => ({
+const SlugTextField = styled(TextField)(({ theme }) => ({
+    maxWidth: 400,
+    marginTop: theme.spacing(2),
+})) as any;
+
+const DescriptionTextField = styled(TextField)(({ theme }) => ({
+    maxWidth: 400,
+    marginTop: theme.spacing(2),
+})) as any;
+
+const TextFieldHelp = styled(Typography)({
     display: "flex",
     marginTop: 4,
     flexDirection: "column",
     marginLeft: -8,
     marginBottom: 0,
     paddingBottom: 0,
-}));
+});
 
 const FormRoot = styled("section")(({ theme }) => ({
     display: "flex",
@@ -89,14 +102,20 @@ const FormRoot = styled("section")(({ theme }) => ({
     width: "100%",
 }));
 
-interface InitialValues {
+interface IFormValues {
     name: string;
-    resource: null | string;
+    title: string;
+    slug: string;
+    description: string;
+    homeScreen: boolean;
 }
 
-const initialValues: InitialValues = {
+const initialValues: IFormValues = {
     name: "",
-    resource: null,
+    title: "",
+    slug: "",
+    description: "",
+    homeScreen: false,
 };
 
 const validationSchema = yup.object({
@@ -104,17 +123,56 @@ const validationSchema = yup.object({
         .string()
         .max(256, "Screen name should be 256 characters or less")
         .required(),
+    title: yup
+        .string()
+        .max(256, "Title should be 256 characters or less")
+        .required(),
+    slug: yup
+        .string()
+        .max(128, "Slug should be 128 characters or less")
+        .required(),
     description: yup
         .string()
         .max(512, "Description should be 512 characters or less"),
-    resource: yup.string().required(),
 });
 
-const NewResourceStepper: FunctionComponent = (): ReactElement => {
-    const handleSubmit = useCallback((values: any) => {}, []);
+const CREATE_SCREEN = gql`
+    mutation CreateScreen(
+        $app: ID!
+        $name: String!
+        $title: String!
+        $slug: String
+        $description: String!
+    ) {
+        createScreen(
+            app: $app
+            name: $name
+            title: $title
+            slug: $slug
+            description: $description
+        ) {
+            id
+        }
+    }
+`;
 
-    const creatingScreen = false,
-        newScreen = false;
+const NewScreenForm: FunctionComponent = (): ReactElement => {
+    // TODO: Destructure `error`, check for non-null, send to Sentry
+    const [createScreen, { loading: creatingScreen, data: newScreen }] =
+        useMutation(CREATE_SCREEN);
+
+    useReplaceTab(Boolean(newScreen), "edit-screen", {
+        screenId: newScreen?.createScreen.id,
+    });
+
+    const handleSubmit = useCallback((values: IFormValues) => {
+        createScreen({
+            variables: {
+                ...values,
+                app: "61c93a931da4a79d3a109947",
+            },
+        });
+    }, []);
 
     return (
         <Root>
@@ -131,13 +189,13 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
             <Right>
                 <Formik
                     initialValues={initialValues}
-                    onSubmit={handleSubmit}
+                    onSubmit={handleSubmit as any}
                     validationSchema={validationSchema}
                 >
                     {(formik) => (
                         <>
                             <FormRoot>
-                                <ScreenNameTextField
+                                <NameTextField
                                     name="name"
                                     required={true}
                                     id="name"
@@ -154,7 +212,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                     }
                                 />
 
-                                <ScreenTitleTextField
+                                <TitleTextField
                                     name="title"
                                     required={true}
                                     id="title"
@@ -164,7 +222,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                     fullWidth={true}
                                 />
 
-                                <ScreenTitleTextField
+                                <SlugTextField
                                     name="slug"
                                     required={true}
                                     id="slug"
@@ -174,7 +232,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                     fullWidth={true}
                                 />
 
-                                <ScreenTitleTextField
+                                <DescriptionTextField
                                     name="description"
                                     id="description"
                                     label="Description"
@@ -230,4 +288,4 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
     );
 };
 
-export default NewResourceStepper;
+export default NewScreenForm;
