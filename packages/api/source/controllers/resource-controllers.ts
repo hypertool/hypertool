@@ -1,6 +1,6 @@
 import type {
-    ExternalResource,
     IBigQueryConfiguration,
+    IExternalResource,
 } from "@hypertool/common";
 import {
     BadRequestError,
@@ -90,7 +90,7 @@ const updateSchema = joi.object({
     }),
 });
 
-const toExternal = (resource: any): ExternalResource => {
+const toExternal = (resource: any): IExternalResource => {
     const { id, _id, name, description, type, status, createdAt, updatedAt } =
         resource;
     let sanitizedConfiguration = null;
@@ -137,10 +137,10 @@ const toExternal = (resource: any): ExternalResource => {
         updatedAt,
     };
     result[type] = sanitizedConfiguration;
-    return result as ExternalResource;
+    return result as IExternalResource;
 };
 
-const create = async (context, attributes): Promise<ExternalResource> => {
+const create = async (context, attributes): Promise<IExternalResource> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -202,7 +202,7 @@ const list = async (context, parameters): Promise<IBigQueryConfiguration> => {
 const listByIds = async (
     context,
     resourceIds: string[],
-): Promise<ExternalResource[]> => {
+): Promise<IExternalResource[]> => {
     const unorderedResources = await ResourceModel.find({
         _id: { $in: resourceIds },
         status: { $ne: "deleted" },
@@ -218,7 +218,7 @@ const listByIds = async (
 const getById = async (
     context,
     resourceId: string,
-): Promise<ExternalResource> => {
+): Promise<IExternalResource> => {
     if (!constants.identifierPattern.test(resourceId)) {
         throw new BadRequestError(
             "The specified resource identifier is invalid.",
@@ -242,7 +242,7 @@ const getById = async (
     return toExternal(resource);
 };
 
-const getByName = async (context, name: string): Promise<ExternalResource> => {
+const getByName = async (context, name: string): Promise<IExternalResource> => {
     if (!constants.namePattern.test(name)) {
         throw new BadRequestError("The specified resource name is invalid.");
     }
@@ -268,7 +268,7 @@ const update = async (
     context,
     resourceId: string,
     attributes,
-): Promise<ExternalResource> => {
+): Promise<IExternalResource> => {
     if (!constants.identifierPattern.test(resourceId)) {
         throw new BadRequestError(
             "The specified resource identifier is invalid.",
@@ -307,7 +307,7 @@ const update = async (
 const enable = async (
     context,
     resourceId: string,
-): Promise<ExternalResource> => {
+): Promise<IExternalResource> => {
     if (!constants.identifierPattern.test(resourceId)) {
         throw new BadRequestError(
             "The specified resource identifier is invalid.",
@@ -341,7 +341,7 @@ const enable = async (
 const disable = async (
     context,
     resourceId: string,
-): Promise<ExternalResource> => {
+): Promise<IExternalResource> => {
     if (!constants.identifierPattern.test(resourceId)) {
         throw new BadRequestError(
             "The specified resource identifier is invalid.",
