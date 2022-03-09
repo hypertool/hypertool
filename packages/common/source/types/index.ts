@@ -16,6 +16,7 @@ import {
     resourceStatuses,
     resourceTypes,
     screenStatuses,
+    teamRoles,
     teamStatuses,
     userStatuses,
 } from "../utils/constants";
@@ -88,7 +89,7 @@ export interface MySQLConfiguration {
 
 /* Interfaces associated with the `Organization` model. */
 export interface IOrganizationMember {
-    user: string;
+    user: string | IUser;
     role: typeof organizationRoles[number];
 }
 export interface IOrganization {
@@ -158,22 +159,32 @@ export interface IExternalApp {
 export type AppPage = IExternalListPage<IExternalApp>;
 
 /* Interfaces associated with the `Team` model. */
+export interface ITeamMember {
+    user: string | IUser;
+    role: typeof teamRoles[number];
+}
 export interface ITeam {
     _id: ObjectId;
     name: string;
     description: string;
-    users: string[] | IUser[];
+    organization: string | IOrganization;
+    members: ITeamMember[];
     apps: string[] | IApp[];
     status: typeof teamStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
 
+export interface IExternalTeamMember {
+    user: string;
+    role: typeof teamRoles[number];
+}
+
 export interface IExternalTeam {
-    id: string;
     name: string;
     description: string;
-    users: string[];
+    organization: string;
+    members: IExternalTeamMember[];
     apps: string[];
     status: typeof teamStatuses[number];
     createdAt: Date;
