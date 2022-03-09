@@ -269,10 +269,10 @@ const typeDefs = gql`
     type Team {
         id: ID!
         name: String!
-        description: String
+        description: String!
         organization: ID!
-        members: [TeamMember!]
-        apps: [App!]
+        members: [TeamMember!]!
+        apps: [App!]!
         status: TeamStatus!
         createdAt: Date!
         updatedAt: Date!
