@@ -35,6 +35,10 @@ const teamSchema = new Schema(
             maxlength: 512,
             default: "",
         },
+        organization: {
+            type: Schema.Types.ObjectId,
+            ref: "Organization",
+        },
         members: {
             type: [membershipSchema],
         },
@@ -45,7 +49,6 @@ const teamSchema = new Schema(
                     ref: "App",
                 },
             ],
-            required: true,
         },
         status: {
             type: String,
