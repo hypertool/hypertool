@@ -33,9 +33,9 @@ const Left = styled("div")(({ theme }) => ({
     marginRight: theme.spacing(4),
 }));
 
-const Right = styled("div")(({ theme }) => ({
+const Right = styled("div")({
     width: "100%",
-}));
+});
 
 const Title = styled(Typography)(({ theme }) => ({
     fontSize: 20,
@@ -50,35 +50,45 @@ const Help = styled(Typography)(({ theme }) => ({
     marginTop: theme.spacing(1),
 })) as any;
 
-const ActionContainer = styled("div")(({ theme }) => ({
+const ActionContainer = styled("div")({
     display: "flex",
     flexDirection: "row",
     width: "100%",
     alignItems: "center",
     justifyContent: "space-between",
-}));
+});
 
-const CreateAction = styled(Button)(({ theme }) => ({
+const CreateAction = styled(Button)({
     width: 184,
-}));
+});
 
-const ScreenNameTextField = styled(TextField)(({ theme }) => ({
+const NameTextField = styled(TextField)({
     maxWidth: 400,
-})) as any;
+}) as any;
 
-const ScreenTitleTextField = styled(TextField)(({ theme }) => ({
+const TitleTextField = styled(TextField)(({ theme }) => ({
     maxWidth: 400,
     marginTop: theme.spacing(2),
 })) as any;
 
-const TextFieldHelp = styled(Typography)(({ theme }) => ({
+const SlugTextField = styled(TextField)(({ theme }) => ({
+    maxWidth: 400,
+    marginTop: theme.spacing(2),
+})) as any;
+
+const DescriptionTextField = styled(TextField)(({ theme }) => ({
+    maxWidth: 400,
+    marginTop: theme.spacing(2),
+})) as any;
+
+const TextFieldHelp = styled(Typography)({
     display: "flex",
     marginTop: 4,
     flexDirection: "column",
     marginLeft: -8,
     marginBottom: 0,
     paddingBottom: 0,
-}));
+});
 
 const FormRoot = styled("section")(({ theme }) => ({
     display: "flex",
@@ -89,14 +99,20 @@ const FormRoot = styled("section")(({ theme }) => ({
     width: "100%",
 }));
 
-interface InitialValues {
+interface IFormValues {
     name: string;
-    resource: null | string;
+    title: string;
+    slug: string;
+    description: string;
+    homeScreen: boolean;
 }
 
-const initialValues: InitialValues = {
+const initialValues: IFormValues = {
     name: "",
-    resource: null,
+    title: "",
+    slug: "",
+    description: "",
+    homeScreen: false,
 };
 
 const validationSchema = yup.object({
@@ -104,14 +120,23 @@ const validationSchema = yup.object({
         .string()
         .max(256, "Screen name should be 256 characters or less")
         .required(),
+    title: yup
+        .string()
+        .max(256, "Title should be 256 characters or less")
+        .required(),
+    slug: yup
+        .string()
+        .max(256, "Slug should be 256 characters or less")
+        .required(),
     description: yup
         .string()
         .max(512, "Description should be 512 characters or less"),
-    resource: yup.string().required(),
 });
 
 const NewResourceStepper: FunctionComponent = (): ReactElement => {
-    const handleSubmit = useCallback((values: any) => {}, []);
+    const handleSubmit = useCallback(() => {
+        return null;
+    }, []);
 
     const creatingScreen = false,
         newScreen = false;
@@ -131,13 +156,13 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
             <Right>
                 <Formik
                     initialValues={initialValues}
-                    onSubmit={handleSubmit}
+                    onSubmit={handleSubmit as any}
                     validationSchema={validationSchema}
                 >
                     {(formik) => (
                         <>
                             <FormRoot>
-                                <ScreenNameTextField
+                                <NameTextField
                                     name="name"
                                     required={true}
                                     id="name"
@@ -154,7 +179,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                     }
                                 />
 
-                                <ScreenTitleTextField
+                                <TitleTextField
                                     name="title"
                                     required={true}
                                     id="title"
@@ -164,7 +189,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                     fullWidth={true}
                                 />
 
-                                <ScreenTitleTextField
+                                <SlugTextField
                                     name="slug"
                                     required={true}
                                     id="slug"
@@ -174,7 +199,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                     fullWidth={true}
                                 />
 
-                                <ScreenTitleTextField
+                                <DescriptionTextField
                                     name="description"
                                     id="description"
                                     label="Description"
