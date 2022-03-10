@@ -1,8 +1,7 @@
 /* eslint-disable no-undef */
 import { ReactElement } from "react";
 
-import { Element, useNode } from "@craftjs/core";
-
+import { Element, useNode } from "../craft";
 import type { CraftComponent } from "../types";
 
 import { Button } from "./Button";

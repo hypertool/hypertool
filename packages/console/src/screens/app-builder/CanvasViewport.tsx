@@ -2,7 +2,7 @@ import { FunctionComponent } from "react";
 
 import { styled } from "@mui/material/styles";
 
-import { useEditor } from "@craftjs/core";
+import { useEditor } from "../../craft";
 
 const PageContainer = styled("div")(({ theme }) => ({
     width: "100%",
@@ -50,7 +50,8 @@ const CanvasViewport: FunctionComponent<ViewportProps> = (
                             connectors.hover(ref as any, null as any),
                             null as any,
                         )
-                    }>
+                    }
+                >
                     <CanvasContainer>{props.children}</CanvasContainer>
                 </CraftRenderer>
             </PageContainer>

@@ -2,8 +2,7 @@ import { FunctionComponent, ReactElement } from "react";
 
 import { FormControl, FormLabel, Paper, Slider } from "@mui/material";
 
-import { useNode } from "@craftjs/core";
-
+import { useNode } from "../craft";
 import { CraftComponent } from "../types";
 
 interface ContainerProps {
@@ -23,7 +22,8 @@ export const Container: CraftComponent<ContainerProps> = (
     return (
         <Paper
             ref={(ref: any) => connect(drag(ref as any))}
-            style={{ background, padding: `${padding}px` }}>
+            style={{ background, padding: `${padding}px` }}
+        >
             {children}
         </Paper>
     );

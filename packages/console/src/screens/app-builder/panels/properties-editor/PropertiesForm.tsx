@@ -16,10 +16,10 @@ import { styled } from "@mui/material/styles";
 import { LocalizationProvider } from "@mui/lab";
 import DateAdapter from "@mui/lab/AdapterMoment";
 
-import { useNode } from "@craftjs/core";
 import { Formik } from "formik";
 
 import { TextField } from "../../../../components";
+import { useNode } from "../../../../craft";
 import type {
     FormField,
     FormFieldGroup,

@@ -4,8 +4,7 @@ import { useCallback, useState } from "react";
 import { Drawer as MuiDrawer, Tab, Tabs } from "@mui/material";
 import { CSSObject, Theme, styled } from "@mui/material/styles";
 
-import { useEditor } from "@craftjs/core";
-
+import { useEditor } from "../../../craft";
 import PropertiesEditor from "../panels/properties-editor/PropertiesEditor";
 
 const drawerWidth = 304;
@@ -80,14 +79,16 @@ const RightDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
             variant="permanent"
             open={open}
             anchor="right"
-            onClose={onDrawerClose}>
+            onClose={onDrawerClose}
+        >
             <DrawerHeader />
             <Root>
                 <div style={{ width: "100%" }}>
                     <Tabs
                         value={active}
                         onChange={handleChange}
-                        variant="fullWidth">
+                        variant="fullWidth"
+                    >
                         <Tab value="properties" label="Properties" />
                         <Tab value="comments" label="Comments" />
                     </Tabs>

@@ -1,8 +1,8 @@
 import React from "react";
 
-import { useEditor } from "@craftjs/core";
 import styled from "styled-components";
 
+import { useEditor } from "../../../../../../craft";
 import { useLayer } from "../useLayer";
 
 import { DefaultLayerHeader } from "./DefaultLayerHeader";

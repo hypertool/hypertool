@@ -7,8 +7,7 @@ import {
     useState,
 } from "react";
 
-import { ROOT_NODE, useEditor } from "@craftjs/core";
-
+import { ROOT_NODE, useEditor } from "../../../../../craft";
 import { useLayerManager } from "../manager/useLayerManager";
 
 import { LayerContextProvider } from "./LayerContextProvider";

@@ -1,6 +1,6 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { Indicator, useEditor } from "@craftjs/core";
+import { Indicator, useEditor } from "../../../../../craft";
 
 export interface Props {
     placeholder: Indicator;

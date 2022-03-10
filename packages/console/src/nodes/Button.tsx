@@ -2,8 +2,7 @@ import type { ReactElement } from "react";
 
 import { Button as MuiButton } from "@mui/material";
 
-import { useNode } from "@craftjs/core";
-
+import { useNode } from "../craft";
 import { useArtifactReference } from "../hooks";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
@@ -53,7 +52,8 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
                 disableElevation={disableElevation}
                 disableFocusRipple={disableFocusRipple}
                 disableRipple={disableRipple}
-                onClick={handleClick}>
+                onClick={handleClick}
+            >
                 {text}
             </MuiButton>
         </div>

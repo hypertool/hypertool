@@ -1,9 +1,8 @@
 import { FunctionComponent, ReactElement } from "react";
 import { useContext, useEffect, useMemo, useRef } from "react";
 
-import { useEditor } from "@craftjs/core";
-import { wrapConnectorHooks } from "@craftjs/utils";
-
+import { useEditor } from "../../../../../craft";
+import { wrapConnectorHooks } from "../../../../../craft-utils";
 import { useLayerEventHandler } from "../events/LayerEventContext";
 import { LayerManagerContext } from "../manager";
 

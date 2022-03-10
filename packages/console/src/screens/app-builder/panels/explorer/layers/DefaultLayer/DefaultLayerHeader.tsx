@@ -2,9 +2,9 @@ import React from "react";
 
 import { Icon } from "@mui/material";
 
-import { useEditor } from "@craftjs/core";
 import styled from "styled-components";
 
+import { useEditor } from "../../../../../../craft";
 import { useLayer } from "../useLayer";
 
 import { EditableLayerName } from "./EditableLayerName";

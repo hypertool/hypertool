@@ -5,7 +5,7 @@ import { styled } from "@mui/material/styles";
 
 import { CheckBox, Edit, Redo, Undo } from "@mui/icons-material";
 
-import { useEditor } from "@craftjs/core";
+import { useEditor } from "../../craft";
 
 const Header = styled("div")(({ theme }) => ({
     width: "100%",
@@ -63,7 +63,8 @@ const CanvasHeader = () => {
                         actions.setOptions(
                             (options) => (options.enabled = !enabled),
                         );
-                    }}>
+                    }}
+                >
                     {enabled ? (
                         <CheckBox fontSize="small" />
                     ) : (

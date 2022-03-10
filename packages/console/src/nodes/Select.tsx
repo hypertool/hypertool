@@ -4,8 +4,7 @@ import { useState } from "react";
 import { FormControl, MenuItem, Select as MuiSelect } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material/Select";
 
-import { useNode } from "@craftjs/core";
-
+import { useNode } from "../craft";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
     Color,
@@ -53,7 +52,8 @@ export const Select: CraftComponent<Props> = (props: Props): ReactElement => {
                     value={property}
                     onChange={handleChange}
                     autoWidth={autoWidth}
-                    multiple={multiple}>
+                    multiple={multiple}
+                >
                     <MenuItem value="">
                         <em>None</em>
                     </MenuItem>

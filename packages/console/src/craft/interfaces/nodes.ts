@@ -1,0 +1,124 @@
+import React from "react";
+
+import { QueryCallbacksFor } from "../../craft-utils";
+import { QueryMethods } from "../editor/query";
+
+export type UserComponentConfig<T> = {
+    displayName: string;
+    rules: Partial<NodeRules>;
+    related: Partial<NodeRelated>;
+    props: Partial<T>;
+    custom: Record<string, any>;
+    isCanvas: boolean;
+
+    // TODO: Deprecate
+    name: string;
+    defaultProps: Partial<T>;
+};
+
+export type UserComponent<T = any> = React.ComponentType<T> & {
+    craft?: Partial<UserComponentConfig<T>>;
+};
+
+export type TNodeID = string;
+export type TNodeEventType = "selected" | "dragged" | "hovered";
+
+export type Node = {
+    id: TNodeID;
+    data: NodeData;
+    events: Record<TNodeEventType, boolean>;
+    dom: HTMLElement | null;
+    related: Record<string, React.ElementType>;
+    rules: NodeRules;
+    _hydrationTimestamp: number;
+};
+
+export type NodeHelpersType = QueryCallbacksFor<typeof QueryMethods>["node"];
+export type NodeRules = {
+    canDrag(node: Node, helpers: NodeHelpersType): boolean;
+    canDrop(dropTarget: Node, self: Node, helpers: NodeHelpersType): boolean;
+    canMoveIn(canMoveIn: Node[], self: Node, helpers: NodeHelpersType): boolean;
+    canMoveOut(
+        canMoveOut: Node[],
+        self: Node,
+        helpers: NodeHelpersType,
+    ): boolean;
+};
+export type NodeRelated = Record<string, React.ElementType>;
+
+export type NodeData = {
+    props: Record<string, any>;
+    type: string | React.ElementType;
+    name: string;
+    displayName: string;
+    isCanvas: boolean;
+    parent: TNodeID;
+    linkedNodes: Record<string, TNodeID>;
+    nodes: TNodeID[];
+    hidden: boolean;
+    custom?: any;
+    _childCanvas?: Record<string, TNodeID>; // TODO: Deprecate in favour of linkedNodes
+};
+
+export type FreshNode = {
+    id?: TNodeID;
+    data: Partial<NodeData> & Required<Pick<NodeData, "type">>;
+};
+
+export type ReduceCompType =
+    | string
+    | {
+          resolvedName: string;
+      };
+
+export type ReducedComp = {
+    type: ReduceCompType;
+    isCanvas: boolean;
+    props: any;
+};
+
+export type SerializedNode = Omit<
+    NodeData,
+    "type" | "subtype" | "name" | "event"
+> &
+    ReducedComp;
+
+export type SerializedNodes = Record<TNodeID, SerializedNode>;
+
+// TODO: Deprecate in favor of SerializedNode
+export type SerializedNodeData = SerializedNode;
+
+export type Nodes = Record<TNodeID, Node>;
+
+/**
+ * A NodeTree is an internal data structure for CRUD operations that involve
+ * more than a single node.
+ *
+ * For example, when we drop a component we use a tree because we
+ * need to drop more than a single component.
+ */
+export interface INodeTree {
+    rootNodeId: TNodeID;
+    nodes: Nodes;
+}
+
+type NodeIdSelector = TNodeID | TNodeID[];
+type NodeObjSelector = Node | Node[];
+
+export enum NodeSelectorType {
+    Any,
+    Id,
+    Obj,
+}
+
+export type NodeSelector<T extends NodeSelectorType = NodeSelectorType.Any> =
+    T extends NodeSelectorType.Id
+        ? NodeIdSelector
+        : T extends NodeSelectorType.Obj
+        ? NodeObjSelector
+        : NodeIdSelector | NodeObjSelector;
+
+export type NodeSelectorWrapper = {
+    node: Node;
+    exists: boolean;
+};

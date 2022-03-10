@@ -1,8 +1,7 @@
 import { useContext, useMemo } from "react";
 
-import { useEditor } from "@craftjs/core";
-import { wrapConnectorHooks } from "@craftjs/utils";
-
+import { useEditor } from "../../../../../craft";
+import { wrapConnectorHooks } from "../../../../../craft-utils";
 import { Layer } from "../interfaces";
 import { useLayerManager } from "../manager";
 

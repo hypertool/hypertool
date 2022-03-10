@@ -1,12 +1,11 @@
 import React from "react";
 
-import { NodeId } from "@craftjs/core";
-import { EventHandlerConnectors } from "@craftjs/utils";
-
+import { TNodeID } from "../../../../../craft";
+import { EventHandlerConnectors } from "../../../../../craft-utils";
 import { LayerHandlers } from "../events/LayerHandlers";
 
 export type TLayerContext = {
-    id: NodeId;
+    id: TNodeID;
     depth: number;
     connectors: EventHandlerConnectors<LayerHandlers, React.ReactElement>;
 };

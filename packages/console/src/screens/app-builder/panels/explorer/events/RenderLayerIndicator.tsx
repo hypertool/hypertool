@@ -2,9 +2,8 @@ import type { FunctionComponent, ReactNode } from "react";
 // eslint-disable-next-line no-use-before-define
 import React, { useMemo } from "react";
 
-import { useEditor } from "@craftjs/core";
-import { RenderIndicator } from "@craftjs/utils";
-
+import { useEditor } from "../../../../../craft";
+import { RenderIndicator } from "../../../../../craft-utils";
 import { useLayerManager } from "../manager/useLayerManager";
 
 interface Props {

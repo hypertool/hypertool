@@ -1,6 +1,6 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { ROOT_NODE } from "@craftjs/utils";
+import { ROOT_NODE } from "../../../../craft-utils";
 
 import type { LayerOptions } from "./interfaces";
 import { LayerContextProvider } from "./layers/LayerContextProvider";
