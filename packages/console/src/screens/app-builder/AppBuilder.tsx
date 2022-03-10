@@ -11,7 +11,7 @@ import {
     BuilderActionsContext,
     TabContext,
 } from "../../contexts";
-import { Editor } from "../../craft";
+import { Editor, useEditor } from "../../craft";
 import { useInflateArtifacts } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type {
@@ -123,6 +123,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     >([]);
     const artifacts = useInflateArtifacts(deflatedArtifacts);
     const monaco = useMonaco();
+    const { actions, query } = useEditor();
 
     const { type: activeTabType } = useMemo(
         () =>
@@ -170,7 +171,28 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     const builderActions: IBuilderActionsContext = {
         tabs,
         activeTab,
-        setActiveTab,
+
+        setActiveTab: (newActiveTabId: string) => {
+            if (activeTab && activeTabType === "edit-screen") {
+                const json = query.serialize();
+                localStorage.setItem(activeTab, json);
+            }
+
+            /*
+             * If the new active tab is being inserted to the tabs list, then we
+             * do not bother with deserializing anything.
+             */
+            const newActiveTab = tabs.find((tab) => tab.id === newActiveTabId);
+            if (newActiveTab && newActiveTab.type === "edit-screen") {
+                const json = localStorage.getItem(newActiveTabId);
+                if (json) {
+                    actions.deserialize(json);
+                }
+            }
+
+            setActiveTab(newActiveTabId);
+        },
+
         insertTab: (
             index: number,
             replace: boolean,
@@ -241,7 +263,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                          * off by `x`. However, we need not worry because `newCount`
                          * is temporarily used for `edit-*` tab types.
                          */
-                        setActiveTab(oldTab.id);
+                        builderActions.setActiveTab(oldTab.id);
                         return oldTabs;
                     }
 
@@ -253,7 +275,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         type,
                         bundle,
                     };
-                    setActiveTab(newTabId);
+                    builderActions.setActiveTab(newTabId);
 
                     /*
                      * When a new controller tab is created, load the default
@@ -314,7 +336,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 result.splice(index, 1);
 
                 if (result.length > 0) {
-                    setActiveTab(result[result.length - 1].id);
+                    builderActions.setActiveTab(result[result.length - 1].id);
                 }
 
                 return result;
@@ -376,31 +398,36 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     };
 
     return (
+        <BuilderActionsContext.Provider value={builderActions}>
+            <ArtifactsContext.Provider value={artifacts}>
+                <Root>
+                    <AppBar open={leftDrawerOpen} />
+                    <LeftDrawer
+                        open={leftDrawerOpen}
+                        onDrawerOpen={handleLeftDrawerOpen}
+                        onDrawerClose={handleLeftDrawerClose}
+                    />
+                    <Main>
+                        <Content>{tabs.map(renderTabContent)}</Content>
+                    </Main>
+                    <RightDrawer
+                        open={
+                            rightDrawerOpen && "edit-screen" === activeTabType
+                        }
+                        onDrawerClose={handleRightDrawerClose}
+                    />
+                </Root>
+            </ArtifactsContext.Provider>
+        </BuilderActionsContext.Provider>
+    );
+};
+
+const AppBuilderWrapper = () => {
+    return (
         <Editor resolver={nodeMappings} onRender={RenderNode}>
-            <BuilderActionsContext.Provider value={builderActions}>
-                <ArtifactsContext.Provider value={artifacts}>
-                    <Root>
-                        <AppBar open={leftDrawerOpen} />
-                        <LeftDrawer
-                            open={leftDrawerOpen}
-                            onDrawerOpen={handleLeftDrawerOpen}
-                            onDrawerClose={handleLeftDrawerClose}
-                        />
-                        <Main>
-                            <Content>{tabs.map(renderTabContent)}</Content>
-                        </Main>
-                        <RightDrawer
-                            open={
-                                rightDrawerOpen &&
-                                "edit-screen" === activeTabType
-                            }
-                            onDrawerClose={handleRightDrawerClose}
-                        />
-                    </Root>
-                </ArtifactsContext.Provider>
-            </BuilderActionsContext.Provider>
+            <AppBuilder />
         </Editor>
     );
 };
 
-export default AppBuilder;
+export default AppBuilderWrapper;
