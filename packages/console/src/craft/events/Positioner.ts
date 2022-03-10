@@ -1,5 +1,4 @@
-import { ROOT_NODE, getDOMInfo } from "@craftjs/utils";
-
+import { ROOT_NODE, getDOMInfo } from "../../craft-utils";
 import { TEditorStore } from "../editor/store";
 import {
     DragTarget,
@@ -163,7 +162,7 @@ export class Positioner {
                 result.push({
                     id,
                     ...getDOMInfo(dom),
-                });
+                } as any);
             }
 
             return result;

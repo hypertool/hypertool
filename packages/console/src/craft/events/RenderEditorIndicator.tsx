@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 
-import { RenderIndicator, getDOMInfo } from "@craftjs/utils";
-
+import { RenderIndicator, getDOMInfo } from "../../craft-utils";
 import { useInternalEditor } from "../editor/useInternalEditor";
 
 import { useEventHandler } from "./EventContext";
@@ -39,9 +38,11 @@ export const RenderEditorIndicator = () => {
         style: {
             ...movePlaceholder(
                 indicator.placement,
-                getDOMInfo(indicator.placement.parent.dom as any),
+                getDOMInfo(indicator.placement.parent.dom as any) as any,
                 indicator.placement.currentNode &&
-                    getDOMInfo(indicator.placement.currentNode.dom as any),
+                    (getDOMInfo(
+                        indicator.placement.currentNode.dom as any,
+                    ) as any),
                 indicatorOptions.thickness,
             ),
             backgroundColor: indicator.error

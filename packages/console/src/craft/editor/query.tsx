@@ -1,5 +1,7 @@
 import React from "react";
 
+import invariant from "tiny-invariant";
+
 import {
     DEPRECATED_ROOT_NODE,
     ERROR_NOT_IN_RESOLVER,
@@ -7,9 +9,7 @@ import {
     ROOT_NODE,
     deprecationWarning,
     getDOMInfo,
-} from "@craftjs/utils";
-import invariant from "tiny-invariant";
-
+} from "../../craft-utils";
 import findPosition from "../events/findPosition";
 import {
     FreshNode,
@@ -72,7 +72,7 @@ export function QueryMethods(state: IEditorState) {
                           const info: NodeInfo = {
                               id,
                               ...getDOMInfo(dom),
-                          };
+                          } as any;
 
                           result.push(info);
                       }

@@ -1,8 +1,8 @@
 import React from "react";
 
-import { isChromium, isLinux } from "@craftjs/utils";
 import { isFunction } from "lodash";
 
+import { isChromium, isLinux } from "../../craft-utils";
 import { DragTarget, INodeTree, Indicator, TNodeID } from "../interfaces";
 
 import { CoreEventHandlers, CreateHandlerOptions } from "./CoreEventHandlers";

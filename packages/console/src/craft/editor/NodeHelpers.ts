@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
+import invariant from "tiny-invariant";
+
 import {
     ERROR_CANNOT_DRAG,
     ERROR_DUPLICATE_NODEID,
@@ -12,9 +14,7 @@ import {
     ERROR_MOVE_TO_NONCANVAS_PARENT,
     ROOT_NODE,
     deprecationWarning,
-} from "@craftjs/utils";
-import invariant from "tiny-invariant";
-
+} from "../../craft-utils";
 import { IEditorState, NodeSelector, TNodeID } from "../interfaces";
 import { getNodesFromSelector } from "../utils/getNodesFromSelector";
 import { serializeNode } from "../utils/serializeNode";

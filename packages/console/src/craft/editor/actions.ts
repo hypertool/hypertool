@@ -1,3 +1,5 @@
+import invariant from "tiny-invariant";
+
 import {
     CallbacksFor,
     DEPRECATED_ROOT_NODE,
@@ -9,9 +11,7 @@ import {
     QueryCallbacksFor,
     ROOT_NODE,
     deprecationWarning,
-} from "@craftjs/utils";
-import invariant from "tiny-invariant";
-
+} from "../../craft-utils";
 import {
     IEditorOptions,
     IEditorState,

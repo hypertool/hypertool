@@ -1,8 +1,8 @@
 import React from "react";
 
-import { ERROR_DESERIALIZE_COMPONENT_NOT_IN_RESOLVER } from "@craftjs/utils";
 import invariant from "tiny-invariant";
 
+import { ERROR_DESERIALIZE_COMPONENT_NOT_IN_RESOLVER } from "../../craft-utils";
 import {
     NodeData,
     ReduceCompType,

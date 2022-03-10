@@ -2,8 +2,7 @@ import {
     PatchListener,
     SubscriberAndCallbacksFor,
     useMethods,
-} from "@craftjs/utils";
-
+} from "../../craft-utils";
 import { DefaultEventHandlers } from "../events";
 import {
     IEditorOptions,

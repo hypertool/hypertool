@@ -1,8 +1,9 @@
 import { nanoid } from "nanoid";
 
 /*
- * By default nanoid generate an ID with 21 characters. To reduce the footprint, we default to 10 characters.
- * We have a higher probability for collisions, though
+ * By default nanoid generate an ID with 21 characters. To reduce the footprint,
+ * we default to 10 characters. However, a higher probability for collisions is
+ * introduced.
  */
 
 /**

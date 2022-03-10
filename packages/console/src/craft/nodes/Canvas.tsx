@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { deprecationWarning } from "@craftjs/utils";
+import { deprecationWarning } from "../../craft-utils";
 
 import { Element } from "./Element";
 

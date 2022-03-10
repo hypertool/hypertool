@@ -1,8 +1,7 @@
 import React from "react";
 
-import { EventHandlerConnectors } from "@craftjs/utils";
-
 import { TNodeID } from "../../../../../craft";
+import { EventHandlerConnectors } from "../../../../../craft-utils";
 import { LayerHandlers } from "../events/LayerHandlers";
 
 export type TLayerContext = {

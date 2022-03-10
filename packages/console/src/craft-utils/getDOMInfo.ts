@@ -1,8 +1,8 @@
-export const getDOMInfo = (el: HTMLElement) => {
+export const getDOMInfo = (element: HTMLElement) => {
     const { x, y, top, left, bottom, right, width, height } =
-        el.getBoundingClientRect() as DOMRect;
+        element.getBoundingClientRect() as DOMRect;
 
-    const style = window.getComputedStyle(el);
+    const style = window.getComputedStyle(element);
 
     const margin = {
         left: parseInt(style.marginLeft),
@@ -48,7 +48,7 @@ export const getDOMInfo = (el: HTMLElement) => {
                 return;
         }
 
-        switch (el.tagName) {
+        switch (element.tagName) {
             case "TR":
             case "TBODY":
             case "THEAD":
@@ -81,6 +81,6 @@ export const getDOMInfo = (el: HTMLElement) => {
         outerHeight: Math.round(height + margin.top + margin.bottom),
         margin,
         padding,
-        inFlow: el.parentElement && !!styleInFlow(el.parentElement),
+        inFlow: element.parentElement && !!styleInFlow(element.parentElement),
     };
 };

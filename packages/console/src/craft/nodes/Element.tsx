@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 
-import { ERROR_TOP_LEVEL_ELEMENT_NO_ID, useEffectOnce } from "@craftjs/utils";
 import invariant from "tiny-invariant";
 
+import {
+    ERROR_TOP_LEVEL_ELEMENT_NO_ID,
+    useEffectOnce,
+} from "../../craft-utils";
 import { useInternalEditor } from "../editor/useInternalEditor";
 import { TNodeID } from "../interfaces";
 

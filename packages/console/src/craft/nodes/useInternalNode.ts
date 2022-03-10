@@ -1,11 +1,11 @@
 import { useContext, useMemo } from "react";
 
+import invariant from "tiny-invariant";
+
 import {
     ERROR_USE_NODE_OUTSIDE_OF_EDITOR_CONTEXT,
     wrapConnectorHooks,
-} from "@craftjs/utils";
-import invariant from "tiny-invariant";
-
+} from "../../craft-utils";
 import { useInternalEditor } from "../editor/useInternalEditor";
 import { Node } from "../interfaces";
 

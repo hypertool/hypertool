@@ -1,7 +1,6 @@
 import React from "react";
 
-import { getRandomId as getRandomNodeId } from "@craftjs/utils";
-
+import { getRandomId as getRandomNodeId } from "../../craft-utils";
 import { FreshNode, Node, UserComponentConfig } from "../interfaces";
 import {
     Canvas,

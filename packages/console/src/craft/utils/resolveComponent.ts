@@ -1,6 +1,6 @@
-import { ERROR_NOT_IN_RESOLVER } from "@craftjs/utils";
 import invariant from "tiny-invariant";
 
+import { ERROR_NOT_IN_RESOLVER } from "../../craft-utils";
 import { Resolver } from "../interfaces";
 
 export const resolveComponent = (

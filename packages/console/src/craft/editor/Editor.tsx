@@ -1,10 +1,13 @@
 import { useEffect, useMemo } from "react";
 import type { FunctionComponent } from "react";
 
-import { ERROR_RESOLVER_NOT_AN_OBJECT, HISTORY_ACTIONS } from "@craftjs/utils";
 import { pickBy } from "lodash";
 import invariant from "tiny-invariant";
 
+import {
+    ERROR_RESOLVER_NOT_AN_OBJECT,
+    HISTORY_ACTIONS,
+} from "../../craft-utils";
 import { Events } from "../events";
 import { IEditorOptions } from "../interfaces";
 

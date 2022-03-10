@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { DerivedEventHandlers, EventHandlers } from "@craftjs/utils";
-
+import { DerivedEventHandlers, EventHandlers } from "../../craft-utils";
 import { TEditorStore } from "../editor/store";
 import { INodeTree, TNodeID } from "../interfaces/nodes";
 

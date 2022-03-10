@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useMemo } from "react";
 
-import { Delete, Overwrite, OverwriteFnReturnType } from "@craftjs/utils";
-
+import { Delete, Overwrite, OverwriteFnReturnType } from "../../craft-utils";
 import {
     EditorCollector,
     useInternalEditor,

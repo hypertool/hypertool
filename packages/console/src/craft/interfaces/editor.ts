@@ -1,5 +1,8 @@
-import { Delete, PatchListenerAction, QueryCallbacksFor } from "@craftjs/utils";
-
+import {
+    Delete,
+    PatchListenerAction,
+    QueryCallbacksFor,
+} from "../../craft-utils";
 import { QueryMethods } from "../editor/query";
 import { ActionMethodsWithConfig, TEditorStore } from "../editor/store";
 import { useInternalEditorReturnType } from "../editor/useInternalEditor";

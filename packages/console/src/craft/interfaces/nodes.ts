@@ -1,7 +1,6 @@
 import React from "react";
 
-import { QueryCallbacksFor } from "@craftjs/utils";
-
+import { QueryCallbacksFor } from "../../craft-utils";
 import { QueryMethods } from "../editor/query";
 
 export type UserComponentConfig<T> = {
