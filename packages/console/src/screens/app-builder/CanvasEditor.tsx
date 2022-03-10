@@ -2,8 +2,7 @@ import { FunctionComponent, ReactElement } from "react";
 
 import { gql, useQuery } from "@apollo/client";
 
-import { Element, Frame } from "@craftjs/core";
-
+import { Element, Frame } from "../../craft";
 import { useTabBundle, useUpdateTabTitle } from "../../hooks";
 import { Button, Container } from "../../nodes";
 import { IEditScreenBundle } from "../../types";

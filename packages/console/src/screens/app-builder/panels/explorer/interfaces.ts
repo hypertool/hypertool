@@ -1,7 +1,7 @@
-import { Indicator, NodeId } from "@craftjs/core";
+import { Indicator, TNodeID } from "../../../../craft";
 
 export type Layer = {
-    id: NodeId;
+    id: TNodeID;
     dom: HTMLElement;
     headingDom: HTMLElement;
     expanded: boolean;
@@ -22,8 +22,8 @@ export type LayerIndicator = Indicator & {
 };
 
 export type LayerState = {
-    layers: Record<NodeId, Layer>;
-    events: Record<LayerEvents, NodeId | null> & {
+    layers: Record<TNodeID, Layer>;
+    events: Record<LayerEvents, TNodeID | null> & {
         indicator: LayerIndicator;
     };
 

@@ -5,9 +5,10 @@ import { styled } from "@mui/material/styles";
 
 import { ArrowUpward, ControlCamera, Delete } from "@mui/icons-material";
 
-import { useEditor, useNode } from "@craftjs/core";
 import { ROOT_NODE } from "@craftjs/utils";
 import ReactDOM from "react-dom";
+
+import { useEditor, useNode } from "../../craft";
 
 const Indicator = styled("div")(({ theme }) => ({
     height: theme.spacing(4),

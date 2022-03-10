@@ -6,8 +6,7 @@ import {
     Checkbox as MuiCheckbox,
 } from "@mui/material";
 
-import { useNode } from "@craftjs/core";
-
+import { useNode } from "../craft";
 import { useArtifactReference } from "../hooks";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {

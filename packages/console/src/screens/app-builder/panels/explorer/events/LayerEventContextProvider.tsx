@@ -1,8 +1,7 @@
 import type { FunctionComponent, ReactElement, ReactNode } from "react";
 import { useMemo } from "react";
 
-import { useEventHandler } from "@craftjs/core";
-
+import { useEventHandler } from "../../../../../craft";
 import { useLayerManager } from "../manager";
 
 import { LayerEventHandlerContext } from "./LayerEventContext";

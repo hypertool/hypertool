@@ -1,5 +1,4 @@
-import { DerivedCoreEventHandlers, Node, NodeId } from "@craftjs/core";
-
+import { DerivedCoreEventHandlers, Node, TNodeID } from "../../../../../craft";
 import { LayerIndicator } from "../interfaces";
 
 export class LayerHandlers extends DerivedCoreEventHandlers<{
@@ -15,7 +14,7 @@ export class LayerHandlers extends DerivedCoreEventHandlers<{
     };
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    getLayer(id: NodeId) {
+    getLayer(id: TNodeID) {
         return this.options.layerStore.getState().layers[id];
     }
 
@@ -24,7 +23,7 @@ export class LayerHandlers extends DerivedCoreEventHandlers<{
         const editorStore = this.derived.options.store;
         const { layerStore } = this.options;
         return {
-            layer: (el: HTMLElement, layerId: NodeId) => {
+            layer: (el: HTMLElement, layerId: TNodeID) => {
                 layerStore.actions.setDOM(layerId, {
                     dom: el,
                 });
@@ -117,7 +116,7 @@ export class LayerHandlers extends DerivedCoreEventHandlers<{
                                 dragId,
                                 target,
                                 { x: e.clientX, y: e.clientY },
-                                (node) => {
+                                (node: any) => {
                                     const layer = this.getLayer(node.id);
                                     return layer && layer.dom;
                                 },
@@ -202,12 +201,12 @@ export class LayerHandlers extends DerivedCoreEventHandlers<{
                     unbindDragEnter();
                 };
             },
-            layerHeader: (el: HTMLElement, layerId: NodeId) => {
+            layerHeader: (el: HTMLElement, layerId: TNodeID) => {
                 layerStore.actions.setDOM(layerId, {
                     headingDom: el,
                 });
             },
-            drag: (el: HTMLElement, layerId: NodeId) => {
+            drag: (el: HTMLElement, layerId: TNodeID) => {
                 el.setAttribute("draggable", "true");
 
                 const unbindDragStart = this.addCraftEventListener(
@@ -232,7 +231,7 @@ export class LayerHandlers extends DerivedCoreEventHandlers<{
                             const { id: parentId } = parent;
 
                             editorStore.actions.move(
-                                LayerHandlers.draggedElement as NodeId,
+                                LayerHandlers.draggedElement as TNodeID,
                                 parentId,
                                 index + (where === "after" ? 1 : 0),
                             );

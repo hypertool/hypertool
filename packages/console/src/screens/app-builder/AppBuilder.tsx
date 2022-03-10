@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { styled } from "@mui/material/styles";
 
 import * as uuid from "uuid";
-import { Editor } from "@craftjs/core";
 import { useMonaco } from "@monaco-editor/react";
 
 import {
@@ -12,6 +11,7 @@ import {
     BuilderActionsContext,
     TabContext,
 } from "../../contexts";
+import { Editor } from "../../craft";
 import { useInflateArtifacts } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type {
