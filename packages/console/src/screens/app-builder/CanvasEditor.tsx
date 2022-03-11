@@ -1,8 +1,8 @@
-import { FunctionComponent, ReactElement } from "react";
+import { FunctionComponent, ReactElement, useEffect, useRef } from "react";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
-import { Element, Frame } from "../../craft";
+import { Element, Frame, useEditor } from "../../craft";
 import { useTabBundle, useUpdateTabTitle } from "../../hooks";
 import { Button, Container } from "../../nodes";
 import { IEditScreenBundle } from "../../types";
@@ -14,12 +14,34 @@ const GET_SCREEN = gql`
         getScreenById(appId: $appId, screenId: $screenId) {
             id
             name
+            content
+        }
+    }
+`;
+
+const useInterval = (callback: (mouted: boolean) => void, duration: number) => {
+    let mounted = true;
+    const handle = setInterval(() => callback(mounted), duration);
+
+    useEffect(() => {
+        return () => {
+            mounted = false;
+            clearInterval(handle);
+        };
+    }, []);
+};
+
+const UPDATE_SCREEN = gql`
+    mutation UpdateScreen($screenId: ID!, $content: String!) {
+        updateScreen(screenId: $screenId, content: $content) {
+            id
         }
     }
 `;
 
 const CanvasEditor: FunctionComponent = (): ReactElement => {
     const bundle = useTabBundle<IEditScreenBundle>();
+    const { actions, query } = useEditor();
     // TODO: Destructure `error`, check for non-null, send to sentry
     const { data } = useQuery(GET_SCREEN, {
         variables: {
@@ -29,6 +51,44 @@ const CanvasEditor: FunctionComponent = (): ReactElement => {
         notifyOnNetworkStatusChange: true,
     });
     useUpdateTabTitle(data?.getScreenById?.name);
+
+    const [
+        updateScreen,
+        /*
+         * {
+         *     loading: updatingScreen,
+         *     data: updatedScreen,
+         *     error: updateScreenError,
+         * },
+         */
+    ] = useMutation(UPDATE_SCREEN);
+
+    const previousContent = useRef("");
+
+    useInterval(() => {
+        const content = query.serialize();
+        if (content === previousContent.current) {
+            return;
+        }
+
+        updateScreen({
+            variables: {
+                screenId: bundle.screenId,
+                content,
+            },
+        });
+
+        previousContent.current = content;
+    }, 5000);
+
+    useEffect(() => {
+        if (data?.getScreenById) {
+            const { content } = data.getScreenById;
+            if (content) {
+                actions.deserialize(content);
+            }
+        }
+    }, [data?.getScreenById?.content]);
 
     return (
         <CanvasViewport>
