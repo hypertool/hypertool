@@ -3,6 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { styled } from "@mui/material/styles";
 
+import { gql, useMutation } from "@apollo/client";
+
 import * as uuid from "uuid";
 import { useMonaco } from "@monaco-editor/react";
 
@@ -108,6 +110,14 @@ const tabDetailsByType: Record<string, TabTypeDetails> = {
     },
 };
 
+const UPDATE_SCREEN = gql`
+    mutation UpdateScreen($screenId: ID!, $content: String!) {
+        updateScreen(screenId: $screenId, content: $content) {
+            id
+        }
+    }
+`;
+
 const AppBuilder: FunctionComponent = (): ReactElement => {
     const [leftDrawerOpen, setLeftDrawerOpen] = useState(true);
     const [rightDrawerOpen, setRightDrawerOpen] = useState(true);
@@ -124,8 +134,18 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     const artifacts = useInflateArtifacts(deflatedArtifacts);
     const monaco = useMonaco();
     const { actions, query } = useEditor();
+    const [
+        updateScreen,
+        /*
+         * {
+         *     loading: updatingScreen,
+         *     data: updatedScreen,
+         *     error: updateScreenError,
+         * },
+         */
+    ] = useMutation(UPDATE_SCREEN);
 
-    const { type: activeTabType } = useMemo(
+    const { type: activeTabType, bundle: activeTabBundle } = useMemo(
         () =>
             tabs.find((tab) => tab.id === activeTab) || {
                 type: undefined,
@@ -174,8 +194,15 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
 
         setActiveTab: (newActiveTabId: string) => {
             if (activeTab && activeTabType === "edit-screen") {
-                const json = query.serialize();
-                localStorage.setItem(activeTab, json);
+                const content = query.serialize();
+                localStorage.setItem(activeTab, content);
+                updateScreen({
+                    variables: {
+                        screenId: (activeTabBundle as IEditScreenBundle)
+                            .screenId,
+                        content,
+                    },
+                });
             }
 
             /*
