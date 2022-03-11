@@ -49,6 +49,12 @@ const screenSchema = new Schema(
             trim: true,
         },
 
+        /* The user interface implemented by the screen encoded in JSON. */
+        content: {
+            type: String,
+            trim: true,
+        },
+
         /* The status of the screen. */
         status: {
             type: String,

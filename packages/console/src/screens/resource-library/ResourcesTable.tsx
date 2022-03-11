@@ -3,10 +3,11 @@ import { useCallback } from "react";
 
 import { styled } from "@mui/material/styles";
 
-import type { Resource } from "@hypertool/common";
-
+// import type { Resource } from "@hypertool/common";
 import type { GridRowParams } from "@mui/x-data-grid";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+
+type Resource = any;
 
 const Root = styled("div")(({ theme }) => ({
     width: "100%",

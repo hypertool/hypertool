@@ -425,7 +425,10 @@ const typeDefs = gql`
         title: String!
         description: String!
         slug: String!
+        content: String!
         status: ScreenStatus!
+        createdAt: Date!
+        updatedAt: Date!
     }
 
     type ScreenPage {
@@ -617,11 +620,11 @@ const typeDefs = gql`
             component: ComponentOrigin!
         ): ActivityLog!    
 
-        createMembership(
-            emailAddress: String!,
-            organizationId: ID!
-            inviterId: ID!
-        ): Membership!
+        # createMembership(
+        #     emailAddress: String!,
+        #     organizationId: ID!
+        #     inviterId: ID!
+        # ): Membership!
 
         createComment(
             author: ID!,
@@ -660,14 +663,16 @@ const typeDefs = gql`
             name: String!
             title: String!
             slug: String
+            content: String!
             description: String
         ): Screen!
 
         updateScreen(
-            screenId: String!
+            screenId: ID!
             name: String
             title: String
             slug: String
+            content: String
             description: String
         ): Screen!
 
@@ -718,7 +723,7 @@ const typeDefs = gql`
         listConversationsById(conversationIds: [ID!]!): [Conversation]!
 
         getScreens(appId: ID!, page: Int, limit: Int): ScreenPage!
-        getScreensByIds(appId: ID!, pageIds: [ID!]!): [Screen!]!
+        getScreensByIds(appId: ID!, screenIds: [ID!]!): [Screen!]!
         getScreenByName(appId: ID!, name: String!): Screen!
         getScreenById(appId: ID!, screenId: ID!): Screen!
 
@@ -858,7 +863,7 @@ const resolvers = {
             screens.create(context.request, values),
 
         updateScreen: async (parent, values, context) =>
-            screens.update(context.request, values.pageId, values),
+            screens.update(context.request, values.screenId, values),
 
         createController: (parent, values, context) =>
             controllers.create(context.request, values),
@@ -937,7 +942,7 @@ const resolvers = {
             screens.list(context.request, values),
 
         getScreensByIds: async (parent, values, context) =>
-            screens.listById(context.request, values.appId, values.pageIds),
+            screens.listById(context.request, values.appId, values.screenIds),
 
         getScreenByName: async (parent, values, context) =>
             screens.getByName(context.request, values.appId, values.name),

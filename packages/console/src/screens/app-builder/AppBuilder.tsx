@@ -3,6 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { styled } from "@mui/material/styles";
 
+import { gql, useMutation } from "@apollo/client";
+
 import * as uuid from "uuid";
 import { useMonaco } from "@monaco-editor/react";
 
@@ -11,7 +13,7 @@ import {
     BuilderActionsContext,
     TabContext,
 } from "../../contexts";
-import { Editor } from "../../craft";
+import { Editor, useEditor } from "../../craft";
 import { useInflateArtifacts } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type {
@@ -108,6 +110,14 @@ const tabDetailsByType: Record<string, TabTypeDetails> = {
     },
 };
 
+const UPDATE_SCREEN = gql`
+    mutation UpdateScreen($screenId: ID!, $content: String!) {
+        updateScreen(screenId: $screenId, content: $content) {
+            id
+        }
+    }
+`;
+
 const AppBuilder: FunctionComponent = (): ReactElement => {
     const [leftDrawerOpen, setLeftDrawerOpen] = useState(true);
     const [rightDrawerOpen, setRightDrawerOpen] = useState(true);
@@ -123,8 +133,19 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     >([]);
     const artifacts = useInflateArtifacts(deflatedArtifacts);
     const monaco = useMonaco();
+    const { actions, query } = useEditor();
+    const [
+        updateScreen,
+        /*
+         * {
+         *     loading: updatingScreen,
+         *     data: updatedScreen,
+         *     error: updateScreenError,
+         * },
+         */
+    ] = useMutation(UPDATE_SCREEN);
 
-    const { type: activeTabType } = useMemo(
+    const { type: activeTabType, bundle: activeTabBundle } = useMemo(
         () =>
             tabs.find((tab) => tab.id === activeTab) || {
                 type: undefined,
@@ -170,7 +191,35 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     const builderActions: IBuilderActionsContext = {
         tabs,
         activeTab,
-        setActiveTab,
+
+        setActiveTab: (newActiveTabId: string) => {
+            if (activeTab && activeTabType === "edit-screen") {
+                const content = query.serialize();
+                localStorage.setItem(activeTab, content);
+                updateScreen({
+                    variables: {
+                        screenId: (activeTabBundle as IEditScreenBundle)
+                            .screenId,
+                        content,
+                    },
+                });
+            }
+
+            /*
+             * If the new active tab is being inserted to the tabs list, then we
+             * do not bother with deserializing anything.
+             */
+            const newActiveTab = tabs.find((tab) => tab.id === newActiveTabId);
+            if (newActiveTab && newActiveTab.type === "edit-screen") {
+                const json = localStorage.getItem(newActiveTabId);
+                if (json) {
+                    actions.deserialize(json);
+                }
+            }
+
+            setActiveTab(newActiveTabId);
+        },
+
         insertTab: (
             index: number,
             replace: boolean,
@@ -241,7 +290,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                          * off by `x`. However, we need not worry because `newCount`
                          * is temporarily used for `edit-*` tab types.
                          */
-                        setActiveTab(oldTab.id);
+                        builderActions.setActiveTab(oldTab.id);
                         return oldTabs;
                     }
 
@@ -253,7 +302,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         type,
                         bundle,
                     };
-                    setActiveTab(newTabId);
+                    builderActions.setActiveTab(newTabId);
 
                     /*
                      * When a new controller tab is created, load the default
@@ -314,7 +363,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 result.splice(index, 1);
 
                 if (result.length > 0) {
-                    setActiveTab(result[result.length - 1].id);
+                    builderActions.setActiveTab(result[result.length - 1].id);
                 }
 
                 return result;
@@ -376,31 +425,36 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     };
 
     return (
+        <BuilderActionsContext.Provider value={builderActions}>
+            <ArtifactsContext.Provider value={artifacts}>
+                <Root>
+                    <AppBar open={leftDrawerOpen} />
+                    <LeftDrawer
+                        open={leftDrawerOpen}
+                        onDrawerOpen={handleLeftDrawerOpen}
+                        onDrawerClose={handleLeftDrawerClose}
+                    />
+                    <Main>
+                        <Content>{tabs.map(renderTabContent)}</Content>
+                    </Main>
+                    <RightDrawer
+                        open={
+                            rightDrawerOpen && "edit-screen" === activeTabType
+                        }
+                        onDrawerClose={handleRightDrawerClose}
+                    />
+                </Root>
+            </ArtifactsContext.Provider>
+        </BuilderActionsContext.Provider>
+    );
+};
+
+const AppBuilderWrapper = () => {
+    return (
         <Editor resolver={nodeMappings} onRender={RenderNode}>
-            <BuilderActionsContext.Provider value={builderActions}>
-                <ArtifactsContext.Provider value={artifacts}>
-                    <Root>
-                        <AppBar open={leftDrawerOpen} />
-                        <LeftDrawer
-                            open={leftDrawerOpen}
-                            onDrawerOpen={handleLeftDrawerOpen}
-                            onDrawerClose={handleLeftDrawerClose}
-                        />
-                        <Main>
-                            <Content>{tabs.map(renderTabContent)}</Content>
-                        </Main>
-                        <RightDrawer
-                            open={
-                                rightDrawerOpen &&
-                                "edit-screen" === activeTabType
-                            }
-                            onDrawerClose={handleRightDrawerClose}
-                        />
-                    </Root>
-                </ArtifactsContext.Provider>
-            </BuilderActionsContext.Provider>
+            <AppBuilder />
         </Editor>
     );
 };
 
-export default AppBuilder;
+export default AppBuilderWrapper;

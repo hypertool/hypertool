@@ -142,6 +142,7 @@ const CREATE_SCREEN = gql`
         $name: String!
         $title: String!
         $slug: String
+        $content: String!
         $description: String!
     ) {
         createScreen(
@@ -149,6 +150,7 @@ const CREATE_SCREEN = gql`
             name: $name
             title: $title
             slug: $slug
+            content: $content
             description: $description
         ) {
             id
@@ -169,6 +171,7 @@ const NewScreenForm: FunctionComponent = (): ReactElement => {
         createScreen({
             variables: {
                 ...values,
+                content: "",
                 app: "61c93a931da4a79d3a109947",
             },
         });
