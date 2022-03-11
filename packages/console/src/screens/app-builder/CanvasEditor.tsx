@@ -3,7 +3,7 @@ import { FunctionComponent, ReactElement, useEffect, useRef } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { Element, Frame, useEditor } from "../../craft";
-import { useTabBundle, useUpdateTabTitle } from "../../hooks";
+import { useInterval, useTabBundle, useUpdateTabTitle } from "../../hooks";
 import { Button, Container } from "../../nodes";
 import { IEditScreenBundle } from "../../types";
 
@@ -18,18 +18,6 @@ const GET_SCREEN = gql`
         }
     }
 `;
-
-const useInterval = (callback: (mouted: boolean) => void, duration: number) => {
-    let mounted = true;
-    const handle = setInterval(() => callback(mounted), duration);
-
-    useEffect(() => {
-        return () => {
-            mounted = false;
-            clearInterval(handle);
-        };
-    }, []);
-};
 
 const UPDATE_SCREEN = gql`
     mutation UpdateScreen($screenId: ID!, $content: String!) {
