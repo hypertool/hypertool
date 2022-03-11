@@ -18,14 +18,16 @@ const createSchema = joi.object({
     name: joi.string().regex(constants.namePattern).min(1).max(256).required(),
     title: joi.string().min(1).max(256).required(),
     description: joi.string().max(512).allow("").default(""),
-    slug: joi.string().min(1).max(128).required(),
+    slug: joi.string().min(1).max(128),
+    content: joi.string().allow("").default(""),
 });
 
 const updateSchema = joi.object({
     name: joi.string().regex(constants.namePattern).min(1).max(256),
     title: joi.string().min(1).max(256),
-    description: joi.string().max(512),
+    description: joi.string().max(512).allow(""),
     slug: joi.string().min(1).max(128),
+    content: joi.string().allow(""),
 });
 
 const filterSchema = joi.object({
@@ -47,6 +49,7 @@ const toExternal = (screen: IScreen): IExternalScreen => {
         title,
         description,
         slug,
+        content,
         status,
         createdAt,
         updatedAt,
@@ -58,6 +61,7 @@ const toExternal = (screen: IScreen): IExternalScreen => {
         title,
         description,
         slug,
+        content,
         status,
         createdAt,
         updatedAt,

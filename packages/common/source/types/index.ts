@@ -488,6 +488,11 @@ export interface IScreen {
     slug: string;
 
     /**
+     * The user interface implemented by the screen encoded in JSON.
+     */
+    content: string;
+
+    /**
      * The status of the screen.
      */
     status: typeof screenStatuses[number];
@@ -510,6 +515,12 @@ export interface IExternalScreen {
     title: string;
     description: string;
     slug: string;
+
+    /**
+     * The user interface implemented by the screen encoded in JSON.
+     */
+    content: string;
+
     status: typeof screenStatuses[number];
     createdAt: Date;
     updatedAt: Date;
