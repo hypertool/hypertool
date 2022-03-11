@@ -1,5 +1,5 @@
 import type { ApolloClient } from "@apollo/client/core";
-import { gql, ApolloError } from "@apollo/client/core";
+import { ApolloError } from "@apollo/client/core";
 import lodash from "lodash";
 
 import type {
@@ -12,269 +12,272 @@ import type {
     ActivityLogPage
 } from "../types";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const gql = (value: any): any => null;
+
 const GET_APP_BY_NAME = gql`
-    query GetAppByName($name: String!) {
-        getAppByName(name: $name) {
-            id
-            name
-            title
-            slug
-            description
-            resources
-            status
-            createdAt
-            updatedAt
-        }
-    }
+    # query GetAppByName($name: String!) {
+    #     getAppByName(name: $name) {
+    #         id
+    #         name
+    #         title
+    #         slug
+    #         description
+    #         resources
+    #         status
+    #         createdAt
+    #         updatedAt
+    #     }
+    # }
 `;
 
 const CREATE_APP = gql`
-    mutation CreateApp(
-        $name: String!
-        $title: String!
-        $slug: String!
-        $description: String
-    ) {
-        createApp(
-            name: $name
-            title: $title
-            slug: $slug
-            description: $description
-        ) {
-            id
-        }
-    }
+    # mutation CreateApp(
+    #     $name: String!
+    #     $title: String!
+    #     $slug: String!
+    #     $description: String
+    # ) {
+    #     createApp(
+    #         name: $name
+    #         title: $title
+    #         slug: $slug
+    #         description: $description
+    #     ) {
+    #         id
+    #     }
+    # }
 `;
 
 const UPDATE_APP = gql`
-    mutation UpdateApp(
-        $appId: ID!
-        $name: String
-        $title: String
-        $slug: String
-        $description: String
-    ) {
-        updateApp(
-            appId: $appId
-            name: $name
-            title: $title
-            slug: $slug
-            description: $description
-        ) {
-            id
-        }
-    }
+    # mutation UpdateApp(
+    #     $appId: ID!
+    #     $name: String
+    #     $title: String
+    #     $slug: String
+    #     $description: String
+    # ) {
+    #     updateApp(
+    #         appId: $appId
+    #         name: $name
+    #         title: $title
+    #         slug: $slug
+    #         description: $description
+    #     ) {
+    #         id
+    #     }
+    # }
 `;
 
 const GET_QUERY_TEMPLATE_BY_NAME = gql`
-    query GetQueryTemplateByName($name: String!) {
-        getQueryTemplateByName(name: $name) {
-            id
-            name
-            description
-            content
-        }
-    }
+    # query GetQueryTemplateByName($name: String!) {
+    #     getQueryTemplateByName(name: $name) {
+    #         id
+    #         name
+    #         description
+    #         content
+    #     }
+    # }
 `;
 
 const CREATE_QUERY_TEMPLATE = gql`
-    mutation CreateQueryTemplate(
-        $name: String!
-        $description: String
-        $resource: ID!
-        $app: ID!
-        $content: String!
-    ) {
-        createQueryTemplate(
-            name: $name
-            description: $description
-            resource: $resource
-            app: $app
-            content: $content
-        ) {
-            id
-        }
-    }
+    # mutation CreateQueryTemplate(
+    #     $name: String!
+    #     $description: String
+    #     $resource: ID!
+    #     $app: ID!
+    #     $content: String!
+    # ) {
+    #     createQueryTemplate(
+    #         name: $name
+    #         description: $description
+    #         resource: $resource
+    #         app: $app
+    #         content: $content
+    #     ) {
+    #         id
+    #     }
+    # }
 `;
 
 const UPDATE_QUERY_TEMPLATE = gql`
-    mutation UpdateQueryTemplate(
-        $queryTemplateId: ID!
-        $name: String
-        $description: String
-        $content: String
-    ) {
-        updateQueryTemplate(
-            queryTemplateId: $queryTemplateId
-            name: $name
-            description: $description
-            content: $content
-        ) {
-            id
-        }
-    }
+    # mutation UpdateQueryTemplate(
+    #     $queryTemplateId: ID!
+    #     $name: String
+    #     $description: String
+    #     $content: String
+    # ) {
+    #     updateQueryTemplate(
+    #         queryTemplateId: $queryTemplateId
+    #         name: $name
+    #         description: $description
+    #         content: $content
+    #     ) {
+    #         id
+    #     }
+    # }
 `;
 
 const GET_RESOURCE_BY_NAME = gql`
-    query GetResourceByName($name: String!) {
-        getResourceByName(name: $name) {
-            id
-            name
-            description
-            type
-            mysql {
-                host
-                port
-                databaseName
-                databaseUserName
-                databasePassword
-                connectUsingSSL
-            }
-            postgres {
-                host
-                port
-                databaseName
-                databaseUserName
-                databasePassword
-                connectUsingSSL
-            }
-            mongodb {
-                host
-                port
-                databaseName
-                databaseUserName
-                databasePassword
-                connectUsingSSL
-            }
-            bigquery {
-                key
-            }
-            status
-            createdAt
-            updatedAt
-        }
-    }
+    # query GetResourceByName($name: String!) {
+    #     getResourceByName(name: $name) {
+    #         id
+    #         name
+    #         description
+    #         type
+    #         mysql {
+    #             host
+    #             port
+    #             databaseName
+    #             databaseUserName
+    #             databasePassword
+    #             connectUsingSSL
+    #         }
+    #         postgres {
+    #             host
+    #             port
+    #             databaseName
+    #             databaseUserName
+    #             databasePassword
+    #             connectUsingSSL
+    #         }
+    #         mongodb {
+    #             host
+    #             port
+    #             databaseName
+    #             databaseUserName
+    #             databasePassword
+    #             connectUsingSSL
+    #         }
+    #         bigquery {
+    #             key
+    #         }
+    #         status
+    #         createdAt
+    #         updatedAt
+    #     }
+    # }
 `;
 
 const CREATE_RESOURCE = gql`
-    mutation CreateResource(
-        $name: String!
-        $description: String
-        $type: ResourceType!
-        $mysql: MySQLConfigurationInput
-        $postgres: PostgresConfigurationInput
-        $mongodb: MongoDBConfigurationInput
-        $bigquery: BigQueryConfigurationInput
-    ) {
-        createResource(
-            name: $name
-            description: $description
-            type: $type
-            mysql: $mysql
-            postgres: $postgres
-            mongodb: $mongodb
-            bigquery: $bigquery
-        ) {
-            id
-        }
-    }
+    # mutation CreateResource(
+    #     $name: String!
+    #     $description: String
+    #     $type: ResourceType!
+    #     $mysql: MySQLConfigurationInput
+    #     $postgres: PostgresConfigurationInput
+    #     $mongodb: MongoDBConfigurationInput
+    #     $bigquery: BigQueryConfigurationInput
+    # ) {
+    #     createResource(
+    #         name: $name
+    #         description: $description
+    #         type: $type
+    #         mysql: $mysql
+    #         postgres: $postgres
+    #         mongodb: $mongodb
+    #         bigquery: $bigquery
+    #     ) {
+    #         id
+    #     }
+    # }
 `;
 
 const UPDATE_RESOURCE = gql`
-    mutation UpdateResource(
-        $resourceId: ID!
-        $name: String
-        $description: String
-        $mysql: MySQLConfigurationInput
-        $postgres: PostgresConfigurationInput
-        $mongodb: MongoDBConfigurationInput
-        $bigquery: BigQueryConfigurationInput
-    ) {
-        updateResource(
-            resourceId: $resourceId
-            name: $name
-            description: $description
-            mysql: $mysql
-            postgres: $postgres
-            mongodb: $mongodb
-            bigquery: $bigquery
-        ) {
-            id
-        }
-    }
+    # mutation UpdateResource(
+    #     $resourceId: ID!
+    #     $name: String
+    #     $description: String
+    #     $mysql: MySQLConfigurationInput
+    #     $postgres: PostgresConfigurationInput
+    #     $mongodb: MongoDBConfigurationInput
+    #     $bigquery: BigQueryConfigurationInput
+    # ) {
+    #     updateResource(
+    #         resourceId: $resourceId
+    #         name: $name
+    #         description: $description
+    #         mysql: $mysql
+    #         postgres: $postgres
+    #         mongodb: $mongodb
+    #         bigquery: $bigquery
+    #     ) {
+    #         id
+    #     }
+    # }
 `;
 
 const GENERATE_SIGNED_URLS = gql`
-    mutation GenerateSignedURLs($appId: ID!, $files: [String!]!) {
-        generateSignedURLs(appId: $appId, files: $files) {
-            signedURLs
-        }
-    }
+    # mutation GenerateSignedURLs($appId: ID!, $files: [String!]!) {
+    #     generateSignedURLs(appId: $appId, files: $files) {
+    #         signedURLs
+    #     }
+    # }
 `;
 
 const CREATE_MEMBERSHIP = gql`
-    mutation CreateMembership(
-        $emailAddress: String!
-        $organizationId: ID!
-        $inviterId: ID!
-    ) {
-        createMembership(
-            emailAddress: $emailAddress
-            organizationId: $organizationId
-            inviterId: $inviterId
-        ) {
-            id
-        }
-    }
+    # mutation CreateMembership(
+    #     $emailAddress: String!
+    #     $organizationId: ID!
+    #     $inviterId: ID!
+    # ) {
+    #     createMembership(
+    #         emailAddress: $emailAddress
+    #         organizationId: $organizationId
+    #         inviterId: $inviterId
+    #     ) {
+    #         id
+    #     }
+    # }
 `;
 
 const CREATE_ACTIVITY_LOG = gql`
-    mutation CreateActivityLog(
-        $message: String!
-        $component: ComponentOrigin!
-        $context: GraphQLJSON
-    ) {
-        createActivityLog(
-            message: $message
-            context: $context
-            component: $component
-        ) {
+    # mutation CreateActivityLog(
+    #     $message: String!
+    #     $component: ComponentOrigin!
+    #     $context: GraphQLJSON
+    # ) {
+    #     createActivityLog(
+    #         message: $message
+    #         context: $context
+    #         component: $component
+    #     ) {
 
-        }
-    }
+    #     }
+    # }
 `;
 
 const UPDATE_PASSWORD = gql`
-    mutation UpdatePassword($oldPassword: String!, $newPassword: String!) {
-        updatePassword(oldPassword: $emailAddress, newPassword: $password) {
-            id
-        }
-    }
+    # mutation UpdatePassword($oldPassword: String!, $newPassword: String!) {
+    #     updatePassword(oldPassword: $emailAddress, newPassword: $password) {
+    #         id
+    #     }
+    # }
 `;
 
 const GET_ACTIVITY_LOG_BY_ID = gql`
-    query GetActivityLogById($activityLogId: String!) {
-        getActivityLogById(activityLogId: $activityLogId) {
-            id
-            message
-            context
-            component
-        }
-    }
+    # query GetActivityLogById($activityLogId: String!) {
+    #     getActivityLogById(activityLogId: $activityLogId) {
+    #         id
+    #         message
+    #         context
+    #         component
+    #     }
+    # }
 `;
 
 const GET_ACTIVITY_LOGS = gql`
-    query GetActivityLogs($page: Int!, $limit: Int!) {
-        getActivityLogs(page: $page, limit: $limit) {
-            totalRecords
-            totalPages
-            previousPage
-            nextPage
-            hasPreviousPage
-            hasNextPage
-            records
-        }
-    }
+    # query GetActivityLogs($page: Int!, $limit: Int!) {
+    #     getActivityLogs(page: $page, limit: $limit) {
+    #         totalRecords
+    #         totalPages
+    #         previousPage
+    #         nextPage
+    #         hasPreviousPage
+    #         hasNextPage
+    #         records
+    #     }
+    # }
 `;
 
 const isNotFoundError = (error0: unknown): boolean => {
