@@ -95,6 +95,7 @@ const App: FunctionComponent = (): ReactElement => {
                     <ApolloProvider client={client as any}>
                         <Routes>
                             <Route path="/" element={<WorkspaceLayout />}>
+                                {/* Routes associated with Organizations */}
                                 <Route
                                     path="/organizations"
                                     element={<ResourceLibrary />}
@@ -103,6 +104,12 @@ const App: FunctionComponent = (): ReactElement => {
                                     path="/organizations/new"
                                     element={<NewOrganization />}
                                 />
+                                <Route
+                                    path="/organizations/:organizationId"
+                                    element={<NewOrganization />}
+                                />
+
+                                {/* Routes associated with Teams */}
                                 <Route
                                     path="/organizations/:organizationId/teams"
                                     element={<ResourceLibrary />}
@@ -116,15 +123,21 @@ const App: FunctionComponent = (): ReactElement => {
                                     element={<NewOrganization />}
                                 />
 
+                                {/* Routes associated with Users */}
                                 <Route
-                                    path="/organizations/:organizationId/teams"
+                                    path="/users"
                                     element={<ResourceLibrary />}
                                 />
                                 <Route
-                                    path="/organizations/:organizationId/teams/new"
+                                    path="/users/:userId"
                                     element={<NewOrganization />}
                                 />
+                                <Route
+                                    path="/users/new"
+                                    element={<ResourceLibrary />}
+                                />
 
+                                {/* Routes associated with Users */}
                                 <Route path="/apps" element={<ViewApps />} />
                                 <Route path="/apps/new" element={<NewApp />} />
                                 <Route
