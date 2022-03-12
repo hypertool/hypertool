@@ -28,6 +28,7 @@ import {
     NewPassword,
     ResourceLibrary,
     SingleApp,
+    SingleOrganization,
     UpdatePassword,
     ViewApps,
     ViewOrganizations,
@@ -106,7 +107,7 @@ const App: FunctionComponent = (): ReactElement => {
                                 />
                                 <Route
                                     path="/organizations/:organizationId"
-                                    element={<NewOrganization />}
+                                    element={<SingleOrganization />}
                                 />
 
                                 {/* Routes associated with Teams */}

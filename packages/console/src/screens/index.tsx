@@ -14,5 +14,6 @@ export { default as EditResource } from "./edit-resource";
 
 export { default as NewOrganization } from "./new-organization";
 export { default as ViewOrganizations } from "./view-organizations";
+export { default as SingleOrganization } from "./single-organization";
 
 export { default as AppBuilder } from "./app-builder";
