@@ -57,13 +57,17 @@ const BuilderTabs: FunctionComponent = (): ReactElement => {
     );
 
     return (
-        <StyledTabs
-            value={activeTab}
-            onChange={handleChange}
-            variant="scrollable"
-        >
-            {tabs.map(renderTab)}
-        </StyledTabs>
+        <>
+            {tabs.length > 0 && (
+                <StyledTabs
+                    value={activeTab}
+                    onChange={handleChange}
+                    variant="scrollable"
+                >
+                    {tabs.map(renderTab)}
+                </StyledTabs>
+            )}
+        </>
     );
 };
 
