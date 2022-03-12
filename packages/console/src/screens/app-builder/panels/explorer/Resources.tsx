@@ -2,10 +2,8 @@ import type { FunctionComponent, ReactElement } from "react";
 import { useCallback, useContext } from "react";
 
 import {
-    Avatar,
     Button,
     Icon,
-    IconButton,
     List,
     ListItem,
     ListItemAvatar,
@@ -24,6 +22,8 @@ const Actions = styled("div")(({ theme }) => ({
         2,
     )} ${theme.spacing(2)}`,
 }));
+
+const StyledListItemAvatar = styled(ListItemAvatar)({ minWidth: 28 });
 
 const GET_RESOURCES = gql`
     query GetResources($page: Int, $limit: Int) {
@@ -61,18 +61,19 @@ const Resources: FunctionComponent = (): ReactElement => {
     const renderResource = (record: any) => (
         <ListItem
             key={record.id}
-            secondaryAction={
-                <IconButton edge="end">
-                    <Icon fontSize="small">delete</Icon>
-                </IconButton>
-            }
+            button={true}
+            /*
+             * secondaryAction={
+             *     <IconButton edge="end">
+             *         <Icon fontSize="small">delete</Icon>
+             *     </IconButton>
+             * }
+             */
             onClick={handleEditResource(record.id)}
         >
-            <ListItemAvatar>
-                <Avatar sx={{ width: 28, height: 28 }}>
-                    <Icon fontSize="small">category</Icon>
-                </Avatar>
-            </ListItemAvatar>
+            <StyledListItemAvatar>
+                <Icon fontSize="small">category</Icon>
+            </StyledListItemAvatar>
             <ListItemText primary={record.name} />
         </ListItem>
     );
