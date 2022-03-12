@@ -133,6 +133,7 @@ const GET_QUERY_TEMPLATE = gql`
             id
             name
             content
+            description
             resource {
                 name
             }
@@ -143,21 +144,15 @@ const GET_QUERY_TEMPLATE = gql`
 const UPDATE_QUERY = gql`
     mutation UpdateQueryTemplate(
         $queryTemplateId: ID!
-        $name: String!
+        $name: String
         $description: String
-        $mysql: MySQLConfigurationInput
-        $postgres: PostgresConfigurationInput
-        $mongodb: MongoDBConfigurationInput
-        $bigquery: BigQueryConfigurationInput
+        $content: String
     ) {
         updateQueryTemplate(
             queryTemplateId: $queryTemplateId
             name: $name
             description: $description
-            mysql: $mysql
-            postgres: $postgres
-            mongodb: $mongodb
-            bigquery: $bigquery
+            content: $content
         ) {
             id
         }
@@ -179,7 +174,9 @@ const EditQuery: FunctionComponent = (): ReactElement => {
         notifyOnNetworkStatusChange: true,
     });
 
-    const [updateQuery] = useMutation(UPDATE_QUERY);
+    const [updateQuery] = useMutation(UPDATE_QUERY, {
+        refetchQueries: ["GetQueryTemplates"],
+    });
     const {
         name = "",
         description = "",
