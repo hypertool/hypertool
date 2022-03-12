@@ -962,6 +962,10 @@ const resolvers = {
         getControllerById: async (parent, values, context) =>
             controllers.getById(context.request, values.controllerId),
     },
+    QueryTemplate: {
+        resource: async (parent, values, context) =>
+            resources.getById(context.request, parent.resource),
+    },
 };
 
 const attachRoutes = async (app: any) => {
