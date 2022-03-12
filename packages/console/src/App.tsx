@@ -22,6 +22,7 @@ import {
     AppBuilder,
     AuthenticationServices,
     CreateAccount,
+    InviteUser,
     Login,
     NewApp,
     NewOrganization,
@@ -129,8 +130,12 @@ const App: FunctionComponent = (): ReactElement => {
                                     element={<SingleUser />}
                                 />
                                 <Route
+                                    path="/update-password"
+                                    element={<UpdatePassword />}
+                                />
+                                <Route
                                     path="/invite-user"
-                                    element={<ResourceLibrary />}
+                                    element={<InviteUser />}
                                 />
 
                                 {/* Routes associated with Users */}
@@ -143,10 +148,6 @@ const App: FunctionComponent = (): ReactElement => {
                                 <Route
                                     path="/apps/:appId/authentication"
                                     element={<AuthenticationServices />}
-                                />
-                                <Route
-                                    path="/update-password"
-                                    element={<UpdatePassword />}
                                 />
                             </Route>
 

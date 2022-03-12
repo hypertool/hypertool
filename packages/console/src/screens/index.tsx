@@ -20,5 +20,6 @@ export { default as NewTeam } from "./new-team";
 export { default as SingleTeam } from "./single-team";
 
 export { default as SingleUser } from "./single-user";
+export { default as InviteUser } from "./invite-user";
 
 export { default as AppBuilder } from "./app-builder";
