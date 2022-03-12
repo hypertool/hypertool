@@ -92,6 +92,7 @@
          * Using "no-unused-vars" from ESLint causes false positive errors for
          * function prototypes in interfaces.
          */
-        "@typescript-eslint/no-unused-vars": "error"
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/ban-types": "off"
     }
 }
