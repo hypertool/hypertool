@@ -175,7 +175,9 @@ const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
         notifyOnNetworkStatusChange: true,
     });
 
-    const [updateResource] = useMutation(UPDATE_RESOURCE);
+    const [updateResource] = useMutation(UPDATE_RESOURCE, {
+        refetchQueries: ["GetResources"],
+    });
     const {
         name = "",
         description = "<unavailable>",
