@@ -192,10 +192,6 @@ const EditQuery: FunctionComponent = (): ReactElement => {
         setTabTitle(index, name);
     }, [index, name, setTabTitle]);
 
-    const handleCreateNew = () => {
-        return null;
-    };
-
     const handleRefresh = useCallback(() => {
         refetch();
     }, [refetch]);
@@ -239,7 +235,7 @@ const EditQuery: FunctionComponent = (): ReactElement => {
                         <WorkspaceToolbar>
                             <Title>Edit Query</Title>
                             <ActionContainer>
-                                <Button
+                                {/* <Button
                                     size="small"
                                     onClick={handleCreateNew}
                                     color="inherit"
@@ -262,7 +258,7 @@ const EditQuery: FunctionComponent = (): ReactElement => {
                                         delete
                                     </ActionIcon>
                                     Delete
-                                </Button>
+                                </Button> */}
                                 <Button
                                     size="small"
                                     onClick={handleRefresh}
