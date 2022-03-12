@@ -112,10 +112,6 @@ const App: FunctionComponent = (): ReactElement => {
 
                                 {/* Routes associated with Teams */}
                                 <Route
-                                    path="/organizations/:organizationId/teams"
-                                    element={<ResourceLibrary />}
-                                />
-                                <Route
                                     path="/organizations/:organizationId/teams/:teamId"
                                     element={<ResourceLibrary />}
                                 />
@@ -125,10 +121,6 @@ const App: FunctionComponent = (): ReactElement => {
                                 />
 
                                 {/* Routes associated with Users */}
-                                <Route
-                                    path="/users"
-                                    element={<ResourceLibrary />}
-                                />
                                 <Route
                                     path="/users/:userId"
                                     element={<NewOrganization />}
