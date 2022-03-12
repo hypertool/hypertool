@@ -30,8 +30,8 @@ import {
     SingleApp,
     UpdatePassword,
     ViewApps,
+    ViewOrganizations,
 } from "./screens";
-import { theme } from "./utils";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -98,7 +98,7 @@ const App: FunctionComponent = (): ReactElement => {
                                 {/* Routes associated with Organizations */}
                                 <Route
                                     path="/organizations"
-                                    element={<ResourceLibrary />}
+                                    element={<ViewOrganizations />}
                                 />
                                 <Route
                                     path="/organizations/new"
