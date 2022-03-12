@@ -7,7 +7,6 @@ import {
 } from "@hypertool/common";
 
 import joi from "joi";
-import type { Document } from "mongoose";
 
 const createSchema = joi.object({
     name: joi.string().max(128).required(),
@@ -34,9 +33,8 @@ const filterSchema = joi.object({
     app: joi.string().regex(constants.identifierPattern),
 });
 
-const toExternal = (query: any): ExternalQuery => {
+const toExternal = (query: Query): ExternalQuery => {
     const {
-        id,
         _id,
         name,
         description,
@@ -49,11 +47,12 @@ const toExternal = (query: any): ExternalQuery => {
     } = query;
 
     return {
-        id: id || _id.toString(),
+        id: _id.toString(),
         name,
         description,
-        resource: typeof resource === "string" ? resource : resource.id,
-        app: typeof app === "string" ? app : app.id,
+        resource:
+            typeof resource === "string" ? resource : resource._id.toString(),
+        app: typeof app === "string" ? app : app._id.toString(),
         content,
         status,
         createdAt,
@@ -86,9 +85,9 @@ const listByAppId = async (context, parameters): Promise<QueryPage> => {
         throw new BadRequestError(error.message);
     }
 
-    const { page, limit, app } = value;
+    const { page, limit } = value;
     const filters = {
-        app,
+        // app,
         status: {
             $ne: "deleted",
         },

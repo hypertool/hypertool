@@ -5,7 +5,6 @@ import {
     Avatar,
     Button,
     Icon,
-    IconButton,
     List,
     ListItem,
     ListItemAvatar,
@@ -24,6 +23,8 @@ const Actions = styled("div")(({ theme }) => ({
         2,
     )} ${theme.spacing(2)}`,
 }));
+
+const StyledListItemAvatar = styled(ListItemAvatar)({ minWidth: 32 });
 
 const GET_CONTROLLERS = gql`
     query GetControllers($page: Int, $limit: Int) {
@@ -59,18 +60,21 @@ const Controllers: FunctionComponent = (): ReactElement => {
     const renderController = (record: any) => (
         <ListItem
             key={record.id}
-            secondaryAction={
-                <IconButton edge="end">
-                    <Icon fontSize="small">delete</Icon>
-                </IconButton>
-            }
+            button={true}
+            /*
+             * secondaryAction={
+             *     <IconButton edge="end">
+             *         <Icon fontSize="small">delete</Icon>
+             *     </IconButton>
+             * }
+             */
             onClick={handleEditController(record.id)}
         >
-            <ListItemAvatar>
-                <Avatar sx={{ width: 28, height: 28 }}>
-                    <Icon fontSize="small">code</Icon>
+            <StyledListItemAvatar>
+                <Avatar style={{ width: 20, height: 20 }}>
+                    <Icon style={{ fontSize: 14 }}>code</Icon>
                 </Avatar>
-            </ListItemAvatar>
+            </StyledListItemAvatar>
             <ListItemText primary={record.name} />
         </ListItem>
     );

@@ -58,7 +58,7 @@ const ExplorerAccordions = () => {
             {renderAccordion(
                 "controllers",
                 "Controllers",
-                "code",
+                "source",
                 <Controllers />,
             )}
             {renderAccordion("screens", "Screens", "wysiwyg", <Screens />)}
