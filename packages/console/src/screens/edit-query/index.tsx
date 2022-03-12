@@ -85,7 +85,12 @@ const Content = styled(Container)(({ theme }) => ({
 
 const NameTextField = styled(TextField)({
     maxWidth: 400,
-}) as any;
+});
+
+const ResourceTextField = styled(TextField)(({ theme }) => ({
+    maxWidth: 400,
+    marginTop: theme.spacing(3),
+}));
 
 const DescriptionTextField = styled(TextField)(({ theme }) => ({
     maxWidth: 400,
@@ -100,6 +105,11 @@ const TextFieldHelp = styled(Typography)({
     marginBottom: 0,
     paddingBottom: 0,
 });
+
+const ContentTextField = styled(TextField)(({ theme }) => ({
+    maxWidth: 400,
+    marginTop: theme.spacing(3),
+}));
 
 interface IFormValues {
     name: string;
@@ -122,6 +132,10 @@ const GET_QUERY_TEMPLATE = gql`
         getQueryTemplateById(queryTemplateId: $queryTemplateId) {
             id
             name
+            content
+            resource {
+                name
+            }
         }
     }
 `;
@@ -169,7 +183,8 @@ const EditQuery: FunctionComponent = (): ReactElement => {
     const {
         name = "",
         description = "",
-        resource,
+        content = "",
+        resource = { name: "" },
         type = "",
     } = data?.getQueryTemplateById ?? {};
 
@@ -215,7 +230,8 @@ const EditQuery: FunctionComponent = (): ReactElement => {
             initialValues={{
                 name,
                 description,
-                resource,
+                content,
+                resource: resource.name,
             }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
@@ -301,6 +317,7 @@ const EditQuery: FunctionComponent = (): ReactElement => {
                                     size="small"
                                     variant="outlined"
                                     fullWidth={true}
+                                    help=""
                                     helperText={
                                         <TextFieldHelp variant="caption">
                                             The query name will help you
@@ -310,16 +327,41 @@ const EditQuery: FunctionComponent = (): ReactElement => {
                                     }
                                 />
 
+                                <ResourceTextField
+                                    name="resource"
+                                    id="resource"
+                                    label="Resource"
+                                    size="small"
+                                    variant="outlined"
+                                    help=""
+                                    fullWidth={true}
+                                    disabled={true}
+                                    required={true}
+                                />
+
                                 <DescriptionTextField
                                     name="description"
                                     id="description"
                                     label="Description"
                                     size="small"
                                     variant="outlined"
-                                    multiline={true}
-                                    rows={4}
-                                    fullWidth={true}
                                     help=""
+                                    rows={4}
+                                    multiline={true}
+                                    fullWidth={true}
+                                />
+
+                                <ContentTextField
+                                    name="content"
+                                    id="content"
+                                    label="Content"
+                                    size="small"
+                                    variant="outlined"
+                                    help=""
+                                    rows={4}
+                                    multiline={true}
+                                    fullWidth={true}
+                                    required={true}
                                 />
                             </Right>
                         </Content>
