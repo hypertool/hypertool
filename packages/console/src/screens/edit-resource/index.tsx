@@ -192,10 +192,6 @@ const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
         setTabTitle(index, name);
     }, [index, name, setTabTitle]);
 
-    const handleCreateNew = () => {
-        return null;
-    };
-
     const handleRefresh = useCallback(() => {
         refetch();
     }, [refetch]);
@@ -253,30 +249,17 @@ const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
                         <WorkspaceToolbar>
                             <Title>Edit Resource</Title>
                             <ActionContainer>
-                                <Button
-                                    size="small"
-                                    onClick={handleCreateNew}
-                                    color="inherit"
-                                    sx={{ mr: 2 }}
-                                    disabled={loading}
-                                >
-                                    <ActionIcon fontSize="small">
-                                        cancel
-                                    </ActionIcon>
-                                    Disable
-                                </Button>
-                                <Button
+                                {/* <Button
                                     size="small"
                                     color="inherit"
                                     onClick={handleCreateNew}
                                     sx={{ mr: 2 }}
-                                    disabled={loading}
-                                >
+                                    disabled={loading}>
                                     <ActionIcon fontSize="small">
                                         delete
                                     </ActionIcon>
                                     Delete
-                                </Button>
+                                </Button> */}
                                 <Button
                                     size="small"
                                     onClick={handleRefresh}
