@@ -1,8 +1,4 @@
 import { constants } from "@hypertool/common";
-import {
-    organizationRoles,
-    teamRoles,
-} from "@hypertool/common/dist/utils/constants";
 
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLScalarType } from "graphql";
@@ -39,6 +35,8 @@ const {
     controllerStatuses,
     controllerLanguages,
     screenStatuses,
+    organizationRoles,
+    teamRoles,
 } = constants;
 
 const typeDefs = gql`
@@ -619,13 +617,7 @@ const typeDefs = gql`
             message: String!
             context: GraphQLJSON
             component: ComponentOrigin!
-        ): ActivityLog!    
-
-        # createMembership(
-        #     emailAddress: String!,
-        #     organizationId: ID!
-        #     inviterId: ID!
-        # ): Membership!
+        ): ActivityLog!
 
         createComment(
             author: ID!,
