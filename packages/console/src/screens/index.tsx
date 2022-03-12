@@ -16,4 +16,9 @@ export { default as NewOrganization } from "./new-organization";
 export { default as ViewOrganizations } from "./view-organizations";
 export { default as SingleOrganization } from "./single-organization";
 
+export { default as NewTeam } from "./new-team";
+export { default as SingleTeam } from "./single-team";
+
+export { default as SingleUser } from "./single-user";
+
 export { default as AppBuilder } from "./app-builder";

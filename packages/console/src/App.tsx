@@ -26,9 +26,12 @@ import {
     NewApp,
     NewOrganization,
     NewPassword,
+    NewTeam,
     ResourceLibrary,
     SingleApp,
     SingleOrganization,
+    SingleTeam,
+    SingleUser,
     UpdatePassword,
     ViewApps,
     ViewOrganizations,
@@ -113,20 +116,20 @@ const App: FunctionComponent = (): ReactElement => {
                                 {/* Routes associated with Teams */}
                                 <Route
                                     path="/organizations/:organizationId/teams/:teamId"
-                                    element={<ResourceLibrary />}
+                                    element={<SingleTeam />}
                                 />
                                 <Route
                                     path="/organizations/:organizationId/teams/new"
-                                    element={<NewOrganization />}
+                                    element={<NewTeam />}
                                 />
 
                                 {/* Routes associated with Users */}
                                 <Route
-                                    path="/users/:userId"
-                                    element={<NewOrganization />}
+                                    path="/:username"
+                                    element={<SingleUser />}
                                 />
                                 <Route
-                                    path="/users/new"
+                                    path="/invite-user"
                                     element={<ResourceLibrary />}
                                 />
 
