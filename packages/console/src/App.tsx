@@ -26,6 +26,7 @@ import {
     NewApp,
     NewOrganization,
     NewPassword,
+    ResourceLibrary,
     SingleApp,
     UpdatePassword,
     ViewApps,
@@ -95,9 +96,35 @@ const App: FunctionComponent = (): ReactElement => {
                         <Routes>
                             <Route path="/" element={<WorkspaceLayout />}>
                                 <Route
+                                    path="/organizations"
+                                    element={<ResourceLibrary />}
+                                />
+                                <Route
                                     path="/organizations/new"
                                     element={<NewOrganization />}
                                 />
+                                <Route
+                                    path="/organizations/:organizationId/teams"
+                                    element={<ResourceLibrary />}
+                                />
+                                <Route
+                                    path="/organizations/:organizationId/teams/:teamId"
+                                    element={<ResourceLibrary />}
+                                />
+                                <Route
+                                    path="/organizations/:organizationId/teams/new"
+                                    element={<NewOrganization />}
+                                />
+
+                                <Route
+                                    path="/organizations/:organizationId/teams"
+                                    element={<ResourceLibrary />}
+                                />
+                                <Route
+                                    path="/organizations/:organizationId/teams/new"
+                                    element={<NewOrganization />}
+                                />
+
                                 <Route path="/apps" element={<ViewApps />} />
                                 <Route path="/apps/new" element={<NewApp />} />
                                 <Route
