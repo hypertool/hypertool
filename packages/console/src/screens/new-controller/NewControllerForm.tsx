@@ -150,7 +150,7 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
     const [
         createController,
         { loading: creatingController, data: newController },
-    ] = useMutation(CREATE_CONTROLLER);
+    ] = useMutation(CREATE_CONTROLLER, { refetchQueries: ["GetControllers"] });
 
     const { replaceTab } = useContext(BuilderActionsContext);
     const error = () => {
