@@ -462,6 +462,7 @@ const typeDefs = gql`
         language: ControllerLanguage!
         creator: User!
         patches: [ControllerPatch!]!
+        patched: String!
         status: ControllerStatus!
         createdAt: Date!
         updatedAt: Date!
@@ -687,6 +688,11 @@ const typeDefs = gql`
             controllerId: ID!
             patches: [ControllerPatchInput!]!
         ): Controller!
+
+        updateControllerWithSource(
+            controllerId: ID!
+            source: String!
+        ): Controller!
     }
 
     type Query {
@@ -720,7 +726,7 @@ const typeDefs = gql`
         listCommentsById(commentIds: [ID!]!): [Comment]!
 
         listConversations(page: Int, limit: Int): ConversationPage!
-        listConversationsById(conversationIds: [ID!]!): [Conversation]!
+        getConversationsByIds(conversationIds: [ID!]!): [Conversation]!
 
         getScreens(appId: ID!, page: Int, limit: Int): ScreenPage!
         getScreensByIds(appId: ID!, screenIds: [ID!]!): [Screen!]!
@@ -870,6 +876,13 @@ const resolvers = {
 
         updateController: (parent, values, context) =>
             controllers.update(context.request, values.controllerId, values),
+
+        updateControllerWithSource: (parent, values, context) =>
+            controllers.updateWithSource(
+                context.request,
+                values.controllerId,
+                values,
+            ),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>
@@ -935,8 +948,8 @@ const resolvers = {
         listConversations: async (parent, values, context) =>
             conversations.list(context.request, values),
 
-        listConversationsById: async (parent, values, context) =>
-            conversations.listById(context.request, values.conversationIds),
+        getConversationsByIds: async (parent, values, context) =>
+            conversations.listByIds(context.request, values.conversationIds),
 
         getScreens: async (parent, values, context) =>
             screens.list(context.request, values),
@@ -962,9 +975,61 @@ const resolvers = {
         getControllerById: async (parent, values, context) =>
             controllers.getById(context.request, values.controllerId),
     },
+    App: {
+        resources: async (parent, values, context) =>
+            resources.listByIds(context.request, values.resources),
+        creator: async (parent, values, context) =>
+            users.getById(context.request, parent.creator),
+        /*
+         * deployments: async (parent, values, context) =>
+         *     deployments.listByIds(context.request, parent.deployments),
+         */
+    },
+    Comment: {
+        author: async (parent, values, context) =>
+            users.getById(context.request, parent.author),
+        /*
+         * conversation: async (parent, values, context) =>
+         *     conversations.getById(context.request, parent.conversation),
+         */
+    },
     QueryTemplate: {
         resource: async (parent, values, context) =>
             resources.getById(context.request, parent.resource),
+        app: async (parent, values, context) =>
+            apps.getById(context.request, parent.app),
+    },
+    Controller: {
+        creator: async (parent, values, context) =>
+            users.getById(context.request, parent.creator),
+    },
+    ControllerPatch: {
+        author: async (parent, values, context) =>
+            users.getById(context.request, parent.author),
+    },
+    Deployment: {
+        app: async (parent, values, context) =>
+            apps.getById(context.request, parent.app),
+    },
+    Organization: {
+        apps: async (parent, values, context) =>
+            apps.listByIds(context.request, parent.apps),
+        teams: async (parent, values, context) =>
+            teams.listByIds(context.request, parent.teams),
+    },
+    Resource: {
+        creator: async (parent, values, context) =>
+            users.getById(context.request, parent.creator),
+    },
+    Screen: {
+        app: async (parent, values, context) =>
+            apps.getById(context.request, parent.app),
+    },
+    Team: {
+        organization: async (parent, values, context) =>
+            organizations.getById(context.request, parent.organization),
+        apps: async (parent, values, context) =>
+            apps.listByIds(context.request, parent.apps),
     },
 };
 

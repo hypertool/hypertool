@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactElement } from "react";
+import { FunctionComponent, ReactElement, useMemo } from "react";
 import { useCallback, useContext, useEffect } from "react";
 
 import {
@@ -16,10 +16,12 @@ import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import { gql, useMutation } from "@apollo/client";
 
 import * as yup from "yup";
+import { createTwoFilesPatch } from "diff";
 import { Formik } from "formik";
 
 import { Select, TextField } from "../../components";
 import { BuilderActionsContext, TabContext } from "../../contexts";
+import { templates } from "../../utils";
 import { controllerLanguages } from "../../utils/constants";
 
 const Root = styled("div")(({ theme }) => ({
@@ -148,7 +150,7 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
     const [
         createController,
         { loading: creatingController, data: newController },
-    ] = useMutation(CREATE_CONTROLLER);
+    ] = useMutation(CREATE_CONTROLLER, { refetchQueries: ["GetControllers"] });
 
     const { replaceTab } = useContext(BuilderActionsContext);
     const error = () => {
@@ -164,11 +166,35 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
         }
     }, [index, newController, replaceTab]);
 
+    const userId = useMemo(() => {
+        const json = localStorage.getItem("session");
+        if (!json) {
+            throw new Error(
+                "Session not found! This screen should be rendered only when the user is logged in.",
+            );
+        }
+
+        const session = JSON.parse(json);
+        return session.user.id;
+    }, []);
+
     const handleSubmit = useCallback((values: IFormValues) => {
         createController({
             variables: {
                 ...values,
-                patches: [],
+                patches: [
+                    {
+                        author: userId,
+                        content: createTwoFilesPatch(
+                            `a/${values.name}`,
+                            `b/${values.name}`,
+                            "",
+                            templates.CONTROLLER_TEMPLATE,
+                            "",
+                            "",
+                        ),
+                    },
+                ],
             },
         });
     }, []);

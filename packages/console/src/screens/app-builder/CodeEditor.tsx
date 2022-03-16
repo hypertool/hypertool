@@ -1,24 +1,33 @@
-import type { FunctionComponent, ReactElement } from "react";
-import { useContext, useEffect } from "react";
+import { FunctionComponent, ReactElement, useCallback, useRef } from "react";
+import { useEffect } from "react";
 
+import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Editor from "@monaco-editor/react";
 
-import { BuilderActionsContext, TabContext } from "../../contexts";
+import { useTabBundle, useUpdateTabTitle } from "../../hooks";
 import { IEditControllerBundle } from "../../types";
-import { templates } from "../../utils";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
     width: "100%",
     display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    flexDirection: "row",
+    alignItems: "flex-start",
     justifyContent: "center",
     padding: theme.spacing(0),
+}));
+
+const Right = styled("div")(({ theme }) => ({
+    width: 264,
+    padding: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
 }));
 
 export interface IProps {
@@ -32,51 +41,100 @@ const GET_CONTROLLER = gql`
             id
             name
             language
-            patches {
-                content
-            }
+            patched
+        }
+    }
+`;
+
+const UPDATE_CONTROLLER = gql`
+    mutation UpdateControllerWithSource($controllerId: ID!, $source: String!) {
+        updateControllerWithSource(
+            controllerId: $controllerId
+            source: $source
+        ) {
+            id
         }
     }
 `;
 
 const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     const { path, onChange } = props;
-    const { setTabTitle } = useContext(BuilderActionsContext);
-    const { index, tab } = useContext(TabContext) || {
-        index: -1,
-        bundle: {},
-    };
-    const error = () => {
-        throw new Error("Controller ID is missing in tab bundle.");
-    };
+
+    const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
+    const { controllerId } = useTabBundle<IEditControllerBundle>();
     // TODO: Destructure `error`, check for non-null, send to sentry
     const { data } = useQuery(GET_CONTROLLER, {
         variables: {
-            controllerId:
-                (tab?.bundle as IEditControllerBundle)?.controllerId || error(),
+            controllerId,
         },
         notifyOnNetworkStatusChange: true,
     });
-    const { name = "" } = data?.getControllerById ?? {};
+    const { name = "", patched = "" } = data?.getControllerById ?? {};
+
+    const [updateController] = useMutation(UPDATE_CONTROLLER, {
+        refetchQueries: ["GetController"],
+    });
+
+    useUpdateTabTitle(name);
 
     useEffect(() => {
-        if (!name || index < 0) {
+        editorRef.current?.setValue(patched);
+    }, [patched, editorRef.current]);
+
+    const shouldEnableSave = () => {
+        if (!editorRef.current) {
+            return false;
+        }
+
+        const newController = editorRef.current.getValue();
+        const oldController = patched;
+        return newController !== oldController;
+    };
+
+    const handleSave = useCallback(() => {
+        if (!editorRef.current) {
             return;
         }
-        setTabTitle(index, name);
-    }, [index, name, setTabTitle]);
+
+        updateController({
+            variables: {
+                controllerId,
+                source: editorRef.current.getValue(),
+            },
+        });
+    }, []);
+
+    const handleEditorMount = useCallback(
+        (editor: monaco.editor.IStandaloneCodeEditor) => {
+            editorRef.current = editor;
+        },
+        [],
+    );
 
     return (
         <Root>
             <Editor
                 height="100vh"
+                width="calc(100% - 264px)"
                 defaultLanguage="javascript"
                 theme="vs-dark"
-                defaultValue={templates.CONTROLLER_TEMPLATE}
+                defaultValue={""}
                 onChange={onChange}
                 path={path}
                 saveViewState={true}
+                onMount={handleEditorMount}
             />
+            <Right>
+                <Button
+                    variant="contained"
+                    fullWidth={true}
+                    onClick={handleSave}
+                    disabled={!shouldEnableSave()}
+                    size="small"
+                >
+                    Save
+                </Button>
+            </Right>
         </Root>
     );
 };

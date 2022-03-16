@@ -168,7 +168,7 @@ const list = async (context, parameters): Promise<ConversationPage> => {
     };
 };
 
-const listById = async (
+const listByIds = async (
     context,
     conversationIds: string[],
 ): Promise<ExternalConversation[]> => {
@@ -223,4 +223,4 @@ const changeStatus = async (
     return { success: true };
 };
 
-export { create, update, list, listById, changeStatus };
+export { create, update, list, listByIds, changeStatus };

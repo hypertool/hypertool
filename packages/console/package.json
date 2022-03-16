@@ -23,6 +23,7 @@
         "@types/react-dom": "^17.0.0",
         "@types/styled-components": "^5.1.23",
         "antlr4": "^4.9.3",
+        "diff": "^5.0.0",
         "formik": "^2.2.9",
         "graphql": "^16.0.1",
         "history": "5",
@@ -62,6 +63,7 @@
         ]
     },
     "devDependencies": {
+        "@types/diff": "^5.0.2",
         "@types/shallowequal": "^1.1.1",
         "@types/uuid": "^8.3.4",
         "shallowequal": "^1.1.0"
