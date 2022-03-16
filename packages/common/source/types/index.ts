@@ -573,6 +573,7 @@ export interface IExternalController {
     language: typeof controllerLanguages[number];
     creator: string;
     patches: IExternalControllerPatch[];
+    patched: string;
     status: typeof controllerStatuses[number];
     createdAt: Date;
     updatedAt: Date;
