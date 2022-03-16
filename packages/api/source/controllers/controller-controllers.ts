@@ -1,6 +1,8 @@
-import type {
+import {
     IController,
+    IControllerPatch,
     IExternalController,
+    NotFoundError,
     TControllerPage,
 } from "@hypertool/common";
 import {
@@ -10,6 +12,7 @@ import {
     controller,
 } from "@hypertool/common";
 
+import { applyPatch, createTwoFilesPatch } from "diff";
 import joi from "joi";
 
 const createSchema = joi.object({
@@ -46,7 +49,24 @@ const updateSchema = joi.object({
     ),
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const updateWithSourceSchema = joi.object({
+    source: joi.string().allow(""),
+});
+
+const patchAll = (patches: IControllerPatch[]) =>
+    patches.reduce(
+        (previousValue: string, currentValue: { content: string }) => {
+            const patched = applyPatch(previousValue, currentValue.content);
+            if (!patched) {
+                throw new Error(
+                    "Failed to apply patch: " + currentValue.content,
+                );
+            }
+            return patched;
+        },
+        "",
+    );
+
 const toExternal = (controller: IController): IExternalController => {
     const {
         _id,
@@ -78,6 +98,7 @@ const toExternal = (controller: IController): IExternalController => {
                 createdAt,
             };
         }),
+        patched: patchAll(patches),
         status,
         createdAt,
         updatedAt,
@@ -140,3 +161,57 @@ export const getByName = async (
 
 export const update = async (context: any, id: string, attributes: any) =>
     helper.update(context, id, attributes, updateSchema);
+
+export const updateWithSource = async (
+    context: any,
+    id: string,
+    attributes: any,
+): Promise<IExternalController> => {
+    const { error, value } = updateWithSourceSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const controller = await ControllerModel.findOne({
+        _id: id,
+        status: { $ne: "delete" },
+    }).exec();
+    if (!controller) {
+        throw new NotFoundError(
+            `Could not find any controller with the specified identifier.`,
+        );
+    }
+
+    const oldSource = patchAll(controller.patches);
+    const newPatch = createTwoFilesPatch(
+        `a/${controller.name}`,
+        `b/${controller.name}`,
+        oldSource,
+        value.source,
+        "",
+        "",
+    );
+
+    const updatedController = await ControllerModel.findByIdAndUpdate(
+        id,
+        {
+            $push: {
+                patches: {
+                    author: context.user._id,
+                    content: newPatch,
+                },
+            },
+        },
+        {
+            new: true,
+            lean: true,
+        },
+    ).exec();
+    if (!updatedController) {
+        throw new Error("Failed to update and verify new controller state.");
+    }
+
+    return toExternal(updatedController);
+};
