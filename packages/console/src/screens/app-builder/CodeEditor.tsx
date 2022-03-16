@@ -9,7 +9,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Editor from "@monaco-editor/react";
 
-import { useTabBundle, useTabContext, useUpdateTabTitle } from "../../hooks";
+import { useTabBundle, useUpdateTabTitle } from "../../hooks";
 import { IEditControllerBundle } from "../../types";
 
 const Root = styled("section")(({ theme }) => ({
@@ -57,13 +57,10 @@ const UPDATE_CONTROLLER = gql`
     }
 `;
 
-const controllersById: Record<string, string> = {};
-
 const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     const { path, onChange } = props;
 
     const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
-    const { tab } = useTabContext();
     const { controllerId } = useTabBundle<IEditControllerBundle>();
     // TODO: Destructure `error`, check for non-null, send to sentry
     const { data } = useQuery(GET_CONTROLLER, {
@@ -81,27 +78,28 @@ const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     useUpdateTabTitle(name);
 
     useEffect(() => {
-        controllersById[tab.id] = patched;
-        if (editorRef.current?.getValue() === "") {
-            editorRef.current?.setValue(patched);
-        }
+        editorRef.current?.setValue(patched);
     }, [patched, editorRef.current]);
+
+    const shouldEnableSave = () => {
+        if (!editorRef.current) {
+            return false;
+        }
+
+        const newController = editorRef.current.getValue();
+        const oldController = patched;
+        return newController !== oldController;
+    };
 
     const handleSave = useCallback(() => {
         if (!editorRef.current) {
             return;
         }
 
-        const newController = editorRef.current.getValue();
-        const oldController = controllersById[tab.id];
-        if (newController === oldController) {
-            return;
-        }
-
         updateController({
             variables: {
                 controllerId,
-                source: newController,
+                source: editorRef.current.getValue(),
             },
         });
     }, []);
@@ -131,6 +129,7 @@ const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
                     variant="contained"
                     fullWidth={true}
                     onClick={handleSave}
+                    disabled={!shouldEnableSave()}
                     size="small"
                 >
                     Save
