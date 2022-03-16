@@ -1,15 +1,20 @@
-import type { FunctionComponent, ReactElement } from "react";
-import { useContext, useEffect } from "react";
+import { FunctionComponent, ReactElement, useCallback, useRef } from "react";
+import { useEffect } from "react";
 
 import { styled } from "@mui/material/styles";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Editor from "@monaco-editor/react";
 
-import { BuilderActionsContext, TabContext } from "../../contexts";
+import {
+    useInterval,
+    useTabBundle,
+    useTabContext,
+    useUpdateTabTitle,
+} from "../../hooks";
 import { IEditControllerBundle } from "../../types";
-import { templates } from "../../utils";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -32,39 +37,76 @@ const GET_CONTROLLER = gql`
             id
             name
             language
-            patches {
-                content
-            }
+            patched
         }
     }
 `;
 
+const UPDATE_CONTROLLER = gql`
+    mutation UpdateControllerWithSource($controllerId: ID!, $source: String!) {
+        updateControllerWithSource(
+            controllerId: $controllerId
+            source: $source
+        ) {
+            id
+        }
+    }
+`;
+
+const controllersById: Record<string, string> = {};
+
 const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     const { path, onChange } = props;
-    const { setTabTitle } = useContext(BuilderActionsContext);
-    const { index, tab } = useContext(TabContext) || {
-        index: -1,
-        bundle: {},
-    };
-    const error = () => {
-        throw new Error("Controller ID is missing in tab bundle.");
-    };
+
+    const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
+    const { tab } = useTabContext();
+    const { controllerId } = useTabBundle<IEditControllerBundle>();
     // TODO: Destructure `error`, check for non-null, send to sentry
     const { data } = useQuery(GET_CONTROLLER, {
         variables: {
-            controllerId:
-                (tab?.bundle as IEditControllerBundle)?.controllerId || error(),
+            controllerId,
         },
         notifyOnNetworkStatusChange: true,
     });
-    const { name = "" } = data?.getControllerById ?? {};
+    const { name = "", patched = "" } = data?.getControllerById ?? {};
+
+    const [updateController] = useMutation(UPDATE_CONTROLLER, {
+        refetchQueries: ["GetController"],
+    });
+
+    useUpdateTabTitle(name);
 
     useEffect(() => {
-        if (!name || index < 0) {
+        controllersById[tab.id] = patched;
+        editorRef.current?.setValue(patched);
+    }, [patched, editorRef.current]);
+
+    useInterval(() => {
+        if (!editorRef.current) {
             return;
         }
-        setTabTitle(index, name);
-    }, [index, name, setTabTitle]);
+
+        const newController = editorRef.current.getValue();
+        const oldController = controllersById[tab.id];
+        if (newController === oldController) {
+            return;
+        }
+
+        controllersById[tab.id] = newController;
+        updateController({
+            variables: {
+                controllerId,
+                source: newController,
+            },
+        });
+    }, 3000);
+
+    const handleEditorMount = useCallback(
+        (editor: monaco.editor.IStandaloneCodeEditor) => {
+            editorRef.current = editor;
+        },
+        [],
+    );
 
     return (
         <Root>
@@ -72,10 +114,11 @@ const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
                 height="100vh"
                 defaultLanguage="javascript"
                 theme="vs-dark"
-                defaultValue={templates.CONTROLLER_TEMPLATE}
+                defaultValue={""}
                 onChange={onChange}
                 path={path}
                 saveViewState={true}
+                onMount={handleEditorMount}
             />
         </Root>
     );
