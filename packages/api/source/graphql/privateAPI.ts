@@ -462,6 +462,7 @@ const typeDefs = gql`
         language: ControllerLanguage!
         creator: User!
         patches: [ControllerPatch!]!
+        patched: String!
         status: ControllerStatus!
         createdAt: Date!
         updatedAt: Date!
@@ -687,6 +688,11 @@ const typeDefs = gql`
             controllerId: ID!
             patches: [ControllerPatchInput!]!
         ): Controller!
+
+        updateControllerWithSource(
+            controllerId: ID!
+            source: String!
+        ): Controller!
     }
 
     type Query {
@@ -870,6 +876,13 @@ const resolvers = {
 
         updateController: (parent, values, context) =>
             controllers.update(context.request, values.controllerId, values),
+
+        updateControllerWithSource: (parent, values, context) =>
+            controllers.updateWithSource(
+                context.request,
+                values.controllerId,
+                values,
+            ),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>
