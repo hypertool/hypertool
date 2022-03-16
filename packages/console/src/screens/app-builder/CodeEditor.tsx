@@ -1,6 +1,7 @@
 import { FunctionComponent, ReactElement, useCallback, useRef } from "react";
 import { useEffect } from "react";
 
+import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { gql, useMutation, useQuery } from "@apollo/client";
@@ -8,22 +9,25 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Editor from "@monaco-editor/react";
 
-import {
-    useInterval,
-    useTabBundle,
-    useTabContext,
-    useUpdateTabTitle,
-} from "../../hooks";
+import { useTabBundle, useTabContext, useUpdateTabTitle } from "../../hooks";
 import { IEditControllerBundle } from "../../types";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
     width: "100%",
     display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    flexDirection: "row",
+    alignItems: "flex-start",
     justifyContent: "center",
     padding: theme.spacing(0),
+}));
+
+const Right = styled("div")(({ theme }) => ({
+    width: 264,
+    padding: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
 }));
 
 export interface IProps {
@@ -78,10 +82,12 @@ const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
 
     useEffect(() => {
         controllersById[tab.id] = patched;
-        editorRef.current?.setValue(patched);
+        if (editorRef.current?.getValue() === "") {
+            editorRef.current?.setValue(patched);
+        }
     }, [patched, editorRef.current]);
 
-    useInterval(() => {
+    const handleSave = useCallback(() => {
         if (!editorRef.current) {
             return;
         }
@@ -92,14 +98,13 @@ const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
             return;
         }
 
-        controllersById[tab.id] = newController;
         updateController({
             variables: {
                 controllerId,
                 source: newController,
             },
         });
-    }, 3000);
+    }, []);
 
     const handleEditorMount = useCallback(
         (editor: monaco.editor.IStandaloneCodeEditor) => {
@@ -112,6 +117,7 @@ const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
         <Root>
             <Editor
                 height="100vh"
+                width="calc(100% - 264px)"
                 defaultLanguage="javascript"
                 theme="vs-dark"
                 defaultValue={""}
@@ -120,6 +126,16 @@ const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
                 saveViewState={true}
                 onMount={handleEditorMount}
             />
+            <Right>
+                <Button
+                    variant="contained"
+                    fullWidth={true}
+                    onClick={handleSave}
+                    size="small"
+                >
+                    Save
+                </Button>
+            </Right>
         </Root>
     );
 };
