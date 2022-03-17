@@ -2,16 +2,19 @@ import type { IExternalTeam, TTeamPage } from "@hypertool/common";
 import {
     BadRequestError,
     NotFoundError,
+    OrganizationModel,
     TeamModel,
     constants,
     extractIds,
 } from "@hypertool/common";
 
 import joi from "joi";
+import mongoose from "mongoose";
 
 const createSchema = joi.object({
-    name: joi.string().max(256).allow(""),
+    name: joi.string().max(256).required(),
     description: joi.string().max(512).allow(""),
+    organization: joi.string().max(256).required(),
     members: joi.array().items(
         joi.object({
             user: joi.string().regex(constants.identifierPattern),
@@ -41,6 +44,15 @@ const updateSchema = joi.object({
         }),
     ),
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
+});
+
+const addMembersSchema = joi.object({
+    members: joi.array().items(
+        joi.object({
+            user: joi.string().regex(constants.identifierPattern),
+            role: joi.string().valid(...constants.organizationRoles),
+        }),
+    ),
 });
 
 const toExternal = (team: any): IExternalTeam => {
@@ -79,12 +91,31 @@ const create = async (context, attributes): Promise<IExternalTeam> => {
         throw new BadRequestError(error.message);
     }
 
-    // Add `team` to `app.teams`.
+    const { organization } = value;
+
+    const teamId = new mongoose.Types.ObjectId();
+
     const newTeam = new TeamModel({
+        _id: teamId,
         ...value,
         status: "enabled",
     });
     await newTeam.save();
+
+    await OrganizationModel.findOneAndUpdate(
+        {
+            _id: organization,
+        },
+        {
+            $push: {
+                teams: teamId,
+            },
+        },
+        {
+            new: true,
+            lean: true,
+        },
+    );
 
     return toExternal(newTeam);
 };
@@ -230,4 +261,41 @@ const remove = async (
     return { success: true };
 };
 
-export { create, list, listByIds, getById, update, remove };
+const addMembers = async (
+    context,
+    teamId: string,
+    attributes,
+): Promise<IExternalTeam> => {
+    if (!constants.identifierPattern.test(teamId)) {
+        throw new BadRequestError("The specified team identifier is invalid.");
+    }
+
+    const { error, value } = addMembersSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const { members } = value;
+
+    const team = await TeamModel.findOneAndUpdate(
+        {
+            _id: teamId,
+        },
+        {
+            $addToSet: {
+                members,
+            },
+        },
+        {
+            new: true,
+            lean: true,
+        },
+    ).exec();
+
+    return toExternal(team);
+};
+
+export { create, list, listByIds, getById, update, remove, addMembers };

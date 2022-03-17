@@ -292,7 +292,6 @@ const invite = async (context, attributes): Promise<{ success: boolean }> => {
         userId = user._id;
     }
 
-    // Check if the userId has already been invited before.
     const existingInvitation = await OrganizationModel.findOne({
         organizationId,
         members: {
@@ -307,7 +306,6 @@ const invite = async (context, attributes): Promise<{ success: boolean }> => {
         throw new BadRequestError("Cannot create a duplicate invitation.");
     }
 
-    // Update the members of the organization
     await OrganizationModel.findOneAndUpdate(
         {
             _id: organizationId,
@@ -394,4 +392,64 @@ const join = async (context, token: string): Promise<Boolean> => {
     }
 };
 
-export { create, list, listByIds, getById, update, remove, invite, join };
+const leave = async (context, attributes): Promise<{ success: boolean }> => {
+    const { error, value } = inviteSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const { emailAddress, organizationId } = value;
+
+    await runAsTransaction(async () => {
+        const user = await UserModel.findOneAndUpdate(
+            {
+                emailAddress,
+            },
+            {
+                $pull: {
+                    organizations: organizationId,
+                },
+            },
+            {
+                new: true,
+                lean: true,
+            },
+        ).exec();
+
+        await OrganizationModel.findOneAndUpdate(
+            {
+                _id: organizationId,
+                status: { $ne: "deleted" },
+                members: { $elemMatch: { user: user._id } },
+            },
+            {
+                $pull: {
+                    members: {
+                        user: user._id,
+                    },
+                },
+            },
+            {
+                new: true,
+                lean: true,
+            },
+        ).exec();
+    });
+
+    return { success: true };
+};
+
+export {
+    create,
+    list,
+    listByIds,
+    getById,
+    update,
+    remove,
+    invite,
+    join,
+    leave,
+};

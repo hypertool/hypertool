@@ -6,12 +6,10 @@ import { teamRoles, teamStatuses } from "../utils/constants";
 
 const membershipSchema = new Schema({
     user: {
-        type: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: "User",
-            },
-        ],
+        type: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
     },
     role: {
         type: String,
