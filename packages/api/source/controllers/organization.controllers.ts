@@ -9,6 +9,7 @@ import {
     UserModel,
     constants,
     extractIds,
+    runAsTransaction,
 } from "@hypertool/common";
 
 import joi from "joi";
@@ -59,6 +60,7 @@ const updateSchema = joi.object({
 
 const inviteSchema = joi.object({
     emailAddress: joi.string().email().required(),
+    organizationId: joi.string().regex(constants.identifierPattern),
 });
 
 const toExternal = (organization: any): IExternalOrganization => {
@@ -260,7 +262,7 @@ const remove = async (
 };
 
 const invite = async (context, attributes): Promise<{ success: boolean }> => {
-    const { error, value } = createSchema.validate(attributes, {
+    const { error, value } = inviteSchema.validate(attributes, {
         stripUnknown: true,
     });
 
@@ -345,4 +347,51 @@ const invite = async (context, attributes): Promise<{ success: boolean }> => {
     return { success: true };
 };
 
-export { create, list, listByIds, getById, update, remove, invite };
+const join = async (context, token: string): Promise<Boolean> => {
+    try {
+        const { emailAddress, organizationId } = jwt.verify(
+            token,
+            INVITATION_JWT_SIGNATURE,
+        );
+
+        await runAsTransaction(async () => {
+            const user = await UserModel.findOneAndUpdate(
+                {
+                    emailAddress,
+                },
+                {
+                    $addToSet: {
+                        organizations: organizationId,
+                    },
+                },
+                {
+                    new: true,
+                    lean: true,
+                },
+            ).exec();
+
+            await OrganizationModel.findOneAndUpdate(
+                {
+                    _id: organizationId,
+                    status: { $ne: "deleted" },
+                    members: { $elemMatch: { user: user._id } },
+                },
+                {
+                    $set: {
+                        "members.$.status": "active",
+                    },
+                },
+                {
+                    new: true,
+                    lean: true,
+                },
+            ).exec();
+        });
+
+        return true;
+    } catch (error) {
+        return false;
+    }
+};
+
+export { create, list, listByIds, getById, update, remove, invite, join };
