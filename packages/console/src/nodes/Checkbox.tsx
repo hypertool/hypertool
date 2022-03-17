@@ -13,7 +13,7 @@ import type {
     BaseColor,
     CheckboxSize,
     CraftComponent,
-    IArtifactReference,
+    ISymbolReference,
 } from "../types";
 
 interface Props {
@@ -22,7 +22,7 @@ interface Props {
     disabled?: boolean;
     checked?: boolean;
     disableRipple?: boolean;
-    onChange?: IArtifactReference;
+    onChange?: ISymbolReference;
     size?: CheckboxSize;
 }
 

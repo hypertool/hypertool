@@ -114,7 +114,7 @@ export interface IArtifactsContext {
     [artifactId: string]: IArtifact;
 }
 
-export interface IArtifactReference {
+export interface ISymbolReference {
     artifactId: string;
     target: string;
 }

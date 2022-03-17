@@ -3,10 +3,10 @@ import { useContext } from "react";
 import lodash from "lodash";
 
 import { ArtifactsContext } from "../contexts";
-import { IArtifactReference } from "../types";
+import { ISymbolReference } from "../types";
 
 const useArtifactReference = (
-    reference?: IArtifactReference,
+    reference?: ISymbolReference,
 ): any | undefined => {
     if (!reference) {
         return undefined;

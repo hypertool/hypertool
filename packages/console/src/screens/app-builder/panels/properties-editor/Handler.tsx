@@ -6,7 +6,7 @@ import { styled } from "@mui/material/styles";
 
 import { IconMenuItem, NestedMenuItem } from "../../../../components";
 import { useArtifactsArray } from "../../../../hooks";
-import type { IArtifact, IArtifactReference } from "../../../../types";
+import type { IArtifact, ISymbolReference } from "../../../../types";
 
 const DecoratedTextField = styled(TextField)(({ theme }) => ({
     margin: `${theme.spacing(1.5)} 0px`,
@@ -22,8 +22,8 @@ const DecoratedTextField = styled(TextField)(({ theme }) => ({
 
 export interface Props {
     title: string;
-    onSelect: (reference: IArtifactReference) => void;
-    value?: IArtifactReference;
+    onSelect: (reference: ISymbolReference) => void;
+    value?: ISymbolReference;
 }
 
 const Handler: FunctionComponent<Props> = (props: Props) => {

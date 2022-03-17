@@ -27,7 +27,7 @@ import type {
     FormSelect,
     FormSwitch,
     FormTextField,
-    IArtifactReference,
+    ISymbolReference,
 } from "../../../../types";
 
 import Handler from "./Handler";
@@ -81,7 +81,7 @@ const PropertiesForm: FunctionComponent<Props> = (
         };
 
     const makeHandlerChangeHandler =
-        (field: FormField) => (reference: IArtifactReference) => {
+        (field: FormField) => (reference: ISymbolReference) => {
             setProp((props: any) => {
                 props[field.id] = reference;
             });

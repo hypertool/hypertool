@@ -10,7 +10,7 @@ import type {
     ButtonVariant,
     Color,
     CraftComponent,
-    IArtifactReference,
+    ISymbolReference,
 } from "../types";
 
 interface Props {
@@ -22,7 +22,7 @@ interface Props {
     disableElevation?: boolean;
     disableFocusRipple?: boolean;
     disableRipple?: boolean;
-    onClick?: IArtifactReference;
+    onClick?: ISymbolReference;
 }
 
 export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
