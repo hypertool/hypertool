@@ -22,15 +22,21 @@ import {
     AppBuilder,
     AuthenticationServices,
     CreateAccount,
+    InviteUser,
     Login,
     NewApp,
     NewOrganization,
     NewPassword,
+    NewTeam,
+    ResourceLibrary,
     SingleApp,
+    SingleOrganization,
+    SingleTeam,
+    SingleUser,
     UpdatePassword,
     ViewApps,
+    ViewOrganizations,
 } from "./screens";
-import { theme } from "./utils";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -94,10 +100,45 @@ const App: FunctionComponent = (): ReactElement => {
                     <ApolloProvider client={client as any}>
                         <Routes>
                             <Route path="/" element={<WorkspaceLayout />}>
+                                {/* Routes associated with Organizations */}
+                                <Route
+                                    path="/organizations"
+                                    element={<ViewOrganizations />}
+                                />
                                 <Route
                                     path="/organizations/new"
                                     element={<NewOrganization />}
                                 />
+                                <Route
+                                    path="/organizations/:organizationId"
+                                    element={<SingleOrganization />}
+                                />
+
+                                {/* Routes associated with Teams */}
+                                <Route
+                                    path="/organizations/:organizationId/teams/:teamId"
+                                    element={<SingleTeam />}
+                                />
+                                <Route
+                                    path="/organizations/:organizationId/teams/new"
+                                    element={<NewTeam />}
+                                />
+
+                                {/* Routes associated with Users */}
+                                <Route
+                                    path="/:username"
+                                    element={<SingleUser />}
+                                />
+                                <Route
+                                    path="/update-password"
+                                    element={<UpdatePassword />}
+                                />
+                                <Route
+                                    path="/invite-user"
+                                    element={<InviteUser />}
+                                />
+
+                                {/* Routes associated with Users */}
                                 <Route path="/apps" element={<ViewApps />} />
                                 <Route path="/apps/new" element={<NewApp />} />
                                 <Route
@@ -107,10 +148,6 @@ const App: FunctionComponent = (): ReactElement => {
                                 <Route
                                     path="/apps/:appId/authentication"
                                     element={<AuthenticationServices />}
-                                />
-                                <Route
-                                    path="/update-password"
-                                    element={<UpdatePassword />}
                                 />
                             </Route>
 

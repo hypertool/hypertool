@@ -2,12 +2,7 @@ import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
 import type { IUser } from "../types";
-import {
-    countryCodes,
-    genders,
-    userRoles,
-    userStatuses,
-} from "../utils/constants";
+import { countryCodes, genders, userStatuses } from "../utils/constants";
 
 const userSchema = new Schema(
     {

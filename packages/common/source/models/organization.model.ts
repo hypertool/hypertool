@@ -2,21 +2,28 @@ import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
 import type { IOrganization } from "../types";
-import { organizationRoles, organizationStatuses } from "../utils/constants";
+import {
+    organizationRoles,
+    organizationStatuses,
+    userStatuses,
+} from "../utils/constants";
 
 const membershipSchema = new Schema({
     user: {
-        type: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: "User",
-            },
-        ],
+        type: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
     },
     role: {
         type: String,
         enum: organizationRoles,
         default: "member",
+    },
+    status: {
+        type: String,
+        enum: userStatuses,
+        default: "invited",
     },
 });
 

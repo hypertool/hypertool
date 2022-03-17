@@ -6,11 +6,19 @@ import {
     BadRequestError,
     NotFoundError,
     OrganizationModel,
+    UserModel,
     constants,
     extractIds,
+    runAsTransaction,
 } from "@hypertool/common";
 
 import joi from "joi";
+import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
+
+import { renderTemplate, sendEmail } from "../utils";
+
+const { INVITATION_JWT_SIGNATURE } = process.env;
 
 const createSchema = joi.object({
     name: joi.string().max(256).allow(""),
@@ -48,6 +56,11 @@ const updateSchema = joi.object({
     ),
     apps: joi.array().items(joi.string().regex(constants.identifierPattern)),
     teams: joi.array().items(joi.string().regex(constants.identifierPattern)),
+});
+
+const inviteSchema = joi.object({
+    emailAddress: joi.string().email().required(),
+    organizationId: joi.string().regex(constants.identifierPattern),
 });
 
 const toExternal = (organization: any): IExternalOrganization => {
@@ -248,4 +261,195 @@ const remove = async (
     return { success: true };
 };
 
-export { create, list, listByIds, getById, update, remove };
+const invite = async (context, attributes): Promise<{ success: boolean }> => {
+    const { error, value } = inviteSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const { emailAddress, organizationId } = value;
+    let user = await UserModel.findOne({ emailAddress });
+    let userId;
+
+    if (!user) {
+        userId = new mongoose.Types.ObjectId();
+        user = new UserModel({
+            _id: userId,
+            firstName: "<unavailable>",
+            lastName: "<unavailable>",
+            description: "<unavailable>",
+            gender: undefined,
+            countryCode: undefined,
+            emailAddress: emailAddress,
+            emailVerified: true,
+            status: "invited",
+        });
+        await user.save();
+    } else {
+        userId = user._id;
+    }
+
+    const existingInvitation = await OrganizationModel.findOne({
+        organizationId,
+        members: {
+            $elemMatch: {
+                user: userId,
+                status: { $ne: "deleted" },
+            },
+        },
+    });
+
+    if (existingInvitation) {
+        throw new BadRequestError("Cannot create a duplicate invitation.");
+    }
+
+    await OrganizationModel.findOneAndUpdate(
+        {
+            _id: organizationId,
+            status: { $ne: "deleted" },
+        },
+        {
+            $addToSet: {
+                members: {
+                    user: userId,
+                    role: "member",
+                    status: "invited",
+                },
+            },
+        },
+        {
+            new: true,
+            lean: true,
+        },
+    ).exec();
+
+    const token = jwt.sign(
+        { emailAddress, organizationId },
+        INVITATION_JWT_SIGNATURE,
+        {
+            expiresIn: 60 * 60, // 1 hour
+        },
+    );
+    const params = {
+        from: { name: "Hypertool", email: "noreply@hypertool.io" },
+        to: emailAddress,
+        subject: "Invitation to join organization",
+        text: "Text",
+        html: await renderTemplate("invitation.html", { token }),
+    };
+    await sendEmail(params);
+
+    return { success: true };
+};
+
+const join = async (context, token: string): Promise<Boolean> => {
+    try {
+        const { emailAddress, organizationId } = jwt.verify(
+            token,
+            INVITATION_JWT_SIGNATURE,
+        );
+
+        await runAsTransaction(async () => {
+            const user = await UserModel.findOneAndUpdate(
+                {
+                    emailAddress,
+                },
+                {
+                    $addToSet: {
+                        organizations: organizationId,
+                    },
+                },
+                {
+                    new: true,
+                    lean: true,
+                },
+            ).exec();
+
+            await OrganizationModel.findOneAndUpdate(
+                {
+                    _id: organizationId,
+                    status: { $ne: "deleted" },
+                    members: { $elemMatch: { user: user._id } },
+                },
+                {
+                    $set: {
+                        "members.$.status": "active",
+                    },
+                },
+                {
+                    new: true,
+                    lean: true,
+                },
+            ).exec();
+        });
+
+        return true;
+    } catch (error) {
+        return false;
+    }
+};
+
+const leave = async (context, attributes): Promise<{ success: boolean }> => {
+    const { error, value } = inviteSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const { emailAddress, organizationId } = value;
+
+    await runAsTransaction(async () => {
+        const user = await UserModel.findOneAndUpdate(
+            {
+                emailAddress,
+            },
+            {
+                $pull: {
+                    organizations: organizationId,
+                },
+            },
+            {
+                new: true,
+                lean: true,
+            },
+        ).exec();
+
+        await OrganizationModel.findOneAndUpdate(
+            {
+                _id: organizationId,
+                status: { $ne: "deleted" },
+                members: { $elemMatch: { user: user._id } },
+            },
+            {
+                $pull: {
+                    members: {
+                        user: user._id,
+                    },
+                },
+            },
+            {
+                new: true,
+                lean: true,
+            },
+        ).exec();
+    });
+
+    return { success: true };
+};
+
+export {
+    create,
+    list,
+    listByIds,
+    getById,
+    update,
+    remove,
+    invite,
+    join,
+    leave,
+};
