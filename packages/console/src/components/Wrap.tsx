@@ -12,7 +12,7 @@ const Wrap: FunctionComponent<Props> = (props: Props): ReactElement => {
     const { when, wrapper, children, ...wrapperProps } = props;
     const Component = when ? wrapper : Fragment;
 
-    return <Component {...wrapperProps}>{children}</Component>;
+    return <Component {...(when ? wrapperProps : {})}>{children}</Component>;
 };
 
 export default Wrap;
