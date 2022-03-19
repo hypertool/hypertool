@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactElement, useCallback, useRef } from "react";
+import { FunctionComponent, ReactElement, useCallback, useState } from "react";
 import { useEffect } from "react";
 
 import { Button } from "@mui/material";
@@ -31,7 +31,6 @@ const Right = styled("div")(({ theme }) => ({
 }));
 
 export interface IProps {
-    onChange: (value?: string) => void;
     path: string;
 }
 
@@ -58,9 +57,11 @@ const UPDATE_CONTROLLER = gql`
 `;
 
 const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
-    const { path, onChange } = props;
+    const { path } = props;
 
-    const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
+    const [editorRef, setEditorRef] = useState<
+        monaco.editor.IStandaloneCodeEditor | undefined
+    >();
     const { controllerId } = useTabBundle<IEditControllerBundle>();
     // TODO: Destructure `error`, check for non-null, send to sentry
     const { data } = useQuery(GET_CONTROLLER, {
@@ -78,35 +79,25 @@ const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     useUpdateTabTitle(name);
 
     useEffect(() => {
-        editorRef.current?.setValue(patched);
-    }, [patched, editorRef.current]);
-
-    const shouldEnableSave = () => {
-        if (!editorRef.current) {
-            return false;
-        }
-
-        const newController = editorRef.current.getValue();
-        const oldController = patched;
-        return newController !== oldController;
-    };
+        editorRef?.setValue(patched);
+    }, [patched, editorRef]);
 
     const handleSave = useCallback(() => {
-        if (!editorRef.current) {
+        if (!editorRef) {
             return;
         }
 
         updateController({
             variables: {
                 controllerId,
-                source: editorRef.current.getValue(),
+                source: editorRef.getValue(),
             },
         });
-    }, []);
+    }, [editorRef]);
 
     const handleEditorMount = useCallback(
         (editor: monaco.editor.IStandaloneCodeEditor) => {
-            editorRef.current = editor;
+            setEditorRef(editor);
         },
         [],
     );
@@ -119,7 +110,6 @@ const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
                 defaultLanguage="javascript"
                 theme="vs-dark"
                 defaultValue={""}
-                onChange={onChange}
                 path={path}
                 saveViewState={true}
                 onMount={handleEditorMount}
@@ -129,7 +119,6 @@ const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
                     variant="contained"
                     fullWidth={true}
                     onClick={handleSave}
-                    disabled={!shouldEnableSave()}
                     size="small"
                 >
                     Save
