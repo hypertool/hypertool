@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 
 import { useNode } from "../craft";
-import { useArtifactReference } from "../hooks";
+import { useSymbolReference } from "../hooks";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
     BaseColor,
@@ -32,7 +32,7 @@ export const Checkbox: CraftComponent<Props> = (props: Props): ReactElement => {
     const {
         connectors: { connect, drag },
     } = useNode();
-    const handleClick = useArtifactReference(onChange);
+    const handleClick = useSymbolReference(onChange);
     return (
         <div ref={(ref) => connect(drag(ref as any))}>
             <FormGroup>

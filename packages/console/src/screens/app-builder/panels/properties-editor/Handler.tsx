@@ -5,8 +5,8 @@ import { Icon, InputAdornment, Menu, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { IconMenuItem, NestedMenuItem } from "../../../../components";
-import { useArtifactsArray } from "../../../../hooks";
-import type { IArtifact, ISymbolReference } from "../../../../types";
+import { useModulesArray } from "../../../../hooks";
+import type { IModule, ISymbolReference } from "../../../../types";
 
 const DecoratedTextField = styled(TextField)(({ theme }) => ({
     margin: `${theme.spacing(1.5)} 0px`,
@@ -32,14 +32,14 @@ const Handler: FunctionComponent<Props> = (props: Props) => {
     const [anchor, setAnchor] = useState<(EventTarget & Element) | null>(null);
     const open = Boolean(anchor);
 
-    const artifacts = useArtifactsArray();
+    const modules = useModulesArray();
     const handleClick = useCallback((event: MouseEvent<Element>) => {
         setAnchor(event.currentTarget);
     }, []);
 
-    const makeSelectHandler = (artifact: IArtifact, target: string) => () => {
+    const makeSelectHandler = (module: IModule, target: string) => () => {
         onSelect({
-            artifactId: artifact.id,
+            moduleId: module.id,
             target,
         });
         setAnchor(null);
@@ -49,16 +49,18 @@ const Handler: FunctionComponent<Props> = (props: Props) => {
         setAnchor(null);
     }, []);
 
-    const renderArtifact = (artifact: IArtifact) => (
+    const renderModule = (module: IModule) => (
         <NestedMenuItem
+            key={module.id}
             leftIcon={<Icon fontSize="small">functions</Icon>}
             rightIcon={<Icon fontSize="small">chevron_right</Icon>}
-            label={artifact.path}
+            label={module.id}
             parentMenuOpen={open}
         >
-            {Object.keys(artifact.object).map((target) => (
+            {module.symbols.map((target) => (
                 <IconMenuItem
-                    onClick={makeSelectHandler(artifact, target)}
+                    key={target}
+                    onClick={makeSelectHandler(module, target)}
                     leftIcon={<Icon fontSize="small">{"\uD835\uDC53"}</Icon>}
                     label={target}
                 />
@@ -76,7 +78,7 @@ const Handler: FunctionComponent<Props> = (props: Props) => {
                 label={title}
                 value={
                     value
-                        ? `${value.artifactId} \u2192 ${value.target}`
+                        ? `${value.moduleId} \u2192 ${value.target}`
                         : "<undefined>"
                 }
                 inputProps={{
@@ -91,7 +93,7 @@ const Handler: FunctionComponent<Props> = (props: Props) => {
                 }}
             />
             <Menu anchorEl={anchor} open={open} onClose={handleClose}>
-                {artifacts.map(renderArtifact)}
+                {modules.map(renderModule)}
             </Menu>
         </>
     );

@@ -6,19 +6,17 @@ import { styled } from "@mui/material/styles";
 import { gql, useMutation } from "@apollo/client";
 
 import * as uuid from "uuid";
-import { useMonaco } from "@monaco-editor/react";
 
 import {
-    ArtifactsContext,
     BuilderActionsContext,
+    ModulesContext,
     TabContext,
 } from "../../contexts";
 import { Editor, useEditor } from "../../craft";
-import { useInflateArtifacts } from "../../hooks";
+import { useModules } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type {
     IBuilderActionsContext,
-    IDeflatedArtifact,
     IEditControllerBundle,
     IEditQueryBundle,
     IEditResourceBundle,
@@ -27,7 +25,7 @@ import type {
     TBundleType,
     TTabType,
 } from "../../types";
-import { constants, templates } from "../../utils";
+import { constants } from "../../utils";
 import QueryEditor from "../edit-query";
 import ResourceEditor from "../edit-resource";
 import NewControllerEditor from "../new-controller";
@@ -39,13 +37,6 @@ import CanvasEditor from "./CanvasEditor";
 import CodeEditor from "./CodeEditor";
 import { RenderNode } from "./RenderNode";
 import { AppBar, LeftDrawer, RightDrawer } from "./navigation";
-
-/* TODO: Move these constructs to @hypertool/common. */
-export type Truthy<T> = T extends false | "" | 0 | null | undefined ? never : T;
-
-const truthy = <T,>(value: T): value is Truthy<T> => {
-    return !!value;
-};
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: (theme.palette.background as any).main,
@@ -128,11 +119,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             constants.tabTypes.map((tabType: string) => [tabType, 0]),
         ),
     )[1];
-    const [deflatedArtifacts, setDeflatedArtifacts] = useState<
-        IDeflatedArtifact[]
-    >([]);
-    const artifacts = useInflateArtifacts(deflatedArtifacts);
-    const monaco = useMonaco();
+    const modules = useModules();
     const { actions, query } = useEditor();
     const [
         updateScreen,
@@ -153,36 +140,6 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             },
         [activeTab, tabs],
     );
-
-    /*
-     * The `deflateArtifacts` function loads the latest code from the Monaco editor
-     * models for all the controller tabs.
-     */
-    const deflateArtifacts = useCallback(
-        (tabs: ITab[]) => {
-            const newDeflatedArtifacts = tabs
-                .map((tab): IDeflatedArtifact | null => {
-                    if (tab.type === "controller") {
-                        const uri = monaco?.Uri.parse(tab.id);
-                        const model = monaco?.editor.getModel(uri as any);
-                        const code = model?.getValue() || "";
-                        return {
-                            id: tab.id,
-                            code,
-                            path: activeTab || "<invalid>",
-                        };
-                    }
-                    return null;
-                })
-                .filter(truthy);
-            setDeflatedArtifacts(newDeflatedArtifacts);
-        },
-        [activeTab, monaco?.Uri, monaco?.editor],
-    );
-
-    const handleMonacoChange = useCallback(() => {
-        deflateArtifacts(tabs);
-    }, [deflateArtifacts, tabs]);
 
     /*
      * TODO: For some reason, `useMemo` causes binding issues in callbacks
@@ -304,21 +261,6 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                     };
                     builderActions.setActiveTab(newTabId);
 
-                    /*
-                     * When a new controller tab is created, load the default
-                     * template controller.
-                     */
-                    if (type === "controller") {
-                        setDeflatedArtifacts((oldDeflatedArtifacts) => [
-                            ...oldDeflatedArtifacts,
-                            {
-                                id: newTabId,
-                                code: templates.CONTROLLER_TEMPLATE,
-                                path: `${tabDetails.title} ${newCount}`,
-                            },
-                        ]);
-                    }
-
                     const result = [...oldTabs];
                     result.splice(index, replace ? 1 : 0, newTab);
                     return result;
@@ -402,10 +344,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 <TabContext.Provider value={{ tab, index, active }}>
                     {type === "new-controller" && <NewControllerEditor />}
                     {type === "edit-controller" && (
-                        <CodeEditor
-                            onChange={handleMonacoChange as any}
-                            path={activeTab as string}
-                        />
+                        <CodeEditor path={activeTab as string} />
                     )}
                     {type === "new-screen" && <NewScreenEditor />}
                     {type === "edit-screen" && <CanvasEditor />}
@@ -426,7 +365,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
 
     return (
         <BuilderActionsContext.Provider value={builderActions}>
-            <ArtifactsContext.Provider value={artifacts}>
+            <ModulesContext.Provider value={modules}>
                 <Root>
                     <AppBar open={leftDrawerOpen} />
                     <LeftDrawer
@@ -444,7 +383,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         onDrawerClose={handleRightDrawerClose}
                     />
                 </Root>
-            </ArtifactsContext.Provider>
+            </ModulesContext.Provider>
         </BuilderActionsContext.Provider>
     );
 };
