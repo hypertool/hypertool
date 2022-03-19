@@ -24,8 +24,8 @@ import {
 /*
  * General guidelines to keep in mind when writing interfaces for models.
  * 1. All identifiers must be of type `ObjectId`. Do not use strings.
- * 2. The identifier attribute in external types must be `id`.
- * 3. The identifier attribute in internal types must be `_id`.
+ * 2. The identifier attribute in external types must be `id` and of type string.
+ * 3. The identifier attribute in internal types must be `_id` and of type `ObjectId`.
  * 4. Please maintain the following order while creating interfaces:
  *   - Users
  *   - Organizations
@@ -37,6 +37,22 @@ import {
  *   - Comments
  *   - Controllers
  *   - Activity Logs
+ *
+ * ---
+ *
+ * Each model has three interfaces associated with it:
+ *
+ * 1. Interface that is used within the API. It does not have any prefix or suffix
+ * in its name. An example of this is `IController`.
+ *
+ * 2. Interface that is used by the `toExternal` utility function. This interface
+ * describes the data that is exposed from the API. It is prepended with the
+ * `External` suffix. An example of this is `IExternalController`.
+ *
+ * 3. Interface that i used within the client. It is prepended with the `Client`
+ * suffix. An example of this is `IClientController`. The declaration for such
+ * interfaces are not included in the `@hypertool/common` module. Instead, it
+ * should be declared in `@hypertool/console` or `@hypertool/frontend-common`.
  */
 
 /* Interfaces associated with the `User` model. */
