@@ -89,33 +89,38 @@ export type ButtonVariant = "text" | "outlined" | "contained";
 export type ButtonSize = "small" | "medium" | "large";
 
 /**
- * Inflating basically refers to evaluating the source code of an artifact.
+ * A module represents a collection of symbols. Each symbol can be referenced
+ * by the app builder.
  */
-export interface IDeflatedArtifact {
-    id: string;
-    code: string;
-    path: string;
-}
-
-/**
- * An artifact is a combination of the following properties:
- * 1. Artifact ID
- * 2. Source code
- * 3. Object returned by the initializer
- */
-export interface IArtifact extends IDeflatedArtifact {
+export interface IModule {
     /**
-     * The object returned by the initializer when inflating the artifact.
+     * The id of the module.
+     *
+     * A module ID is formatted is prefixed with `@hypertool` for synthetic
+     * modules.
      */
-    object: any;
+    id: string;
+
+    /**
+     * Deterines whether the module is built-in to Hypertool.
+     */
+    synthetic: boolean;
+
+    /**
+     * The symbols that are defined in this module.
+     */
+    symbols: string[];
+
+    /**
+     * The object that contains the symbols at runtime.
+     */
+    object?: any;
 }
 
-export interface IArtifactsContext {
-    [artifactId: string]: IArtifact;
-}
+export type TModulesContext = Record<string, IModule>;
 
-export interface IArtifactReference {
-    artifactId: string;
+export interface ISymbolReference {
+    moduleId: string;
     target: string;
 }
 

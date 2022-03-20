@@ -3,14 +3,14 @@ import type { ReactElement } from "react";
 import { Button as MuiButton } from "@mui/material";
 
 import { useNode } from "../craft";
-import { useArtifactReference } from "../hooks";
+import { useSymbolReference } from "../hooks";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
     ButtonSize,
     ButtonVariant,
     Color,
     CraftComponent,
-    IArtifactReference,
+    ISymbolReference,
 } from "../types";
 
 interface Props {
@@ -22,7 +22,7 @@ interface Props {
     disableElevation?: boolean;
     disableFocusRipple?: boolean;
     disableRipple?: boolean;
-    onClick?: IArtifactReference;
+    onClick?: ISymbolReference;
 }
 
 export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
@@ -40,7 +40,7 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
     const {
         connectors: { connect, drag },
     } = useNode();
-    const handleClick = useArtifactReference(onClick);
+    const handleClick = useSymbolReference(onClick);
 
     return (
         <div ref={(ref) => connect(drag(ref as any))}>

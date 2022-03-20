@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { TabContext } from "../contexts";
 import { TBundleType } from "../types";
 
-const useTabContext = <T extends TBundleType>(): T => {
+const useTabBundle = <T extends TBundleType>(): T => {
     const context = useContext(TabContext);
 
     if (!context) {
@@ -17,4 +17,4 @@ const useTabContext = <T extends TBundleType>(): T => {
     return context.tab.bundle as T;
 };
 
-export default useTabContext;
+export default useTabBundle;
