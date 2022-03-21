@@ -81,7 +81,7 @@ const NestedMenuItem: ForwardRefRenderFunction<Props, any> = (
     const isSubmenuFocused = () => {
         const active = containerRef.current?.ownerDocument.activeElement;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        for (const child of (menuContainerRef.current?.children as any) ?? []) {
+        for (const child of (menuContainerRef.current?.children ?? []) as any) {
             if (child === active) {
                 return true;
             }
@@ -141,7 +141,8 @@ const NestedMenuItem: ForwardRefRenderFunction<Props, any> = (
             tabIndex={tabIndex}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            onKeyDown={handleKeyDown}>
+            onKeyDown={handleKeyDown}
+        >
             {IconMenuItem({
                 MenuItemProps,
                 className,
@@ -172,10 +173,12 @@ const NestedMenuItem: ForwardRefRenderFunction<Props, any> = (
                 disableEnforceFocus
                 onClose={() => {
                     setSubMenuOpen(false);
-                }}>
+                }}
+            >
                 <div
                     ref={menuContainerRef as any}
-                    style={{ pointerEvents: "auto" }}>
+                    style={{ pointerEvents: "auto" }}
+                >
                     {children}
                 </div>
             </Menu>
