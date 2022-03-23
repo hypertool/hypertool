@@ -9,7 +9,15 @@ import {
 
 import { Button, Card, CardContent, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { ApolloClient, createHttpLink, gql, InMemoryCache, useMutation } from "@apollo/client";
+
+import {
+    ApolloClient,
+    InMemoryCache,
+    createHttpLink,
+    gql,
+    useMutation,
+} from "@apollo/client";
+
 import * as yup from "yup";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
@@ -95,7 +103,7 @@ const regex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 const httpLink = createHttpLink({
-    uri: `http://localhost:3001/graphql/v1/public`,
+    uri: `${process.env.REACT_APP_API_URL}/graphql/v1/public`,
 });
 
 const client = new ApolloClient({
@@ -157,12 +165,13 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                 mutation: CREATE_ACCOUNT,
                 variables: {
                     ...values,
-                    role: "developer"
+                    role: "developer",
                 },
             });
             navigate("/login");
-
-        }, [createAccount, navigate]);
+        },
+        [createAccount, navigate],
+    );
 
     return (
         <Root>

@@ -45,7 +45,7 @@ const Root = styled("div")(({ theme }) => ({
 
 const createPrivateClient = (session: Session) => {
     const httpLink = new HttpLink({
-        uri: `http://localhost:3001/graphql/v1/private`,
+        uri: `${process.env.REACT_APP_API_URL}/graphql/v1/private`,
         fetch,
     });
     const authLink = setContext((_, { headers }) => {

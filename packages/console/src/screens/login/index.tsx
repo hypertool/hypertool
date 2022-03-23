@@ -1,4 +1,9 @@
-import { FunctionComponent, ReactElement, useContext, useCallback } from "react";
+import {
+    FunctionComponent,
+    ReactElement,
+    useCallback,
+    useContext,
+} from "react";
 
 import { Button, Card, CardContent, Divider, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -103,7 +108,7 @@ const LOGIN_WITH_EMAIL = gql`
 `;
 
 const client = new ApolloClient({
-    uri: `http://localhost:3001/graphql/v1/public`,
+    uri: `${process.env.REACT_APP_API_URL}/graphql/v1/public`,
     cache: new InMemoryCache(),
 });
 
@@ -127,7 +132,7 @@ const validationSchema = yup.object({
 
 const Login: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
-    const { reloadSession } = useContext(SessionContext)
+    const { reloadSession } = useContext(SessionContext);
 
     const onSuccess = useCallback(
         async (response: any) => {
@@ -147,7 +152,7 @@ const Login: FunctionComponent = (): ReactElement => {
     );
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const onFailure = () => { };
+    const onFailure = () => {};
 
     const { signIn } = useGoogleLogin({
         onSuccess,
@@ -162,20 +167,23 @@ const Login: FunctionComponent = (): ReactElement => {
         signIn();
     }, [signIn]);
 
-    const handleBasicAuthSubmit = useCallback(async (values: FormValues) => {
-        const result = await client.mutate({
-            mutation: LOGIN_WITH_EMAIL,
-            variables: { ...values },
-        });
-        delete result.data.loginWithEmail.__typename;
-        delete result.data.loginWithEmail.user.__typename;
-        localStorage.setItem(
-            "session",
-            JSON.stringify(result.data.loginWithEmail),
-        );
-        reloadSession();
-        navigate("/organizations/new");
-    }, [navigate, reloadSession]);
+    const handleBasicAuthSubmit = useCallback(
+        async (values: FormValues) => {
+            const result = await client.mutate({
+                mutation: LOGIN_WITH_EMAIL,
+                variables: { ...values },
+            });
+            delete result.data.loginWithEmail.__typename;
+            delete result.data.loginWithEmail.user.__typename;
+            localStorage.setItem(
+                "session",
+                JSON.stringify(result.data.loginWithEmail),
+            );
+            reloadSession();
+            navigate("/organizations/new");
+        },
+        [navigate, reloadSession],
+    );
 
     return (
         <Root>
@@ -186,7 +194,8 @@ const Login: FunctionComponent = (): ReactElement => {
                         <Formik
                             initialValues={initialValues}
                             onSubmit={handleBasicAuthSubmit as any}
-                            validationSchema={validationSchema}>
+                            validationSchema={validationSchema}
+                        >
                             {(formik) => (
                                 <>
                                     <InputField
@@ -210,7 +219,8 @@ const Login: FunctionComponent = (): ReactElement => {
                                     <PrimaryAction
                                         onClick={() => formik.submitForm()}
                                         variant="contained"
-                                        size="medium">
+                                        size="medium"
+                                    >
                                         Login
                                     </PrimaryAction>
                                 </>
@@ -233,7 +243,8 @@ const Login: FunctionComponent = (): ReactElement => {
                         variant="contained"
                         color="primary"
                         size="medium"
-                        onClick={handleContinueWithGoogle}>
+                        onClick={handleContinueWithGoogle}
+                    >
                         Continue with Google
                     </PrimaryAction>
                 </CardContent>
