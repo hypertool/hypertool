@@ -18,6 +18,7 @@ import { gql, useMutation } from "@apollo/client";
 
 import * as yup from "yup";
 import { Formik } from "formik";
+import { useParams } from "react-router-dom";
 
 import { TextField } from "../../components";
 import { useReplaceTab } from "../../hooks";
@@ -162,6 +163,7 @@ const NewScreenForm: FunctionComponent = (): ReactElement => {
     // TODO: Destructure `error`, check for non-null, send to Sentry
     const [createScreen, { loading: creatingScreen, data: newScreen }] =
         useMutation(CREATE_SCREEN);
+    const { appId } = useParams();
 
     useReplaceTab(Boolean(newScreen), "edit-screen", {
         screenId: newScreen?.createScreen.id,
@@ -172,7 +174,7 @@ const NewScreenForm: FunctionComponent = (): ReactElement => {
             variables: {
                 ...values,
                 content: "",
-                app: "61c93a931da4a79d3a109947",
+                app: appId,
             },
         });
     }, []);

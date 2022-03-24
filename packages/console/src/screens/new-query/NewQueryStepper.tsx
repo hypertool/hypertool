@@ -25,6 +25,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 
 import * as yup from "yup";
 import { Formik } from "formik";
+import { useParams } from "react-router-dom";
 
 import { BuilderActionsContext, TabContext } from "../../contexts";
 
@@ -168,6 +169,7 @@ const GET_RESOURCES = gql`
 const NewQueryStepper: FunctionComponent = (): ReactElement => {
     const [activeStep, setActiveStep] = useState(0);
     const theme = useTheme();
+    const { appId } = useParams();
     // TODO: Destructure `error`, check for non-null, send to Sentry
     const [createQuery, { loading: creatingQuery, data: newQuery }] =
         useMutation(CREATE_QUERY_TEMPLATE);
@@ -190,7 +192,7 @@ const NewQueryStepper: FunctionComponent = (): ReactElement => {
         createQuery({
             variables: {
                 ...values,
-                app: "62259a10e33b279935a8b951",
+                app: appId,
             },
         });
     }, []);
