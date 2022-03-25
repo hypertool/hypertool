@@ -1,1 +1,1 @@
-export { default as useApp } from "./useApp";
+export { default as useFetchApp } from "./useFetchApp";
