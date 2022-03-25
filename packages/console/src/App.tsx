@@ -158,20 +158,12 @@ const App: FunctionComponent = (): ReactElement => {
 
                             <Route
                                 index={true}
-                                element={
-                                    <Navigate
-                                        to={session ? "/apps" : "/login"}
-                                    />
-                                }
+                                element={<Navigate to={"/apps"} />}
                             />
 
                             <Route
                                 path="/login"
-                                element={
-                                    <Navigate
-                                        to={session ? "/apps" : "/login"}
-                                    />
-                                }
+                                element={<Navigate to={"/apps"} />}
                             />
                         </Routes>
                     </ApolloProvider>
