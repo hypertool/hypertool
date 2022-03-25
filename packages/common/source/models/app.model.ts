@@ -79,6 +79,15 @@ const appSchema = new Schema(
             ],
             default: [],
         },
+        screens: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "Screen",
+                },
+            ],
+            default: [],
+        },
         status: {
             type: String,
             enum: appStatuses,
