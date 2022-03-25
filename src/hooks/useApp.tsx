@@ -1,53 +1,13 @@
-import { useEffect, useState } from "react";
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { useContext } from "react";
+import { AppContext } from "../contexts";
+import type { TAppContext } from "../types";
 
-const client = new ApolloClient({
-  uri: `${process.env.REACT_APP_API_URL}/graphql/v1/public`,
-  cache: new InMemoryCache(),
-});
-
-const GET_APP = gql`
-  query GetApp($name: String!) {
-    getAppByName(name: $name) {
-      id
+const useApp = (): TAppContext => {
+    const app = useContext(AppContext);
+    if (!app) {
+        throw new Error("Invalid application context!");
     }
-  }
-`;
-
-const publicDomainSuffix = ".hypertool.io";
-
-const useApp = () => {
-  const [app, setApp] = useState();
-
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      const hostName = window.location.hostname;
-      if (!hostName.endsWith(publicDomainSuffix)) {
-        throw new Error("Custom domains are not supported.");
-      }
-
-      const appName = hostName.substring(
-        0,
-        hostName.length - publicDomainSuffix.length
-      );
-      const result = await client.query({
-        query: GET_APP,
-        variables: {
-          name: appName,
-        },
-      });
-      if (mounted) {
-        setApp(result.data.getAppByName);
-      }
-    })();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  return app;
-};
+    return app;
+}
 
 export default useApp;
