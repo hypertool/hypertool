@@ -103,6 +103,10 @@ const create = async (context, attributes): Promise<IExternalOrganization> => {
 
     const newOrganization = new OrganizationModel({
         ...value,
+        members: value.members.map((member) => ({
+            ...member,
+            status: "activated",
+        })),
         status: "active",
     });
     await newOrganization.save();

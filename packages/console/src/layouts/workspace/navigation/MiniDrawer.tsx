@@ -80,7 +80,7 @@ const groups = [
         items: [
             {
                 title: "Profile",
-                url: "/:username",
+                url: "/user/settings",
                 icon: "account_circle",
             },
             {
@@ -157,6 +157,7 @@ const MiniDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                     <List>
                         {group.items.map((item) => (
                             <MiniDrawerItem
+                                key={item.title}
                                 open={open}
                                 title={item.title}
                                 url={item.url}

@@ -71,13 +71,15 @@ const validationSchema = yup.object({
 const CREATE_ORGANIZATION = gql`
     mutation CreateOrganization(
         $name: String!
+        $title: String!
         $description: String
-        $users: [ID!]
+        $member: OrganizationMemberInput!
     ) {
         createOrganization(
             name: $name
+            title: $title
             description: $description
-            users: $users
+            members: [$member]
         ) {
             id
         }
@@ -86,14 +88,13 @@ const CREATE_ORGANIZATION = gql`
 
 const UPDATE_USER = gql`
     mutation UpdateUser($userId: ID!, $organization: ID!) {
-        updateUser(userId: $userId, organization: $organization) {
+        updateUser(userId: $userId, organization: [$organization]) {
             id
         }
     }
 `;
 
 const NewOrganization: FunctionComponent = (): ReactElement => {
-    // TODO: Destructure `error`, check for non-null, send to sentry
     const [
         createOrganization,
         { loading: creatingOrganization, data: newOrganization },
@@ -109,12 +110,12 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
         if (newOrganization) {
             updateUser({
                 variables: {
-                    userId: JSON.parse(session)?.user?._id,
+                    userId: JSON.parse(session)?.user?.id,
                     organization: newOrganization.createOrganization.id,
                 },
             });
             if (updatedUser) {
-                navigate("/apps");
+                navigate("/organizations");
             }
         }
     }, [navigate, newOrganization, session, updateUser, updatedUser]);
@@ -125,7 +126,10 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
                 createOrganization({
                     variables: {
                         ...values,
-                        users: [JSON.parse(session)?.user?._id],
+                        member: {
+                            user: JSON.parse(session)?.user?.id,
+                            role: "owner",
+                        },
                     },
                 });
             }
@@ -138,7 +142,8 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
             <Formik
                 initialValues={initialValues}
                 onSubmit={handleSubmit}
-                validationSchema={validationSchema}>
+                validationSchema={validationSchema}
+            >
                 {(formik) => (
                     <>
                         <TitleContainer>
@@ -147,7 +152,8 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
                         <Wrap
                             when={smallerThanLg}
                             wrapper={Container}
-                            style={{ height: "calc(100vh - 156px)" }}>
+                            style={{ height: "calc(100vh - 156px)" }}
+                        >
                             <Wrap when={!smallerThanLg} wrapper={FormContainer}>
                                 <OrganizationForm />
                             </Wrap>
@@ -158,7 +164,8 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
                                 onClick={() => formik.submitForm()}
                                 variant="contained"
                                 size="small"
-                                disabled={creatingOrganization || updatingUser}>
+                                disabled={creatingOrganization || updatingUser}
+                            >
                                 Create
                                 {!creatingOrganization && !updatingUser && (
                                     <CheckCircleOutline

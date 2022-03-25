@@ -27,12 +27,12 @@ const Form = styled("form")(() => ({
     width: "100%",
 }));
 
-const NameTextField = styled(TextField)(() => ({
+const NameTextField = styled(TextField)(({ theme }) => ({
+    marginBottom: theme.spacing(3),
     maxWidth: 400,
 })) as any;
 
-const DescriptionTextField = styled(TextField)(({ theme }) => ({
-    marginTop: theme.spacing(3),
+const DescriptionTextField = styled(TextField)(() => ({
     maxWidth: 600,
 })) as any;
 
@@ -61,7 +61,7 @@ const OrganizationForm: FunctionComponent = (): ReactElement => {
                     required={true}
                     name="name"
                     id="name"
-                    label="Name"
+                    label="Slug"
                     size="small"
                     variant="outlined"
                     fullWidth={true}
@@ -75,13 +75,38 @@ const OrganizationForm: FunctionComponent = (): ReactElement => {
                                 marginLeft: -8,
                                 marginBottom: 0,
                                 paddingBottom: 0,
-                            }}>
+                            }}
+                        >
                             {slug && (
                                 <>
                                     Your organization will be hosted at {slug}
                                     .hypertool.io
                                 </>
                             )}
+                        </Typography>
+                    }
+                />
+                <NameTextField
+                    required={true}
+                    name="title"
+                    id="title"
+                    label="Title"
+                    size="small"
+                    variant="outlined"
+                    fullWidth={true}
+                    help={
+                        <Typography
+                            variant="caption"
+                            style={{
+                                display: "flex",
+                                marginTop: 4,
+                                flexDirection: "column",
+                                marginLeft: -8,
+                                marginBottom: 0,
+                                paddingBottom: 0,
+                            }}
+                        >
+                            This is the name that will be displayed to users.
                         </Typography>
                     }
                 />
@@ -104,7 +129,8 @@ const OrganizationForm: FunctionComponent = (): ReactElement => {
                                 marginLeft: -8,
                                 marginBottom: 0,
                                 paddingBottom: 0,
-                            }}>
+                            }}
+                        >
                             A description of your organization
                         </Typography>
                     }
