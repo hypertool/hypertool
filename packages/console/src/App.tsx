@@ -93,6 +93,10 @@ const App: FunctionComponent = (): ReactElement => {
                             element={<CreateAccount />}
                         />
                         <Route path="/new-password" element={<NewPassword />} />
+                        <Route
+                            index={true}
+                            element={<Navigate to={"/login"} />}
+                        />
                     </Route>
                 </Routes>
 
@@ -157,12 +161,12 @@ const App: FunctionComponent = (): ReactElement => {
                             />
 
                             <Route
-                                index={true}
+                                path="/login"
                                 element={<Navigate to={"/apps"} />}
                             />
 
                             <Route
-                                path="/login"
+                                index={true}
                                 element={<Navigate to={"/apps"} />}
                             />
                         </Routes>
