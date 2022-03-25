@@ -67,7 +67,7 @@ const PrimaryAction = styled(Button)(({ theme }) => ({
 const Links = styled("div")(({ theme }) => ({
     width: "100%",
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "center",
     flexDirection: "row",
     padding: `${theme.spacing(2)} 0px ${theme.spacing(2)} 0px`,
 }));
@@ -189,7 +189,7 @@ const Login: FunctionComponent = (): ReactElement => {
         <Root>
             <Card>
                 <CardContent>
-                    <SectionTitle>Please login to continue</SectionTitle>
+                    <SectionTitle>Login to continue</SectionTitle>
                     <FormContainer>
                         <Formik
                             initialValues={initialValues}
@@ -229,24 +229,18 @@ const Login: FunctionComponent = (): ReactElement => {
                     </FormContainer>
                     <Links>
                         <DecoratedLink to="/create-account">
-                            Create Account
-                        </DecoratedLink>
-                        <DecoratedLink to="/recover-password">
-                            Recover Password
+                            Create New Account
                         </DecoratedLink>
                     </Links>
-                    <DecoratedDivider />
-                    <SectionSubtitle>
-                        Alternatively, you can continue with a social account
-                    </SectionSubtitle>
-                    <PrimaryAction
+                    {/* <DecoratedDivider />
+                     <PrimaryAction
                         variant="contained"
                         color="primary"
                         size="medium"
                         onClick={handleContinueWithGoogle}
                     >
                         Continue with Google
-                    </PrimaryAction>
+                    </PrimaryAction> */}
                 </CardContent>
             </Card>
         </Root>
