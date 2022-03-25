@@ -164,31 +164,14 @@ const list = async (context, parameters): Promise<TScreenPage> => {
     };
 };
 
-const listById = async (
-    context,
-    appId: string,
-    pageIds: string[],
-): Promise<IExternalScreen[]> => {
-    const unorderedPages = await ScreenModel.find({
-        _id: { $in: pageIds },
-        app: appId,
-    }).exec();
-
-    const object = {};
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const page of unorderedPages) {
-        object[page._id.toString()] = page;
-    }
-
-    return pageIds.map((key) => toExternal(object[key]));
-};
-
 const helper = controller.createHelper({
     entity: "screen",
     model: ScreenModel,
     toExternal,
 });
+
+const listByIds = async (context, ids: string[]): Promise<IExternalScreen[]> =>
+    helper.listByIds(context, ids);
 
 export const getById = async (
     context: any,
@@ -202,4 +185,4 @@ export const getByName = async (
     name: string,
 ): Promise<IExternalScreen> => helper.getByName(context, name);
 
-export { create, update, list, listById };
+export { create, update, list, listByIds };
