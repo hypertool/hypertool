@@ -120,11 +120,11 @@ const App: FunctionComponent = (): ReactElement => {
 
                                 {/* Routes associated with Teams */}
                                 <Route
-                                    path="/organizations/:organizationId/teams/:teamId"
+                                    path="/teams/:teamId"
                                     element={<SingleTeam />}
                                 />
                                 <Route
-                                    path="/organizations/:organizationId/teams/new"
+                                    path="/teams/new"
                                     element={<NewTeam />}
                                 />
 
@@ -142,7 +142,7 @@ const App: FunctionComponent = (): ReactElement => {
                                     element={<InviteUser />}
                                 />
 
-                                {/* Routes associated with Users */}
+                                {/* Routes associated with Apps */}
                                 <Route path="/apps" element={<ViewApps />} />
                                 <Route path="/apps/new" element={<NewApp />} />
                                 <Route

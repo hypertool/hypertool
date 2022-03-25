@@ -79,29 +79,19 @@ const groups = [
         title: "General",
         items: [
             {
-                title: "Apps",
+                title: "Profile",
+                url: "/:username",
+                icon: "account_circle",
+            },
+            {
+                title: "Organizations",
+                url: "/organizations",
+                icon: "business",
+            },
+            {
+                title: "Applications",
                 url: "/apps",
                 icon: "apps",
-            },
-            {
-                title: "New App",
-                url: "/apps/new",
-                icon: "add_circle_outline",
-            },
-        ],
-    },
-    {
-        title: "Administrator",
-        items: [
-            {
-                title: "Resource Library",
-                url: "/resources",
-                icon: "category",
-            },
-            {
-                title: "Teams",
-                url: "/teams",
-                icon: "people",
             },
             {
                 title: "Billing",
@@ -150,7 +140,8 @@ const MiniDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
             variant={matches ? "permanent" : undefined}
             open={open}
             anchor="left"
-            onClose={onDrawerClose}>
+            onClose={onDrawerClose}
+        >
             <DrawerHeader>
                 <IconButton onClick={onDrawerClose}>
                     {theme.direction === "rtl" ? (

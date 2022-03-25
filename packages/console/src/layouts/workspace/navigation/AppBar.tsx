@@ -39,6 +39,12 @@ const DecoratedAppBar = styled(MuiAppBar, {
     },
 }));
 
+const Logo = styled("img")(({ theme }) => ({
+    width: 32,
+    height: "auto",
+    marginRight: theme.spacing(1),
+}));
+
 interface MenuButtonProps extends IconButtonProps {
     open?: boolean;
 }
@@ -67,11 +73,13 @@ const AppBar: FunctionComponent<Props> = (props: Props): ReactElement => {
                     size="small"
                     edge="start"
                     color="inherit"
-                    open={open}>
+                    open={open}
+                >
                     <MenuIcon />
                 </MenuButton>
+                <Logo src="https://res.cloudinary.com/hypertool/image/upload/v1642502111/hypertool-starter/hypertool-logo_xvqljy.png" />
                 <ToolName variant="h6" sx={{ flexGrow: 1 }}>
-                    hypertool
+                    Hypertool
                 </ToolName>
             </Toolbar>
         </DecoratedAppBar>
