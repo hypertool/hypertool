@@ -2,7 +2,7 @@ import { constants } from "@hypertool/common";
 
 import { ApolloServer, gql } from "apollo-server-express";
 
-import { apps, users } from "../controllers";
+import { apps, screens, users } from "../controllers";
 
 import { types } from "./typeDefinitions";
 
@@ -36,6 +36,7 @@ const typeDefs = gql`
         # User points to App indirectly via groups attribute. Since groups is flattened
         # in User, we can use an aggregate type here.
         creator: User!
+        screens: [Screen!]!
         status: AppStatus!
         createdAt: Date!
         updatedAt: Date!
@@ -86,6 +87,10 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
+    App: {
+        screens: async (parent, values, context) =>
+            screens.listByIds(context.request, parent.screens),
+    },
     Query: {
         dummy: async () => "Hello",
 

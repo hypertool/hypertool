@@ -1,8 +1,10 @@
 import {
+    AppModel,
     IExternalScreen,
     IScreen,
     TScreenPage,
     controller,
+    runAsTransaction,
 } from "@hypertool/common";
 import {
     BadRequestError,
@@ -12,6 +14,7 @@ import {
 } from "@hypertool/common";
 
 import joi from "joi";
+import mongoose from "mongoose";
 
 const createSchema = joi.object({
     app: joi.string().regex(constants.identifierPattern).required(),
@@ -72,13 +75,27 @@ const create = async (context, attributes): Promise<IExternalScreen> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
-
     if (error) {
         throw new BadRequestError(error.message);
     }
 
-    const newScreen = new ScreenModel({ ...value, status: "created" });
-    await newScreen.save();
+    const newScreen = await runAsTransaction(async () => {
+        const screenId = new mongoose.Types.ObjectId();
+        const newScreen = new ScreenModel({
+            ...value,
+            _id: screenId,
+            status: "created",
+        });
+        await newScreen.save();
+
+        AppModel.findByIdAndUpdate(value.app, {
+            $push: {
+                screens: screenId,
+            },
+        });
+
+        return newScreen;
+    });
 
     return toExternal(newScreen);
 };
