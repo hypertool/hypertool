@@ -148,10 +148,11 @@ export interface IApp {
     title: string;
     slug: string;
     description: string;
-    organization: string | IOrganization;
+    organization: ObjectId | IOrganization;
     deployments: ObjectId[] | Deployment[];
-    resources: string[] | IResource[];
-    creator: string[] | IUser;
+    resources: ObjectId[] | IResource[];
+    screens: ObjectId[] | IScreen[];
+    creator: ObjectId | IUser;
     status: typeof appStatuses[number];
     createdAt: Date;
     updatedAt: Date;
@@ -163,8 +164,10 @@ export interface IExternalApp {
     title: string;
     slug: string;
     description: string;
-    resources: string[];
+    organization: string;
     deployments: string[];
+    resources: string[];
+    screens: string[];
     creator: string;
     status: typeof appStatuses[number];
     createdAt: Date;
