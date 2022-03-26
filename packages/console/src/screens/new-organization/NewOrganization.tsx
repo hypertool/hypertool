@@ -88,7 +88,7 @@ const CREATE_ORGANIZATION = gql`
 
 const UPDATE_USER = gql`
     mutation UpdateUser($userId: ID!, $organization: ID!) {
-        updateUser(userId: $userId, organization: [$organization]) {
+        updateUser(userId: $userId, organizations: [$organization]) {
             id
         }
     }

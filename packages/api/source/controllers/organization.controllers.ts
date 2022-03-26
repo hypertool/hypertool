@@ -160,6 +160,7 @@ const listByIds = async (
         _id: { $in: organizationIds },
         status: { $ne: "deleted" },
     }).exec();
+
     const object = {};
     // eslint-disable-next-line no-restricted-syntax
     for (const organization of unorderedOrganizations) {

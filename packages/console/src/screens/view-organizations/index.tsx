@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactElement } from "react";
+import { FunctionComponent, ReactElement, useEffect } from "react";
 import { useCallback, useState } from "react";
 
 import {
@@ -15,9 +15,11 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useQuery } from "@apollo/client";
 
 import { useNavigate } from "react-router";
+
+import AppCard from "../view-apps/AppCard";
 
 const Root = styled("section")(() => ({
     width: "100%",
@@ -66,7 +68,7 @@ const Content = styled(Container)(({ theme }) => ({
     },
 }));
 
-const Apps = styled("div")(() => ({
+const Organizations = styled("div")(() => ({
     width: "100%",
     display: "flex",
     flexDirection: "row",
@@ -91,6 +93,16 @@ const GET_USER_ORGANIZATIONS = gql`
     }
 `;
 
+const LIST_ORGANIZATIONS = gql`
+    query ListOrganizations($organizations: [ID!]!) {
+        listOrganizationsByIds(organizationIds: $organizations) {
+            name
+            title
+            description
+        }
+    }
+`;
+
 const ViewOrganizations: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
     const session = localStorage.getItem("session") as string;
@@ -100,8 +112,26 @@ const ViewOrganizations: FunctionComponent = (): ReactElement => {
         },
         notifyOnNetworkStatusChange: true,
     });
+    const [
+        listOrganizations,
+        { loading: organizationsLoading, data: organizationsList },
+    ] = useLazyQuery(LIST_ORGANIZATIONS);
+
+    useEffect(() => {
+        if (data?.getUserById?.organizations) {
+            listOrganizations({
+                variables: {
+                    organizations: data.getUserById.organizations,
+                },
+            });
+        }
+    }, [data, listOrganizations]);
 
     const handleCreateNew = useCallback(() => {
+        navigate("/organizations/new");
+    }, [navigate]);
+
+    const handleOpen = useCallback(() => {
         navigate("/organizations/new");
     }, [navigate]);
 
@@ -131,29 +161,38 @@ const ViewOrganizations: FunctionComponent = (): ReactElement => {
                 </WorkspaceToolbar>
             </AppBar>
             <Content>
-                {loading && (
+                {(loading || organizationsLoading) && (
                     <ProgressContainer>
                         <CircularProgress size="28px" />
                     </ProgressContainer>
                 )}
+
                 {!loading &&
-                    data.getUserById.organizations &&
-                    data.getUserById.organizations.length === 0 && (
+                    !organizationsLoading &&
+                    data?.getUserById?.organizations?.length === 0 && (
                         <Text>You are not part of any organization.</Text>
                     )}
 
                 {!loading &&
-                    data.getUserById.organizations &&
-                    data.getUserById.organizations.length !== 0 && (
-                        <Apps>
-                            {/* {data.getApps.records.map((app: any) => (
-                            <AppCard
-                                id={app.id}
-                                name={app.name}
-                                description={app.description}
-                            />
-                        ))} */}
-                        </Apps>
+                    !organizationsLoading &&
+                    data?.getUserById?.organizations?.length !== 0 &&
+                    organizationsList?.listOrganizationsByIds?.length !== 0 && (
+                        <Organizations>
+                            {organizationsList?.listOrganizationsByIds.map(
+                                (organization: {
+                                    name: string;
+                                    title: string;
+                                    description: string;
+                                }) => (
+                                    <AppCard
+                                        id={organization.name}
+                                        name={organization.title}
+                                        description={organization.description}
+                                        onLaunch={handleOpen}
+                                    />
+                                ),
+                            )}
+                        </Organizations>
                     )}
             </Content>
         </Root>

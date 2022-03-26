@@ -62,7 +62,7 @@ const typeDefs = gql`
             firstName: String
             lastName: String
             description: String
-            organization: [ID]
+            organizations: [ID]
             gender: Gender
             countryCode: Country
             pictureURL: String
@@ -229,6 +229,7 @@ const typeDefs = gql`
     type Query {
         getOrganizations(page: Int, limit: Int): OrganizationPage!
         getOrganizationById(organizationId: ID!): Organization!
+        listOrganizationsByIds(organizationIds: [ID!]!): [Organization!]!
 
         getUsers(page: Int, limit: Int): UserPage!
         getUserById(userId: ID!): User!
@@ -425,6 +426,9 @@ const resolvers = {
 
         getOrganizationById: async (parent, values, context) =>
             organizations.getById(context.request, values.organizationId),
+
+        listOrganizationsByIds: async (parent, values, context) =>
+            organizations.listByIds(context.request, values.organizationIds),
 
         getUsers: async (parent, values, context) =>
             users.list(context.request, values),
