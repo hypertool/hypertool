@@ -1,5 +1,5 @@
 import type { FunctionComponent, ReactElement } from "react";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 
 import { inflateDocument } from "../utils";
 import View from "./View";
@@ -11,12 +11,16 @@ export interface IProps {
 }
 
 const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
-  const { content } = props;
+  const { content, title } = props;
 
   const rootNode = useMemo(
     () => inflateDocument(JSON.parse(content)),
     [content]
   );
+
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
 
   return <View node={rootNode} />;
 };
