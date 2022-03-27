@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { IApp } from "../types";
 
 const client = new ApolloClient({
   uri: `${process.env.REACT_APP_API_URL}/graphql/v1/public`,
@@ -16,8 +17,8 @@ const GET_APP = gql`
 
 const publicDomainSuffix = ".hypertool.io";
 
-const useFetchApp = () => {
-  const [app, setApp] = useState();
+const useFetchApp = (): IApp | null => {
+  const [app, setApp] = useState<IApp | null>(null);
 
   useEffect(() => {
     let mounted = true;
