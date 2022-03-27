@@ -1,0 +1,26 @@
+import { ICraftNode, INode, TCraftNodeKey } from "../types";
+
+export const inflateDocument = (document: Record<string, ICraftNode>) => {
+  const keys: TCraftNodeKey[] = Object.keys(document) as TCraftNodeKey[];
+
+  /* A map that temporarily hosts the new nodes that are inflated. */
+  const map = new Map<string, INode>(
+    keys.map((key: string) => [key, { id: key, children: [] }])
+  );
+
+  /* For each new node corresponding to the old nodes in the document,
+   * establish parental links from the child to the parent.
+   */
+  for (const key of keys) {
+    const node = document[key];
+    if (node.parent) {
+      const parentNode = map.get(node.parent);
+      if (parentNode) {
+        parentNode.children.push(map.get(key)!);
+      }
+    }
+  }
+
+  /* Return the new root node. We assume that the root node is always named "ROOT". */
+  return map.get("ROOT")!;
+};
