@@ -90,7 +90,7 @@ const RightDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                         variant="fullWidth"
                     >
                         <Tab value="properties" label="Properties" />
-                        <Tab value="comments" label="Comments" />
+                        {/* <Tab value="comments" label="Comments" /> */}
                     </Tabs>
                     {active === "properties" && selected && (
                         <PropertiesEditor />
