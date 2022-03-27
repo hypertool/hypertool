@@ -88,11 +88,21 @@ const create = async (context, attributes): Promise<IExternalScreen> => {
         });
         await newScreen.save();
 
-        AppModel.findByIdAndUpdate(value.app, {
-            $push: {
-                screens: screenId,
+        const updatedApp = await AppModel.findByIdAndUpdate(
+            value.app,
+            {
+                $push: {
+                    screens: screenId,
+                },
             },
-        });
+            {
+                new: true,
+                lean: true,
+            },
+        ).exec();
+        if (!updatedApp) {
+            throw new NotFoundError(`Cannot find app with the specified ID.`);
+        }
 
         return newScreen;
     });
