@@ -11,6 +11,24 @@ const GET_APP = gql`
   query GetApp($name: String!) {
     getAppByName(name: $name) {
       id
+      name
+      title
+      slug
+      description
+      status
+      createdAt
+      updatedAt
+      screens {
+        id
+        name
+        title
+        description
+        slug
+        content
+        status
+        createdAt
+        updatedAt
+      }
     }
   }
 `;
