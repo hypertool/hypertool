@@ -1,12 +1,27 @@
 import type { FunctionComponent, ReactElement } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppContext } from "./contexts";
 import { useFetchApp } from "./hooks";
+import { IScreen } from "./types";
 
 const App: FunctionComponent = (): ReactElement => {
   const app = useFetchApp();
+
+  const renderRoute = (screen: IScreen) => (
+    <Route
+      key={screen.id}
+      path={`/${screen.slug}`}
+      element={<div>{screen.slug}</div>}
+    />
+  );
+
+  const renderRoutes = () => (
+    <Routes>{app && app.screens.map(renderRoute)}</Routes>
+  );
+
   return (
     <AppContext.Provider value={app}>
-      <div>Hello, world!</div>
+      <BrowserRouter>{renderRoutes()}</BrowserRouter>
     </AppContext.Provider>
   );
 };
