@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppContext } from "./contexts";
 import { useFetchApp } from "./hooks";
 import { IScreen } from "./types";
+import { Screen } from "./components";
 
 const App: FunctionComponent = (): ReactElement => {
   const app = useFetchApp();
@@ -11,7 +12,13 @@ const App: FunctionComponent = (): ReactElement => {
     <Route
       key={screen.id}
       path={`/${screen.slug}`}
-      element={<div>{screen.slug}</div>}
+      element={
+        <Screen
+          slug={screen.slug}
+          title={screen.title}
+          content={screen.content}
+        />
+      }
     />
   );
 
