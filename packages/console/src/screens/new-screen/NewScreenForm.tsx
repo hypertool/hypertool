@@ -1,14 +1,7 @@
 import type { FunctionComponent, ReactElement } from "react";
 import { useCallback } from "react";
 
-import {
-    Button,
-    Checkbox,
-    CircularProgress,
-    Divider,
-    FormControlLabel,
-    Typography,
-} from "@mui/material";
+import { Button, CircularProgress, Divider, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import CheckCircle from "@mui/icons-material/CheckCircle";
@@ -108,7 +101,6 @@ interface IFormValues {
     title: string;
     slug: string;
     description: string;
-    homeScreen: boolean;
 }
 
 const initialValues: IFormValues = {
@@ -116,7 +108,6 @@ const initialValues: IFormValues = {
     title: "",
     slug: "",
     description: "",
-    homeScreen: false,
 };
 
 const validationSchema = yup.object({
@@ -246,15 +237,6 @@ const NewScreenForm: FunctionComponent = (): ReactElement => {
                                     fullWidth={true}
                                     multiline={true}
                                     rows={4}
-                                />
-
-                                <FormControlLabel
-                                    control={<Checkbox />}
-                                    label={
-                                        <Typography sx={{ color: "white" }}>
-                                            Home Screen
-                                        </Typography>
-                                    }
                                 />
                             </FormRoot>
                             <ActionContainer>
