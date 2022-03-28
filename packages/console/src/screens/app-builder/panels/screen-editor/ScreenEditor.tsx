@@ -10,6 +10,7 @@ import { Formik } from "formik";
 import { useParams } from "react-router-dom";
 
 import { TextField } from "../../../../components";
+import { slugPattern } from "../../../../utils/constants";
 
 const Root = styled("div")(({ theme }) => ({
     padding: theme.spacing(2),
@@ -31,9 +32,18 @@ const SlugTextField = styled(TextField)(({ theme }) => ({
 }));
 
 const validationSchema = yup.object({
-    name: yup.string().required("Title is required"),
-    title: yup.string().required("Title is required"),
-    slug: yup.string().required("Slug is required"),
+    name: yup
+        .string()
+        .max(256, "Screen name should be 256 characters or less")
+        .required("Title is required"),
+    title: yup
+        .string()
+        .max(256, "Title should be 256 characters or less")
+        .required("Title is required"),
+    slug: yup
+        .string()
+        .matches(slugPattern, "Slug should be valid")
+        .required("Slug is required"),
 });
 
 export interface IProps {

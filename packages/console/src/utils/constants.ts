@@ -10,3 +10,5 @@ export const tabTypes = [
 ];
 
 export const controllerLanguages = ["javascript", "typescript"];
+
+export const slugPattern = /^(\/:?[-_.a-zA-Z0-9]+)+$/;

@@ -15,6 +15,7 @@ import { useParams } from "react-router-dom";
 
 import { TextField } from "../../components";
 import { useReplaceTab } from "../../hooks";
+import { slugPattern } from "../../utils/constants";
 
 const Root = styled("div")(({ theme }) => ({
     display: "flex",
@@ -119,10 +120,7 @@ const validationSchema = yup.object({
         .string()
         .max(256, "Title should be 256 characters or less")
         .required(),
-    slug: yup
-        .string()
-        .max(128, "Slug should be 128 characters or less")
-        .required(),
+    slug: yup.string().matches(slugPattern, "Slug should be valid").required(),
     description: yup
         .string()
         .max(512, "Description should be 512 characters or less"),

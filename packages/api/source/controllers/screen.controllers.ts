@@ -22,7 +22,7 @@ const createSchema = joi.object({
     name: joi.string().regex(constants.namePattern).min(1).max(256).required(),
     title: joi.string().min(1).max(256).required(),
     description: joi.string().max(512).allow("").default(""),
-    slug: joi.string().min(1).max(128),
+    slug: joi.string().regex(constants.slugPattern).required(),
     content: joi.string().allow("").default(""),
 });
 
@@ -30,7 +30,7 @@ const updateSchema = joi.object({
     name: joi.string().regex(constants.namePattern).min(1).max(256),
     title: joi.string().min(1).max(256),
     description: joi.string().max(512).allow(""),
-    slug: joi.string().min(1).max(128),
+    slug: joi.string().regex(constants.slugPattern),
     content: joi.string().allow(""),
 });
 
