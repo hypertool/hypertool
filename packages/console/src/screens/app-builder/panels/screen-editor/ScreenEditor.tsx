@@ -47,6 +47,9 @@ const GET_SCREEN = gql`
             name
             title
             slug
+            controller {
+                name
+            }
         }
     }
 `;
@@ -64,7 +67,12 @@ const ScreenEditor: FunctionComponent<IProps> = (
         notifyOnNetworkStatusChange: true,
     });
 
-    const { name = "", title = "", slug = "" } = data?.getScreenById || {};
+    const {
+        name = "",
+        title = "",
+        slug = "",
+        controller: { name: controller } = { name: "" },
+    } = data?.getScreenById || {};
 
     return (
         <Root>
@@ -73,6 +81,7 @@ const ScreenEditor: FunctionComponent<IProps> = (
                     name,
                     title,
                     slug,
+                    controller,
                 }}
                 enableReinitialize={true}
                 onSubmit={async () => null}
@@ -89,6 +98,20 @@ const ScreenEditor: FunctionComponent<IProps> = (
                         required={true}
                         help=""
                         size="small"
+                    />
+                    <SlugTextField
+                        id="controller"
+                        name="controller"
+                        label="Controller"
+                        type="text"
+                        fullWidth={true}
+                        variant="outlined"
+                        required={true}
+                        help=""
+                        size="small"
+                        inputProps={{
+                            readOnly: true,
+                        }}
                     />
                     <TitleTextField
                         id="title"
