@@ -112,7 +112,7 @@ const ScreenEditor: FunctionComponent<IProps> = (
          *     error: updateScreenError,
          * },
          */
-    ] = useMutation(UPDATE_SCREEN);
+    ] = useMutation(UPDATE_SCREEN, { refetchQueries: ["GetScreens"] });
 
     const handleSave = useCallback((values: any) => {
         updateScreen({
