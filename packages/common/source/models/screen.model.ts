@@ -55,6 +55,13 @@ const screenSchema = new Schema(
             trim: true,
         },
 
+        /* The controller associated with the screen. */
+        controller: {
+            type: Schema.Types.ObjectId,
+            ref: "Controller",
+            required: true,
+        },
+
         /* The status of the screen. */
         status: {
             type: String,

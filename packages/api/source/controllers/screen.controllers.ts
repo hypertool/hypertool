@@ -1,8 +1,11 @@
 import {
+    AppModel,
+    ControllerModel,
     IExternalScreen,
     IScreen,
     TScreenPage,
     controller,
+    runAsTransaction,
 } from "@hypertool/common";
 import {
     BadRequestError,
@@ -12,13 +15,14 @@ import {
 } from "@hypertool/common";
 
 import joi from "joi";
+import mongoose from "mongoose";
 
 const createSchema = joi.object({
     app: joi.string().regex(constants.identifierPattern).required(),
     name: joi.string().regex(constants.namePattern).min(1).max(256).required(),
     title: joi.string().min(1).max(256).required(),
     description: joi.string().max(512).allow("").default(""),
-    slug: joi.string().min(1).max(128),
+    slug: joi.string().regex(constants.slugPattern).required(),
     content: joi.string().allow("").default(""),
 });
 
@@ -26,7 +30,7 @@ const updateSchema = joi.object({
     name: joi.string().regex(constants.namePattern).min(1).max(256),
     title: joi.string().min(1).max(256),
     description: joi.string().max(512).allow(""),
-    slug: joi.string().min(1).max(128),
+    slug: joi.string().regex(constants.slugPattern),
     content: joi.string().allow(""),
 });
 
@@ -51,6 +55,7 @@ const toExternal = (screen: IScreen): IExternalScreen => {
         slug,
         content,
         status,
+        controller,
         createdAt,
         updatedAt,
     } = screen;
@@ -63,6 +68,10 @@ const toExternal = (screen: IScreen): IExternalScreen => {
         slug,
         content,
         status,
+        controller:
+            controller instanceof ControllerModel
+                ? controller._id.toString()
+                : controller.toString(),
         createdAt,
         updatedAt,
     };
@@ -72,13 +81,53 @@ const create = async (context, attributes): Promise<IExternalScreen> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
-
     if (error) {
         throw new BadRequestError(error.message);
     }
 
-    const newScreen = new ScreenModel({ ...value, status: "created" });
-    await newScreen.save();
+    const newScreen = await runAsTransaction(async () => {
+        const controllerId = new mongoose.Types.ObjectId();
+        const newController = new ControllerModel({
+            _id: controllerId,
+            name: value.name,
+            description: "",
+            language: "javascript",
+            creator: context.user._id,
+            patches: [],
+            status: "created",
+        });
+
+        const screenId = new mongoose.Types.ObjectId();
+        const newScreen = new ScreenModel({
+            ...value,
+            _id: screenId,
+            controller: controllerId,
+            status: "created",
+        });
+
+        const [_newControllerResult, newScreenResult, updateAppResult] =
+            await Promise.all([
+                newController.save(),
+                newScreen.save(),
+                AppModel.findByIdAndUpdate(
+                    value.app,
+                    {
+                        $push: {
+                            screens: screenId,
+                        },
+                    },
+                    {
+                        new: true,
+                        lean: true,
+                    },
+                ).exec(),
+            ]);
+        if (!updateAppResult) {
+            throw new NotFoundError(`Cannot find app with the specified ID.`);
+        }
+
+        return newScreenResult;
+    });
 
     return toExternal(newScreen);
 };
@@ -147,31 +196,14 @@ const list = async (context, parameters): Promise<TScreenPage> => {
     };
 };
 
-const listById = async (
-    context,
-    appId: string,
-    pageIds: string[],
-): Promise<IExternalScreen[]> => {
-    const unorderedPages = await ScreenModel.find({
-        _id: { $in: pageIds },
-        app: appId,
-    }).exec();
-
-    const object = {};
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const page of unorderedPages) {
-        object[page._id.toString()] = page;
-    }
-
-    return pageIds.map((key) => toExternal(object[key]));
-};
-
 const helper = controller.createHelper({
     entity: "screen",
     model: ScreenModel,
     toExternal,
 });
+
+const listByIds = async (context, ids: string[]): Promise<IExternalScreen[]> =>
+    helper.listByIds(context, ids);
 
 export const getById = async (
     context: any,
@@ -185,4 +217,4 @@ export const getByName = async (
     name: string,
 ): Promise<IExternalScreen> => helper.getByName(context, name);
 
-export { create, update, list, listById };
+export { create, update, list, listByIds };

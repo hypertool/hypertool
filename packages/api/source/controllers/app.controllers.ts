@@ -1,4 +1,4 @@
-import type { IExternalApp, IUser, TAppPage } from "@hypertool/common";
+import type { IApp, IExternalApp, IUser, TAppPage } from "@hypertool/common";
 import {
     AppModel,
     BadRequestError,
@@ -47,9 +47,8 @@ const filterSchema = joi.object({
         .default(constants.paginateMinLimit),
 });
 
-const toExternal = (app: any): IExternalApp => {
+const toExternal = (app: IApp): IExternalApp => {
     const {
-        id,
         _id,
         name,
         title,
@@ -57,6 +56,7 @@ const toExternal = (app: any): IExternalApp => {
         description,
         organization,
         resources,
+        screens,
         creator,
         status,
         createdAt,
@@ -65,24 +65,27 @@ const toExternal = (app: any): IExternalApp => {
     } = app;
 
     const result = {
-        id: id || _id.toString(),
+        id: _id.toString(),
         name,
         title,
         slug,
         description,
         organization,
-        resources: extractIds(resources),
-        creator:
-            typeof creator === "string"
-                ? creator
-                : (creator as IUser)._id.toString(),
+        screens: screens.map((screen) => screen.toString()),
+        /*
+         * resources: extractIds(resources),
+         * creator:
+         *     typeof creator === "string"
+         *         ? creator
+         *         : (creator as IUser)._id.toString(),
+         */
         status,
         createdAt,
         updatedAt,
         deployments,
     };
 
-    return result;
+    return result as any;
 };
 
 const create = async (context, attributes): Promise<IExternalApp> => {

@@ -5,7 +5,8 @@ import { Drawer as MuiDrawer, Tab, Tabs } from "@mui/material";
 import { CSSObject, Theme, styled } from "@mui/material/styles";
 
 import { useEditor } from "../../../craft";
-import PropertiesEditor from "../panels/properties-editor/PropertiesEditor";
+import { PropertiesEditor } from "../panels/properties-editor";
+import { ScreenEditor } from "../panels/screen-editor";
 
 const drawerWidth = 304;
 
@@ -58,15 +59,17 @@ const Drawer = styled(MuiDrawer)(({ theme, open }) => ({
         "& .MuiDrawer-paper": closedMixin(theme),
     }),
 }));
+
 interface Props {
     open: boolean;
     onDrawerClose: () => void;
+    activeTabBundle: any;
 }
 
-type TabIdentifier = "properties" | "comments";
+type TabIdentifier = "properties" | "comments" | "screen";
 
 const RightDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
-    const { open, onDrawerClose } = props;
+    const { open, onDrawerClose, activeTabBundle } = props;
     const [active, setActive] = useState<TabIdentifier>("properties");
     const selected = useEditor((state) => state.events.selected);
 
@@ -90,10 +93,15 @@ const RightDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                         variant="fullWidth"
                     >
                         <Tab value="properties" label="Properties" />
-                        <Tab value="comments" label="Comments" />
+                        {/* <Tab value="comments" label="Comments" /> */}
+
+                        <Tab value="screen" label="Screen" />
                     </Tabs>
                     {active === "properties" && selected && (
                         <PropertiesEditor />
+                    )}
+                    {active === "screen" && (
+                        <ScreenEditor screenId={activeTabBundle.screenId} />
                     )}
                 </div>
             </Root>

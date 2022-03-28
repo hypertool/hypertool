@@ -1,14 +1,7 @@
 import type { FunctionComponent, ReactElement } from "react";
 import { useCallback } from "react";
 
-import {
-    Button,
-    Checkbox,
-    CircularProgress,
-    Divider,
-    FormControlLabel,
-    Typography,
-} from "@mui/material";
+import { Button, CircularProgress, Divider, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import CheckCircle from "@mui/icons-material/CheckCircle";
@@ -18,9 +11,11 @@ import { gql, useMutation } from "@apollo/client";
 
 import * as yup from "yup";
 import { Formik } from "formik";
+import { useParams } from "react-router-dom";
 
 import { TextField } from "../../components";
 import { useReplaceTab } from "../../hooks";
+import { slugPattern } from "../../utils/constants";
 
 const Root = styled("div")(({ theme }) => ({
     display: "flex",
@@ -107,7 +102,6 @@ interface IFormValues {
     title: string;
     slug: string;
     description: string;
-    homeScreen: boolean;
 }
 
 const initialValues: IFormValues = {
@@ -115,7 +109,6 @@ const initialValues: IFormValues = {
     title: "",
     slug: "",
     description: "",
-    homeScreen: false,
 };
 
 const validationSchema = yup.object({
@@ -127,10 +120,7 @@ const validationSchema = yup.object({
         .string()
         .max(256, "Title should be 256 characters or less")
         .required(),
-    slug: yup
-        .string()
-        .max(128, "Slug should be 128 characters or less")
-        .required(),
+    slug: yup.string().matches(slugPattern, "Slug should be valid").required(),
     description: yup
         .string()
         .max(512, "Description should be 512 characters or less"),
@@ -161,7 +151,10 @@ const CREATE_SCREEN = gql`
 const NewScreenForm: FunctionComponent = (): ReactElement => {
     // TODO: Destructure `error`, check for non-null, send to Sentry
     const [createScreen, { loading: creatingScreen, data: newScreen }] =
-        useMutation(CREATE_SCREEN);
+        useMutation(CREATE_SCREEN, {
+            refetchQueries: ["GetControllers", "GetScreens"],
+        });
+    const { appId } = useParams();
 
     useReplaceTab(Boolean(newScreen), "edit-screen", {
         screenId: newScreen?.createScreen.id,
@@ -172,7 +165,7 @@ const NewScreenForm: FunctionComponent = (): ReactElement => {
             variables: {
                 ...values,
                 content: "",
-                app: "61c93a931da4a79d3a109947",
+                app: appId,
             },
         });
     }, []);
@@ -244,15 +237,6 @@ const NewScreenForm: FunctionComponent = (): ReactElement => {
                                     fullWidth={true}
                                     multiline={true}
                                     rows={4}
-                                />
-
-                                <FormControlLabel
-                                    control={<Checkbox />}
-                                    label={
-                                        <Typography sx={{ color: "white" }}>
-                                            Home Screen
-                                        </Typography>
-                                    }
                                 />
                             </FormRoot>
                             <ActionContainer>

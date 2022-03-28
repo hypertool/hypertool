@@ -14,6 +14,8 @@ import { styled } from "@mui/material/styles";
 
 import { gql, useQuery } from "@apollo/client";
 
+import { useParams } from "react-router-dom";
+
 import { BuilderActionsContext } from "../../../../contexts";
 
 const Actions = styled("div")(({ theme }) => ({
@@ -39,12 +41,13 @@ const GET_QUERY_TEMPLATES = gql`
 `;
 
 const Queries: FunctionComponent = (): ReactElement => {
+    const { appId } = useParams();
     const { createTab } = useContext(BuilderActionsContext);
     const { data } = useQuery(GET_QUERY_TEMPLATES, {
         variables: {
             page: 0,
             limit: 20,
-            app: "61c93a931da4a79d3a109947",
+            app: appId,
         },
     });
     const { records } = data?.getQueryTemplates || { records: [] };

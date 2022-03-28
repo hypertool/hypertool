@@ -6,6 +6,7 @@ import { styled } from "@mui/material/styles";
 import { gql, useMutation } from "@apollo/client";
 
 import * as uuid from "uuid";
+import { useParams } from "react-router-dom";
 
 import {
     BuilderActionsContext,
@@ -119,7 +120,13 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             constants.tabTypes.map((tabType: string) => [tabType, 0]),
         ),
     )[1];
-    const modules = useModules();
+
+    const { appId } = useParams();
+    if (!appId) {
+        throw new Error("App ID is undefined in URL!");
+    }
+
+    const modules = useModules(appId);
     const { actions, query } = useEditor();
     const [
         updateScreen,
@@ -381,6 +388,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                             rightDrawerOpen && "edit-screen" === activeTabType
                         }
                         onDrawerClose={handleRightDrawerClose}
+                        activeTabBundle={activeTabBundle}
                     />
                 </Root>
             </ModulesContext.Provider>

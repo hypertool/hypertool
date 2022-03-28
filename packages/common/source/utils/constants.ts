@@ -367,6 +367,8 @@ export const controllerLanguages = tuple("javascript", "typescript");
 
 export const screenStatuses = tuple("created", "banned", "deleted");
 
+export const slugPattern = /^(\/:?[-_.a-zA-Z0-9]+)+$/;
+
 export {
     paginateMaxLimit,
     paginateMinLimit,

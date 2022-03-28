@@ -30,15 +30,15 @@ const GET_CONTROLLERS = gql`
 `;
 
 /*
- * TODO: Do not inflate an artifact if the source code has not changed
- * since previous inflation.
+ * TODO: Do not evaluate a controller if the source code has not changed
+ * since previous evaluation.
  */
-const useModules = (): TModulesContext => {
+const useModules = (appId: string): TModulesContext => {
     const { data: queryTemplatesData } = useQuery(GET_QUERY_TEMPLATES, {
         variables: {
             page: 0,
             limit: 20,
-            app: "61c93a931da4a79d3a109947",
+            app: appId,
         },
     });
     const { data: controllersData } = useQuery(GET_CONTROLLERS, {

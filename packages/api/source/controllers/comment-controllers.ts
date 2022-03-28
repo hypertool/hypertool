@@ -71,7 +71,7 @@ const create = async (context, attributes): Promise<ExternalComment> => {
     });
     await newComment.save();
 
-    const author = value.author;
+    const {author} = value;
     const conversationId = value.conversation;
     const conversation = await ConversationModel.findById(conversationId);
     conversation.comments.push(conversationId);
@@ -198,7 +198,7 @@ const list = async (context, parameters): Promise<CommentPage> => {
     };
 };
 
-const listById = async (
+const listByIds = async (
     context,
     commentIds: string[],
 ): Promise<ExternalComment[]> => {
@@ -214,8 +214,7 @@ const listById = async (
         object[comment._id.toString()] = comment;
     }
 
-    // eslint-disable-next-line security/detect-object-injection
     return commentIds.map((key) => toExternal(object[key]));
 };
 
-export { create, update, remove, list, listById };
+export { create, update, remove, list, listByIds };
