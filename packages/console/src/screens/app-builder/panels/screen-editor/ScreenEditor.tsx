@@ -9,7 +9,7 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import { useParams } from "react-router-dom";
 
-import { Checkbox, TextField } from "../../../../components";
+import { TextField } from "../../../../components";
 
 const Root = styled("div")(({ theme }) => ({
     padding: theme.spacing(2),
@@ -28,11 +28,6 @@ const TitleTextField = styled(TextField)(({ theme }) => ({
 
 const SlugTextField = styled(TextField)(({ theme }) => ({
     marginTop: theme.spacing(3),
-}));
-
-const HomeScreenLabel = styled(FormControlLabel)(({ theme }) => ({
-    color: theme.palette.getContrastText(theme.palette.background.default),
-    marginTop: theme.spacing(2),
 }));
 
 const validationSchema = yup.object({
@@ -116,16 +111,6 @@ const ScreenEditor: FunctionComponent<IProps> = (
                         required={true}
                         help=""
                         size="small"
-                    />
-
-                    <HomeScreenLabel
-                        control={
-                            <Checkbox
-                                name="homeScreen"
-                                defaultChecked={false}
-                            />
-                        }
-                        label="Home Screen"
                     />
                 </>
             </Formik>
