@@ -1,5 +1,6 @@
 import {
     AppModel,
+    ControllerModel,
     IExternalScreen,
     IScreen,
     TScreenPage,
@@ -54,6 +55,7 @@ const toExternal = (screen: IScreen): IExternalScreen => {
         slug,
         content,
         status,
+        controller,
         createdAt,
         updatedAt,
     } = screen;
@@ -66,6 +68,10 @@ const toExternal = (screen: IScreen): IExternalScreen => {
         slug,
         content,
         status,
+        controller:
+            controller instanceof ControllerModel
+                ? controller._id.toString()
+                : controller.toString(),
         createdAt,
         updatedAt,
     };
@@ -80,31 +86,47 @@ const create = async (context, attributes): Promise<IExternalScreen> => {
     }
 
     const newScreen = await runAsTransaction(async () => {
+        const controllerId = new mongoose.Types.ObjectId();
+        const newController = new ControllerModel({
+            _id: controllerId,
+            name: value.name,
+            description: "",
+            language: "javascript",
+            creator: context.user._id,
+            patches: [],
+            status: "created",
+        });
+
         const screenId = new mongoose.Types.ObjectId();
         const newScreen = new ScreenModel({
             ...value,
             _id: screenId,
+            controller: controllerId,
             status: "created",
         });
-        await newScreen.save();
 
-        const updatedApp = await AppModel.findByIdAndUpdate(
-            value.app,
-            {
-                $push: {
-                    screens: screenId,
-                },
-            },
-            {
-                new: true,
-                lean: true,
-            },
-        ).exec();
-        if (!updatedApp) {
+        const [_newControllerResult, newScreenResult, updateAppResult] =
+            await Promise.all([
+                newController.save(),
+                newScreen.save(),
+                AppModel.findByIdAndUpdate(
+                    value.app,
+                    {
+                        $push: {
+                            screens: screenId,
+                        },
+                    },
+                    {
+                        new: true,
+                        lean: true,
+                    },
+                ).exec(),
+            ]);
+        if (!updateAppResult) {
             throw new NotFoundError(`Cannot find app with the specified ID.`);
         }
 
-        return newScreen;
+        return newScreenResult;
     });
 
     return toExternal(newScreen);
