@@ -559,6 +559,8 @@ const resolvers = {
     Screen: {
         app: async (parent, values, context) =>
             apps.getById(context.request, parent.app),
+        controller: async (parent, values, context) =>
+            controllers.getById(context.request, parent.controller),
     },
     Team: {
         organization: async (parent, values, context) =>

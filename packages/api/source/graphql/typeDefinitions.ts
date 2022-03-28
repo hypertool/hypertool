@@ -451,6 +451,7 @@ const types = `
         description: String!
         slug: String!
         content: String!
+        controller: Controller!
         status: ScreenStatus!
         createdAt: Date!
         updatedAt: Date!
