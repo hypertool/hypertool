@@ -69,6 +69,12 @@ const Drawer = styled(MuiDrawer)(({ theme, open }) => ({
     }),
 }));
 
+const Logo = styled("img")(({ theme }) => ({
+    width: 32,
+    height: "auto",
+    marginRight: theme.spacing(1),
+}));
+
 interface Props {
     open: boolean;
     onDrawerClose: () => void;
@@ -79,7 +85,7 @@ const groups = [
         title: "General",
         items: [
             {
-                title: "Profile",
+                title: "Edit Profile",
                 url: "/user/settings",
                 icon: "account_circle",
             },
@@ -93,6 +99,11 @@ const groups = [
                 url: "/apps",
                 icon: "apps",
             },
+        ],
+    },
+    {
+        title: "Settings",
+        items: [
             {
                 title: "Billing",
                 url: "/billing",
@@ -138,19 +149,11 @@ const MiniDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
     return (
         <Drawer
             variant={matches ? "permanent" : undefined}
-            open={open}
+            open={matches ? true : false}
             anchor="left"
             onClose={onDrawerClose}
         >
-            <DrawerHeader>
-                <IconButton onClick={onDrawerClose}>
-                    {theme.direction === "rtl" ? (
-                        <ChevronRightIcon />
-                    ) : (
-                        <ChevronLeftIcon />
-                    )}
-                </IconButton>
-            </DrawerHeader>
+            <DrawerHeader />
             <Divider />
             {groups.map((group, index: number) => (
                 <Fragment key={group.title}>

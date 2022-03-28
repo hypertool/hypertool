@@ -141,7 +141,7 @@ const ViewOrganizations: FunctionComponent = (): ReactElement => {
                 <WorkspaceToolbar>
                     <Title>Your Organizations</Title>
                     <ActionContainer>
-                        <Search
+                        {/* <Search
                             label=""
                             placeholder="Search"
                             size="small"
@@ -152,7 +152,7 @@ const ViewOrganizations: FunctionComponent = (): ReactElement => {
                                     </InputAdornment>
                                 ),
                             }}
-                        />
+                        /> */}
                         <Button size="small" onClick={handleCreateNew}>
                             <ActionIcon fontSize="small">add_circle</ActionIcon>
                             Create New

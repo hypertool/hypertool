@@ -28,9 +28,6 @@ const typeDefs = gql`
             name: String
             title: String
             description: String
-            members: [OrganizationMemberInput!]
-            apps: [ID!]
-            teams: [ID!]
         ): Organization!
 
         updateOrganization(

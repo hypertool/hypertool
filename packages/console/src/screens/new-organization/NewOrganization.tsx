@@ -73,22 +73,12 @@ const CREATE_ORGANIZATION = gql`
         $name: String!
         $title: String!
         $description: String
-        $member: OrganizationMemberInput!
     ) {
         createOrganization(
             name: $name
             title: $title
             description: $description
-            members: [$member]
         ) {
-            id
-        }
-    }
-`;
-
-const UPDATE_USER = gql`
-    mutation UpdateUser($userId: ID!, $organization: ID!) {
-        updateUser(userId: $userId, organizations: [$organization]) {
             id
         }
     }
@@ -99,26 +89,11 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
         createOrganization,
         { loading: creatingOrganization, data: newOrganization },
     ] = useMutation(CREATE_ORGANIZATION);
-    const [updateUser, { loading: updatingUser, data: updatedUser }] =
-        useMutation(UPDATE_USER);
+
     const theme = useTheme();
     const navigate = useNavigate();
     const smallerThanLg = useMediaQuery(theme.breakpoints.down("lg"));
     const session = localStorage.getItem("session") as string;
-
-    useEffect(() => {
-        if (newOrganization) {
-            updateUser({
-                variables: {
-                    userId: JSON.parse(session)?.user?.id,
-                    organization: newOrganization.createOrganization.id,
-                },
-            });
-            if (updatedUser) {
-                navigate("/organizations");
-            }
-        }
-    }, [navigate, newOrganization, session, updateUser, updatedUser]);
 
     const handleSubmit = useCallback(
         (values: FormValues): any => {
@@ -132,6 +107,9 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
                         },
                     },
                 });
+                if (!creatingOrganization && newOrganization) {
+                    navigate("/organizations");
+                }
             }
         },
         [createOrganization, session],
@@ -164,16 +142,16 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
                                 onClick={() => formik.submitForm()}
                                 variant="contained"
                                 size="small"
-                                disabled={creatingOrganization || updatingUser}
+                                disabled={creatingOrganization}
                             >
                                 Create
-                                {!creatingOrganization && !updatingUser && (
+                                {!creatingOrganization && (
                                     <CheckCircleOutline
                                         fontSize="small"
                                         sx={{ ml: 1 }}
                                     />
                                 )}
-                                {(creatingOrganization || updatingUser) && (
+                                {creatingOrganization && (
                                     <CircularProgress
                                         size="14px"
                                         sx={{ ml: 1 }}

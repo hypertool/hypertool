@@ -105,7 +105,7 @@ const create = async (context, attributes): Promise<IExternalOrganization> => {
         ...value,
         members: [
             {
-                ...value.members[0],
+                user: context.user._id,
                 role: "owner",
                 status: "activated",
             },
@@ -113,6 +113,22 @@ const create = async (context, attributes): Promise<IExternalOrganization> => {
         status: "active",
     });
     await newOrganization.save();
+
+    const users = await UserModel.findOneAndUpdate(
+        {
+            _id: context.user._id,
+        },
+        {
+            $addToSet: {
+                organizations: newOrganization._id,
+            },
+        },
+        {
+            new: true,
+        },
+    )
+        .lean()
+        .exec();
 
     return toExternal(newOrganization);
 };
