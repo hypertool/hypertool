@@ -512,6 +512,11 @@ export interface IScreen {
     content: string;
 
     /**
+     * The controller associated with the screen.
+     */
+    controller: ObjectId | IController;
+
+    /**
      * The status of the screen.
      */
     status: typeof screenStatuses[number];
@@ -539,6 +544,11 @@ export interface IExternalScreen {
      * The user interface implemented by the screen encoded in JSON.
      */
     content: string;
+
+    /**
+     * The controller associated with the screen.
+     */
+    controller: string;
 
     status: typeof screenStatuses[number];
     createdAt: Date;
