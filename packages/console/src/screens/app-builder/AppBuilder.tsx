@@ -388,6 +388,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                             rightDrawerOpen && "edit-screen" === activeTabType
                         }
                         onDrawerClose={handleRightDrawerClose}
+                        activeTabBundle={activeTabBundle}
                     />
                 </Root>
             </ModulesContext.Provider>
