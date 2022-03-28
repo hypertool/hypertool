@@ -84,11 +84,13 @@ const groups = [
     {
         title: "General",
         items: [
-            {
-                title: "Edit Profile",
-                url: "/user/settings",
-                icon: "account_circle",
-            },
+            /*
+             * {
+             *     title: "Edit Profile",
+             *     url: "/user/settings",
+             *     icon: "account_circle",
+             * },
+             */
             {
                 title: "Organizations",
                 url: "/organizations",

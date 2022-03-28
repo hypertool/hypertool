@@ -98,7 +98,7 @@ const toExternal = (controller: IController): IExternalController => {
                 createdAt,
             };
         }),
-        // patched: patchAll(patches),
+        patched: patchAll(patches),
         status,
         createdAt,
         updatedAt,
