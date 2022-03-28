@@ -2,7 +2,7 @@ import { constants } from "@hypertool/common";
 
 import { ApolloServer, gql } from "apollo-server-express";
 
-import { apps, screens, users } from "../controllers";
+import { apps, controllers, screens, users } from "../controllers";
 
 import { types } from "./typeDefinitions";
 
@@ -90,6 +90,10 @@ const resolvers = {
     App: {
         screens: async (parent, values, context) =>
             screens.listByIds(context.request, parent.screens),
+    },
+    Screen: {
+        controller: async (parent, values, context) =>
+            controllers.getById(context.request, parent.controller),
     },
     Query: {
         dummy: async () => "Hello",
