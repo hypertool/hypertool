@@ -153,7 +153,9 @@ const CREATE_SCREEN = gql`
 const NewScreenForm: FunctionComponent = (): ReactElement => {
     // TODO: Destructure `error`, check for non-null, send to Sentry
     const [createScreen, { loading: creatingScreen, data: newScreen }] =
-        useMutation(CREATE_SCREEN);
+        useMutation(CREATE_SCREEN, {
+            refetchQueries: ["GetControllers", "GetScreens"],
+        });
     const { appId } = useParams();
 
     useReplaceTab(Boolean(newScreen), "edit-screen", {
