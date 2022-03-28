@@ -83,10 +83,17 @@ export const createHelper = <T, E>(
                     status: { $ne: "deleted" },
                 })
                 .exec();
+            if (items.length !== ids.length) {
+                throw new NotFoundError(
+                    `Could not find items for every specified ID. Request ${ids.length} items, but found ${items.length} items.`,
+                );
+            }
+
             const object = {};
             for (const item of items) {
                 object[item._id.toString()] = item;
             }
+
             return ids.map((key) => toExternal(object[key]));
         },
 
