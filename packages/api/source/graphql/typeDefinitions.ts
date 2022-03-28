@@ -246,7 +246,6 @@ const types = `
         ${queryResultFormats.join("\n")}
     }
 
-    # TODO: Add slug, title
     type App {
         id: ID!
         name: String!
@@ -257,6 +256,7 @@ const types = `
         # Therefore, we flatten the data structure here.
         resources: [ID!]!
         creator: User!
+        screens: [Screen!]!
         status: AppStatus!
         createdAt: Date!
         updatedAt: Date!
