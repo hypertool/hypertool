@@ -229,7 +229,7 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                                     </PrimaryAction>
                                     <Links>
                                         <DecoratedLink to="/login">
-                                            Login To An Existing Account
+                                            Login to an Existing Account
                                         </DecoratedLink>
                                     </Links>
                                 </>
