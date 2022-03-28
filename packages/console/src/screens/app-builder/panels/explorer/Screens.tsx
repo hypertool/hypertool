@@ -13,6 +13,8 @@ import { styled } from "@mui/material/styles";
 
 import { gql, useQuery } from "@apollo/client";
 
+import { useParams } from "react-router-dom";
+
 import { BuilderActionsContext } from "../../../../contexts";
 
 const Actions = styled("div")(({ theme }) => ({
@@ -39,11 +41,12 @@ const GET_SCREENS = gql`
 
 const Screens: FunctionComponent = (): ReactElement => {
     const { createTab } = useContext(BuilderActionsContext);
+    const { appId } = useParams();
     const { data } = useQuery(GET_SCREENS, {
         variables: {
             page: 0,
             limit: 20,
-            appId: "61c93a931da4a79d3a109947",
+            appId,
         },
     });
     const { records } = data?.getScreens || { records: [] };
