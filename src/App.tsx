@@ -17,6 +17,7 @@ const App: FunctionComponent = (): ReactElement => {
           slug={screen.slug}
           title={screen.title}
           content={screen.content}
+          controller={screen.controller.patched}
         />
       }
     />
