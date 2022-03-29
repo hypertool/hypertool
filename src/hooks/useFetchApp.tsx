@@ -25,6 +25,16 @@ const GET_APP = gql`
         description
         slug
         content
+        controller {
+          id
+          name
+          description
+          language
+          patched
+          status
+          createdAt
+          updatedAt
+        }
         status
         createdAt
         updatedAt
