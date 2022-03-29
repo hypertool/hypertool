@@ -66,3 +66,20 @@ export type TPropertyValue = number | boolean | string | null | object;
 export interface IPatch {
   [key: string]: Record<string, TPropertyValue> | INode;
 }
+
+export interface IHyperContext<S> {
+  setState: {
+    (state: Partial<S>): void;
+    (name: string, value: S[keyof S]): void;
+  };
+
+  getState: {
+    (): S;
+    (name: string): S[keyof S];
+  };
+
+  inflate: (
+    name: string,
+    patches?: Record<string, IPatch>
+  ) => INode;
+}
