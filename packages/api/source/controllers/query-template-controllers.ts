@@ -69,6 +69,16 @@ const create = async (context, attributes): Promise<ExternalQuery> => {
         throw new BadRequestError(error.message);
     }
 
+    // Add `query` to `app.queries`
+    const appId = value.app;
+    await AppModel.findOneAndUpdate(
+        { _id: appId },
+        { $push: { queries: newQuery._id } },
+        { new: true },
+    )
+        .lean()
+        .exec();
+
     // Check if the query name already exists in the app.
     const filters = {
         name: value.name,
@@ -88,17 +98,6 @@ const create = async (context, attributes): Promise<ExternalQuery> => {
         status: "enabled",
     });
     await newQuery.save();
-
-    // Add `query` to `app.queries`
-    const appId = value.app;
-    await (AppModel as any)
-        .findOneAndUpdate(
-            { _id: appId },
-            { $push: { queries: newQuery._id } },
-            { new: true },
-        )
-        .lean()
-        .exec();
 
     return toExternal(newQuery);
 };

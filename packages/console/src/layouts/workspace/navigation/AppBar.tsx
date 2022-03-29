@@ -84,7 +84,7 @@ const AppBar: FunctionComponent<Props> = (props: Props): ReactElement => {
     };
 
     const handleViewApplications = () => {
-        window.location.href = "/applications";
+        window.location.href = "/apps";
     };
 
     const renderMenu = (

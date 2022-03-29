@@ -14,7 +14,7 @@ import joi from "joi";
 
 // TODO: Add limits to database configurations!
 const createSchema = joi.object({
-    name: joi.string().max(256).required(),
+    name: joi.string().regex(constants.namePattern).max(256).required(),
     description: joi.string().max(512).allow("").default(""),
     type: joi
         .string()
@@ -152,6 +152,20 @@ const create = async (context, attributes): Promise<IExternalResource> => {
     }
 
     /*
+     * Add `resource` to `app.resources`.
+     */
+    const app = await AppModel.findOneAndUpdate(
+        { _id: value.app },
+        { $push: { resources: newResource._id } },
+        { new: true },
+    )
+        .lean()
+        .exec();
+    if (!app) {
+        throw new NotFoundError(`App "${value.app}" not found`);
+    }
+
+    /*
      * Check if name already exists in any resource of the given app.
      */
     const existingResource = await ResourceModel.findOne({
@@ -166,36 +180,12 @@ const create = async (context, attributes): Promise<IExternalResource> => {
         );
     }
 
-    /*
-     * Check if value.name matches the identifier regex.
-     */
-    if (!value.name.match(constants.identifierPattern)) {
-        throw new BadRequestError(`Invalid resource name "${value.name}"`);
-    }
-
-    /*
-     * Check if value.creator is correct.
-     */
-    if (value.app !== context.user.app) {
-        throw new BadRequestError(`Invalid app "${value.app}"`);
-    }
-
     const newResource = new ResourceModel({
         ...value,
         status: "enabled",
+        creator: context.user._id,
     });
     await newResource.save();
-
-    /*
-     * Add `resource` to `app.resources`.
-     */
-    const app = await AppModel.findOneAndUpdate(
-        { _id: value.app },
-        { $push: { resources: newResource._id } },
-        { new: true },
-    )
-        .lean()
-        .exec();
 
     return toExternal(newResource);
 };

@@ -154,7 +154,8 @@ const ViewApps: FunctionComponent = (): ReactElement => {
                 id="filter"
                 value={filter}
                 label="Filter"
-                onChange={handleFilterChange}>
+                onChange={handleFilterChange}
+            >
                 {filters.map((filter) => (
                     <MenuItem value={filter.url}>{filter.title}</MenuItem>
                 ))}
@@ -166,9 +167,9 @@ const ViewApps: FunctionComponent = (): ReactElement => {
         <Root>
             <AppBar position="static" elevation={1}>
                 <WorkspaceToolbar>
-                    <Title>Resource Library</Title>
+                    <Title>Your Apps</Title>
                     <ActionContainer>
-                        <Search
+                        {/* <Search
                             label=""
                             placeholder="Search"
                             size="small"
@@ -179,7 +180,7 @@ const ViewApps: FunctionComponent = (): ReactElement => {
                                     </InputAdornment>
                                 ),
                             }}
-                        />
+                        /> */}
                         <Button size="small" onClick={handleCreateNew}>
                             <ActionIcon fontSize="small">add_circle</ActionIcon>
                             Create New
@@ -199,14 +200,14 @@ const ViewApps: FunctionComponent = (): ReactElement => {
                 )}
                 {!loading && (
                     <Apps>
-                        {data.getApps.records.map((app: any) => (
+                        {/* {data.getApps.records.map((app: any) => (
                             <AppCard
                                 id={app.id}
                                 name={app.name}
                                 description={app.description}
                                 onLaunch={handleLaunch}
                             />
-                        ))}
+                        ))} */}
                     </Apps>
                 )}
             </Content>

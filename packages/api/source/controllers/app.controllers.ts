@@ -1,4 +1,10 @@
-import type { IApp, IExternalApp, IUser, TAppPage } from "@hypertool/common";
+import {
+    IApp,
+    IExternalApp,
+    IUser,
+    TAppPage,
+    UserModel,
+} from "@hypertool/common";
 import {
     AppModel,
     BadRequestError,
@@ -172,6 +178,15 @@ const listByIds = async (
 const getById = async (context, appId: string): Promise<IExternalApp> => {
     if (!constants.identifierPattern.test(appId)) {
         throw new BadRequestError("The specified app identifier is invalid.");
+    }
+
+    const userFilters = {
+        _id: context.user._id,
+        apps: { $in: [appId] },
+    };
+    const user = await UserModel.findOne(userFilters).lean().exec();
+    if (!user) {
+        throw new NotFoundError("The user is not allowed to access this app.");
     }
 
     // TODO: Update filters
