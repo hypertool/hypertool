@@ -53,8 +53,11 @@ export interface ICraftNode {
 
 export type TCraftNodeKey = keyof ICraftNode;
 
+export type TBasicNodeType = "View" | "Fragment" | "Text";
+
 export interface INode {
   id: string;
+  type: string | TBasicNodeType;
   children: INode[];
 }
 
