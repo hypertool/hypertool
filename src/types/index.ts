@@ -37,11 +37,6 @@ export interface IApp {
 
 export type TAppContext = IApp;
 
-export interface INode {
-  id: string;
-  children: INode[];
-}
-
 export interface ICraftNode {
   custom: {
     [key: string]: any;
@@ -57,3 +52,14 @@ export interface ICraftNode {
 }
 
 export type TCraftNodeKey = keyof ICraftNode;
+
+export interface INode {
+  id: string;
+  children: INode[];
+}
+
+export type TPropertyValue = number | boolean | string | null | object;
+
+export interface IPatch {
+  [key: string]: Record<string, TPropertyValue> | INode;
+}
