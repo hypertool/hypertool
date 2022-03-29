@@ -85,3 +85,8 @@ export interface IHyperContext<S> {
     patches?: Record<string, IPatch>
   ) => INode;
 }
+
+export interface IHyperController<T> {
+  init?: (context: IHyperContext<T>) => void;
+  render?: (context: IHyperContext<T>) => INode;
+}
