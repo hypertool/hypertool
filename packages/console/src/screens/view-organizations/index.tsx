@@ -88,17 +88,11 @@ const ProgressContainer = styled("div")(() => ({
 const GET_USER_ORGANIZATIONS = gql`
     query GetUserById($userId: ID!) {
         getUserById(userId: $userId) {
-            organizations
-        }
-    }
-`;
-
-const LIST_ORGANIZATIONS = gql`
-    query ListOrganizations($organizations: [ID!]!) {
-        listOrganizationsByIds(organizationIds: $organizations) {
-            name
-            title
-            description
+            organizations {
+                title
+                name
+                description
+            }
         }
     }
 `;
@@ -112,20 +106,6 @@ const ViewOrganizations: FunctionComponent = (): ReactElement => {
         },
         notifyOnNetworkStatusChange: true,
     });
-    const [
-        listOrganizations,
-        { loading: organizationsLoading, data: organizationsList },
-    ] = useLazyQuery(LIST_ORGANIZATIONS);
-
-    useEffect(() => {
-        if (data?.getUserById?.organizations) {
-            listOrganizations({
-                variables: {
-                    organizations: data.getUserById.organizations,
-                },
-            });
-        }
-    }, [data, listOrganizations]);
 
     const handleCreateNew = useCallback(() => {
         navigate("/organizations/new");
@@ -161,39 +141,34 @@ const ViewOrganizations: FunctionComponent = (): ReactElement => {
                 </WorkspaceToolbar>
             </AppBar>
             <Content>
-                {(loading || organizationsLoading) && (
+                {loading && (
                     <ProgressContainer>
                         <CircularProgress size="28px" />
                     </ProgressContainer>
                 )}
 
-                {!loading &&
-                    !organizationsLoading &&
-                    data?.getUserById?.organizations?.length === 0 && (
-                        <Text>You are not part of any organization.</Text>
-                    )}
+                {!loading && data?.getUserById?.organizations?.length === 0 && (
+                    <Text>You are not part of any organization.</Text>
+                )}
 
-                {!loading &&
-                    !organizationsLoading &&
-                    data?.getUserById?.organizations?.length !== 0 &&
-                    organizationsList?.listOrganizationsByIds?.length !== 0 && (
-                        <Organizations>
-                            {organizationsList?.listOrganizationsByIds.map(
-                                (organization: {
-                                    name: string;
-                                    title: string;
-                                    description: string;
-                                }) => (
-                                    <AppCard
-                                        id={organization.name}
-                                        name={organization.title}
-                                        description={organization.description}
-                                        onLaunch={handleOpen}
-                                    />
-                                ),
-                            )}
-                        </Organizations>
-                    )}
+                {!loading && data?.getUserById?.organizations?.length !== 0 && (
+                    <Organizations>
+                        {data?.getUserById?.organizations?.map(
+                            (organization: {
+                                name: string;
+                                title: string;
+                                description: string;
+                            }) => (
+                                <AppCard
+                                    id={organization.name}
+                                    name={organization.title}
+                                    description={organization.description}
+                                    onLaunch={handleOpen}
+                                />
+                            ),
+                        )}
+                    </Organizations>
+                )}
             </Content>
         </Root>
     );

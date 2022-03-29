@@ -85,10 +85,8 @@ const CREATE_ORGANIZATION = gql`
 `;
 
 const NewOrganization: FunctionComponent = (): ReactElement => {
-    const [
-        createOrganization,
-        { loading: creatingOrganization, data: newOrganization },
-    ] = useMutation(CREATE_ORGANIZATION);
+    const [createOrganization, { loading, data }] =
+        useMutation(CREATE_ORGANIZATION);
 
     const theme = useTheme();
     const navigate = useNavigate();
@@ -107,13 +105,16 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
                         },
                     },
                 });
-                if (!creatingOrganization && newOrganization) {
-                    navigate("/organizations");
-                }
             }
         },
         [createOrganization, session],
     );
+
+    useEffect(() => {
+        if (!loading && data?.createOrganization) {
+            navigate("/organizations");
+        }
+    }, [loading, data, navigate]);
 
     return (
         <div>
@@ -142,16 +143,16 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
                                 onClick={() => formik.submitForm()}
                                 variant="contained"
                                 size="small"
-                                disabled={creatingOrganization}
+                                disabled={loading}
                             >
                                 Create
-                                {!creatingOrganization && (
+                                {!loading && (
                                     <CheckCircleOutline
                                         fontSize="small"
                                         sx={{ ml: 1 }}
                                     />
                                 )}
-                                {creatingOrganization && (
+                                {loading && (
                                     <CircularProgress
                                         size="14px"
                                         sx={{ ml: 1 }}

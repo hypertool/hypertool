@@ -521,6 +521,12 @@ const resolvers = {
          *     deployments.listByIds(context.request, parent.deployments),
          */
     },
+    User: {
+        organizations: async (parent, values, context) =>
+            organizations.listByIds(context.request, parent.organizations),
+        apps: async (parent, values, context) =>
+            apps.listByIds(context.request, parent.apps),
+    },
     Comment: {
         author: async (parent, values, context) =>
             users.getById(context.request, parent.author),
