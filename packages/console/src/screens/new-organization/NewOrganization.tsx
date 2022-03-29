@@ -85,8 +85,12 @@ const CREATE_ORGANIZATION = gql`
 `;
 
 const NewOrganization: FunctionComponent = (): ReactElement => {
-    const [createOrganization, { loading, data }] =
-        useMutation(CREATE_ORGANIZATION);
+    const [createOrganization, { loading, data }] = useMutation(
+        CREATE_ORGANIZATION,
+        {
+            refetchQueries: ["GetUserById"],
+        },
+    );
 
     const theme = useTheme();
     const navigate = useNavigate();

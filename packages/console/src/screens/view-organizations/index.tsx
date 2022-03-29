@@ -1,5 +1,5 @@
 import { FunctionComponent, ReactElement, useEffect } from "react";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 import {
     AppBar,
@@ -7,15 +7,13 @@ import {
     CircularProgress,
     Container,
     Icon,
-    InputAdornment,
-    FormControl as MuiFormControl,
     TextField,
     Toolbar,
     Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { gql, useLazyQuery, useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 
 import { useNavigate } from "react-router";
 
