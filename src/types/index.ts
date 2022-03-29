@@ -68,6 +68,8 @@ export interface IPatch {
 }
 
 export interface IHyperContext<S> {
+  refs: Record<string, any>;
+
   setState: {
     (state: Partial<S>): void;
     (name: string, value: S[keyof S]): void;
