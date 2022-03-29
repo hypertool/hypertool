@@ -97,6 +97,16 @@ const create = async (context, attributes): Promise<IExternalApp> => {
         throw new BadRequestError(error.message);
     }
 
+    // Check if the app name is already taken.
+    const existingApp = await AppModel.findOne({
+        name: value.name,
+    }).exec();
+    if (existingApp) {
+        throw new BadRequestError(
+            `App with name ${value.name} already exists.`,
+        );
+    }
+
     // TODO: Check if value.members and value.resources are correct.
     const newApp = new AppModel({
         ...value,
