@@ -2,7 +2,6 @@ import type { ReactElement } from "react";
 
 import { Button as MuiButton } from "@mui/material";
 
-import { useNode } from "../craft";
 import { useSymbolReference } from "../hooks";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
@@ -12,6 +11,8 @@ import type {
     CraftComponent,
     ISymbolReference,
 } from "../types";
+
+import Node from "./Node";
 
 interface Props {
     size?: ButtonSize;
@@ -37,13 +38,11 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
         disableRipple,
         onClick,
     } = props;
-    const {
-        connectors: { connect, drag },
-    } = useNode();
+
     const handleClick = useSymbolReference(onClick);
 
     return (
-        <div ref={(ref) => connect(drag(ref as any))}>
+        <Node>
             <MuiButton
                 size={size as any}
                 variant={variant}
@@ -56,7 +55,7 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
             >
                 {text}
             </MuiButton>
-        </div>
+        </Node>
     );
 };
 
