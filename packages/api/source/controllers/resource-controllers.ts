@@ -1,4 +1,5 @@
-import type {
+import {
+    AppModel,
     IBigQueryConfiguration,
     IExternalResource,
 } from "@hypertool/common";
@@ -19,6 +20,7 @@ const createSchema = joi.object({
         .string()
         .valid(...constants.resourceTypes)
         .required(),
+    app: joi.string().regex(constants.identifierPattern),
     mysql: joi.object({
         host: joi.string().required(),
         port: joi.number().integer().required(),
@@ -150,15 +152,50 @@ const create = async (context, attributes): Promise<IExternalResource> => {
     }
 
     /*
-     * TODO: Add `resource` to `app.resources`
-     * TODO: Check if value.creator is correct.
-     * TODO: Check if value.name is unique across the organization and matches the identifier regex.
+     * Check if name already exists in any resource of the given app.
      */
+    const existingResource = await ResourceModel.findOne({
+        app: value.app,
+        name: value.name,
+    })
+        .lean()
+        .exec();
+    if (existingResource) {
+        throw new BadRequestError(
+            `Resource with name "${value.name}" already exists`,
+        );
+    }
+
+    /*
+     * Check if value.name matches the identifier regex.
+     */
+    if (!value.name.match(constants.identifierPattern)) {
+        throw new BadRequestError(`Invalid resource name "${value.name}"`);
+    }
+
+    /*
+     * Check if value.creator is correct.
+     */
+    if (value.app !== context.user.app) {
+        throw new BadRequestError(`Invalid app "${value.app}"`);
+    }
+
     const newResource = new ResourceModel({
         ...value,
         status: "enabled",
     });
     await newResource.save();
+
+    /*
+     * Add `resource` to `app.resources`.
+     */
+    const app = await AppModel.findOneAndUpdate(
+        { _id: value.app },
+        { $push: { resources: newResource._id } },
+        { new: true },
+    )
+        .lean()
+        .exec();
 
     return toExternal(newResource);
 };
