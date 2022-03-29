@@ -1,3 +1,14 @@
+export interface IController {
+  id: string;
+  name: string;
+  description: string;
+  language: string;
+  patched: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface IScreen {
   id: string;
   app: IApp;
@@ -6,6 +17,7 @@ export interface IScreen {
   description: string;
   slug: string;
   content: string;
+  controller: IController;
   status: string;
   createdAt: Date;
   updatedAt: Date;
