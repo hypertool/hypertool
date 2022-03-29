@@ -55,13 +55,14 @@ export type TCraftNodeKey = keyof ICraftNode;
 
 export type TBasicNodeType = "View" | "Fragment" | "Text";
 
+export type TPropertyValue = number | boolean | string | null | object;
+
 export interface INode {
   id: string;
   type: string | TBasicNodeType;
   children: INode[];
+  props: Record<string, TPropertyValue>;
 }
-
-export type TPropertyValue = number | boolean | string | null | object;
 
 export interface IPatch {
   [key: string]: Record<string, TPropertyValue> | INode;
