@@ -69,6 +69,20 @@ const create = async (context, attributes): Promise<ExternalQuery> => {
         throw new BadRequestError(error.message);
     }
 
+    // Check if the query name already exists in the app.
+    const filters = {
+        name: value.name,
+        app: value.app,
+    };
+    const query = await QueryTemplateModel.findOne(filters as any)
+        .lean()
+        .exec();
+    if (query) {
+        throw new BadRequestError(
+            `Query with name ${value.name} already exists.`,
+        );
+    }
+
     // TODO: Add `query` to `app.queries`
     const newQuery = new QueryTemplateModel({
         ...value,
