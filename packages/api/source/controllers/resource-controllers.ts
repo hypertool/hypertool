@@ -153,7 +153,7 @@ const create = async (context, attributes): Promise<IExternalResource> => {
         throw new BadRequestError(error.message);
     }
 
-    const newResource = runAsTransaction(async () => {
+    const newResource = await runAsTransaction(async () => {
         const resourceId = new mongoose.Types.ObjectId();
 
         /*
