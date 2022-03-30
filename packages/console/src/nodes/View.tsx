@@ -4,15 +4,18 @@ export interface IProps {
     backgroundColor?: string;
     width?: string;
     height?: string;
+    children?: ReactElement;
 }
 
 const View: FunctionComponent<IProps> = (props: IProps): ReactElement => {
-    const { backgroundColor, width, height } = props;
+    const { backgroundColor, width, height, children } = props;
     return (
         <div
             onClick={() => alert("Hello, world!")}
             style={{ width, height, backgroundColor }}
-        ></div>
+        >
+            {children}
+        </div>
     );
 };
 

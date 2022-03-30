@@ -106,7 +106,13 @@ const Components = () => {
             </Grid>
             <Grid item={true} xs={6}>
                 <ItemButton
-                    ref={(ref) => connectors.create(ref as any, <View />)}
+                    ref={(ref) =>
+                        ref &&
+                        connectors.create(
+                            ref,
+                            <Element is={View} canvas={true} />,
+                        )
+                    }
                     variant="contained"
                 >
                     <CheckBoxIcon fontSize="large" />

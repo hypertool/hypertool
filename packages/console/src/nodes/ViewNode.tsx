@@ -7,9 +7,10 @@ import Node from "./Node";
 import View, { IProps } from "./View";
 
 const ViewNode: CraftComponent<IProps> = (props: IProps): ReactElement => {
+    const { children } = props;
     return (
         <Node>
-            <View {...props} />
+            <View {...props}>{children}</View>
         </Node>
     );
 };
