@@ -18,6 +18,7 @@ import {
     FlexLayout,
     Select,
     Text,
+    ViewNode as View,
 } from "../../../nodes";
 
 const ContianerGrid = styled(Grid)(({ theme }) => ({
@@ -101,6 +102,15 @@ const Components = () => {
                 >
                     <CheckBoxIcon fontSize="large" />
                     Select
+                </ItemButton>
+            </Grid>
+            <Grid item={true} xs={6}>
+                <ItemButton
+                    ref={(ref) => connectors.create(ref as any, <View />)}
+                    variant="contained"
+                >
+                    <CheckBoxIcon fontSize="large" />
+                    View
                 </ItemButton>
             </Grid>
         </ContianerGrid>

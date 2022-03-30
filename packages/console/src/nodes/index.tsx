@@ -5,6 +5,7 @@ import { Container } from "./Container";
 import FlexLayout from "./FlexLayout";
 import { Select } from "./Select";
 import { Text } from "./Text";
+import ViewNode from "./ViewNode";
 
 export const nodeMappings = {
     Button,
@@ -16,12 +17,13 @@ export const nodeMappings = {
     FlexLayout,
     Select,
     Checkbox,
+    ViewNode,
 };
 
 export * from "./Text";
 export * from "./Button";
 export * from "./Container";
 export * from "./Card";
-export { FlexLayout };
+export { FlexLayout, ViewNode };
 export * from "./Select";
 export * from "./Checkbox";
