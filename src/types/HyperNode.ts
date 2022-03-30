@@ -1,18 +1,18 @@
-import type { INode, TPropertyValue } from ".";
+import type { IComponentProps, INode, TPropertyValue } from ".";
 
 export default class HyperNode implements INode {
-  id: string;
+  internalId: string;
   type: string;
   children: INode[];
   props: Record<string, TPropertyValue>;
 
   constructor(
-    id: string,
+    internalId: string,
     type: string,
-    props: Record<string, TPropertyValue>,
+    props: IComponentProps,
     children: INode[]
   ) {
-    this.id = id;
+    this.internalId = internalId;
     this.type = type;
     this.children = children;
     this.props = props;

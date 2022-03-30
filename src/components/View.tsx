@@ -10,7 +10,7 @@ const View: FunctionComponent<IProps> = (props: IProps): ReactElement => {
   return (
     <div>
       {node.children.map((node) => (
-        <View key={node.id} node={node} />
+        <View key={node.internalId} node={node} />
       ))}
     </div>
   );
