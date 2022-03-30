@@ -8,6 +8,7 @@ import {
     NotFoundError,
     ResourceModel,
     constants,
+    runAsTransaction,
 } from "@hypertool/common";
 
 import joi from "joi";
@@ -152,44 +153,48 @@ const create = async (context, attributes): Promise<IExternalResource> => {
         throw new BadRequestError(error.message);
     }
 
-    const resourceId = new mongoose.Types.ObjectId();
+    const newResource = runAsTransaction(async () => {
+        const resourceId = new mongoose.Types.ObjectId();
 
-    /*
-     * Add `resource` to `app.resources`.
-     */
-    const app = await AppModel.findOneAndUpdate(
-        { _id: value.app },
-        { $push: { resources: resourceId } },
-        { new: true },
-    )
-        .lean()
-        .exec();
-    if (!app) {
-        throw new NotFoundError(`App "${value.app}" not found`);
-    }
+        /*
+         * Add `resource` to `app.resources`.
+         */
+        const app = await AppModel.findOneAndUpdate(
+            { _id: value.app },
+            { $push: { resources: resourceId } },
+            { new: true },
+        )
+            .lean()
+            .exec();
+        if (!app) {
+            throw new NotFoundError(`App "${value.app}" not found`);
+        }
 
-    /*
-     * Check if name already exists in any resource of the given app.
-     */
-    const existingResource = await ResourceModel.findOne({
-        app: value.app,
-        name: value.name,
-    })
-        .lean()
-        .exec();
-    if (existingResource) {
-        throw new BadRequestError(
-            `Resource with name "${value.name}" already exists`,
-        );
-    }
+        /*
+         * Check if name already exists in any resource of the given app.
+         */
+        const existingResource = await ResourceModel.findOne({
+            app: value.app,
+            name: value.name,
+        })
+            .lean()
+            .exec();
+        if (existingResource) {
+            throw new BadRequestError(
+                `Resource with name "${value.name}" already exists`,
+            );
+        }
 
-    const newResource = new ResourceModel({
-        _id: resourceId,
-        ...value,
-        status: "enabled",
-        creator: context.user._id,
+        const newResource = new ResourceModel({
+            _id: resourceId,
+            ...value,
+            status: "enabled",
+            creator: context.user._id,
+        });
+        await newResource.save();
+
+        return newResource;
     });
-    await newResource.save();
 
     return toExternal(newResource);
 };
