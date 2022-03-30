@@ -59,7 +59,7 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
         },
 
         inflate: (id: string, patches?: Record<string, IPatch>): INode => {
-          const fragment = rawRootNode.children.find((node) => node.internalId === id);
+          const fragment = rawRootNode.children.find((node) => node.props.id === id);
           if (!fragment) {
             throw new Error(`Cannot find fragment with ID "${id}".`);
           }
@@ -78,15 +78,16 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
             const applyPatches = (node: INode) => {
               for (let i = 0; i < node.children.length; i++) {
                 const child = node.children[i];
-                if (child.internalId in alteredPatches) {
-                  const patch = alteredPatches[child.internalId];
+                const childPropId = child.props.id;
+                if (childPropId && childPropId in alteredPatches) {
+                  const patch = alteredPatches[childPropId];
                   if (patch instanceof HyperNode) {
                     node.children[i] = patch;
                   } else {
                     child.props = patch;
                   }
 
-                  delete alteredPatches[child.internalId];
+                  delete alteredPatches[childPropId];
                   applyPatches(child);
                 }
               }
