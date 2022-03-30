@@ -11,6 +11,7 @@ import {
 } from "@hypertool/common";
 
 import joi from "joi";
+import mongoose from "mongoose";
 
 // TODO: Add limits to database configurations!
 const createSchema = joi.object({
@@ -151,12 +152,14 @@ const create = async (context, attributes): Promise<IExternalResource> => {
         throw new BadRequestError(error.message);
     }
 
+    const resourceId = new mongoose.Types.ObjectId();
+
     /*
      * Add `resource` to `app.resources`.
      */
     const app = await AppModel.findOneAndUpdate(
         { _id: value.app },
-        { $push: { resources: newResource._id } },
+        { $push: { resources: resourceId } },
         { new: true },
     )
         .lean()
@@ -181,6 +184,7 @@ const create = async (context, attributes): Promise<IExternalResource> => {
     }
 
     const newResource = new ResourceModel({
+        _id: resourceId,
         ...value,
         status: "enabled",
         creator: context.user._id,

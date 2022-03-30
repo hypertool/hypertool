@@ -7,6 +7,7 @@ import {
 } from "@hypertool/common";
 
 import joi from "joi";
+import mongoose from "mongoose";
 
 const createSchema = joi.object({
     name: joi.string().max(128).required(),
@@ -69,11 +70,13 @@ const create = async (context, attributes): Promise<ExternalQuery> => {
         throw new BadRequestError(error.message);
     }
 
+    const queryTemplateId = new mongoose.Types.ObjectId();
+
     // Add `query` to `app.queries`
     const appId = value.app;
     await AppModel.findOneAndUpdate(
         { _id: appId },
-        { $push: { queries: newQuery._id } },
+        { $push: { queries: queryTemplateId } },
         { new: true },
     )
         .lean()
@@ -94,6 +97,7 @@ const create = async (context, attributes): Promise<ExternalQuery> => {
     }
 
     const newQuery = new QueryTemplateModel({
+        _id: queryTemplateId,
         ...value,
         status: "enabled",
     });
