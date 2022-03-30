@@ -1,73 +1,64 @@
-import { FunctionComponent, ReactElement } from "react";
+import { ReactElement } from "react";
 
-import { FormControl, FormLabel, Paper, Slider } from "@mui/material";
+import { Paper } from "@mui/material";
 
-import { useNode } from "../craft";
+import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import { CraftComponent } from "../types";
 
+import Node from "./Node";
+
 interface FragmentProps {
-    background?: string;
-    padding?: string | number;
+    identifier?: string;
     children?: ReactElement | any;
 }
 
-export const Fragment: CraftComponent<FragmentProps> = (
+const Fragment: CraftComponent<FragmentProps> = (
     props: FragmentProps,
 ): ReactElement => {
-    const {
-        connectors: { connect, drag },
-    } = useNode();
-    const { background, padding, children } = props;
+    const { identifier, children } = props;
 
     return (
-        <Paper
-            ref={(ref: any) => connect(drag(ref as any))}
-            style={{ background, padding: `${padding}px` }}
-        >
-            {children}
-        </Paper>
+        <Node>
+            <Paper id={identifier} style={{ ...defaultStyleProps }}>
+                {children}
+            </Paper>
+        </Node>
     );
 };
 
-export const FragmentSettings: FunctionComponent = (): ReactElement => {
-    const {
-        padding,
-        actions: { setProp },
-    } = useNode((node) => ({
-        background: node.data.props.background,
-        padding: node.data.props.padding,
-    }));
-    return (
-        <div>
-            <FormControl fullWidth={true} margin="normal" component="fieldset">
-                <FormLabel component="legend">Padding</FormLabel>
-                <Slider
-                    defaultValue={padding}
-                    onChange={(_, value) =>
-                        setProp(
-                            (props: { padding: number | number[] }) =>
-                                (props.padding = value),
-                        )
-                    }
-                />
-            </FormControl>
-        </div>
-    );
-};
-
-export const FragmentDefaultProps = {
+const defaultStyleProps = {
     display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100%",
-    width: "100%",
     background: "#242424",
     margin: "8px",
 };
 
+const defaultProps = {
+    identifier: undefined,
+};
+
 Fragment.craft = {
-    props: FragmentDefaultProps,
+    props: defaultProps,
     related: {
-        settings: FragmentSettings,
+        settings: () => (
+            <PropertiesForm
+                groups={[
+                    {
+                        title: "General",
+                        fields: [
+                            {
+                                id: "identifier",
+                                title: "Identifier",
+                                type: "text",
+                                size: "small",
+                                help: "The identifier of the fragment.",
+                            },
+                        ],
+                    },
+                ]}
+                validationSchema={undefined}
+            />
+        ),
     },
 };
+
+export default Fragment;
