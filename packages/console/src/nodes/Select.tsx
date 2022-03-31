@@ -4,7 +4,6 @@ import { useState } from "react";
 import { FormControl, MenuItem, Select as MuiSelect } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material/Select";
 
-import { useNode } from "../craft";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
     Color,
@@ -13,6 +12,8 @@ import type {
     SelectSize,
     SelectVariant,
 } from "../types";
+
+import Node from "./Node";
 
 interface Props {
     size?: SelectSize;
@@ -39,12 +40,8 @@ export const Select: CraftComponent<Props> = (props: Props): ReactElement => {
         setProperty(typeof value === "string" ? value.split(",") : value);
     };
 
-    const {
-        connectors: { connect, drag },
-    } = useNode();
-
     return (
-        <div ref={(ref) => connect(drag(ref as any))}>
+        <Node>
             <FormControl variant={variant} sx={{ m: 1, minWidth: 120 }}>
                 <MuiSelect
                     labelId="label-select-id"
@@ -64,7 +61,7 @@ export const Select: CraftComponent<Props> = (props: Props): ReactElement => {
                     ))}
                 </MuiSelect>
             </FormControl>
-        </div>
+        </Node>
     );
 };
 

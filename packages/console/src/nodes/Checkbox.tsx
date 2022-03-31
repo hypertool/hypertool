@@ -6,7 +6,6 @@ import {
     Checkbox as MuiCheckbox,
 } from "@mui/material";
 
-import { useNode } from "../craft";
 import { useSymbolReference } from "../hooks";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
@@ -15,6 +14,8 @@ import type {
     CraftComponent,
     ISymbolReference,
 } from "../types";
+
+import Node from "./Node";
 
 interface Props {
     label?: string;
@@ -29,12 +30,10 @@ interface Props {
 export const Checkbox: CraftComponent<Props> = (props: Props): ReactElement => {
     const { label, color, disabled, checked, disableRipple, onChange, size } =
         props;
-    const {
-        connectors: { connect, drag },
-    } = useNode();
+
     const handleClick = useSymbolReference(onChange);
     return (
-        <div ref={(ref) => connect(drag(ref as any))}>
+        <Node>
             <FormGroup>
                 <FormControlLabel
                     label={label as any}
@@ -50,7 +49,7 @@ export const Checkbox: CraftComponent<Props> = (props: Props): ReactElement => {
                     }
                 />
             </FormGroup>
-        </div>
+        </Node>
     );
 };
 
