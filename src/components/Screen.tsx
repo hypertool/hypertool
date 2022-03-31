@@ -1,6 +1,7 @@
 import produce from "immer";
-import type { FunctionComponent, ReactElement } from "react";
+import { FunctionComponent, ReactElement, useRef } from "react";
 import { useState, useMemo, useEffect } from "react";
+import { ControllersContext } from "../contexts";
 import {
   HyperNode,
   IHyperContext,
@@ -19,114 +20,112 @@ export interface IProps {
   controller: string;
 }
 
-type TCreateContext = <S>(controller: IHyperController<S>) => IHyperContext<S>;
-
 const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
-  const { content, title, controller } = props;
-  const [error, setError] = useState<Error>();
-  const [state, setState] = useState<any>();
+  const { content, title, controller: patched } = props;
+  const [state, setState] = useState<any>({});
+  const refs = useRef<Record<string, any>>({});
 
   const rawRootNode = useMemo(
     () => inflateDocument(JSON.parse(content)),
     [content]
   );
 
-  const createContext = useMemo<TCreateContext>(
-    () =>
-      <S,>(controller: IHyperController<S>): IHyperContext<S> => ({
-        refs: {},
+  const controller = useMemo((): any => {
+    // eslint-disable-next-line no-eval
+    return eval(`"use strict"; (${patched});`);
+  }, [patched]);
 
-        setState: (
-          stateOrName: Partial<S> | string,
-          value?: S[keyof S]
-        ): void => {
-          setState((state: S) => {
-            if (typeof stateOrName === "string") {
-              return {
-                ...state,
-                [stateOrName]: value,
-              };
-            }
-            return { ...state, ...stateOrName };
-          });
-        },
+  const context = useMemo(
+    (): any => ({
+      refs: refs.current,
 
-        getState: (name?: string): any => {
-          if (name) {
-            return state[name];
-          }
-          return state;
-        },
-
-        inflate: (id: string, patches?: Record<string, IPatch>): INode => {
-          const fragment = rawRootNode.children.find((node) => node.props.id === id);
-          if (!fragment) {
-            throw new Error(`Cannot find fragment with ID "${id}".`);
-          }
-          if (fragment.type !== "Fragment") {
-            throw new Error(
-              `Found node of type "${fragment.type}", expected "Fragment".`
-            );
-          }
-
-          return produce(fragment, (draft) => {
-            /* A shallow copy of the patches object is sufficient because only the keys
-             * are removed.
-             */
-            const alteredPatches = { ...patches };
-
-            const applyPatches = (node: INode) => {
-              for (let i = 0; i < node.children.length; i++) {
-                const child = node.children[i];
-                const childPropId = child.props.id;
-                if (childPropId && childPropId in alteredPatches) {
-                  const patch = alteredPatches[childPropId];
-                  if (patch instanceof HyperNode) {
-                    node.children[i] = patch;
-                  } else {
-                    child.props = patch;
-                  }
-
-                  delete alteredPatches[childPropId];
-                  applyPatches(child);
-                }
-              }
+      setState: (stateOrName: Partial<any> | string, value?: any): void => {
+        setState((state: any) => {
+          if (typeof stateOrName === "string") {
+            return {
+              ...state,
+              [stateOrName]: value,
             };
+          }
+          return { ...state, ...stateOrName };
+        });
+      },
 
-            applyPatches(draft);
-          });
-        },
-      }),
-    [rawRootNode, state]
+      inflate: (id: string, patches?: Record<string, IPatch>): INode => {
+        const fragment = rawRootNode.children.find(
+          (node) => node.props.id === id
+        );
+
+        if (!fragment) {
+          throw new Error(`Cannot find fragment with ID "${id}".`);
+        }
+        if (fragment.type !== "Fragment") {
+          throw new Error(
+            `Found node of type "${fragment.type}", expected "Fragment".`
+          );
+        }
+
+        return produce(fragment, (draft) => {
+          /* A shallow copy of the patches object is sufficient because only the keys
+           * are removed.
+           */
+          const alteredPatches = { ...patches };
+
+          const applyPatches = (node: INode) => {
+            for (let i = 0; i < node.children.length; i++) {
+              const child = node.children[i];
+              const childPropId = child.props.id;
+              if (childPropId && childPropId in alteredPatches) {
+                const patch = alteredPatches[childPropId];
+                if (patch.__hyperNode) {
+                  node.children[i] = patch as any;
+                } else {
+                  child.props = { ...child.props, ...patch };
+                }
+
+                delete alteredPatches[childPropId];
+                applyPatches(child);
+              }
+            }
+          };
+
+          applyPatches(draft);
+        });
+      },
+    }),
+    [rawRootNode.children]
   );
 
-  const rootNode: INode | null = useMemo(() => {
-    try {
-      // eslint-disable-next-line no-eval
-      const result = eval(controller);
-      if (result.render) {
-        const context = createContext(result);
-        return result.render(context);
-      }
+  console.log(state);
 
-      return rawRootNode;
-    } catch (error: unknown) {
-      setError(error as Error);
-      console.log(error);
+  useEffect(() => {
+    if (controller.init) {
+      controller.init(context);
+    }
+  }, [context, controller]);
+
+  const rootNode: INode | null = useMemo(() => {
+    if (controller.render) {
+      const result = controller.render({ ...context, state });
+      return result;
     }
 
-    return null;
-  }, [controller, createContext, rawRootNode]);
+    return context.inflate("default", {});
+  }, [controller, context, state]);
 
   useEffect(() => {
     document.title = title;
   }, [title]);
 
   return (
-    <>
-      {error && <div>{error.toString()}</div>}
-      {!error && <View node={rootNode!} />}
-    </>
+    <ControllersContext.Provider
+      value={{
+        controller,
+        context: { ...context, state },
+      }}
+    >
+      <View node={rootNode!} />
+    </ControllersContext.Provider>
   );
 };
 
