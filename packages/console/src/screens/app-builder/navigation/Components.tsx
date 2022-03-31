@@ -16,6 +16,7 @@ import {
     Card,
     Checkbox,
     FlexLayout,
+    Fragment,
     Select,
     Text,
     ViewNode as View,
@@ -117,6 +118,21 @@ const Components = () => {
                 >
                     <CheckBoxIcon fontSize="large" />
                     View
+                </ItemButton>
+            </Grid>
+            <Grid item={true} xs={6}>
+                <ItemButton
+                    ref={(ref) =>
+                        ref &&
+                        connectors.create(
+                            ref,
+                            <Element is={Fragment} canvas={true} />,
+                        )
+                    }
+                    variant="contained"
+                >
+                    <CheckBoxIcon fontSize="large" />
+                    Fragment
                 </ItemButton>
             </Grid>
         </ContianerGrid>
