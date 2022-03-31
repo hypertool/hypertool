@@ -1,6 +1,7 @@
 import type { FunctionComponent, ReactElement } from "react";
 
 export interface IProps {
+    id?: string;
     backgroundColor?: string;
     width?: string;
     height?: string;

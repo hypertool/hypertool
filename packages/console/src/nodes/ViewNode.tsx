@@ -31,6 +31,14 @@ ViewNode.craft = {
                         title: "General",
                         fields: [
                             {
+                                id: "id",
+                                size: "small",
+                                help: "An identifier that uniquely identifies the node.",
+                                type: "text",
+                                required: true,
+                                title: "ID",
+                            },
+                            {
                                 id: "width",
                                 size: "small",
                                 help: "The width of the view.",
