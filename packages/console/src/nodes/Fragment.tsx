@@ -1,39 +1,37 @@
 import { ReactElement } from "react";
 
-import { Paper } from "@mui/material";
+import { styled } from "@mui/material";
 
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import { CraftComponent } from "../types";
 
 import Node from "./Node";
 
-interface FragmentProps {
-    identifier?: string;
-    children?: ReactElement | any;
+interface IProps {
+    id?: string;
+    children?: ReactElement;
 }
 
-const Fragment: CraftComponent<FragmentProps> = (
-    props: FragmentProps,
-): ReactElement => {
-    const { identifier, children } = props;
+const Root = styled("div")({
+    width: 400,
+    height: 400,
+    backgroundColor: "white",
+    margin: 0,
+    padding: 0,
+});
+
+const Fragment: CraftComponent<IProps> = (props: IProps): ReactElement => {
+    const { children } = props;
 
     return (
-        <Node>
-            <Paper id={identifier} style={{ ...defaultStyleProps }}>
-                {children}
-            </Paper>
+        <Node rootProps={{ style: { margin: 16 } }}>
+            <Root>{children}</Root>
         </Node>
     );
 };
 
-const defaultStyleProps = {
-    display: "flex",
-    background: "#242424",
-    margin: "8px",
-};
-
 const defaultProps = {
-    identifier: undefined,
+    id: undefined,
 };
 
 Fragment.craft = {
@@ -46,11 +44,12 @@ Fragment.craft = {
                         title: "General",
                         fields: [
                             {
-                                id: "identifier",
-                                title: "Identifier",
+                                id: "id",
+                                title: "ID",
                                 type: "text",
                                 size: "small",
-                                help: "The identifier of the fragment.",
+                                help: "The identifier of the node.",
+                                required: true,
                             },
                         ],
                     },
