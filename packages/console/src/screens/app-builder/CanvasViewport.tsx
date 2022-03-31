@@ -14,6 +14,7 @@ const CraftRenderer = styled("div")(({ theme }) => ({
     display: "flex",
     overflow: "auto",
     width: "100%",
+    minHeight: 800,
     backgroundColor: (theme.palette.background as any).paper1,
 }));
 

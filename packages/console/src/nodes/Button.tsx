@@ -83,6 +83,14 @@ Button.craft = {
                         title: "General",
                         fields: [
                             {
+                                id: "id",
+                                title: "ID",
+                                type: "text",
+                                size: "small",
+                                help: "The identifier of the button.",
+                                required: true,
+                            },
+                            {
                                 id: "disabled",
                                 title: "Disabled",
                                 type: "switch",

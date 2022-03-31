@@ -22,7 +22,7 @@ export const Container: CraftComponent<ContainerProps> = (
     return (
         <Paper
             ref={(ref: any) => connect(drag(ref as any))}
-            style={{ background, padding: `${padding}px` }}
+            style={{ background, padding: `${padding}px`, height: 400 }}
         >
             {children}
         </Paper>
