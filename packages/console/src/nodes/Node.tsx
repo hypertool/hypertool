@@ -27,9 +27,6 @@ const Root = styled("div", {
             : undefined,
     width: "fit-content",
     height: "fit-content",
-    "& > *": {
-        pointerEvents: "none",
-    },
 }));
 
 const Node: FunctionComponent<IProps> = (props: IProps): ReactElement => {
