@@ -9,6 +9,7 @@ export interface IProps {
     width?: string;
     height?: string;
     children: ReactElement;
+    rootProps?: Record<string, any>;
 }
 
 interface IRootProps {
@@ -22,7 +23,7 @@ const Root = styled("div", {
 })<IRootProps>(({ theme, hovered, selected }) => ({
     border:
         hovered || selected
-            ? `1.5px solid ${theme.palette.primary.light}`
+            ? `2px solid ${theme.palette.primary.light}`
             : undefined,
     width: "fit-content",
     height: "fit-content",
@@ -32,7 +33,7 @@ const Root = styled("div", {
 }));
 
 const Node: FunctionComponent<IProps> = (props: IProps): ReactElement => {
-    const { children } = props;
+    const { children, rootProps } = props;
     const {
         connectors: { connect, drag },
         hovered,
@@ -47,6 +48,7 @@ const Node: FunctionComponent<IProps> = (props: IProps): ReactElement => {
             ref={(ref) => connect(drag(ref))}
             selected={selected}
             hovered={hovered}
+            {...rootProps}
         >
             {children}
         </Root>
