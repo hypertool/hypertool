@@ -89,6 +89,7 @@ export interface INode {
   type: string | TBasicNodeType;
   children: INode[];
   props: IComponentProps;
+  __hyperNode: true;
 }
 
 export interface IPatch {

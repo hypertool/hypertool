@@ -1,15 +1,23 @@
 import type { ICraftNode, INode, TCraftNodeKey } from "../types";
-import { HyperNode } from "../types";
 
 export const inflateDocument = (document: Record<string, ICraftNode>) => {
   const keys: TCraftNodeKey[] = Object.keys(document) as TCraftNodeKey[];
 
   /* A map that temporarily hosts the new nodes that are inflated. */
   const map = new Map<string, INode>(
-    keys.map((key: string) => [
-      key,
-      new HyperNode(key, document[key].type.resolvedName, {}, []),
-    ])
+    keys.map((key: string) => {
+      const { type, props } = document[key];
+      return [
+        key,
+        {
+          internalId: key,
+          type: type.resolvedName,
+          props,
+          children: [],
+          __hyperNode: true,
+        },
+      ];
+    })
   );
 
   /* For each new node corresponding to the old nodes in the document,
