@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { ScreenContext } from "../contexts";
 import { ISymbolReference } from "../types";
 import useSymbolReference from "./useSymbolReference";
@@ -6,12 +6,13 @@ import useSymbolReference from "./useSymbolReference";
 const useCallbackSymbol = <R>(reference?: ISymbolReference | null) => {
   const symbol = useSymbolReference<R>(reference);
   const context = useContext(ScreenContext);
+  const emptyFunction = useMemo(() => () => {}, []);
 
   /* Check `!reference` only to satisfy TypeScript, because
    * `symbol` will be null if `reference` is null.
    */
   if (!reference || !symbol) {
-    return () => {};
+    return emptyFunction;
   }
 
   if (!(symbol instanceof Function)) {
