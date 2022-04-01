@@ -3,15 +3,12 @@ import { FunctionComponent, ReactElement, useRef } from "react";
 import { useState, useMemo, useEffect } from "react";
 import { ControllersContext } from "../contexts";
 import {
-  HyperNode,
-  IHyperContext,
-  IHyperController,
   INode,
   IPatch,
 } from "../types";
 
 import { inflateDocument } from "../utils";
-import View from "./View";
+import ComponentRenderer from "./ComponentRenderer";
 
 export interface IProps {
   slug: string;
@@ -124,7 +121,7 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
         context: { ...context, state },
       }}
     >
-      <View node={rootNode!} />
+      <ComponentRenderer node={rootNode!} />
     </ControllersContext.Provider>
   );
 };

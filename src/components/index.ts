@@ -1,2 +1,2 @@
-export { default as Screen } from './Screen';
-export { default as View } from "./View";
+export { default as Screen } from "./Screen";
+export { default as ComponentRenderer } from "./ComponentRenderer";
