@@ -122,5 +122,3 @@ export interface IHyperController<T> {
   init?: (context: IHyperContext<T>) => void;
   render?: (context: IHyperContext<T>) => INode;
 }
-
-export { default as HyperNode } from "./HyperNode";
