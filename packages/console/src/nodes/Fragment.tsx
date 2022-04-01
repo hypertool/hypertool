@@ -13,11 +13,20 @@ interface IProps {
 }
 
 const Root = styled("div")({
-    width: 400,
-    height: 400,
     backgroundColor: "white",
     margin: 0,
-    padding: 0,
+    padding: 16,
+});
+
+const Grid = styled("div")({
+    minHeight: 400,
+    minWidth: 400,
+    height: "fit-content",
+    width: "fit-content",
+    background: `linear-gradient(90deg, white 22px, transparent 10%) center,
+		linear-gradient(white 22px, transparent 10%) center,
+		black`,
+    backgroundSize: `23px 23px`,
 });
 
 const Fragment: CraftComponent<IProps> = (props: IProps): ReactElement => {
@@ -25,7 +34,9 @@ const Fragment: CraftComponent<IProps> = (props: IProps): ReactElement => {
 
     return (
         <Node rootProps={{ style: { margin: 16 } }}>
-            <Root>{children}</Root>
+            <Root>
+                <Grid>{children}</Grid>
+            </Root>
         </Node>
     );
 };
