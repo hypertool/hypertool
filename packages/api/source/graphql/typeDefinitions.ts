@@ -252,11 +252,11 @@ const types = `
         title: String!
         slug: String!
         description: String!
-        # Resource points to App directly, making each other mutually recursive.
-        # Therefore, we flatten the data structure here.
-        resources: [ID!]!
-        creator: User!
+        resources: [Resource!]!
         screens: [Screen!]!
+        controllers: [Controller!]!
+        # TODO: Add queries
+        creator: User!
         status: AppStatus!
         createdAt: Date!
         updatedAt: Date!
