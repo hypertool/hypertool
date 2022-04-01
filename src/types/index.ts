@@ -55,12 +55,18 @@ export type TCraftNodeKey = keyof ICraftNode;
 
 export type TBasicNodeType = "View" | "Fragment" | "Text";
 
+export interface ISymbolReference {
+  moduleId: string;
+  target: string;
+}
+
 export type TPropertyValue =
   | number
   | boolean
   | string
   | null
   | object
+  | ISymbolReference
   | undefined;
 
 export interface IComponentProps extends Record<string, TPropertyValue> {
