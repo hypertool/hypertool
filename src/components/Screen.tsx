@@ -1,11 +1,8 @@
 import produce from "immer";
 import { FunctionComponent, ReactElement, useRef } from "react";
 import { useState, useMemo, useEffect } from "react";
-import { ControllersContext } from "../contexts";
-import {
-  INode,
-  IPatch,
-} from "../types";
+import { ScreenContext } from "../contexts";
+import { INode, IPatch } from "../types";
 
 import { inflateDocument } from "../utils";
 import ComponentRenderer from "./ComponentRenderer";
@@ -93,8 +90,6 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     [rawRootNode.children]
   );
 
-  console.log(state);
-
   useEffect(() => {
     if (controller.init) {
       controller.init(context);
@@ -115,14 +110,14 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
   }, [title]);
 
   return (
-    <ControllersContext.Provider
+    <ScreenContext.Provider
       value={{
-        controller,
-        context: { ...context, state },
+        ...context,
+        state,
       }}
     >
       <ComponentRenderer node={rootNode!} />
-    </ControllersContext.Provider>
+    </ScreenContext.Provider>
   );
 };
 
