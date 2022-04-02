@@ -2,6 +2,7 @@ import type { FunctionComponent, ReactElement } from "react";
 import { INode } from "../types";
 import Button from "./Button";
 import Fragment from "./Fragment";
+import View from "./View";
 
 export interface IProps {
   node: INode;
@@ -10,9 +11,12 @@ export interface IProps {
 const componentMapping: Record<string, FunctionComponent<any>> = {
   Button,
   Fragment,
+  View,
 };
 
-const View: FunctionComponent<IProps> = (props: IProps): ReactElement => {
+const ComponentRenderer: FunctionComponent<IProps> = (
+  props: IProps
+): ReactElement => {
   const { node } = props;
   const { type, props: nodeProps } = node;
   const Component = componentMapping[type];
@@ -20,10 +24,10 @@ const View: FunctionComponent<IProps> = (props: IProps): ReactElement => {
   return (
     <Component {...nodeProps}>
       {node.children.map((child) => (
-        <View key={child.internalId} node={child} />
+        <ComponentRenderer key={child.internalId} node={child} />
       ))}
     </Component>
   );
 };
 
-export default View;
+export default ComponentRenderer;
