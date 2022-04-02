@@ -2,7 +2,6 @@ import { Button } from "./Button";
 import { Card, CardBottom, CardTop } from "./Card";
 import { Checkbox } from "./Checkbox";
 import { Container } from "./Container";
-import FlexLayout from "./FlexLayout";
 import Fragment from "./Fragment";
 import { Select } from "./Select";
 import { Text } from "./Text";
@@ -15,7 +14,6 @@ export const nodeMappings = {
     CardBottom,
     Container,
     Text,
-    FlexLayout,
     Select,
     Checkbox,
     ViewNode,
@@ -26,7 +24,7 @@ export * from "./Text";
 export * from "./Button";
 export * from "./Container";
 export * from "./Card";
-export { FlexLayout, ViewNode, Fragment };
+export { ViewNode, Fragment };
 export * from "./Select";
 export * from "./Checkbox";
 export * from "./Fragment";

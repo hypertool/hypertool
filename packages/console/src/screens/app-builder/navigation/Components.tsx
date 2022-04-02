@@ -15,7 +15,6 @@ import {
     Button,
     Card,
     Checkbox,
-    FlexLayout,
     Fragment,
     Select,
     Text,
@@ -62,20 +61,6 @@ const Components = () => {
                 >
                     <TextFields fontSize="large" />
                     Text
-                </ItemButton>
-            </Grid>
-            <Grid item={true} xs={6}>
-                <ItemButton
-                    ref={(ref) =>
-                        connectors.create(
-                            ref as any,
-                            <Element is={FlexLayout} canvas={true} />,
-                        )
-                    }
-                    variant="contained"
-                >
-                    <AddBoxOutlined fontSize="large" />
-                    Flex Layout
                 </ItemButton>
             </Grid>
             <Grid item={true} xs={6}>
