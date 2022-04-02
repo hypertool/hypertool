@@ -106,7 +106,7 @@ export const RenderNode = (props: RenderNodeProps) => {
 
     return (
         <div style={{ position: "relative" }}>
-            {isHover || isActive
+            {/* {isHover || isActive
                 ? ReactDOM.createPortal(
                       <Indicator
                           ref={currentRef as any}
@@ -144,7 +144,7 @@ export const RenderNode = (props: RenderNodeProps) => {
                       </Indicator>,
                       (document as any).querySelector(".page-container"),
                   )
-                : null}
+                : null} */}
             {render}
         </div>
     );
