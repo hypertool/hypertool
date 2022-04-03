@@ -2,7 +2,6 @@ import type { ReactElement } from "react";
 
 import { Button as MuiButton } from "@mui/material";
 
-import { useNode } from "../craft";
 import { useSymbolReference } from "../hooks";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
@@ -13,7 +12,9 @@ import type {
     ISymbolReference,
 } from "../types";
 
-interface Props {
+import Node from "./Node";
+
+interface IButtonProps {
     size?: ButtonSize;
     variant?: ButtonVariant;
     color?: Color;
@@ -25,7 +26,9 @@ interface Props {
     onClick?: ISymbolReference;
 }
 
-export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
+const ButtonNode: CraftComponent<IButtonProps> = (
+    props: IButtonProps,
+): ReactElement => {
     const {
         size,
         variant,
@@ -37,13 +40,11 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
         disableRipple,
         onClick,
     } = props;
-    const {
-        connectors: { connect, drag },
-    } = useNode();
+
     const handleClick = useSymbolReference(onClick);
 
     return (
-        <div ref={(ref) => connect(drag(ref as any))}>
+        <Node>
             <MuiButton
                 size={size as any}
                 variant={variant}
@@ -56,11 +57,11 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
             >
                 {text}
             </MuiButton>
-        </div>
+        </Node>
     );
 };
 
-const defaultProps: Props = {
+const defaultProps: IButtonProps = {
     size: "small",
     variant: "contained",
     color: "primary",
@@ -72,9 +73,9 @@ const defaultProps: Props = {
     onClick: undefined,
 };
 
-Button.defaultProps = defaultProps;
+ButtonNode.defaultProps = defaultProps;
 
-Button.craft = {
+ButtonNode.craft = {
     props: defaultProps,
     related: {
         settings: () => (
@@ -83,6 +84,14 @@ Button.craft = {
                     {
                         title: "General",
                         fields: [
+                            {
+                                id: "id",
+                                title: "ID",
+                                type: "text",
+                                size: "small",
+                                help: "The identifier of the button.",
+                                required: true,
+                            },
                             {
                                 id: "disabled",
                                 title: "Disabled",
@@ -178,3 +187,5 @@ Button.craft = {
         ),
     },
 };
+
+export default ButtonNode;

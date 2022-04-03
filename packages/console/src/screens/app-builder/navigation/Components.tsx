@@ -1,26 +1,24 @@
-import { Grid, Button as MaterialButton, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import type { FunctionComponent, ReactElement } from "react";
 
 import {
-    AddBoxOutlined,
-    AddBoxTwoTone,
-    ArrowDropDownCircle,
-    FormatShapes,
-    TextFields,
-} from "@mui/icons-material";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
+    Grid,
+    Icon,
+    Button as MaterialButton,
+    Typography,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { Element, useEditor } from "../../../craft";
 import {
-    Button,
-    Card,
-    Checkbox,
-    FlexLayout,
-    Select,
-    Text,
+    ButtonNode,
+    CheckboxNode,
+    FragmentNode,
+    SelectNode,
+    TextNode,
+    ViewNode,
 } from "../../../nodes";
 
-const ContianerGrid = styled(Grid)(({ theme }) => ({
+const DecoratedGrid = styled(Grid)(({ theme }) => ({
     padding: theme.spacing(2),
 }));
 
@@ -35,75 +33,63 @@ const ItemButton = styled(MaterialButton)(({ theme }) => ({
     flexDirection: "column",
 }));
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const Components = () => {
+const Components: FunctionComponent = (): ReactElement => {
     const { connectors } = useEditor();
 
+    const components = [
+        {
+            title: "Button",
+            icon: "format_shapes",
+            createRef: (ref: any) => connectors.create(ref, <ButtonNode />),
+        },
+        {
+            title: "Text",
+            icon: "text_fields",
+            createRef: (ref: any) => connectors.create(ref, <TextNode />),
+        },
+        {
+            title: "Select",
+            icon: "arrow_drop_down",
+            createRef: (ref: any) => connectors.create(ref, <SelectNode />),
+        },
+        {
+            title: "Checkbox",
+            icon: "check_box",
+            createRef: (ref: any) => connectors.create(ref, <CheckboxNode />),
+        },
+        {
+            title: "View",
+            icon: "square",
+            createRef: (ref: any) =>
+                connectors.create(ref, <Element is={ViewNode} canvas={true} />),
+        },
+        {
+            title: "Fragment",
+            icon: "extension",
+            createRef: (ref: any) =>
+                connectors.create(
+                    ref,
+                    <Element is={FragmentNode} canvas={true} />,
+                ),
+        },
+    ];
+
+    const renderComponent = (component: any) => (
+        <Grid key={component.title} item={true} xs={6}>
+            <ItemButton ref={component.createRef} variant="contained">
+                <Icon fontSize="large">{component.icon}</Icon>
+                {component.title}
+            </ItemButton>
+        </Grid>
+    );
+
     return (
-        <ContianerGrid container={true} spacing={2}>
+        <DecoratedGrid container={true} spacing={2}>
             <Grid item={true} xs={12}>
                 <ToolName>Drag to add</ToolName>
             </Grid>
-            <Grid item={true} xs={6}>
-                <ItemButton
-                    ref={(ref) => connectors.create(ref as any, <Button />)}
-                    variant="contained"
-                >
-                    <FormatShapes fontSize="large" />
-                    Button
-                </ItemButton>
-            </Grid>
-            <Grid item={true} xs={6}>
-                <ItemButton
-                    ref={(ref) => connectors.create(ref as any, <Text />)}
-                    variant="contained"
-                >
-                    <TextFields fontSize="large" />
-                    Text
-                </ItemButton>
-            </Grid>
-            <Grid item={true} xs={6}>
-                <ItemButton
-                    ref={(ref) =>
-                        connectors.create(
-                            ref as any,
-                            <Element is={FlexLayout} canvas={true} />,
-                        )
-                    }
-                    variant="contained"
-                >
-                    <AddBoxOutlined fontSize="large" />
-                    Flex Layout
-                </ItemButton>
-            </Grid>
-            <Grid item={true} xs={6}>
-                <ItemButton
-                    ref={(ref) => connectors.create(ref as any, <Card />)}
-                    variant="contained"
-                >
-                    <AddBoxTwoTone fontSize="large" />
-                    Card
-                </ItemButton>
-            </Grid>
-            <Grid item={true} xs={6}>
-                <ItemButton
-                    ref={(ref) => connectors.create(ref as any, <Select />)}
-                    variant="contained"
-                >
-                    <ArrowDropDownCircle fontSize="large" />
-                    Select
-                </ItemButton>
-            </Grid>
-            <Grid item={true} xs={6}>
-                <ItemButton
-                    ref={(ref) => connectors.create(ref as any, <Checkbox />)}
-                    variant="contained"
-                >
-                    <CheckBoxIcon fontSize="large" />
-                    Select
-                </ItemButton>
-            </Grid>
-        </ContianerGrid>
+            {components.map(renderComponent)}
+        </DecoratedGrid>
     );
 };
 

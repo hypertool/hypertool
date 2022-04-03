@@ -65,11 +65,6 @@ const appSchema = new Schema(
             ],
             default: [],
         },
-        // TODO: Add queries
-        creator: {
-            type: Schema.Types.ObjectId,
-            ref: "User",
-        },
         deployments: {
             type: [
                 {
@@ -88,14 +83,28 @@ const appSchema = new Schema(
             ],
             default: [],
         },
-        status: {
-            type: String,
-            enum: appStatuses,
-            default: "private",
+        controllers: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "Controller",
+                },
+            ],
+            default: [],
+        },
+        // TODO: Add queries
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
         },
         organization: {
             type: Schema.Types.ObjectId,
             ref: "Organization",
+        },
+        status: {
+            type: String,
+            enum: appStatuses,
+            default: "private",
         },
         authServices: {
             type: authServicesSchema,

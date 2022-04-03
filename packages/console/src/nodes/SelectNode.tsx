@@ -4,7 +4,6 @@ import { useState } from "react";
 import { FormControl, MenuItem, Select as MuiSelect } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material/Select";
 
-import { useNode } from "../craft";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
     Color,
@@ -14,7 +13,9 @@ import type {
     SelectVariant,
 } from "../types";
 
-interface Props {
+import Node from "./Node";
+
+export interface ISelectProps {
     size?: SelectSize;
     menuItems?: string;
     autoWidth?: boolean;
@@ -22,12 +23,13 @@ interface Props {
     variant?: SelectVariant;
     margin?: SelectMargin;
     color?: Color | string;
-
     startAdornment?: string;
     endAndornment?: string;
 }
 
-export const Select: CraftComponent<Props> = (props: Props): ReactElement => {
+const SelectNode: CraftComponent<ISelectProps> = (
+    props: ISelectProps,
+): ReactElement => {
     const { menuItems, autoWidth, multiple, variant } = props;
     const menuItemsArray = menuItems?.trim()?.split(",");
     const [property, setProperty] = useState<string[]>([]);
@@ -39,12 +41,8 @@ export const Select: CraftComponent<Props> = (props: Props): ReactElement => {
         setProperty(typeof value === "string" ? value.split(",") : value);
     };
 
-    const {
-        connectors: { connect, drag },
-    } = useNode();
-
     return (
-        <div ref={(ref) => connect(drag(ref as any))}>
+        <Node>
             <FormControl variant={variant} sx={{ m: 1, minWidth: 120 }}>
                 <MuiSelect
                     labelId="label-select-id"
@@ -64,11 +62,11 @@ export const Select: CraftComponent<Props> = (props: Props): ReactElement => {
                     ))}
                 </MuiSelect>
             </FormControl>
-        </div>
+        </Node>
     );
 };
 
-const defaultProps: Props = {
+const defaultProps: ISelectProps = {
     size: "normal",
     menuItems: "",
     autoWidth: false,
@@ -81,7 +79,7 @@ const defaultProps: Props = {
     endAndornment: "",
 };
 
-Select.craft = {
+SelectNode.craft = {
     props: defaultProps,
     related: {
         settings: () => (
@@ -166,3 +164,5 @@ Select.craft = {
         ),
     },
 };
+
+export default SelectNode;

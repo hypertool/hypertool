@@ -6,7 +6,6 @@ import {
     Checkbox as MuiCheckbox,
 } from "@mui/material";
 
-import { useNode } from "../craft";
 import { useSymbolReference } from "../hooks";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import type {
@@ -16,7 +15,9 @@ import type {
     ISymbolReference,
 } from "../types";
 
-interface Props {
+import Node from "./Node";
+
+interface ICheckboxProps {
     label?: string;
     color?: BaseColor;
     disabled?: boolean;
@@ -26,15 +27,15 @@ interface Props {
     size?: CheckboxSize;
 }
 
-export const Checkbox: CraftComponent<Props> = (props: Props): ReactElement => {
+const CheckboxNode: CraftComponent<ICheckboxProps> = (
+    props: ICheckboxProps,
+): ReactElement => {
     const { label, color, disabled, checked, disableRipple, onChange, size } =
         props;
-    const {
-        connectors: { connect, drag },
-    } = useNode();
+
     const handleClick = useSymbolReference(onChange);
     return (
-        <div ref={(ref) => connect(drag(ref as any))}>
+        <Node>
             <FormGroup>
                 <FormControlLabel
                     label={label as any}
@@ -50,11 +51,11 @@ export const Checkbox: CraftComponent<Props> = (props: Props): ReactElement => {
                     }
                 />
             </FormGroup>
-        </div>
+        </Node>
     );
 };
 
-const defaultProps: Props = {
+const defaultProps: ICheckboxProps = {
     size: "small",
     checked: false,
     color: "primary",
@@ -64,7 +65,7 @@ const defaultProps: Props = {
     label: "Label",
 };
 
-Checkbox.craft = {
+CheckboxNode.craft = {
     props: defaultProps,
     related: {
         settings: () => (
@@ -106,7 +107,7 @@ Checkbox.craft = {
                                 size: "small",
                                 help: "Determines whether the checkbox is disabled, or not.",
                             },
-                            //TODO change this when color component is implemented
+                            // TODO: change this when color component is implemented
                             {
                                 id: "color",
                                 size: "small",
@@ -146,3 +147,5 @@ Checkbox.craft = {
         ),
     },
 };
+
+export default CheckboxNode;

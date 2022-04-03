@@ -5,19 +5,16 @@ import { styled } from "@mui/material/styles";
 import { useEditor } from "../../craft";
 
 const PageContainer = styled("div")(({ theme }) => ({
-    width: "100%",
-    height: "100%",
     display: "flex",
     flexDirection: "column",
     overflow: "hidden",
-    padding: theme.spacing(2),
 }));
 
 const CraftRenderer = styled("div")(({ theme }) => ({
     display: "flex",
     overflow: "auto",
-    height: "100%",
     width: "100%",
+    minHeight: 800,
     backgroundColor: (theme.palette.background as any).paper1,
 }));
 
