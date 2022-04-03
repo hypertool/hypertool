@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 
 import { Element, Frame, useEditor } from "../../craft";
 import { useInterval, useTabBundle, useUpdateTabTitle } from "../../hooks";
-import { ButtonNode, ContainerNode } from "../../nodes";
+import { ButtonNode, ContainerNode, FragmentNode } from "../../nodes";
 import { IEditScreenBundle } from "../../types";
 
 import CanvasViewport from "./CanvasViewport";
@@ -85,7 +85,9 @@ const CanvasEditor: FunctionComponent = (): ReactElement => {
         <CanvasViewport>
             <Frame>
                 <Element is={ContainerNode} canvas={true}>
-                    <ButtonNode />
+                    <Element is={FragmentNode} canvas={true}>
+                        <ButtonNode />
+                    </Element>
                 </Element>
             </Frame>
         </CanvasViewport>
