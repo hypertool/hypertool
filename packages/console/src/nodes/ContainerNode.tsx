@@ -4,31 +4,25 @@ import { styled } from "@mui/material";
 
 import { CraftComponent } from "../types";
 
-import Node from "./Node";
-
 interface IContainerProps {
     children?: ReactElement;
 }
 
 const Root = styled("div")(({ theme }) => ({
     display: "flex",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    height: "100%",
-    width: "100%",
-    minHeight: 400,
+    minHeight: 800,
+    minWidth: 800,
     background: "#242424",
-    margin: theme.spacing(1),
+    margin: theme.spacing(2),
 }));
 
 const ContainerNode: CraftComponent<IContainerProps> = (
     props: IContainerProps,
 ): ReactElement => {
-    return (
-        <Node>
-            <Root>{props.children}</Root>
-        </Node>
-    );
+    return <Root>{props.children}</Root>;
 };
 
 ContainerNode.craft = {};
