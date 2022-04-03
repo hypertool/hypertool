@@ -78,8 +78,8 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
                 }
 
                 delete alteredPatches[childPropId];
-                applyPatches(child);
               }
+              applyPatches(child);
             }
           };
 
