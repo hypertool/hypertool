@@ -65,7 +65,7 @@ const Components: FunctionComponent = (): ReactElement => {
         },
         {
             title: "Fragment",
-            icon: "puzzle",
+            icon: "extension",
             createRef: (ref: any) =>
                 connectors.create(
                     ref,
