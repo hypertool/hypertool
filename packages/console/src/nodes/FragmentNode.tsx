@@ -7,16 +7,16 @@ import { CraftComponent } from "../types";
 
 import Node from "./Node";
 
-interface IProps {
+interface IFragmentProps {
     id?: string;
     children?: ReactElement;
 }
 
-const Root = styled("div")({
+const Root = styled("div")(({ theme }) => ({
     backgroundColor: "white",
     margin: 0,
-    padding: 16,
-});
+    padding: theme.spacing(2),
+}));
 
 const Grid = styled("div")({
     minHeight: 400,
@@ -29,7 +29,9 @@ const Grid = styled("div")({
     backgroundSize: `23px 23px`,
 });
 
-const Fragment: CraftComponent<IProps> = (props: IProps): ReactElement => {
+const FragmentNode: CraftComponent<IFragmentProps> = (
+    props: IFragmentProps,
+): ReactElement => {
     const { children } = props;
 
     return (
@@ -45,7 +47,7 @@ const defaultProps = {
     id: undefined,
 };
 
-Fragment.craft = {
+FragmentNode.craft = {
     props: defaultProps,
     related: {
         settings: () => (
@@ -71,4 +73,4 @@ Fragment.craft = {
     },
 };
 
-export default Fragment;
+export default FragmentNode;

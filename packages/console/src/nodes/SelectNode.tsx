@@ -15,7 +15,7 @@ import type {
 
 import Node from "./Node";
 
-interface Props {
+export interface ISelectProps {
     size?: SelectSize;
     menuItems?: string;
     autoWidth?: boolean;
@@ -23,12 +23,13 @@ interface Props {
     variant?: SelectVariant;
     margin?: SelectMargin;
     color?: Color | string;
-
     startAdornment?: string;
     endAndornment?: string;
 }
 
-export const Select: CraftComponent<Props> = (props: Props): ReactElement => {
+const SelectNode: CraftComponent<ISelectProps> = (
+    props: ISelectProps,
+): ReactElement => {
     const { menuItems, autoWidth, multiple, variant } = props;
     const menuItemsArray = menuItems?.trim()?.split(",");
     const [property, setProperty] = useState<string[]>([]);
@@ -65,7 +66,7 @@ export const Select: CraftComponent<Props> = (props: Props): ReactElement => {
     );
 };
 
-const defaultProps: Props = {
+const defaultProps: ISelectProps = {
     size: "normal",
     menuItems: "",
     autoWidth: false,
@@ -78,7 +79,7 @@ const defaultProps: Props = {
     endAndornment: "",
 };
 
-Select.craft = {
+SelectNode.craft = {
     props: defaultProps,
     related: {
         settings: () => (
@@ -163,3 +164,5 @@ Select.craft = {
         ),
     },
 };
+
+export default SelectNode;

@@ -1,30 +1,27 @@
-import { Button } from "./Button";
-import { Card, CardBottom, CardTop } from "./Card";
-import { Checkbox } from "./Checkbox";
-import { Container } from "./Container";
-import Fragment from "./Fragment";
-import { Select } from "./Select";
-import { Text } from "./Text";
+import ButtonNode from "./ButtonNode";
+import CheckboxNode from "./CheckboxNode";
+import ContainerNode from "./ContainerNode";
+import FragmentNode from "./FragmentNode";
+import SelectNode from "./SelectNode";
+import TextNode from "./TextNode";
 import ViewNode from "./ViewNode";
 
 export const nodeMappings = {
-    Button,
-    Card,
-    CardTop,
-    CardBottom,
-    Container,
-    Text,
-    Select,
-    Checkbox,
-    ViewNode,
-    Fragment,
+    Button: ButtonNode,
+    Container: ContainerNode,
+    Text: TextNode,
+    Select: SelectNode,
+    Checkbox: CheckboxNode,
+    View: ViewNode,
+    Fragment: FragmentNode,
 };
 
-export * from "./Text";
-export * from "./Button";
-export * from "./Container";
-export * from "./Card";
-export { ViewNode, Fragment };
-export * from "./Select";
-export * from "./Checkbox";
-export * from "./Fragment";
+export {
+    ButtonNode,
+    CheckboxNode,
+    ContainerNode,
+    FragmentNode,
+    SelectNode,
+    TextNode,
+    ViewNode,
+};

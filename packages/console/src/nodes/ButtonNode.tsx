@@ -14,7 +14,7 @@ import type {
 
 import Node from "./Node";
 
-interface Props {
+interface IButtonProps {
     size?: ButtonSize;
     variant?: ButtonVariant;
     color?: Color;
@@ -26,7 +26,9 @@ interface Props {
     onClick?: ISymbolReference;
 }
 
-export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
+const ButtonNode: CraftComponent<IButtonProps> = (
+    props: IButtonProps,
+): ReactElement => {
     const {
         size,
         variant,
@@ -59,7 +61,7 @@ export const Button: CraftComponent<Props> = (props: Props): ReactElement => {
     );
 };
 
-const defaultProps: Props = {
+const defaultProps: IButtonProps = {
     size: "small",
     variant: "contained",
     color: "primary",
@@ -71,9 +73,9 @@ const defaultProps: Props = {
     onClick: undefined,
 };
 
-Button.defaultProps = defaultProps;
+ButtonNode.defaultProps = defaultProps;
 
-Button.craft = {
+ButtonNode.craft = {
     props: defaultProps,
     related: {
         settings: () => (
@@ -185,3 +187,5 @@ Button.craft = {
         ),
     },
 };
+
+export default ButtonNode;

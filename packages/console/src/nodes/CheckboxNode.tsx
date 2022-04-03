@@ -17,7 +17,7 @@ import type {
 
 import Node from "./Node";
 
-interface Props {
+interface ICheckboxProps {
     label?: string;
     color?: BaseColor;
     disabled?: boolean;
@@ -27,7 +27,9 @@ interface Props {
     size?: CheckboxSize;
 }
 
-export const Checkbox: CraftComponent<Props> = (props: Props): ReactElement => {
+const CheckboxNode: CraftComponent<ICheckboxProps> = (
+    props: ICheckboxProps,
+): ReactElement => {
     const { label, color, disabled, checked, disableRipple, onChange, size } =
         props;
 
@@ -53,7 +55,7 @@ export const Checkbox: CraftComponent<Props> = (props: Props): ReactElement => {
     );
 };
 
-const defaultProps: Props = {
+const defaultProps: ICheckboxProps = {
     size: "small",
     checked: false,
     color: "primary",
@@ -63,7 +65,7 @@ const defaultProps: Props = {
     label: "Label",
 };
 
-Checkbox.craft = {
+CheckboxNode.craft = {
     props: defaultProps,
     related: {
         settings: () => (
@@ -105,7 +107,7 @@ Checkbox.craft = {
                                 size: "small",
                                 help: "Determines whether the checkbox is disabled, or not.",
                             },
-                            //TODO change this when color component is implemented
+                            // TODO: change this when color component is implemented
                             {
                                 id: "color",
                                 size: "small",
@@ -145,3 +147,5 @@ Checkbox.craft = {
         ),
     },
 };
+
+export default CheckboxNode;
