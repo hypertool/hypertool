@@ -71,10 +71,13 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
               const childPropId = child.props.id;
               if (childPropId && childPropId in alteredPatches) {
                 const patch = alteredPatches[childPropId];
-                if (patch.__hyperNode) {
-                  node.children[i] = patch as any;
-                } else {
-                  child.props = { ...child.props, ...patch };
+                /* Ignore null, undefined, true, and false values in place of nodes. */
+                if (!["null", "undefined", "boolean"].includes(typeof patch)) {
+                  if (patch.__hyperNode) {
+                    node.children[i] = patch as any;
+                  } else {
+                    child.props = { ...child.props, ...patch };
+                  }
                 }
 
                 delete alteredPatches[childPropId];
