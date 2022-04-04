@@ -17,7 +17,7 @@ import { gql, useQuery } from "@apollo/client";
 
 import { useNavigate } from "react-router";
 
-import AppCard from "../view-apps/AppCard";
+import OrganizationCard from "./OrganizationCard";
 
 const Root = styled("section")(() => ({
     width: "100%",
@@ -157,7 +157,7 @@ const ViewOrganizations: FunctionComponent = (): ReactElement => {
                                 title: string;
                                 description: string;
                             }) => (
-                                <AppCard
+                                <OrganizationCard
                                     id={organization.name}
                                     name={organization.title}
                                     description={organization.description}

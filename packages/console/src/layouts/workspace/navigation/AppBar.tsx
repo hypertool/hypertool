@@ -79,14 +79,6 @@ const AppBar: FunctionComponent<Props> = (props: Props): ReactElement => {
         window.location.href = "/login";
     };
 
-    const handleViewOrganizations = () => {
-        window.location.href = "/organizations";
-    };
-
-    const handleViewApplications = () => {
-        window.location.href = "/apps";
-    };
-
     const renderMenu = (
         <Menu
             anchorEl={anchor}
@@ -102,8 +94,6 @@ const AppBar: FunctionComponent<Props> = (props: Props): ReactElement => {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleViewOrganizations}>Organizations</MenuItem>
-            <MenuItem onClick={handleViewApplications}>Apps</MenuItem>
             <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
         </Menu>
     );

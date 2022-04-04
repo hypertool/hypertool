@@ -61,7 +61,7 @@ const OrganizationForm: FunctionComponent = (): ReactElement => {
                     required={true}
                     name="name"
                     id="name"
-                    label="Slug"
+                    label="Name"
                     size="small"
                     variant="outlined"
                     fullWidth={true}
