@@ -73,14 +73,21 @@ const useModules = (appId: string): TModulesContext => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             for (let i = 0; i < controllers.length; i++) {
                 const controller = controllers[i];
-                const importedModule = eval(
-                    `"use strict"; (${controller.patched});`,
-                );
-                result[controller.name] = {
-                    id: controller.name,
-                    synthetic: false,
-                    symbols: Object.keys(importedModule),
-                };
+                try {
+                    const importedModule = eval(
+                        `"use strict"; (${controller.patched});`,
+                    );
+                    result[controller.name] = {
+                        id: controller.name,
+                        synthetic: false,
+                        symbols: Object.keys(importedModule),
+                    };
+                } catch (error) {
+                    console.log(
+                        `There was an error evaluating controller "${controller.name}"`,
+                    );
+                    console.log(error);
+                }
             }
 
             if (mounted) {
