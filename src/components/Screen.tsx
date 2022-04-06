@@ -1,8 +1,10 @@
 import produce from "immer";
 import { FunctionComponent, ReactElement, useRef } from "react";
 import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+
 import { ScreenContext } from "../contexts";
-import { INode, IPatch } from "../types";
+import { IHyperContext, INode, IPatch } from "../types";
 
 import { inflateDocument } from "../utils";
 import ComponentRenderer from "./ComponentRenderer";
@@ -17,7 +19,13 @@ export interface IProps {
 const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
   const { content, title, controller: patched } = props;
   const [state, setState] = useState<any>({});
+  const [searchParams, setQueryParams] = useSearchParams();
   const refs = useRef<Record<string, any>>({});
+
+  const queryParams = useMemo(
+    () => Object.fromEntries(searchParams),
+    [searchParams]
+  );
 
   const rawRootNode = useMemo(
     () => inflateDocument(JSON.parse(content)),
@@ -29,9 +37,15 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     return eval(`"use strict"; (${patched});`);
   }, [patched]);
 
-  const context = useMemo(
-    (): any => ({
+  const context: IHyperContext<any> = useMemo(
+    () => ({
+      queryParams,
+
+      state,
+
       refs: refs.current,
+
+      setQueryParams,
 
       setState: (stateOrName: Partial<any> | string, value?: any): void => {
         setState((state: any) => {
@@ -90,7 +104,7 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
         });
       },
     }),
-    [rawRootNode.children]
+    [queryParams, rawRootNode.children, setQueryParams, state]
   );
 
   useEffect(() => {
@@ -101,12 +115,12 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
 
   const rootNode: INode | null = useMemo(() => {
     if (controller.render) {
-      const result = controller.render({ ...context, state });
+      const result = controller.render(context);
       return result;
     }
 
     return context.inflate("default", {});
-  }, [controller, context, state]);
+  }, [controller, context]);
 
   useEffect(() => {
     document.title = title;
