@@ -28,6 +28,7 @@ ViewNode.craft = {
             <PropertiesForm
                 groups={[
                     {
+                        id: "general",
                         title: "General",
                         fields: [
                             {
@@ -41,6 +42,7 @@ ViewNode.craft = {
                         ],
                     },
                     {
+                        id: "backdrop",
                         title: "Backdrop",
                         fields: [
                             {
@@ -116,6 +118,7 @@ ViewNode.craft = {
                         ],
                     },
                     {
+                        id: "background",
                         title: "Background",
                         fields: [
                             {
@@ -136,6 +139,7 @@ ViewNode.craft = {
                         ],
                     },
                     {
+                        id: "dimensions",
                         title: "Dimensions",
                         fields: [
                             {
@@ -185,6 +189,7 @@ ViewNode.craft = {
                         ],
                     },
                     {
+                        id: "background",
                         title: "Background",
                         fields: [
                             {
@@ -197,6 +202,7 @@ ViewNode.craft = {
                         ],
                     },
                     {
+                        id: "margin",
                         title: "Margin",
                         fields: [
                             {
@@ -230,6 +236,7 @@ ViewNode.craft = {
                         ],
                     },
                     {
+                        id: "padding",
                         title: "Padding",
                         fields: [
                             {
@@ -263,6 +270,7 @@ ViewNode.craft = {
                         ],
                     },
                     {
+                        id: "layout",
                         title: "Layout",
                         fields: [
                             {

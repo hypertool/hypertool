@@ -87,6 +87,7 @@ TextNode.craft = {
             <PropertiesForm
                 groups={[
                     {
+                        id: "general",
                         title: "General",
                         fields: [
                             {
@@ -108,6 +109,7 @@ TextNode.craft = {
                         ],
                     },
                     {
+                        id: "decoration",
                         title: "Decoration",
                         fields: [
                             {
@@ -120,6 +122,7 @@ TextNode.craft = {
                         ],
                     },
                     {
+                        id: "font",
                         title: "Font",
                         fields: [
                             {
