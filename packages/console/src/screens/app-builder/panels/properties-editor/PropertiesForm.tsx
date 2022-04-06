@@ -2,14 +2,19 @@ import type { FunctionComponent, ReactElement } from "react";
 import { Fragment } from "react";
 
 import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
     Chip,
     FormControl,
     FormControlLabel,
     FormGroup,
+    Icon,
     InputLabel,
     MenuItem,
     Select,
     Switch,
+    Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -36,7 +41,19 @@ const DecoratedForm = styled("form")(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     width: "100%",
-    padding: theme.spacing(2),
+    padding: 0,
+}));
+
+const StyledAccordion = styled(Accordion)({});
+
+const AccordionTitle = styled(Typography)({
+    fontSize: 12,
+});
+
+const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
+    padding: theme.spacing(0, 2, 1, 2),
+    display: "flex",
+    flexDirection: "column",
 }));
 
 const DecoratedChip = styled(Chip)({
@@ -450,70 +467,93 @@ const PropertiesForm: FunctionComponent<Props> = (
                 >
                     <DecoratedForm>
                         {groups.map((group: FormFieldGroup) => (
-                            <>
-                                {group.fields.map((field) => (
-                                    <Fragment key={field.id}>
-                                        {field.type === "text" &&
-                                            renderTextField(
-                                                field as FormTextField,
-                                            )}
+                            <StyledAccordion
+                                key={group.id}
+                                disableGutters={true}
+                                square={true}
+                                defaultExpanded={false}
+                            >
+                                <AccordionSummary
+                                    expandIcon={
+                                        <Icon fontSize="small">
+                                            expand_more
+                                        </Icon>
+                                    }
+                                    id={`${group.id}-header`}
+                                >
+                                    <AccordionTitle>
+                                        {group.title}
+                                    </AccordionTitle>
+                                </AccordionSummary>
+                                <StyledAccordionDetails>
+                                    {group.fields.map((field) => (
+                                        <Fragment key={field.id}>
+                                            {field.type === "text" &&
+                                                renderTextField(
+                                                    field as FormTextField,
+                                                )}
 
-                                        {field.type === "large_text" &&
-                                            renderLargeTextField(
-                                                field as FormLargeTextField,
-                                            )}
+                                            {field.type === "large_text" &&
+                                                renderLargeTextField(
+                                                    field as FormLargeTextField,
+                                                )}
 
-                                        {field.type === "number" &&
-                                            renderNumberTextField(
-                                                field as FormTextField,
-                                            )}
+                                            {field.type === "number" &&
+                                                renderNumberTextField(
+                                                    field as FormTextField,
+                                                )}
 
-                                        {field.type === "date" &&
-                                            renderDateField(
-                                                field as FormTextField,
-                                            )}
+                                            {field.type === "date" &&
+                                                renderDateField(
+                                                    field as FormTextField,
+                                                )}
 
-                                        {field.type === "time" &&
-                                            renderTimeField(
-                                                field as FormTextField,
-                                            )}
+                                            {field.type === "time" &&
+                                                renderTimeField(
+                                                    field as FormTextField,
+                                                )}
 
-                                        {field.type === "date_time" &&
-                                            renderDateTimeField(
-                                                field as FormTextField,
-                                            )}
+                                            {field.type === "date_time" &&
+                                                renderDateTimeField(
+                                                    field as FormTextField,
+                                                )}
 
-                                        {field.type === "switch" &&
-                                            renderSwitch(field as FormSwitch)}
+                                            {field.type === "switch" &&
+                                                renderSwitch(
+                                                    field as FormSwitch,
+                                                )}
 
-                                        {field.type === "date_range" &&
-                                            renderDateRange(field)}
+                                            {field.type === "date_range" &&
+                                                renderDateRange(field)}
 
-                                        {field.type === "select" &&
-                                            renderSelect(field as FormSelect)}
+                                            {field.type === "select" &&
+                                                renderSelect(
+                                                    field as FormSelect,
+                                                )}
 
-                                        {field.type === "multi_select" &&
-                                            renderMultiSelect(
-                                                field as FormSelect,
-                                            )}
+                                            {field.type === "multi_select" &&
+                                                renderMultiSelect(
+                                                    field as FormSelect,
+                                                )}
 
-                                        {field.type === "email_address" &&
-                                            renderEmailAddressField(
-                                                field as FormTextField,
-                                            )}
+                                            {field.type === "email_address" &&
+                                                renderEmailAddressField(
+                                                    field as FormTextField,
+                                                )}
 
-                                        {field.type === "phone_number" &&
-                                            renderPhoneNumberField(
-                                                field as FormTextField,
-                                            )}
+                                            {field.type === "phone_number" &&
+                                                renderPhoneNumberField(
+                                                    field as FormTextField,
+                                                )}
 
-                                        {field.type === "handler" &&
-                                            renderHandlerField(
-                                                field as FormTextField,
-                                            )}
-                                    </Fragment>
-                                ))}
-                            </>
+                                            {field.type === "handler" &&
+                                                renderHandlerField(
+                                                    field as FormTextField,
+                                                )}
+                                        </Fragment>
+                                    ))}
+                                </StyledAccordionDetails>
+                            </StyledAccordion>
                         ))}
                     </DecoratedForm>
                 </Formik>

@@ -86,6 +86,7 @@ SelectNode.craft = {
             <PropertiesForm
                 groups={[
                     {
+                        id: "general",
                         title: "General",
                         fields: [
                             {

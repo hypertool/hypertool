@@ -70,6 +70,7 @@ export type FormFieldType =
     | FormSwitch;
 
 export interface FormFieldGroup {
+    id: string;
     title: string;
     fields: FormFieldType[];
 }
