@@ -3,6 +3,15 @@ import { styled } from "@mui/material/styles";
 
 import { useFormikContext } from "formik";
 
+const StyledTextField = styled(MuiTextField)({
+    input: {
+        fontSize: 12,
+    },
+    label: {
+        fontSize: 14,
+    },
+});
+
 const TextFieldHelp = styled(Typography)(() => ({
     display: "flex",
     marginTop: 4,
@@ -27,7 +36,7 @@ const TextField = (props: Props) => {
     const error = (formik.touched as any)[name] && (formik.errors as any)[name];
 
     return (
-        <MuiTextField
+        <StyledTextField
             name={name}
             helperText={
                 <>
