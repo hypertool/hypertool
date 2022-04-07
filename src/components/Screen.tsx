@@ -1,10 +1,22 @@
 import produce from "immer";
 import { FunctionComponent, ReactElement, useRef } from "react";
 import { useState, useMemo, useEffect } from "react";
-import { useSearchParams, useLocation, useParams } from "react-router-dom";
+import {
+  useSearchParams,
+  useLocation,
+  useParams,
+  useNavigate,
+} from "react-router-dom";
 
 import { ScreenContext } from "../contexts";
-import { IHyperContext, ILocation, INode, IPatch } from "../types";
+import {
+  IHyperContext,
+  ILocation,
+  INavigateOptions,
+  INode,
+  IPatch,
+  TNavigationTarget,
+} from "../types";
 
 import { inflateDocument } from "../utils";
 import ComponentRenderer from "./ComponentRenderer";
@@ -19,10 +31,27 @@ export interface IProps {
 const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
   const { content, title, controller: patched } = props;
   const [state, setState] = useState<any>({});
+  const refs = useRef<Record<string, any>>({});
   const [searchParams, setQueryParams] = useSearchParams();
   const location = useLocation();
-  const refs = useRef<Record<string, any>>({});
   const pathParams: Record<string, string | undefined> = useParams();
+  const navigateNative = useNavigate();
+
+  const navigate = useMemo(
+    () => (target: TNavigationTarget, options?: INavigateOptions) => {
+      navigateNative(
+        typeof target === "string"
+          ? target
+          : {
+              pathname: target.path,
+              search: target.query,
+              hash: target.hash,
+            },
+        options
+      );
+    },
+    [navigateNative]
+  );
 
   const queryParams = useMemo(
     () => Object.fromEntries(searchParams),
@@ -54,6 +83,8 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
       state,
 
       refs: refs.current,
+
+      navigate,
 
       setQueryParams,
 
@@ -115,7 +146,12 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
       },
     }),
     [
-      location,
+      location.hash,
+      location.key,
+      location.pathname,
+      location.search,
+      location.state,
+      navigate,
       pathParams,
       queryParams,
       rawRootNode.children,

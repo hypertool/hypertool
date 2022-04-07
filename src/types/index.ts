@@ -101,16 +101,7 @@ export interface IPatch {
   [key: string]: Record<string, TPropertyValue> | INode;
 }
 
-export type TQueryParams = Record<string, string | string[]>;
-
-export type TQueryParamPair = [string, string];
-
-export type TUpdateQueryParams =
-  | string // "foo=bar&foo=soap"
-  | TQueryParamPair[] // [["foo", "bar"], ["foo", "soap"]]
-  | TQueryParams; // { foo: ["bar", "soap"] }
-
-export interface ILocation {
+export interface IPath {
   /**
    * The path component in the URL, beginning with a `/`.
    */
@@ -125,7 +116,24 @@ export interface ILocation {
    * A URL fragment identifier, beginning with a `#`.
    */
   hash: string;
+}
 
+/**
+ * Describes a location that is the destination of some navigation.
+ * It can either be a URL or pieces of a URL.
+ */
+export type TNavigationTarget = string | Partial<IPath>;
+
+export type TQueryParams = Record<string, string | string[]>;
+
+export type TQueryParamPair = [string, string];
+
+export type TUpdateQueryParams =
+  | string // "foo=bar&foo=soap"
+  | TQueryParamPair[] // [["foo", "bar"], ["foo", "soap"]]
+  | TQueryParams; // { foo: ["bar", "soap"] }
+
+export interface ILocation extends IPath {
   /**
    * An object containing the decoded dynamic parameters from the
    * path component in the URL.
@@ -141,13 +149,18 @@ export interface ILocation {
   /**
    * An arbitrary value associated with this location.
    */
-  state: unknown;
+  state: any;
 
   /**
    * A unique string associated with this location. On the initial location, this will be the string default.
    * On all subsequent locations, this string will be a unique identifier.
    */
   key: string;
+}
+
+export interface INavigateOptions {
+  replace?: boolean;
+  state?: any;
 }
 
 export interface IHyperContext<S> {
@@ -157,7 +170,12 @@ export interface IHyperContext<S> {
 
   readonly refs: Record<string, any>;
 
-  setQueryParams: (queryParams: TUpdateQueryParams) => void;
+  navigate: (target: TNavigationTarget, options?: INavigateOptions) => void;
+
+  setQueryParams: (
+    queryParams: TUpdateQueryParams,
+    options?: INavigateOptions
+  ) => void;
 
   setState: {
     (state: Partial<S>): void;
