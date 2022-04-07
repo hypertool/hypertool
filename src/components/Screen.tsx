@@ -115,11 +115,7 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
       },
     }),
     [
-      location.hash,
-      location.key,
-      location.pathname,
-      location.search,
-      location.state,
+      location,
       pathParams,
       queryParams,
       rawRootNode.children,
@@ -128,9 +124,12 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     ]
   );
 
+  const invokedInit = useRef(false);
+
   useEffect(() => {
-    if (controller.init) {
+    if (controller.init && !invokedInit.current) {
       controller.init(context);
+      invokedInit.current = true;
     }
   }, [context, controller]);
 
