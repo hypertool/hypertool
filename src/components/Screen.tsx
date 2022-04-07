@@ -1,10 +1,10 @@
 import produce from "immer";
 import { FunctionComponent, ReactElement, useRef } from "react";
 import { useState, useMemo, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation, useParams } from "react-router-dom";
 
 import { ScreenContext } from "../contexts";
-import { IHyperContext, INode, IPatch } from "../types";
+import { IHyperContext, ILocation, INode, IPatch } from "../types";
 
 import { inflateDocument } from "../utils";
 import ComponentRenderer from "./ComponentRenderer";
@@ -20,7 +20,9 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
   const { content, title, controller: patched } = props;
   const [state, setState] = useState<any>({});
   const [searchParams, setQueryParams] = useSearchParams();
+  const location = useLocation();
   const refs = useRef<Record<string, any>>({});
+  const pathParams: Record<string, string | undefined> = useParams();
 
   const queryParams = useMemo(
     () => Object.fromEntries(searchParams),
@@ -39,7 +41,15 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
 
   const context: IHyperContext<any> = useMemo(
     () => ({
-      queryParams,
+      location: {
+        path: location.pathname,
+        query: location.search,
+        hash: location.hash,
+        state: location.state,
+        key: location.key,
+        pathParams,
+        queryParams,
+      },
 
       state,
 
@@ -104,7 +114,18 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
         });
       },
     }),
-    [queryParams, rawRootNode.children, setQueryParams, state]
+    [
+      location.hash,
+      location.key,
+      location.pathname,
+      location.search,
+      location.state,
+      pathParams,
+      queryParams,
+      rawRootNode.children,
+      setQueryParams,
+      state,
+    ]
   );
 
   useEffect(() => {
