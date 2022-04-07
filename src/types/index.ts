@@ -108,10 +108,50 @@ export type TQueryParamPair = [string, string];
 export type TUpdateQueryParams =
   | string // "foo=bar&foo=soap"
   | TQueryParamPair[] // [["foo", "bar"], ["foo", "soap"]]
-  | Record<string, string | string[]>; // { foo: ["bar", "soap"] }
+  | TQueryParams; // { foo: ["bar", "soap"] }
+
+export interface ILocation {
+  /**
+   * The path component in the URL, beginning with a `/`.
+   */
+  path: string;
+
+  /**
+   * The query string component in the URL, beginning with a `?`.
+   */
+  query: string;
+
+  /**
+   * A URL fragment identifier, beginning with a `#`.
+   */
+  hash: string;
+
+  /**
+   * An object containing the decoded dynamic parameters from the
+   * path component in the URL.
+   */
+  pathParams: Record<string, string | undefined>;
+
+  /**
+   * An object containing the decoded query parameters contained
+   * in the URL.
+   */
+  queryParams: TQueryParams;
+
+  /**
+   * An arbitrary value associated with this location.
+   */
+  state: unknown;
+
+  /**
+   * A unique string associated with this location. On the initial location, this will be the string default.
+   * On all subsequent locations, this string will be a unique identifier.
+   */
+  key: string;
+}
 
 export interface IHyperContext<S> {
-  readonly queryParams: TQueryParams;
+  readonly location: ILocation;
 
   readonly state: Record<string, S[keyof S]>;
 
