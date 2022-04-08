@@ -36,3 +36,5 @@ export const inflateDocument = (document: Record<string, ICraftNode>) => {
   /* Return the new root node. We assume that the root node is always named "ROOT". */
   return map.get("ROOT")!;
 };
+
+export * as constants from "./constants";
