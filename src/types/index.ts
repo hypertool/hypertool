@@ -189,3 +189,21 @@ export interface IHyperController<T> {
   init?: (context: IHyperContext<T>) => void;
   render?: (context: IHyperContext<T>) => INode;
 }
+
+/**************************************************************************************************
+ * Events                                                                                         *
+ **************************************************************************************************/
+
+/**
+ * @param C The type of the current target for this event.
+ * @param T The type of the target for this event.
+ */
+export interface ISyntheticEvent<C = any, T = any> {
+  currentTarget: C;
+  target: T;
+  createdAt: number;
+  type: string;
+
+  preventDefault: () => void;
+  stopPropogation: () => void;
+}
