@@ -244,3 +244,15 @@ export interface IPointerEvent extends IMouseEvent {
   pointerType: TPointerType;
   primary: boolean;
 }
+
+/**************************************************************************************************
+ * Event Handler                                                                                  *
+ **************************************************************************************************/
+
+export type TEventHandler<E extends ISyntheticEvent> = {
+  bivarianceHack: (event: E) => void;
+}["bivarianceHack"];
+
+export type TMouseEventHandler = TEventHandler<IMouseEvent>;
+
+export type TPointerEventHandler = TEventHandler<IPointerEvent>;
