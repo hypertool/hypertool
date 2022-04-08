@@ -28,7 +28,7 @@ const ComponentRenderer: FunctionComponent<IProps> = (
   }
 
   return (
-    <Component {...nodeProps}>
+    <Component {...nodeProps} node={node}>
       {node.children.map((child) => (
         <ComponentRenderer key={child.internalId} node={child} />
       ))}
