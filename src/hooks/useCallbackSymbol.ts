@@ -3,7 +3,7 @@ import { ScreenContext } from "../contexts";
 import { ISymbolReference } from "../types";
 import useSymbolReference from "./useSymbolReference";
 
-const useCallbackSymbol = <R>(reference?: ISymbolReference | null) => {
+const useCallbackSymbol = <R extends Function>(reference?: ISymbolReference | null): R => {
   const symbol = useSymbolReference<R>(reference);
   const context = useContext(ScreenContext);
   const emptyFunction = useMemo(() => () => {}, []);
@@ -12,7 +12,7 @@ const useCallbackSymbol = <R>(reference?: ISymbolReference | null) => {
    * `symbol` will be null if `reference` is null.
    */
   if (!reference || !symbol) {
-    return emptyFunction;
+    return emptyFunction as unknown as R;
   }
 
   if (!(symbol instanceof Function)) {
