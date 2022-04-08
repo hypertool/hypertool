@@ -37,4 +37,5 @@ export const inflateDocument = (document: Record<string, ICraftNode>) => {
   return map.get("ROOT")!;
 };
 
+export * as events from "./events";
 export * as constants from "./constants";
