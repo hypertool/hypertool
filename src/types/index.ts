@@ -1,3 +1,5 @@
+import { constants } from "../utils";
+
 export interface IController {
   id: string;
   name: string;
@@ -198,8 +200,8 @@ export interface IHyperController<T> {
  * @param C The type of the current target for this event.
  * @param T The type of the target for this event.
  */
-export interface ISyntheticEvent {
-  target: any;
+export interface ISyntheticEvent<T> {
+  target: T;
   createdAt: number;
   type: string;
 
@@ -207,7 +209,9 @@ export interface ISyntheticEvent {
   stopPropogation: () => void;
 }
 
-export interface IMouseEvent extends ISyntheticEvent {
+export type TModifierKey = typeof constants.modifierKeys[number];
+
+export interface IMouseEvent<T> extends ISyntheticEvent<T> {
   altKey: boolean;
   ctrlKey: boolean;
   metaKey: boolean;
@@ -225,14 +229,12 @@ export interface IMouseEvent extends ISyntheticEvent {
   screenX: number;
   screenY: number;
 
-  relatedTarget: any;
-
-  getModifierState(key: string): boolean;
+  getModifierState(key: TModifierKey): boolean;
 }
 
 type TPointerType = "mouse" | "pen" | "touch";
 
-export interface IPointerEvent extends IMouseEvent {
+export interface IPointerEvent<T> extends IMouseEvent<T> {
   pointerId: number;
   pressure: number;
   tangentialPressure: number;
@@ -249,10 +251,10 @@ export interface IPointerEvent extends IMouseEvent {
  * Event Handler                                                                                  *
  **************************************************************************************************/
 
-export type TEventHandler<E extends ISyntheticEvent> = {
+export type TEventHandler<T, E extends ISyntheticEvent<T>> = {
   bivarianceHack: (event: E) => void;
 }["bivarianceHack"];
 
-export type TMouseEventHandler = TEventHandler<IMouseEvent>;
+export type TMouseEventHandler<T> = TEventHandler<T, IMouseEvent<T>>;
 
-export type TPointerEventHandler = TEventHandler<IPointerEvent>;
+export type TPointerEventHandler<T> = TEventHandler<T, IPointerEvent<T>>;
