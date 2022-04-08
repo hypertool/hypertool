@@ -2,6 +2,7 @@ import {
     IApp,
     IExternalApp,
     IUser,
+    OrganizationModel,
     TAppPage,
     UserModel,
 } from "@hypertool/common";
@@ -20,10 +21,7 @@ const createSchema = joi.object({
     title: joi.string().max(256).required(),
     slug: joi.string().max(128).required(),
     description: joi.string().max(512).allow("").default(""),
-    organization: joi.string().regex(constants.identifierPattern),
-    resources: joi
-        .array()
-        .items(joi.string().regex(constants.identifierPattern)),
+    organization: joi.string().max(128).required(),
 });
 
 const updateSchema = joi.object({
@@ -113,12 +111,56 @@ const create = async (context, attributes): Promise<IExternalApp> => {
         );
     }
 
+    // Check if the app slug is already taken.
+    const existingAppWithSlug = await AppModel.findOne({
+        slug: value.slug,
+    }).exec();
+    if (existingAppWithSlug) {
+        throw new BadRequestError(
+            `App with slug ${value.slug} already exists.`,
+        );
+    }
+
+    // Find organization with name eqaul to values.organization
+    const organization = await OrganizationModel.findOne({
+        name: value.organization,
+    }).exec();
+    if (!organization) {
+        throw new BadRequestError(
+            `Organization with name ${value.organization} does not exist.`,
+        );
+    }
+
     // TODO: Check if value.members and value.resources are correct.
     const newApp = new AppModel({
         ...value,
+        organization: organization._id,
+        creator: context.user._id,
         status: "private",
     });
     await newApp.save();
+
+    // Add the app to the user's apps.
+    const user = await UserModel.findOneAndUpdate(
+        {
+            _id: context.user._id,
+        },
+        {
+            $push: {
+                apps: newApp._id,
+            },
+        },
+    ).exec();
+    await user.save();
+
+    // Add the app to the organization's apps.
+    await organization
+        .updateOne({
+            $push: {
+                apps: newApp._id,
+            },
+        })
+        .exec();
 
     return toExternal(newApp);
 };
@@ -129,8 +171,14 @@ const list = async (context, parameters): Promise<TAppPage> => {
         throw new BadRequestError(error.message);
     }
 
-    // TODO: Update filters
+    const user = await UserModel.findOne({
+        _id: context.user._id,
+    })
+        .lean()
+        .exec();
+
     const filters = {
+        _id: { $in: user.apps },
         status: {
             $ne: "deleted",
         },

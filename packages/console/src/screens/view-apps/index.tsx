@@ -32,6 +32,10 @@ const Root = styled("section")(() => ({
 
 const Title = styled(Typography)(() => ({}));
 
+const Text = styled(Typography)(() => ({
+    color: "white",
+}));
+
 const WorkspaceToolbar = styled(Toolbar)(() => ({
     display: "flex",
     flexDirection: "row",
@@ -130,7 +134,6 @@ const GET_APPS = gql`
 const ViewApps: FunctionComponent = (): ReactElement => {
     const [filter, setFilter] = useState<string>(filters[0].url);
     const navigate = useNavigate();
-    // TODO: Destructure `error`, check for non-null, send to sentry
     const { loading, data } = useQuery(GET_APPS);
 
     const handleCreateNew = useCallback(() => {
@@ -189,25 +192,30 @@ const ViewApps: FunctionComponent = (): ReactElement => {
                 </WorkspaceToolbar>
             </AppBar>
             <Content>
-                <Hidden lgDown={true}>
+                {/* <Hidden lgDown={true}>
                     <AppFilter />
-                </Hidden>
+                </Hidden> */}
                 <Hidden lgUp={true}>{renderFilter()}</Hidden>
                 {loading && (
                     <ProgressContainer>
                         <CircularProgress size="28px" />
                     </ProgressContainer>
                 )}
-                {!loading && (
+
+                {!loading && data?.getApps?.records?.length === 0 && (
+                    <Text>You do not have any apps yet.</Text>
+                )}
+
+                {!loading && data?.getApps?.records?.length !== 0 && (
                     <Apps>
-                        {/* {data.getApps.records.map((app: any) => (
+                        {data?.getApps?.records?.map((app: any) => (
                             <AppCard
                                 id={app.id}
                                 name={app.name}
                                 description={app.description}
                                 onLaunch={handleLaunch}
                             />
-                        ))} */}
+                        ))}
                     </Apps>
                 )}
             </Content>

@@ -92,7 +92,8 @@ const typeDefs = gql`
             name: String!
             title: String!
             slug: String!
-            description: String
+            description: String!
+            organization: String!
         ): App!
 
         updateApp(

@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import OptionsMenu from "./OrganizationOptionsMenu";
+import AppOptionsMenu from "./AppOptionsMenu";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     width: `calc(50% - ${theme.spacing(2)})`,
@@ -85,12 +85,11 @@ const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
                         <IconButton
                             onClick={handleOpenOptions}
                             size="small"
-                            sx={{ ml: 2 }}
-                        >
+                            sx={{ ml: 2 }}>
                             <Icon fontSize="small">more_vert</Icon>
                         </IconButton>
                     </Tooltip>
-                    <OptionsMenu
+                    <AppOptionsMenu
                         open={Boolean(anchor)}
                         onClose={handleCloseOptions}
                         anchor={anchor}
@@ -106,7 +105,7 @@ const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
             </CardContent>
             <CardActions>
                 <Button size="small" onClick={handleLaunch}>
-                    More{" "}
+                    Launch{" "}
                     <ActionIcon fontSize="small">arrow_forward</ActionIcon>
                 </Button>
             </CardActions>

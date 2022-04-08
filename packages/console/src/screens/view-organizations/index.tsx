@@ -87,6 +87,7 @@ const GET_USER_ORGANIZATIONS = gql`
     query GetUserById($userId: ID!) {
         getUserById(userId: $userId) {
             organizations {
+                id
                 title
                 name
                 description
@@ -109,8 +110,8 @@ const ViewOrganizations: FunctionComponent = (): ReactElement => {
         navigate("/organizations/new");
     }, [navigate]);
 
-    const handleOpen = useCallback(() => {
-        navigate("/organizations/new");
+    const handleOpen = useCallback((id: string) => {
+        navigate(`/organizations/${id}`);
     }, [navigate]);
 
     return (
@@ -153,12 +154,13 @@ const ViewOrganizations: FunctionComponent = (): ReactElement => {
                     <Organizations>
                         {data?.getUserById?.organizations?.map(
                             (organization: {
+                                id: string;
                                 name: string;
                                 title: string;
                                 description: string;
                             }) => (
                                 <OrganizationCard
-                                    id={organization.name}
+                                    id={organization.id}
                                     name={organization.title}
                                     description={organization.description}
                                     onLaunch={handleOpen}

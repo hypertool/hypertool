@@ -131,7 +131,7 @@ const validationSchema = yup.object({
     lastName: yup.string().required("Last Name is required"),
     emailAddress: yup
         .string()
-        .email("Must be a valid Email")
+        .email("Must be a valid email")
         .required("Email is required"),
     password: yup
         .string()
