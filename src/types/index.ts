@@ -198,12 +198,35 @@ export interface IHyperController<T> {
  * @param C The type of the current target for this event.
  * @param T The type of the target for this event.
  */
-export interface ISyntheticEvent<C = any, T = any> {
-  currentTarget: C;
-  target: T;
+export interface ISyntheticEvent {
+  currentTarget: any;
+  target: any;
   createdAt: number;
   type: string;
 
   preventDefault: () => void;
   stopPropogation: () => void;
+}
+
+export interface IMouseEvent extends ISyntheticEvent {
+  altKey: boolean;
+  ctrlKey: boolean;
+  metaKey: boolean;
+  shiftKey: boolean;
+
+  button: number;
+  buttons: number;
+
+  clientX: number;
+  clientY: number;
+  movementX: number;
+  movementY: number;
+  pageX: number;
+  pageY: number;
+  screenX: number;
+  screenY: number;
+
+  relatedTarget: any;
+
+  getModifierState(key: string): boolean;
 }
