@@ -1,7 +1,13 @@
-import { FunctionComponent, ReactElement } from "react";
+import {
+  FunctionComponent,
+  MouseEvent,
+  ReactElement,
+  useCallback,
+} from "react";
 import useCallbackSymbol from "../hooks/useCallbackSymbol";
-import type { ISymbolReference } from "../types";
+import type { INode, ISymbolReference, TMouseEventHandler } from "../types";
 import { Button as MuiButton } from "@mui/material";
+import { transformNativeMouseEvent } from "../utils/events";
 
 export interface IProps {
   size?: string;
@@ -12,6 +18,7 @@ export interface IProps {
   disableRipple?: boolean;
   text?: string;
   onClick?: ISymbolReference;
+  node: INode;
 }
 
 type TOnClick = () => void;
@@ -26,8 +33,16 @@ const Button: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     disableRipple,
     text,
     onClick,
+    node,
   } = props;
-  const handleClick = useCallbackSymbol<TOnClick>(onClick);
+  const onClickSymbol: TMouseEventHandler<INode> =
+    useCallbackSymbol<TOnClick>(onClick);
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      onClickSymbol(transformNativeMouseEvent(event, node));
+    },
+    [node, onClickSymbol]
+  );
 
   return (
     <MuiButton
