@@ -199,7 +199,6 @@ export interface IHyperController<T> {
  * @param T The type of the target for this event.
  */
 export interface ISyntheticEvent {
-  currentTarget: any;
   target: any;
   createdAt: number;
   type: string;
@@ -229,4 +228,19 @@ export interface IMouseEvent extends ISyntheticEvent {
   relatedTarget: any;
 
   getModifierState(key: string): boolean;
+}
+
+type TPointerType = "mouse" | "pen" | "touch";
+
+export interface IPointerEvent extends IMouseEvent {
+  pointerId: number;
+  pressure: number;
+  tangentialPressure: number;
+  tiltX: number;
+  tiltY: number;
+  twist: number;
+  width: number;
+  height: number;
+  pointerType: TPointerType;
+  primary: boolean;
 }
