@@ -82,18 +82,8 @@ const validationSchema = yup.object({
 });
 
 const CREATE_APP = gql`
-    mutation CreateApp(
-        $name: String!
-        $description: String
-        $groups: [ID!]
-        $resources: [ID!]
-    ) {
-        createApp(
-            name: $name
-            description: $description
-            groups: $groups
-            resources: $resources
-        ) {
+    mutation CreateApp($name: String!, $description: String) {
+        createApp(name: $name, description: $description) {
             id
         }
     }
@@ -192,7 +182,8 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                         step.optional && (
                             <Typography variant="caption">Optional</Typography>
                         )
-                    }>
+                    }
+                >
                     {step.title}
                 </StepLabel>
             </Step>
@@ -209,7 +200,8 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
             <Formik
                 initialValues={initialValues}
                 onSubmit={handleSubmit}
-                validationSchema={validationSchema}>
+                validationSchema={validationSchema}
+            >
                 {(formik) => (
                     <>
                         <Hidden lgDown={true}>
@@ -227,7 +219,8 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                                     height: 50,
                                     p: 2,
                                     backgroundColor: "#000000",
-                                }}>
+                                }}
+                            >
                                 <Typography>
                                     {steps[activeStep].title}
                                 </Typography>
@@ -236,7 +229,8 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                         <Wrap
                             when={smallerThanLg}
                             wrapper={Container}
-                            style={{ height: "calc(100vh - 156px)" }}>
+                            style={{ height: "calc(100vh - 156px)" }}
+                        >
                             <Wrap when={!smallerThanLg} wrapper={StepContainer}>
                                 <>
                                     {activeStep === 0 && <AboutStep />}
@@ -262,7 +256,8 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                                             onClick={handleBack}
                                             sx={{ mr: 1 }}
                                             variant="contained"
-                                            size="small">
+                                            size="small"
+                                        >
                                             {theme.direction === "rtl" ? (
                                                 <KeyboardArrowRight />
                                             ) : (
@@ -283,7 +278,8 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                                                 activeStep,
                                                 formik,
                                             )
-                                        }>
+                                        }
+                                    >
                                         Next
                                         {theme.direction === "rtl" ? (
                                             <KeyboardArrowLeft />
@@ -298,7 +294,8 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                                         onClick={() => formik.submitForm()}
                                         variant="contained"
                                         size="small"
-                                        disabled={creatingApp}>
+                                        disabled={creatingApp}
+                                    >
                                         Create App
                                         {!creatingApp && !newApp && (
                                             <CheckCircleOutline
@@ -333,7 +330,8 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                                     height: 50,
                                     bgcolor: "background.default",
                                     padding: 0,
-                                }}>
+                                }}
+                            >
                                 <MobileStepper
                                     variant="text"
                                     steps={steps.length}
@@ -351,7 +349,8 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                                             onClick={handleNext}
                                             disabled={
                                                 activeStep === steps.length - 1
-                                            }>
+                                            }
+                                        >
                                             Next
                                             {theme.direction === "rtl" ? (
                                                 <KeyboardArrowLeft />
@@ -364,7 +363,8 @@ const NewAppStepper: FunctionComponent = (): ReactElement => {
                                         <Button
                                             size="small"
                                             onClick={handleBack}
-                                            disabled={activeStep === 0}>
+                                            disabled={activeStep === 0}
+                                        >
                                             {theme.direction === "rtl" ? (
                                                 <KeyboardArrowRight />
                                             ) : (

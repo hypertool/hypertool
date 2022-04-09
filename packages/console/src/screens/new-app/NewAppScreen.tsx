@@ -21,7 +21,7 @@ import { useNavigate } from "react-router";
 
 import Wrap from "../../components/Wrap";
 
-import OrganizationForm from "./OrganizationForm";
+import AppForm from "./AppForm";
 
 const TitleContainer = styled(Typography)(({ theme }) => ({
     color: "white",
@@ -68,29 +68,30 @@ const validationSchema = yup.object({
         .max(512, "Description should be 512 characters or less"),
 });
 
-const CREATE_ORGANIZATION = gql`
-    mutation CreateOrganization(
+const CREATE_APP = gql`
+    mutation CreateApp(
         $name: String!
         $title: String!
-        $description: String
+        $organization: String!
+        $description: String!
+        $slug: String!
     ) {
-        createOrganization(
+        createApp(
             name: $name
             title: $title
+            organization: $organization
             description: $description
+            slug: $slug
         ) {
             id
         }
     }
 `;
 
-const NewOrganization: FunctionComponent = (): ReactElement => {
-    const [createOrganization, { loading, data }] = useMutation(
-        CREATE_ORGANIZATION,
-        {
-            refetchQueries: ["GetUserById"],
-        },
-    );
+const NewAppScreen: FunctionComponent = (): ReactElement => {
+    const [createApp, { loading, data }] = useMutation(CREATE_APP, {
+        refetchQueries: ["GetApps"],
+    });
 
     const theme = useTheme();
     const navigate = useNavigate();
@@ -100,10 +101,10 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
     const handleSubmit = useCallback(
         (values: FormValues): any => {
             if (session) {
-                createOrganization({
+                createApp({
                     variables: {
                         ...values,
-                        member: {
+                        creator: {
                             user: JSON.parse(session)?.user?.id,
                             role: "owner",
                         },
@@ -111,12 +112,12 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
                 });
             }
         },
-        [createOrganization, session],
+        [createApp, session],
     );
 
     useEffect(() => {
-        if (!loading && data?.createOrganization) {
-            navigate("/organizations");
+        if (!loading && data?.createApp) {
+            navigate("/apps");
         }
     }, [loading, data, navigate]);
 
@@ -129,16 +130,14 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
             >
                 {(formik) => (
                     <>
-                        <TitleContainer>
-                            Create your organization
-                        </TitleContainer>
+                        <TitleContainer>Create your application</TitleContainer>
                         <Wrap
                             when={smallerThanLg}
                             wrapper={Container}
                             style={{ height: "calc(100vh - 156px)" }}
                         >
                             <Wrap when={!smallerThanLg} wrapper={FormContainer}>
-                                <OrganizationForm />
+                                <AppForm />
                             </Wrap>
                         </Wrap>
 
@@ -171,4 +170,4 @@ const NewOrganization: FunctionComponent = (): ReactElement => {
     );
 };
 
-export default NewOrganization;
+export default NewAppScreen;

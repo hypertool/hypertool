@@ -20,7 +20,7 @@ import {
 
 import * as yup from "yup";
 import { Formik } from "formik";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { TextField } from "../../components";
 
@@ -36,10 +36,10 @@ const Root = styled("section")(({ theme }) => ({
 }));
 
 const FormContainer = styled("div")(({ theme }) => ({
+    width: "100%",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
+    marginTop: theme.spacing(2),
 }));
 
 const InputField = styled(TextField)(({ theme }) => ({
@@ -55,27 +55,9 @@ const InputField = styled(TextField)(({ theme }) => ({
 const Title = styled(Typography)(({ theme }) => ({
     color: theme.palette.getContrastText(theme.palette.background.default),
     textAlign: "center",
-    marginBottom: theme.spacing(3),
 
-    fontWeight: 900,
-    fontSize: 24,
-
-    [theme.breakpoints.up("md")]: {
-        fontWeight: 900,
-        fontSize: 28,
-    },
-}));
-
-const Subtitle = styled(Typography)(({ theme }) => ({
-    color: theme.palette.getContrastText(theme.palette.background.default),
-    fontWeight: 400,
-    textAlign: "center",
-    marginBottom: theme.spacing(2),
-    fontSize: 14,
-
-    [theme.breakpoints.up("md")]: {
-        fontSize: 18,
-    },
+    fontWeight: "bold",
+    fontSize: 20,
 }));
 
 const PrimaryAction = styled(Button)(({ theme }) => ({
@@ -83,6 +65,19 @@ const PrimaryAction = styled(Button)(({ theme }) => ({
     borderRadius: theme.spacing(1),
     textTransform: "none",
     width: "100%",
+}));
+
+const Links = styled("div")(({ theme }) => ({
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "row",
+    padding: `${theme.spacing(2)} 0px ${theme.spacing(2)} 0px`,
+}));
+
+const DecoratedLink = styled(Link)(() => ({
+    color: "white",
+    fontSize: 12,
 }));
 
 interface FormValues {
@@ -136,7 +131,7 @@ const validationSchema = yup.object({
     lastName: yup.string().required("Last Name is required"),
     emailAddress: yup
         .string()
-        .email("Must be a valid Email")
+        .email("Must be a valid email")
         .required("Email is required"),
     password: yup
         .string()
@@ -175,10 +170,9 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
 
     return (
         <Root>
-            <Title>Welcome to HyperTool</Title>
             <Card>
                 <CardContent>
-                    <Subtitle>Create Account</Subtitle>
+                    <Title>Create new account</Title>
 
                     <FormContainer>
                         <Formik
@@ -233,6 +227,11 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                                     >
                                         Create Account
                                     </PrimaryAction>
+                                    <Links>
+                                        <DecoratedLink to="/login">
+                                            Login to an Existing Account
+                                        </DecoratedLink>
+                                    </Links>
                                 </>
                             )}
                         </Formik>

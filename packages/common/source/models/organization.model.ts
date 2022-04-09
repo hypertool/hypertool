@@ -10,10 +10,8 @@ import {
 
 const membershipSchema = new Schema({
     user: {
-        type: {
-            type: Schema.Types.ObjectId,
-            ref: "User",
-        },
+        type: Schema.Types.ObjectId,
+        ref: "User",
     },
     role: {
         type: String,

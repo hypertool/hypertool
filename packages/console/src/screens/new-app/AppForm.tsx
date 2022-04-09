@@ -40,7 +40,7 @@ interface FormValues {
     name: string;
 }
 
-const OrganizationForm: FunctionComponent = (): ReactElement => {
+const AppForm: FunctionComponent = (): ReactElement => {
     const formik = useFormikContext<FormValues>();
 
     const slug = useMemo(
@@ -79,7 +79,7 @@ const OrganizationForm: FunctionComponent = (): ReactElement => {
                         >
                             {slug && (
                                 <>
-                                    Your organization will be hosted at {slug}
+                                    Your app will be hosted at {slug}
                                     .hypertool.io
                                 </>
                             )}
@@ -110,6 +110,55 @@ const OrganizationForm: FunctionComponent = (): ReactElement => {
                         </Typography>
                     }
                 />
+                <NameTextField
+                    required={true}
+                    name="organization"
+                    id="organization"
+                    label="Organization"
+                    size="small"
+                    variant="outlined"
+                    fullWidth={true}
+                    help={
+                        <Typography
+                            variant="caption"
+                            style={{
+                                display: "flex",
+                                marginTop: 4,
+                                flexDirection: "column",
+                                marginLeft: -8,
+                                marginBottom: 0,
+                                paddingBottom: 0,
+                            }}
+                        >
+                            This is the name of the organization that the app
+                            belongs to.
+                        </Typography>
+                    }
+                />
+                <NameTextField
+                    required={true}
+                    name="slug"
+                    id="slug"
+                    label="Slug"
+                    size="small"
+                    variant="outlined"
+                    fullWidth={true}
+                    help={
+                        <Typography
+                            variant="caption"
+                            style={{
+                                display: "flex",
+                                marginTop: 4,
+                                flexDirection: "column",
+                                marginLeft: -8,
+                                marginBottom: 0,
+                                paddingBottom: 0,
+                            }}
+                        >
+                            This is the slug of the app.
+                        </Typography>
+                    }
+                />
                 <DescriptionTextField
                     name="description"
                     id="description"
@@ -131,7 +180,7 @@ const OrganizationForm: FunctionComponent = (): ReactElement => {
                                 paddingBottom: 0,
                             }}
                         >
-                            A description of your organization
+                            A description of your application.
                         </Typography>
                     }
                 />
@@ -140,4 +189,4 @@ const OrganizationForm: FunctionComponent = (): ReactElement => {
     );
 };
 
-export default OrganizationForm;
+export default AppForm;

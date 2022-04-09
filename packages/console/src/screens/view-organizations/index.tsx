@@ -1,18 +1,12 @@
-import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect } from "react";
+import { useCallback } from "react";
 
 import {
     AppBar,
     Button,
     CircularProgress,
     Container,
-    Hidden,
     Icon,
-    InputAdornment,
-    InputLabel,
-    MenuItem,
-    FormControl as MuiFormControl,
-    Select,
     TextField,
     Toolbar,
     Typography,
@@ -23,14 +17,17 @@ import { gql, useQuery } from "@apollo/client";
 
 import { useNavigate } from "react-router";
 
-import AppCard from "./AppCard";
-import AppFilter from "./AppFilter";
+import OrganizationCard from "./OrganizationCard";
 
 const Root = styled("section")(() => ({
     width: "100%",
 }));
 
 const Title = styled(Typography)(() => ({}));
+
+const Text = styled(Typography)(() => ({
+    color: "white",
+}));
 
 const WorkspaceToolbar = styled(Toolbar)(() => ({
     display: "flex",
@@ -55,10 +52,6 @@ const ActionIcon = styled(Icon)(({ theme }) => ({
     marginRight: theme.spacing(1),
 }));
 
-const FormControl = styled(MuiFormControl)(({ theme }) => ({
-    marginBottom: theme.spacing(2),
-}));
-
 const Content = styled(Container)(({ theme }) => ({
     width: "100%",
     display: "flex",
@@ -73,7 +66,7 @@ const Content = styled(Container)(({ theme }) => ({
     },
 }));
 
-const Apps = styled("div")(() => ({
+const Organizations = styled("div")(() => ({
     width: "100%",
     display: "flex",
     flexDirection: "row",
@@ -90,86 +83,44 @@ const ProgressContainer = styled("div")(() => ({
     alignItems: "center",
 }));
 
-const filters = [
-    {
-        title: "All",
-        url: "/apps",
-        icon: "list",
-    },
-    {
-        title: "Recent",
-        url: "/apps/recent",
-        icon: "history",
-    },
-    {
-        title: "Starred",
-        url: "/apps/starred",
-        icon: "star",
-    },
-    {
-        title: "Trash",
-        url: "/apps/trash",
-        icon: "delete",
-    },
-];
-
-const GET_APPS = gql`
-    query GetApps($page: Int, $limit: Int) {
-        getApps(page: $page, limit: $limit) {
-            totalPages
-            records {
+const GET_USER_ORGANIZATIONS = gql`
+    query GetUserById($userId: ID!) {
+        getUserById(userId: $userId) {
+            organizations {
                 id
+                title
                 name
                 description
-                status
             }
         }
     }
 `;
 
-const ViewApps: FunctionComponent = (): ReactElement => {
-    const [filter, setFilter] = useState<string>(filters[0].url);
+const ViewOrganizations: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
-    // TODO: Destructure `error`, check for non-null, send to sentry
-    const { loading, data } = useQuery(GET_APPS);
+    const session = localStorage.getItem("session") as string;
+    const { loading, data } = useQuery(GET_USER_ORGANIZATIONS, {
+        variables: {
+            userId: JSON.parse(session)?.user?.id,
+        },
+        notifyOnNetworkStatusChange: true,
+    });
 
     const handleCreateNew = useCallback(() => {
-        navigate("/apps/new");
+        navigate("/organizations/new");
     }, [navigate]);
 
-    const handleFilterChange = useCallback((event) => {
-        setFilter(event.target.value);
-    }, []);
-
-    const handleLaunch = useCallback((slug: string) => {
-        const subdomain = "trell";
-        window.open(`https://${subdomain}.hypertool.io/${slug}`);
-    }, []);
-
-    const renderFilter = () => (
-        <FormControl fullWidth={true}>
-            <InputLabel id="filter-label">Filter</InputLabel>
-            <Select
-                labelId="filter-label"
-                id="filter"
-                value={filter}
-                label="Filter"
-                onChange={handleFilterChange}
-            >
-                {filters.map((filter) => (
-                    <MenuItem value={filter.url}>{filter.title}</MenuItem>
-                ))}
-            </Select>
-        </FormControl>
-    );
+    const handleOpen = useCallback((id: string) => {
+        navigate(`/organizations/${id}`);
+    }, [navigate]);
 
     return (
         <Root>
             <AppBar position="static" elevation={1}>
                 <WorkspaceToolbar>
-                    <Title>Resource Library</Title>
+                    <Title>Your Organizations</Title>
                     <ActionContainer>
-                        <Search
+                        {/* <Search
                             label=""
                             placeholder="Search"
                             size="small"
@@ -180,7 +131,7 @@ const ViewApps: FunctionComponent = (): ReactElement => {
                                     </InputAdornment>
                                 ),
                             }}
-                        />
+                        /> */}
                         <Button size="small" onClick={handleCreateNew}>
                             <ActionIcon fontSize="small">add_circle</ActionIcon>
                             Create New
@@ -189,30 +140,38 @@ const ViewApps: FunctionComponent = (): ReactElement => {
                 </WorkspaceToolbar>
             </AppBar>
             <Content>
-                <Hidden lgDown={true}>
-                    <AppFilter />
-                </Hidden>
-                <Hidden lgUp={true}>{renderFilter()}</Hidden>
                 {loading && (
                     <ProgressContainer>
                         <CircularProgress size="28px" />
                     </ProgressContainer>
                 )}
-                {!loading && (
-                    <Apps>
-                        {data.getApps.records.map((app: any) => (
-                            <AppCard
-                                id={app.id}
-                                name={app.name}
-                                description={app.description}
-                                onLaunch={handleLaunch}
-                            />
-                        ))}
-                    </Apps>
+
+                {!loading && data?.getUserById?.organizations?.length === 0 && (
+                    <Text>You are not part of any organization.</Text>
+                )}
+
+                {!loading && data?.getUserById?.organizations?.length !== 0 && (
+                    <Organizations>
+                        {data?.getUserById?.organizations?.map(
+                            (organization: {
+                                id: string;
+                                name: string;
+                                title: string;
+                                description: string;
+                            }) => (
+                                <OrganizationCard
+                                    id={organization.id}
+                                    name={organization.title}
+                                    description={organization.description}
+                                    onLaunch={handleOpen}
+                                />
+                            ),
+                        )}
+                    </Organizations>
                 )}
             </Content>
         </Root>
     );
 };
 
-export default ViewApps;
+export default ViewOrganizations;

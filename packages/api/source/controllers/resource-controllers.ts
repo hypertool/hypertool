@@ -1,4 +1,5 @@
-import type {
+import {
+    AppModel,
     IBigQueryConfiguration,
     IExternalResource,
 } from "@hypertool/common";
@@ -7,18 +8,21 @@ import {
     NotFoundError,
     ResourceModel,
     constants,
+    runAsTransaction,
 } from "@hypertool/common";
 
 import joi from "joi";
+import mongoose from "mongoose";
 
 // TODO: Add limits to database configurations!
 const createSchema = joi.object({
-    name: joi.string().max(256).required(),
+    name: joi.string().regex(constants.namePattern).max(256).required(),
     description: joi.string().max(512).allow("").default(""),
     type: joi
         .string()
         .valid(...constants.resourceTypes)
         .required(),
+    app: joi.string().regex(constants.identifierPattern),
     mysql: joi.object({
         host: joi.string().required(),
         port: joi.number().integer().required(),
@@ -149,16 +153,48 @@ const create = async (context, attributes): Promise<IExternalResource> => {
         throw new BadRequestError(error.message);
     }
 
-    /*
-     * TODO: Add `resource` to `app.resources`
-     * TODO: Check if value.creator is correct.
-     * TODO: Check if value.name is unique across the organization and matches the identifier regex.
-     */
-    const newResource = new ResourceModel({
-        ...value,
-        status: "enabled",
+    const newResource = await runAsTransaction(async () => {
+        const resourceId = new mongoose.Types.ObjectId();
+
+        /*
+         * Add `resource` to `app.resources`.
+         */
+        const app = await AppModel.findOneAndUpdate(
+            { _id: value.app },
+            { $push: { resources: resourceId } },
+            { new: true },
+        )
+            .lean()
+            .exec();
+        if (!app) {
+            throw new NotFoundError(`App "${value.app}" not found`);
+        }
+
+        /*
+         * Check if name already exists in any resource of the given app.
+         */
+        const existingResource = await ResourceModel.findOne({
+            app: value.app,
+            name: value.name,
+        })
+            .lean()
+            .exec();
+        if (existingResource) {
+            throw new BadRequestError(
+                `Resource with name "${value.name}" already exists`,
+            );
+        }
+
+        const newResource = new ResourceModel({
+            _id: resourceId,
+            ...value,
+            status: "enabled",
+            creator: context.user._id,
+        });
+        await newResource.save();
+
+        return newResource;
     });
-    await newResource.save();
 
     return toExternal(newResource);
 };

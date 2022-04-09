@@ -118,6 +118,10 @@ const resourceSchema = new Schema(
             enum: resourceTypes,
             required: true,
         },
+        app: {
+            type: Schema.Types.ObjectId,
+            ref: "App",
+        },
         status: {
             type: String,
             enum: resourceStatuses,

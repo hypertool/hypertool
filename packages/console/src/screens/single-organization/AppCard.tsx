@@ -85,8 +85,7 @@ const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
                         <IconButton
                             onClick={handleOpenOptions}
                             size="small"
-                            sx={{ ml: 2 }}
-                        >
+                            sx={{ ml: 2 }}>
                             <Icon fontSize="small">more_vert</Icon>
                         </IconButton>
                     </Tooltip>

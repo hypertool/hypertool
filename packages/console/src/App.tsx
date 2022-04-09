@@ -93,6 +93,10 @@ const App: FunctionComponent = (): ReactElement => {
                             element={<CreateAccount />}
                         />
                         <Route path="/new-password" element={<NewPassword />} />
+                        <Route
+                            index={true}
+                            element={<Navigate to={"/login"} />}
+                        />
                     </Route>
                 </Routes>
 
@@ -116,11 +120,11 @@ const App: FunctionComponent = (): ReactElement => {
 
                                 {/* Routes associated with Teams */}
                                 <Route
-                                    path="/organizations/:organizationId/teams/:teamId"
+                                    path="/teams/:teamId"
                                     element={<SingleTeam />}
                                 />
                                 <Route
-                                    path="/organizations/:organizationId/teams/new"
+                                    path="/teams/new"
                                     element={<NewTeam />}
                                 />
 
@@ -138,7 +142,7 @@ const App: FunctionComponent = (): ReactElement => {
                                     element={<InviteUser />}
                                 />
 
-                                {/* Routes associated with Users */}
+                                {/* Routes associated with Apps */}
                                 <Route path="/apps" element={<ViewApps />} />
                                 <Route path="/apps/new" element={<NewApp />} />
                                 <Route
@@ -157,21 +161,13 @@ const App: FunctionComponent = (): ReactElement => {
                             />
 
                             <Route
-                                index={true}
-                                element={
-                                    <Navigate
-                                        to={session ? "/apps" : "/login"}
-                                    />
-                                }
+                                path="/login"
+                                element={<Navigate to={"/apps"} />}
                             />
 
                             <Route
-                                path="/login"
-                                element={
-                                    <Navigate
-                                        to={session ? "/apps" : "/login"}
-                                    />
-                                }
+                                index={true}
+                                element={<Navigate to={"/apps"} />}
                             />
                         </Routes>
                     </ApolloProvider>

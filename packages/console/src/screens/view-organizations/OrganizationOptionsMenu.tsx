@@ -79,16 +79,6 @@ const AppOptionsMenu: FunctionComponent<Props> = (
             title: "Administrator",
             items: [
                 {
-                    title: "Duplicate",
-                    icon: "content_copy",
-                    action: handleDuplicate,
-                },
-                {
-                    title: "Publish",
-                    icon: "publish",
-                    action: handleTogglePublish,
-                },
-                {
                     title: "Edit",
                     icon: "edit",
                     action: handleEdit,

@@ -1,12 +1,14 @@
-import type { ExternalQuery, Query, QueryPage } from "@hypertool/common";
+import { AppModel, ExternalQuery, Query, QueryPage } from "@hypertool/common";
 import {
     BadRequestError,
     NotFoundError,
     QueryTemplateModel,
     constants,
+    runAsTransaction,
 } from "@hypertool/common";
 
 import joi from "joi";
+import mongoose from "mongoose";
 
 const createSchema = joi.object({
     name: joi.string().max(128).required(),
@@ -69,12 +71,46 @@ const create = async (context, attributes): Promise<ExternalQuery> => {
         throw new BadRequestError(error.message);
     }
 
-    // TODO: Add `query` to `app.queries`
-    const newQuery = new QueryTemplateModel({
-        ...value,
-        status: "enabled",
+    const newQuery = await runAsTransaction(async () => {
+        const queryTemplateId = new mongoose.Types.ObjectId();
+
+        /*
+         * Add `query` to `app.queries`
+         */
+        const appId = value.app;
+        await AppModel.findOneAndUpdate(
+            { _id: appId },
+            { $push: { queries: queryTemplateId } },
+            { new: true },
+        )
+            .lean()
+            .exec();
+
+        /*
+         * Check if the query name already exists in the app.
+         */
+        const filters = {
+            name: value.name,
+            app: value.app,
+        };
+        const query = await QueryTemplateModel.findOne(filters as any)
+            .lean()
+            .exec();
+        if (query) {
+            throw new BadRequestError(
+                `Query with name ${value.name} already exists.`,
+            );
+        }
+
+        const newQuery = new QueryTemplateModel({
+            _id: queryTemplateId,
+            ...value,
+            status: "enabled",
+        });
+        await newQuery.save();
+
+        return newQuery;
     });
-    await newQuery.save();
 
     return toExternal(newQuery);
 };

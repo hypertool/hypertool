@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactElement } from "react";
+import { FunctionComponent, ReactElement, useState } from "react";
 
 import type { AppBarProps, IconButtonProps } from "@mui/material";
 import {
@@ -7,9 +7,11 @@ import {
     Toolbar,
     Typography,
 } from "@mui/material";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import { styled } from "@mui/material/styles";
 
-import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircle from "@mui/icons-material/AccountCircle";
 
 interface PrimaryAppBarProps extends AppBarProps {
     open?: boolean;
@@ -24,6 +26,8 @@ const DecoratedAppBar = styled(MuiAppBar, {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
     }),
+    flexDirection: "row",
+    justifyContent: "space-between",
 
     [theme.breakpoints.up("lg")]: {
         zIndex: theme.zIndex.drawer + 1,
@@ -39,41 +43,78 @@ const DecoratedAppBar = styled(MuiAppBar, {
     },
 }));
 
-interface MenuButtonProps extends IconButtonProps {
-    open?: boolean;
-}
-
-const MenuButton = styled(IconButton)<MenuButtonProps>(({ theme, open }) => ({
-    marginRight: theme.spacing(2),
-    ...(open && { display: "none" }),
+const Logo = styled("img")(({ theme }) => ({
+    width: 32,
+    height: "auto",
+    marginRight: theme.spacing(1),
 }));
 
-const ToolName = styled(Typography)(() => ({
+const Options = styled(IconButton)(({ theme }) => ({
+    margin: theme.spacing(1),
+}));
+
+const Title = styled(Typography)(() => ({
     fontSize: 18,
+    fontWeight: "bold",
 }));
-
 interface Props {
     open: boolean;
     onDrawerOpen: () => void;
 }
 
 const AppBar: FunctionComponent<Props> = (props: Props): ReactElement => {
-    const { open, onDrawerOpen } = props;
+    const [anchor, setAnchor] = useState<null | HTMLElement>(null);
+    const isMenuOpen = Boolean(anchor);
+
+    const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchor(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchor(null);
+    };
+
+    const handleLogOut = () => {
+        localStorage.clear();
+        window.location.href = "/login";
+    };
+
+    const renderMenu = (
+        <Menu
+            anchorEl={anchor}
+            anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+            }}
+            keepMounted
+            transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+            }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
+        </Menu>
+    );
+
     return (
-        <DecoratedAppBar open={open}>
+        <DecoratedAppBar>
             <Toolbar>
-                <MenuButton
-                    onClick={onDrawerOpen}
-                    size="small"
-                    edge="start"
-                    color="inherit"
-                    open={open}>
-                    <MenuIcon />
-                </MenuButton>
-                <ToolName variant="h6" sx={{ flexGrow: 1 }}>
-                    hypertool
-                </ToolName>
+                <Logo src="https://res.cloudinary.com/hypertool/image/upload/v1642502111/hypertool-starter/hypertool-logo_xvqljy.png" />
+                <Title variant="h6" sx={{ flexGrow: 1 }}>
+                    Hypertool
+                </Title>
             </Toolbar>
+            <Options
+                size="large"
+                edge="end"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+            >
+                <AccountCircle />
+            </Options>
+            {renderMenu}
         </DecoratedAppBar>
     );
 };

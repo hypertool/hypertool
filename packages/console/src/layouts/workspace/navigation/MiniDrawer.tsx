@@ -69,6 +69,12 @@ const Drawer = styled(MuiDrawer)(({ theme, open }) => ({
     }),
 }));
 
+const Logo = styled("img")(({ theme }) => ({
+    width: 32,
+    height: "auto",
+    marginRight: theme.spacing(1),
+}));
+
 interface Props {
     open: boolean;
     onDrawerClose: () => void;
@@ -78,31 +84,28 @@ const groups = [
     {
         title: "General",
         items: [
+            /*
+             * {
+             *     title: "Edit Profile",
+             *     url: "/user/settings",
+             *     icon: "account_circle",
+             * },
+             */
             {
-                title: "Apps",
-                url: "/apps",
-                icon: "apps",
+                title: "Organizations",
+                url: "/organizations",
+                icon: "business",
             },
             {
-                title: "New App",
-                url: "/apps/new",
-                icon: "add_circle_outline",
+                title: "Applications",
+                url: "/apps",
+                icon: "apps",
             },
         ],
     },
     {
-        title: "Administrator",
+        title: "Settings",
         items: [
-            {
-                title: "Resource Library",
-                url: "/resources",
-                icon: "category",
-            },
-            {
-                title: "Teams",
-                url: "/teams",
-                icon: "people",
-            },
             {
                 title: "Billing",
                 url: "/billing",
@@ -148,24 +151,18 @@ const MiniDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
     return (
         <Drawer
             variant={matches ? "permanent" : undefined}
-            open={open}
+            open={matches ? true : false}
             anchor="left"
-            onClose={onDrawerClose}>
-            <DrawerHeader>
-                <IconButton onClick={onDrawerClose}>
-                    {theme.direction === "rtl" ? (
-                        <ChevronRightIcon />
-                    ) : (
-                        <ChevronLeftIcon />
-                    )}
-                </IconButton>
-            </DrawerHeader>
+            onClose={onDrawerClose}
+        >
+            <DrawerHeader />
             <Divider />
             {groups.map((group, index: number) => (
                 <Fragment key={group.title}>
                     <List>
                         {group.items.map((item) => (
                             <MiniDrawerItem
+                                key={item.title}
                                 open={open}
                                 title={item.title}
                                 url={item.url}

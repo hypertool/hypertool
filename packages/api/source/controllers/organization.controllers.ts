@@ -101,11 +101,48 @@ const create = async (context, attributes): Promise<IExternalOrganization> => {
         throw new BadRequestError(error.message);
     }
 
+    // Check if the organization with same name already exists.
+    const filters = {
+        name: value.name,
+    };
+    const existingOrganization = await OrganizationModel.findOne(
+        filters,
+    ).exec();
+
+    if (existingOrganization) {
+        throw new BadRequestError(
+            `Organization with name "${value.name}" already exists.`,
+        );
+    }
+
     const newOrganization = new OrganizationModel({
         ...value,
+        members: [
+            {
+                user: context.user._id,
+                role: "owner",
+                status: "activated",
+            },
+        ],
         status: "active",
     });
     await newOrganization.save();
+
+    const users = await UserModel.findOneAndUpdate(
+        {
+            _id: context.user._id,
+        },
+        {
+            $addToSet: {
+                organizations: newOrganization._id,
+            },
+        },
+        {
+            new: true,
+        },
+    )
+        .lean()
+        .exec();
 
     return toExternal(newOrganization);
 };
@@ -153,6 +190,7 @@ const listByIds = async (
         _id: { $in: organizationIds },
         status: { $ne: "deleted" },
     }).exec();
+
     const object = {};
     // eslint-disable-next-line no-restricted-syntax
     for (const organization of unorderedOrganizations) {

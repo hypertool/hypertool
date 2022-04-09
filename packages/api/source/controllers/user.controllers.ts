@@ -234,6 +234,8 @@ const update = async (
         throw new BadRequestError(error.message);
     }
 
+    console.log("CAME HEREEEEE!!!", userId, value);
+
     // TODO: Update filters
     const user = await UserModel.findOneAndUpdate(
         {
@@ -245,7 +247,9 @@ const update = async (
             new: true,
             lean: true,
         },
-    ).exec();
+    )
+        .lean()
+        .exec();
 
     if (!user) {
         throw new NotFoundError(

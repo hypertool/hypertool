@@ -28,9 +28,6 @@ const typeDefs = gql`
             name: String
             title: String
             description: String
-            members: [OrganizationMemberInput!]
-            apps: [ID!]
-            teams: [ID!]
         ): Organization!
 
         updateOrganization(
@@ -62,7 +59,7 @@ const typeDefs = gql`
             firstName: String
             lastName: String
             description: String
-            organization: [ID]
+            organizations: [ID]
             gender: Gender
             countryCode: Country
             pictureURL: String
@@ -95,7 +92,8 @@ const typeDefs = gql`
             name: String!
             title: String!
             slug: String!
-            description: String
+            description: String!
+            organization: String!
         ): App!
 
         updateApp(
@@ -229,6 +227,7 @@ const typeDefs = gql`
     type Query {
         getOrganizations(page: Int, limit: Int): OrganizationPage!
         getOrganizationById(organizationId: ID!): Organization!
+        listOrganizationsByIds(organizationIds: [ID!]!): [Organization!]!
 
         getUsers(page: Int, limit: Int): UserPage!
         getUserById(userId: ID!): User!
@@ -426,6 +425,9 @@ const resolvers = {
         getOrganizationById: async (parent, values, context) =>
             organizations.getById(context.request, values.organizationId),
 
+        listOrganizationsByIds: async (parent, values, context) =>
+            organizations.listByIds(context.request, values.organizationIds),
+
         getUsers: async (parent, values, context) =>
             users.list(context.request, values),
 
@@ -519,6 +521,12 @@ const resolvers = {
          * deployments: async (parent, values, context) =>
          *     deployments.listByIds(context.request, parent.deployments),
          */
+    },
+    User: {
+        organizations: async (parent, values, context) =>
+            organizations.listByIds(context.request, parent.organizations),
+        apps: async (parent, values, context) =>
+            apps.listByIds(context.request, parent.apps),
     },
     Comment: {
         author: async (parent, values, context) =>

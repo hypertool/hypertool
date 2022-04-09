@@ -76,16 +76,6 @@ const AppOptionsMenu: FunctionComponent<Props> = (
 
     const groups: Group[] = [
         {
-            title: "General",
-            items: [
-                {
-                    title: "Star",
-                    icon: "star_outline",
-                    action: handleToggleStar,
-                },
-            ],
-        },
-        {
             title: "Administrator",
             items: [
                 {
@@ -97,11 +87,6 @@ const AppOptionsMenu: FunctionComponent<Props> = (
                     title: "Publish",
                     icon: "publish",
                     action: handleTogglePublish,
-                },
-                {
-                    title: "Rename",
-                    icon: "drive_file_rename_outline",
-                    action: handleRename,
                 },
                 {
                     title: "Edit",
