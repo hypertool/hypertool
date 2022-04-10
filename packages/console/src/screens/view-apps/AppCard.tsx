@@ -54,7 +54,7 @@ interface Props {
     id: string;
     name: string;
     description: string;
-    onLaunch: (id: string) => void;
+    onLaunch: (id: string, name: string) => void;
 }
 
 const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
@@ -70,8 +70,8 @@ const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
     }, []);
 
     const handleLaunch = useCallback(() => {
-        onLaunch(id);
-    }, [id, onLaunch]);
+        onLaunch(id, name);
+    }, [id, name, onLaunch]);
 
     return (
         <Card>
@@ -85,7 +85,8 @@ const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
                         <IconButton
                             onClick={handleOpenOptions}
                             size="small"
-                            sx={{ ml: 2 }}>
+                            sx={{ ml: 2 }}
+                        >
                             <Icon fontSize="small">more_vert</Icon>
                         </IconButton>
                     </Tooltip>

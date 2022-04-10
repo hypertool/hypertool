@@ -144,9 +144,8 @@ const ViewApps: FunctionComponent = (): ReactElement => {
         setFilter(event.target.value);
     }, []);
 
-    const handleLaunch = useCallback((slug: string) => {
-        const subdomain = "trell";
-        window.open(`https://${subdomain}.hypertool.io/${slug}`);
+    const handleLaunch = useCallback((id: string, name: string) => {
+        window.open(`https://${name}.hypertool.io/`);
     }, []);
 
     const renderFilter = () => (
