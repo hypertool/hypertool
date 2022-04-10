@@ -50,15 +50,18 @@ const ActionIcon = styled(Icon)(() => ({
     fontSize: 16,
 }));
 
-interface Props {
+export interface IAppCardProps {
     id: string;
     name: string;
     description: string;
     onLaunch: (id: string, name: string) => void;
+    onEdit: (id: string, name: string) => void;
 }
 
-const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
-    const { id, name, description, onLaunch } = props;
+const AppCard: FunctionComponent<IAppCardProps> = (
+    props: IAppCardProps,
+): ReactElement => {
+    const { id, name, description, onLaunch, onEdit } = props;
     const [anchor, setAnchor] = useState<null | HTMLElement>(null);
 
     const handleOpenOptions = useCallback((event: MouseEvent<HTMLElement>) => {
@@ -72,6 +75,10 @@ const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
     const handleLaunch = useCallback(() => {
         onLaunch(id, name);
     }, [id, name, onLaunch]);
+
+    const handleEdit = useCallback(() => {
+        onEdit(id, name);
+    }, [id, name, onEdit]);
 
     return (
         <Card>
@@ -95,19 +102,19 @@ const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
                         onClose={handleCloseOptions}
                         anchor={anchor}
                         id={id}
+                        name={name}
                         onToggleStar={() => null}
                         onDuplicate={() => null}
                         onTogglePublish={() => null}
                         onRename={() => null}
-                        onEdit={() => null}
+                        onLaunch={handleLaunch}
                         onDelete={() => null}
                     />
                 </CardHeader>
             </CardContent>
             <CardActions>
-                <Button size="small" onClick={handleLaunch}>
-                    Launch{" "}
-                    <ActionIcon fontSize="small">arrow_forward</ActionIcon>
+                <Button size="small" onClick={handleEdit}>
+                    Edit <ActionIcon fontSize="small">edit</ActionIcon>
                 </Button>
             </CardActions>
         </Card>

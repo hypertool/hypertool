@@ -148,6 +148,10 @@ const ViewApps: FunctionComponent = (): ReactElement => {
         window.open(`https://${name}.hypertool.io/`);
     }, []);
 
+    const handleEdit = useCallback((id: string, name: string) => {
+        navigate(`/apps/${id}/builder`);
+    }, []);
+
     const renderFilter = () => (
         <FormControl fullWidth={true}>
             <InputLabel id="filter-label">Filter</InputLabel>
@@ -213,6 +217,7 @@ const ViewApps: FunctionComponent = (): ReactElement => {
                                 name={app.name}
                                 description={app.description}
                                 onLaunch={handleLaunch}
+                                onEdit={handleEdit}
                             />
                         ))}
                     </Apps>

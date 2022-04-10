@@ -3,8 +3,9 @@ import { useCallback } from "react";
 
 import { Divider, Icon, ListItemIcon, Menu, MenuItem } from "@mui/material";
 
-interface Props {
+export interface IAppOptionsMenuProps {
     id: string;
+    name: string;
     open: boolean;
     onClose: () => void;
     anchor: HTMLElement | null;
@@ -12,13 +13,12 @@ interface Props {
     onDuplicate: (id: string) => void;
     onTogglePublish: (id: string) => void;
     onRename: (id: string) => void;
-    onEdit: (id: string) => void;
     onDelete: (id: string) => void;
+    onLaunch: (id: string, name: string) => void;
 }
 
 interface Group {
     title: string;
-    // eslint-disable-next-line no-use-before-define
     items: Item[];
 }
 
@@ -28,11 +28,12 @@ interface Item {
     action: (id: string) => void;
 }
 
-const AppOptionsMenu: FunctionComponent<Props> = (
-    props: Props,
+const AppOptionsMenu: FunctionComponent<IAppOptionsMenuProps> = (
+    props: IAppOptionsMenuProps,
 ): ReactElement => {
     const {
         id,
+        name,
         open,
         onClose,
         anchor,
@@ -40,7 +41,7 @@ const AppOptionsMenu: FunctionComponent<Props> = (
         onDuplicate,
         onTogglePublish,
         onRename,
-        onEdit,
+        onLaunch,
         onDelete,
     } = props;
 
@@ -64,10 +65,10 @@ const AppOptionsMenu: FunctionComponent<Props> = (
         onClose();
     }, [id, onClose, onRename]);
 
-    const handleEdit = useCallback(() => {
-        onEdit(id);
+    const handleLaunch = useCallback(() => {
+        onLaunch(id, name);
         onClose();
-    }, [id, onClose, onEdit]);
+    }, [id, onClose, onLaunch]);
 
     const handleDelete = useCallback(() => {
         onDelete(id);
@@ -89,9 +90,9 @@ const AppOptionsMenu: FunctionComponent<Props> = (
                     action: handleTogglePublish,
                 },
                 {
-                    title: "Edit",
-                    icon: "edit",
-                    action: handleEdit,
+                    title: "Launch",
+                    icon: "arrow_forward",
+                    action: handleLaunch,
                 },
             ],
         },
