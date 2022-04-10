@@ -113,21 +113,6 @@ const groups: Group[] = [
         ],
     },
     {
-        title: "Administrator",
-        items: [
-            {
-                title: "Teams",
-                id: "teams",
-                icon: "people",
-            },
-            {
-                title: "Deployment",
-                id: "deployment",
-                icon: "cloud",
-            },
-        ],
-    },
-    {
         title: "Help",
         items: [
             {
