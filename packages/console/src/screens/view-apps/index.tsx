@@ -30,6 +30,15 @@ const Root = styled("section")(() => ({
     width: "100%",
 }));
 
+const TitleContainer = styled("div")({
+    display: "flex",
+    flexDirection: "row",
+});
+
+const TitleIcon = styled(Icon)(({ theme }) => ({
+    marginRight: theme.spacing(1),
+}));
+
 const Title = styled(Typography)(() => ({}));
 
 const Text = styled(Typography)(() => ({
@@ -173,7 +182,10 @@ const ViewApps: FunctionComponent = (): ReactElement => {
         <Root>
             <AppBar position="static" elevation={1}>
                 <WorkspaceToolbar>
-                    <Title>Your Apps</Title>
+                    <TitleContainer>
+                        <TitleIcon>apps</TitleIcon>
+                        <Title>Applications</Title>
+                    </TitleContainer>
                     <ActionContainer>
                         {/* <Search
                             label=""
