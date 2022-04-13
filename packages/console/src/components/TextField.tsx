@@ -14,7 +14,7 @@ const TextFieldHelp = styled(Typography)(() => ({
 
 interface Props {
     name: string;
-    help: string;
+    help?: string;
     [key: string]: any;
 }
 
