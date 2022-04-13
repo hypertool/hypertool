@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactElement, useEffect } from "react";
+import { FunctionComponent, ReactElement } from "react";
 import { useCallback } from "react";
 
 import {
@@ -17,10 +17,21 @@ import { gql, useQuery } from "@apollo/client";
 
 import { useNavigate } from "react-router";
 
+import { NoRecords } from "../../components";
+
 import OrganizationCard from "./OrganizationCard";
 
 const Root = styled("section")(() => ({
     width: "100%",
+}));
+
+const TitleContainer = styled("div")({
+    display: "flex",
+    flexDirection: "row",
+});
+
+const TitleIcon = styled(Icon)(({ theme }) => ({
+    marginRight: theme.spacing(1),
 }));
 
 const Title = styled(Typography)(() => ({}));
@@ -57,7 +68,6 @@ const Content = styled(Container)(({ theme }) => ({
     display: "flex",
     alignItems: "flex-start",
     justifyContent: "center",
-    marginTop: theme.spacing(2),
 
     flexDirection: "column",
 
@@ -105,20 +115,27 @@ const ViewOrganizations: FunctionComponent = (): ReactElement => {
         },
         notifyOnNetworkStatusChange: true,
     });
+    const organizations = data?.getUserById?.organizations ?? [];
 
     const handleCreateNew = useCallback(() => {
         navigate("/organizations/new");
     }, [navigate]);
 
-    const handleOpen = useCallback((id: string) => {
-        navigate(`/organizations/${id}`);
-    }, [navigate]);
+    const handleOpen = useCallback(
+        (id: string) => {
+            navigate(`/organizations/${id}`);
+        },
+        [navigate],
+    );
 
     return (
         <Root>
             <AppBar position="static" elevation={1}>
                 <WorkspaceToolbar>
-                    <Title>Your Organizations</Title>
+                    <TitleContainer>
+                        <TitleIcon>business</TitleIcon>
+                        <Title>Organizations</Title>
+                    </TitleContainer>
                     <ActionContainer>
                         {/* <Search
                             label=""
@@ -146,13 +163,19 @@ const ViewOrganizations: FunctionComponent = (): ReactElement => {
                     </ProgressContainer>
                 )}
 
-                {!loading && data?.getUserById?.organizations?.length === 0 && (
-                    <Text>You are not part of any organization.</Text>
+                {!loading && organizations.length === 0 && (
+                    <NoRecords
+                        message="We tried our best, but couldn't find any organizations."
+                        image="https://res.cloudinary.com/hypertool/image/upload/v1649822115/hypertool-assets/empty-organizations_qajazk.svg"
+                        actionText="Create New Organization"
+                        actionIcon="add_circle_outline"
+                        onAction={handleCreateNew}
+                    />
                 )}
 
-                {!loading && data?.getUserById?.organizations?.length !== 0 && (
+                {!loading && organizations.length > 0 && (
                     <Organizations>
-                        {data?.getUserById?.organizations?.map(
+                        {organizations.map(
                             (organization: {
                                 id: string;
                                 name: string;
@@ -160,6 +183,7 @@ const ViewOrganizations: FunctionComponent = (): ReactElement => {
                                 description: string;
                             }) => (
                                 <OrganizationCard
+                                    key={organization.id}
                                     id={organization.id}
                                     name={organization.title}
                                     description={organization.description}

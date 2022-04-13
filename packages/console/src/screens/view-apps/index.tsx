@@ -78,7 +78,6 @@ const Content = styled(Container)(({ theme }) => ({
     display: "flex",
     alignItems: "flex-start",
     justifyContent: "center",
-    marginTop: theme.spacing(2),
 
     flexDirection: "column",
 
