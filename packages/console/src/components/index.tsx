@@ -5,3 +5,4 @@ export { default as Checkbox } from "./Checkbox";
 export { default as IconMenuItem } from "./IconMenuItem";
 export { default as NestedMenuItem } from "./NestedMenuItem";
 export { default as Select } from "./Select";
+export { default as NoRecords } from "./NoRecords";
