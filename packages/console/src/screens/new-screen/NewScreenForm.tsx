@@ -56,9 +56,9 @@ const ActionContainer = styled("div")({
     justifyContent: "space-between",
 });
 
-const CreateAction = styled(Button)({
-    width: 184,
-});
+const CreateAction = styled(Button)(({ theme }) => ({
+    padding: theme.spacing(0.5, 3),
+}));
 
 const NameTextField = styled(TextField)({
     maxWidth: 400,
