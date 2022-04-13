@@ -29,13 +29,13 @@ import {
     NewPassword,
     NewTeam,
     ResourceLibrary,
-    SingleApp,
-    SingleOrganization,
-    SingleTeam,
-    SingleUser,
     UpdatePassword,
+    ViewApp,
     ViewApps,
+    ViewOrganization,
     ViewOrganizations,
+    ViewTeam,
+    ViewUser,
 } from "./screens";
 
 const Root = styled("div")(({ theme }) => ({
@@ -115,13 +115,13 @@ const App: FunctionComponent = (): ReactElement => {
                                 />
                                 <Route
                                     path="/organizations/:organizationId"
-                                    element={<SingleOrganization />}
+                                    element={<ViewOrganization />}
                                 />
 
                                 {/* Routes associated with Teams */}
                                 <Route
                                     path="/teams/:teamId"
-                                    element={<SingleTeam />}
+                                    element={<ViewTeam />}
                                 />
                                 <Route
                                     path="/teams/new"
@@ -131,7 +131,7 @@ const App: FunctionComponent = (): ReactElement => {
                                 {/* Routes associated with Users */}
                                 <Route
                                     path="/:username"
-                                    element={<SingleUser />}
+                                    element={<ViewUser />}
                                 />
                                 <Route
                                     path="/update-password"
@@ -147,7 +147,7 @@ const App: FunctionComponent = (): ReactElement => {
                                 <Route path="/apps/new" element={<NewApp />} />
                                 <Route
                                     path="/apps/:appId"
-                                    element={<SingleApp />}
+                                    element={<ViewApp />}
                                 />
                                 <Route
                                     path="/apps/:appId/authentication"

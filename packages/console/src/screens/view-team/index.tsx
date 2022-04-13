@@ -24,7 +24,7 @@ const PrimaryAction = styled(Button)(({ theme }) => ({
     },
 }));
 
-const SingleApp: FunctionComponent = (): ReactElement => {
+const ViewApp: FunctionComponent = (): ReactElement => {
     const { appId } = useParams();
     const navigate = useNavigate();
     const handleClick = () => {
@@ -45,4 +45,4 @@ const SingleApp: FunctionComponent = (): ReactElement => {
     );
 };
 
-export default SingleApp;
+export default ViewApp;
