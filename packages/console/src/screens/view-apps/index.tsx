@@ -8,7 +8,6 @@ import {
     Container,
     Hidden,
     Icon,
-    InputAdornment,
     InputLabel,
     MenuItem,
     FormControl as MuiFormControl,
@@ -22,6 +21,8 @@ import { styled } from "@mui/material/styles";
 import { gql, useQuery } from "@apollo/client";
 
 import { useNavigate } from "react-router";
+
+import { NoRecords } from "../../components";
 
 import AppCard from "./AppCard";
 import AppFilter from "./AppFilter";
@@ -144,6 +145,7 @@ const ViewApps: FunctionComponent = (): ReactElement => {
     const [filter, setFilter] = useState<string>(filters[0].url);
     const navigate = useNavigate();
     const { loading, data } = useQuery(GET_APPS);
+    const records = data?.getApps?.records ?? [];
 
     const handleCreateNew = useCallback(() => {
         navigate("/apps/new");
@@ -209,22 +211,30 @@ const ViewApps: FunctionComponent = (): ReactElement => {
             <Content>
                 {/* <Hidden lgDown={true}>
                     <AppFilter />
-                </Hidden> */}
+                </Hidden>
                 <Hidden lgUp={true}>{renderFilter()}</Hidden>
+                */}
                 {loading && (
                     <ProgressContainer>
                         <CircularProgress size="28px" />
                     </ProgressContainer>
                 )}
 
-                {!loading && data?.getApps?.records?.length === 0 && (
-                    <Text>You do not have any apps yet.</Text>
+                {!loading && records.length === 0 && (
+                    <NoRecords
+                        message="We tried our best, but couldn't find any apps."
+                        image="https://res.cloudinary.com/hypertool/image/upload/v1649820987/hypertool-assets/empty-apps_ok9nbh.svg"
+                        actionText="Create New App"
+                        actionIcon="add_circle_outline"
+                        onAction={handleCreateNew}
+                    />
                 )}
 
-                {!loading && data?.getApps?.records?.length !== 0 && (
+                {!loading && records.length > 0 && (
                     <Apps>
-                        {data?.getApps?.records?.map((app: any) => (
+                        {records.map((app: any) => (
                             <AppCard
+                                key={app.id}
                                 id={app.id}
                                 name={app.name}
                                 description={app.description}
