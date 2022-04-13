@@ -74,7 +74,7 @@ const AppBar: FunctionComponent<Props> = (props: Props): ReactElement => {
         setAnchor(null);
     };
 
-    const handleLogOut = () => {
+    const handleLogout = () => {
         localStorage.clear();
         window.location.href = "/login";
     };
@@ -94,7 +94,7 @@ const AppBar: FunctionComponent<Props> = (props: Props): ReactElement => {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
     );
 
