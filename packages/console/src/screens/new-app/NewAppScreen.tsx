@@ -61,15 +61,6 @@ const FormRoot = styled("section")(({ theme }) => ({
     width: "100%",
 }));
 
-const TextFieldHelp = styled(Typography)({
-    display: "flex",
-    marginTop: 4,
-    flexDirection: "column",
-    marginLeft: -8,
-    marginBottom: 0,
-    paddingBottom: 0,
-});
-
 const NameTextField = styled(TextField)({
     maxWidth: 400,
 });
@@ -89,9 +80,35 @@ const Warning = styled(Typography)(({ theme }) => ({
     fontSize: 12,
 }));
 
-const OrganizationTextField = styled(TextField)(({ theme }) => ({
-    maxWidth: 400,
-    marginTop: theme.spacing(2),
+const ProgressContainer = styled("div")(({ theme }) => ({
+    padding: theme.spacing(0, 2),
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+}));
+
+const ProgressText = styled(Typography)(({ theme }) => ({
+    fontSize: 12,
+    marginRight: theme.spacing(1),
+}));
+
+const OrganizationContainer = styled("div")(({ theme }) => ({
+    display: "flex",
+    flexDirection: "column",
+}));
+
+const OrganizationTitle = styled(Typography)(({ theme }) => ({
+    fontSize: 14,
+}));
+
+const NoneOrganizationTitle = styled(Typography)(({ theme }) => ({
+    fontSize: 14,
+    fontStyle: "italic",
+}));
+
+const OrganizationName = styled(Typography)(({ theme }) => ({
+    fontSize: 12,
 }));
 
 const DescriptionTextField = styled(TextField)(({ theme }) => ({
@@ -183,7 +200,7 @@ const NewAppScreen: FunctionComponent = (): ReactElement => {
             notifyOnNetworkStatusChange: true,
         },
     );
-    const organizations = data?.getUserById?.organizations ?? [];
+    const organizations = organizationsData?.getUserById?.organizations ?? [];
 
     const handleSubmit = useCallback(
         (values: FormValues): any => {
@@ -206,18 +223,52 @@ const NewAppScreen: FunctionComponent = (): ReactElement => {
         }
     }, [loading, data, navigate]);
 
+    const renderOrganizationValue = useCallback(
+        (organizationId) => {
+            if (organizationId === "") {
+                return <OrganizationName>None</OrganizationName>;
+            }
+
+            const organization = organizations.find(
+                (organization: any) => organization.id === organizationId,
+            );
+            return <OrganizationName>{organization.name}</OrganizationName>;
+        },
+        [organizations],
+    );
+
     const renderOrganizationMenuItems = useCallback(() => {
+        if (loadOrganizations) {
+            return (
+                <ProgressContainer>
+                    <ProgressText>Loading...</ProgressText>
+                    <CircularProgress size="12px" />
+                </ProgressContainer>
+            );
+        }
+
         if (organizations.length === 0) {
             return <Warning>You do not belong to any organizations.</Warning>;
         }
 
-        return organizations.map((organization: any) => (
-            <MenuItem key={organization.id} value={organization.id}>
-                <Typography>{organization.title}</Typography>
-                <Typography>{organization.name}</Typography>
-            </MenuItem>
-        ));
-    }, []);
+        return [
+            ...organizations.map((organization: any) => (
+                <MenuItem key={organization.id} value={organization.id}>
+                    <OrganizationContainer>
+                        <OrganizationTitle>
+                            {organization.title}
+                        </OrganizationTitle>
+                        <OrganizationName>{organization.name}</OrganizationName>
+                    </OrganizationContainer>
+                </MenuItem>
+            )),
+            <MenuItem key="none" value="">
+                <OrganizationContainer>
+                    <NoneOrganizationTitle>None</NoneOrganizationTitle>
+                </OrganizationContainer>
+            </MenuItem>,
+        ];
+    }, [loadOrganizations, organizations]);
 
     return (
         <Root>
@@ -273,8 +324,9 @@ const NewAppScreen: FunctionComponent = (): ReactElement => {
                                         size="small"
                                         help=""
                                         renderMenuItems={
-                                            renderOrganizationMenuItems
+                                            renderOrganizationMenuItems as any
                                         }
+                                        renderValue={renderOrganizationValue}
                                     />
                                 </OrganizationSelect>
                                 <DescriptionTextField
