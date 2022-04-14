@@ -4,23 +4,22 @@ import { useCallback, useEffect } from "react";
 import {
     Button,
     CircularProgress,
-    Container,
     Divider,
+    MenuItem,
     Typography,
-    useMediaQuery,
-    useTheme,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
 import * as yup from "yup";
 import { Formik } from "formik";
 import { useNavigate } from "react-router";
 
-import { TextField } from "../../components";
+import { Select, TextField } from "../../components";
+import { usePrivateSession } from "../../hooks";
 
 const Root = styled("div")(({ theme }) => ({
     display: "flex",
@@ -78,6 +77,16 @@ const NameTextField = styled(TextField)({
 const TitleTextField = styled(TextField)(({ theme }) => ({
     maxWidth: 400,
     marginTop: theme.spacing(2),
+}));
+
+const OrganizationSelect = styled("div")(({ theme }) => ({
+    width: 400,
+    marginTop: theme.spacing(2),
+}));
+
+const Warning = styled(Typography)(({ theme }) => ({
+    padding: theme.spacing(0, 2),
+    fontSize: 12,
 }));
 
 const OrganizationTextField = styled(TextField)(({ theme }) => ({
@@ -143,31 +152,50 @@ const CREATE_APP = gql`
     }
 `;
 
+const GET_USER_ORGANIZATIONS = gql`
+    query GetUserById($userId: ID!) {
+        getUserById(userId: $userId) {
+            organizations {
+                id
+                title
+                name
+            }
+        }
+    }
+`;
+
 const NewAppScreen: FunctionComponent = (): ReactElement => {
+    const navigate = useNavigate();
+    const { user } = usePrivateSession();
+
     const [createApp, { loading, data }] = useMutation(CREATE_APP, {
         refetchQueries: ["GetApps"],
     });
 
-    const theme = useTheme();
-    const navigate = useNavigate();
-    const smallerThanLg = useMediaQuery(theme.breakpoints.down("lg"));
-    const session = localStorage.getItem("session") as string;
+    const { loading: loadOrganizations, data: organizationsData } = useQuery(
+        GET_USER_ORGANIZATIONS,
+        {
+            variables: {
+                userId: user.id,
+            },
+            notifyOnNetworkStatusChange: true,
+        },
+    );
+    const organizations = data?.getUserById?.organizations ?? [];
 
     const handleSubmit = useCallback(
         (values: FormValues): any => {
-            if (session) {
-                createApp({
-                    variables: {
-                        ...values,
-                        creator: {
-                            user: JSON.parse(session)?.user?.id,
-                            role: "owner",
-                        },
+            createApp({
+                variables: {
+                    ...values,
+                    creator: {
+                        user: user.id,
+                        role: "owner",
                     },
-                });
-            }
+                },
+            });
         },
-        [createApp, session],
+        [createApp, user.id],
     );
 
     useEffect(() => {
@@ -175,6 +203,19 @@ const NewAppScreen: FunctionComponent = (): ReactElement => {
             navigate("/apps");
         }
     }, [loading, data, navigate]);
+
+    const renderOrganizationMenuItems = useCallback(() => {
+        if (organizations.length === 0) {
+            return <Warning>You do not belong to any organizations.</Warning>;
+        }
+
+        return organizations.map((organization: any) => (
+            <MenuItem key={organization.id} value={organization.id}>
+                <Typography>{organization.title}</Typography>
+                <Typography>{organization.name}</Typography>
+            </MenuItem>
+        ));
+    }, []);
 
     return (
         <Root>
@@ -221,16 +262,19 @@ const NewAppScreen: FunctionComponent = (): ReactElement => {
                                     fullWidth={true}
                                     help=""
                                 />
-                                <OrganizationTextField
-                                    required={true}
-                                    name="organization"
-                                    id="organization"
-                                    label="Organization"
-                                    size="small"
-                                    variant="outlined"
-                                    fullWidth={true}
-                                    help=""
-                                />
+                                <OrganizationSelect>
+                                    <Select
+                                        id="organization"
+                                        name="organization"
+                                        label="Organization"
+                                        variant="outlined"
+                                        size="small"
+                                        help=""
+                                        renderMenuItems={
+                                            renderOrganizationMenuItems
+                                        }
+                                    />
+                                </OrganizationSelect>
                                 <DescriptionTextField
                                     name="description"
                                     id="description"
