@@ -16,9 +16,7 @@ import { styled } from "@mui/material/styles";
 import AppOptionsMenu from "./AppOptionsMenu";
 
 const Card = styled(MuiCard)(({ theme }) => ({
-    width: `calc(50% - ${theme.spacing(2)})`,
-    marginRight: theme.spacing(2),
-    marginBottom: theme.spacing(2),
+    width: 400,
 }));
 
 const CardHeader = styled("div")(() => ({
@@ -114,7 +112,7 @@ const AppCard: FunctionComponent<IAppCardProps> = (
             </CardContent>
             <CardActions>
                 <Button size="small" onClick={handleEdit}>
-                    Edit <ActionIcon fontSize="small">edit</ActionIcon>
+                    Edit <ActionIcon fontSize="small">arrow_forward</ActionIcon>
                 </Button>
             </CardActions>
         </Card>

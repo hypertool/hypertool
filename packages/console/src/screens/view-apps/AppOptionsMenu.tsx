@@ -91,7 +91,7 @@ const AppOptionsMenu: FunctionComponent<IAppOptionsMenuProps> = (
                 },
                 {
                     title: "Launch",
-                    icon: "arrow_forward",
+                    icon: "launch",
                     action: handleLaunch,
                 },
             ],
