@@ -34,7 +34,7 @@ const TextField = (props: Props) => {
                     {error && (
                         <TextFieldHelp variant="caption">{error}</TextFieldHelp>
                     )}
-                    {/* {!error && help} */}
+                    {!error && help}
                 </>
             }
             onBlur={formik.handleBlur}
