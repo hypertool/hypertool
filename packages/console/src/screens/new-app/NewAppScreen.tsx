@@ -140,16 +140,14 @@ const CREATE_APP = gql`
     mutation CreateApp(
         $name: String!
         $title: String!
-        $organization: String!
         $description: String!
-        $slug: String!
+        $organization: ID
     ) {
         createApp(
             name: $name
             title: $title
             organization: $organization
             description: $description
-            slug: $slug
         ) {
             id
         }

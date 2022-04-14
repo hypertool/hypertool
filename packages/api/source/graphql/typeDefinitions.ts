@@ -250,7 +250,6 @@ const types = `
         id: ID!
         name: String!
         title: String!
-        slug: String!
         description: String!
         resources: [Resource!]!
         screens: [Screen!]!

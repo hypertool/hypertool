@@ -15,19 +15,18 @@ import {
 } from "@hypertool/common";
 
 import joi from "joi";
+import { Types } from "mongoose";
 
 const createSchema = joi.object({
     name: joi.string().max(128).required(),
     title: joi.string().max(256).required(),
-    slug: joi.string().max(128).required(),
     description: joi.string().max(512).allow("").default(""),
-    organization: joi.string().max(128).required(),
+    organization: joi.string().regex(constants.identifierPattern),
 });
 
 const updateSchema = joi.object({
     name: joi.string().max(128),
     title: joi.string().max(256),
-    slug: joi.string().max(128),
     description: joi.string().max(512).allow(""),
     authServices: joi.object({
         googleAuth: joi.object({
@@ -56,7 +55,6 @@ const toExternal = (app: IApp): IExternalApp => {
         _id,
         name,
         title,
-        slug,
         description,
         organization,
         resources,
@@ -72,7 +70,6 @@ const toExternal = (app: IApp): IExternalApp => {
         id: _id.toString(),
         name,
         title,
-        slug,
         description,
         organization,
         screens: screens.map((screen) => screen.toString()),
@@ -111,30 +108,33 @@ const create = async (context, attributes): Promise<IExternalApp> => {
         );
     }
 
-    // Check if the app slug is already taken.
-    const existingAppWithSlug = await AppModel.findOne({
-        slug: value.slug,
-    }).exec();
-    if (existingAppWithSlug) {
-        throw new BadRequestError(
-            `App with slug ${value.slug} already exists.`,
-        );
-    }
+    const newAppId = new Types.ObjectId();
 
-    // Find organization with name eqaul to values.organization
-    const organization = await OrganizationModel.findOne({
-        name: value.organization,
-    }).exec();
-    if (!organization) {
-        throw new BadRequestError(
-            `Organization with name ${value.organization} does not exist.`,
-        );
+    if (value.organization) {
+        const organization = await OrganizationModel.findById(
+            value.organization,
+        ).exec();
+        if (!organization) {
+            throw new BadRequestError(
+                `Organization with the specified ID "${value.organization}" does not exist.`,
+            );
+        }
+
+        // Add the app to the organization's apps.
+        await organization
+            .updateOne({
+                $push: {
+                    apps: newAppId,
+                },
+            })
+            .exec();
     }
 
     // TODO: Check if value.members and value.resources are correct.
     const newApp = new AppModel({
         ...value,
-        organization: organization._id,
+        _id: newAppId,
+        organization: value.organization,
         creator: context.user._id,
         status: "private",
     });
@@ -152,15 +152,6 @@ const create = async (context, attributes): Promise<IExternalApp> => {
         },
     ).exec();
     await user.save();
-
-    // Add the app to the organization's apps.
-    await organization
-        .updateOne({
-            $push: {
-                apps: newApp._id,
-            },
-        })
-        .exec();
 
     return toExternal(newApp);
 };
