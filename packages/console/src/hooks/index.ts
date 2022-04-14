@@ -7,3 +7,4 @@ export { default as useTab } from "./useTab";
 export { default as useUpdateTabTitle } from "./useUpdateTabTitle";
 export { default as useTabBundle } from "./useTabBundle";
 export { default as useInterval } from "./useInterval";
+export { default as useSession } from "./useSession";
