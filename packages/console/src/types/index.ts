@@ -1,5 +1,7 @@
 import type { FunctionComponent } from "react";
 
+import type { ApolloClient, NormalizedCacheObject } from "@apollo/client";
+
 import { constants } from "@hypertool/common";
 
 import { constants as consoleConstants } from "../utils";
@@ -194,8 +196,24 @@ export interface IBuilderActionsContext {
     closeTab: (index: number) => void;
 }
 
-export interface ISessionContext {
-    reloadSession: () => void;
+export interface IUser {
+    id: string;
+}
+
+export interface ISession {
+    jwtToken: string;
+    user: IUser;
+    createdAt: Date;
+}
+
+export interface ISessionContext extends Partial<ISession> {
+    client: ApolloClient<NormalizedCacheObject>;
+    reload: () => void;
+}
+
+export interface IPrivateSessionContext extends ISession {
+    client: ApolloClient<NormalizedCacheObject>;
+    reload: () => void;
 }
 
 export interface ITabContext<T = TBundleType> {
