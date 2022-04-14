@@ -18,6 +18,7 @@ import { gql, useQuery } from "@apollo/client";
 import { useNavigate } from "react-router";
 
 import { NoRecords } from "../../components";
+import { usePrivateSession } from "../../hooks";
 
 import OrganizationCard from "./OrganizationCard";
 
@@ -108,10 +109,10 @@ const GET_USER_ORGANIZATIONS = gql`
 
 const ViewOrganizations: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
-    const session = localStorage.getItem("session") as string;
+    const { user } = usePrivateSession();
     const { loading, data } = useQuery(GET_USER_ORGANIZATIONS, {
         variables: {
-            userId: JSON.parse(session)?.user?.id,
+            userId: user.id,
         },
         notifyOnNetworkStatusChange: true,
     });

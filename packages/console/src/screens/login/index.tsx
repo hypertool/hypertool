@@ -16,7 +16,7 @@ import { useGoogleLogin } from "react-google-login";
 import { Link, useNavigate } from "react-router-dom";
 
 import { TextField } from "../../components";
-import { SessionContext } from "../../contexts";
+import { useSession } from "../../hooks";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -132,7 +132,7 @@ const validationSchema = yup.object({
 
 const Login: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
-    const { reloadSession } = useContext(SessionContext);
+    const { reload } = useSession(true);
 
     const onSuccess = useCallback(
         async (response: any) => {
@@ -179,10 +179,10 @@ const Login: FunctionComponent = (): ReactElement => {
                 "session",
                 JSON.stringify(result.data.loginWithEmail),
             );
-            reloadSession();
+            reload();
             navigate("/organizations/new");
         },
-        [navigate, reloadSession],
+        [navigate, reload],
     );
 
     return (
