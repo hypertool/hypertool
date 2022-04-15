@@ -91,11 +91,13 @@ const groups = [
              *     icon: "account_circle",
              * },
              */
-            {
-                title: "Organizations",
-                url: "/organizations",
-                icon: "business",
-            },
+            /*
+             * {
+             *     title: "Organizations",
+             *     url: "/organizations",
+             *     icon: "business",
+             * },
+             */
             {
                 title: "Applications",
                 url: "/apps",
@@ -103,21 +105,23 @@ const groups = [
             },
         ],
     },
-    {
-        title: "Settings",
-        items: [
-            {
-                title: "Billing",
-                url: "/billing",
-                icon: "sell",
-            },
-            {
-                title: "Preferences",
-                url: "/preferences",
-                icon: "settings",
-            },
-        ],
-    },
+    /*
+     * {
+     *     title: "Settings",
+     *     items: [
+     *         {
+     *             title: "Billing",
+     *             url: "/billing",
+     *             icon: "sell",
+     *         },
+     *         {
+     *             title: "Preferences",
+     *             url: "/preferences",
+     *             icon: "settings",
+     *         },
+     *     ],
+     * },
+     */
     {
         title: "Help",
         items: [
