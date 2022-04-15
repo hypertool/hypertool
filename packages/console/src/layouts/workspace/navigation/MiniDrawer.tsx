@@ -1,14 +1,11 @@
 import type { FunctionComponent, ReactElement } from "react";
 import { Fragment, useCallback } from "react";
 
-import { Divider, IconButton, List, useMediaQuery } from "@mui/material";
+import { Divider, List, useMediaQuery } from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
 import { CSSObject, Theme, styled, useTheme } from "@mui/material/styles";
 
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-
-import { useNavigate } from "react-router";
+import { useNavigate } from "../../../hooks";
 
 import MiniDrawerItem from "./MiniDrawerItem";
 
@@ -132,7 +129,7 @@ const groups = [
             },
             {
                 title: "Documentation",
-                url: "/documentation",
+                url: "https://docs.hypertool.io",
                 icon: "help_outline",
             },
         ],
