@@ -16,9 +16,7 @@ import { styled } from "@mui/material/styles";
 import OptionsMenu from "./OrganizationOptionsMenu";
 
 const Card = styled(MuiCard)(({ theme }) => ({
-    width: `calc(50% - ${theme.spacing(2)})`,
-    marginRight: theme.spacing(2),
-    marginBottom: theme.spacing(2),
+    width: 400,
 }));
 
 const CardHeader = styled("div")(() => ({
@@ -50,14 +48,16 @@ const ActionIcon = styled(Icon)(() => ({
     fontSize: 16,
 }));
 
-interface Props {
+export interface IOrganizationCardProps {
     id: string;
     name: string;
     description: string;
     onLaunch: (id: string) => void;
 }
 
-const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
+const OrganizationCard: FunctionComponent<IOrganizationCardProps> = (
+    props: IOrganizationCardProps,
+): ReactElement => {
     const { id, name, description, onLaunch } = props;
     const [anchor, setAnchor] = useState<null | HTMLElement>(null);
 
@@ -106,12 +106,11 @@ const AppCard: FunctionComponent<Props> = (props: Props): ReactElement => {
             </CardContent>
             <CardActions>
                 <Button size="small" onClick={handleLaunch}>
-                    More{" "}
-                    <ActionIcon fontSize="small">arrow_forward</ActionIcon>
+                    More <ActionIcon fontSize="small">arrow_forward</ActionIcon>
                 </Button>
             </CardActions>
         </Card>
     );
 };
 
-export default AppCard;
+export default OrganizationCard;

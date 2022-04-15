@@ -77,13 +77,15 @@ const Content = styled(Container)(({ theme }) => ({
     },
 }));
 
-const Organizations = styled("div")(() => ({
+const Organizations = styled("div")(({ theme }) => ({
     width: "100%",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
     flexWrap: "wrap",
+    padding: theme.spacing(2, 0),
+    gap: theme.spacing(2),
 }));
 
 const ProgressContainer = styled("div")(() => ({
