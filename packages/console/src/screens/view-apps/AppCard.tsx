@@ -53,13 +53,14 @@ export interface IAppCardProps {
     name: string;
     description: string;
     onLaunch: (id: string, name: string) => void;
+    onDelete: (id: string, name: string) => void;
     onEdit: (id: string, name: string) => void;
 }
 
 const AppCard: FunctionComponent<IAppCardProps> = (
     props: IAppCardProps,
 ): ReactElement => {
-    const { id, name, description, onLaunch, onEdit } = props;
+    const { id, name, description, onLaunch, onDelete, onEdit } = props;
     const [anchor, setAnchor] = useState<null | HTMLElement>(null);
 
     const handleOpenOptions = useCallback((event: MouseEvent<HTMLElement>) => {
@@ -73,6 +74,10 @@ const AppCard: FunctionComponent<IAppCardProps> = (
     const handleLaunch = useCallback(() => {
         onLaunch(id, name);
     }, [id, name, onLaunch]);
+
+    const handleDelete = useCallback(() => {
+        onDelete(id, name);
+    }, [id, name, onDelete]);
 
     const handleEdit = useCallback(() => {
         onEdit(id, name);
@@ -106,7 +111,7 @@ const AppCard: FunctionComponent<IAppCardProps> = (
                         onTogglePublish={() => null}
                         onRename={() => null}
                         onLaunch={handleLaunch}
-                        onDelete={() => null}
+                        onDelete={handleDelete}
                     />
                 </CardHeader>
             </CardContent>

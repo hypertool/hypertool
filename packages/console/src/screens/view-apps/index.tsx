@@ -18,8 +18,9 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
+import { useConfirm } from "material-ui-confirm";
 import { useNavigate } from "react-router";
 
 import { NoRecords } from "../../components";
@@ -142,9 +143,23 @@ const GET_APPS = gql`
     }
 `;
 
+const DELETE_APP = gql`
+    mutation DeleteApp($appId: ID!) {
+        deleteApp(appId: $appId) {
+            success
+        }
+    }
+`;
+
 const ViewApps: FunctionComponent = (): ReactElement => {
     const [filter, setFilter] = useState<string>(filters[0].url);
+    const confirm = useConfirm();
     const navigate = useNavigate();
+
+    const [deleteApp] = useMutation(DELETE_APP, {
+        refetchQueries: ["GetApps"],
+    });
+
     const { loading, data } = useQuery(GET_APPS);
     const records = data?.getApps?.records ?? [];
 
@@ -158,6 +173,23 @@ const ViewApps: FunctionComponent = (): ReactElement => {
 
     const handleLaunch = useCallback((id: string, name: string) => {
         window.open(`https://${name}.hypertool.io/`);
+    }, []);
+
+    const handleDelete = useCallback(async (appId: string, name: string) => {
+        try {
+            await confirm({
+                title: `Are you sure you want to delete?`,
+                description: `This action cannot be undone. This will permanently delete the "${name}" app, resources, queries, screens, and remove all team associations.`,
+                confirmationText: "Delete",
+                cancellationText: "Cancel",
+                allowClose: true,
+            });
+            deleteApp({
+                variables: {
+                    appId,
+                },
+            });
+        } catch (error: unknown) {}
     }, []);
 
     const handleEdit = useCallback((id: string, name: string) => {
@@ -240,6 +272,7 @@ const ViewApps: FunctionComponent = (): ReactElement => {
                                 name={app.name}
                                 description={app.description}
                                 onLaunch={handleLaunch}
+                                onDelete={handleDelete}
                                 onEdit={handleEdit}
                             />
                         ))}
