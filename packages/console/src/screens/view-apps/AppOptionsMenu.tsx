@@ -79,16 +79,18 @@ const AppOptionsMenu: FunctionComponent<IAppOptionsMenuProps> = (
         {
             title: "Administrator",
             items: [
-                {
-                    title: "Duplicate",
-                    icon: "content_copy",
-                    action: handleDuplicate,
-                },
-                {
-                    title: "Publish",
-                    icon: "publish",
-                    action: handleTogglePublish,
-                },
+                /*
+                 * {
+                 *     title: "Duplicate",
+                 *     icon: "content_copy",
+                 *     action: handleDuplicate,
+                 * },
+                 * {
+                 *     title: "Publish",
+                 *     icon: "publish",
+                 *     action: handleTogglePublish,
+                 * },
+                 */
                 {
                     title: "Launch",
                     icon: "launch",
