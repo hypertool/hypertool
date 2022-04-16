@@ -101,6 +101,7 @@ const create = async (context, attributes): Promise<IExternalApp> => {
     // Check if the app name is already taken.
     const existingApp = await AppModel.findOne({
         name: value.name,
+        status: { $ne: "deleted" },
     }).exec();
     if (existingApp) {
         throw new BadRequestError(
