@@ -295,7 +295,7 @@ const resolvers = {
             ),
 
         deleteOrganization: async (parent, values, context) =>
-            organizations.remove(context.request, context.organizationId),
+            organizations.remove(context.request, values.organizationId),
 
         createUser: async (parent, values, context) =>
             users.create(context.request, values),
@@ -304,7 +304,7 @@ const resolvers = {
             users.update(context.request, values.userId, values),
 
         deleteUser: async (parent, values, context) =>
-            users.remove(context.request, context.userId),
+            users.remove(context.request, values.userId),
 
         updatePassword: async (parent, values, context) =>
             users.updatePassword(context.request, values),
@@ -325,7 +325,7 @@ const resolvers = {
             apps.update(context.request, values.appId, values),
 
         deleteApp: async (parent, values, context) =>
-            apps.remove(context.request, context.appId),
+            apps.remove(context.request, values.appId),
 
         createResource: async (parent, values, context) =>
             resources.create(context.request, values),
@@ -334,7 +334,7 @@ const resolvers = {
             resources.update(context.request, values.resourceId, values),
 
         deleteResource: async (parent, values, context) =>
-            resources.remove(context.request, context.resourceId),
+            resources.remove(context.request, values.resourceId),
 
         createQueryTemplate: async (parent, values, context) =>
             queryTemplates.create(context.request, values),
