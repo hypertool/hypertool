@@ -27,6 +27,7 @@
         "formik": "^2.2.9",
         "graphql": "^16.0.1",
         "history": "5",
+        "material-ui-confirm": "^3.0.4",
         "moment": "^2.29.1",
         "monaco-editor": "^0.32.1",
         "react": "^17.0.2",
