@@ -110,6 +110,7 @@ const typeDefs = gql`
             name: String!
             description: String
             type: ResourceType!
+            app: ID!
             mysql: MySQLConfigurationInput
             postgres: PostgresConfigurationInput
             mongodb: MongoDBConfigurationInput
