@@ -295,7 +295,6 @@ const EditQuery: FunctionComponent = (): ReactElement => {
                                     users from a MySQL table.
                                 </Help>
                             </Left>
-                            queryId
                             <Divider
                                 orientation="vertical"
                                 flexItem={true}

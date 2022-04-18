@@ -172,7 +172,9 @@ const NewQueryStepper: FunctionComponent = (): ReactElement => {
     const { appId } = useParams();
     // TODO: Destructure `error`, check for non-null, send to Sentry
     const [createQuery, { loading: creatingQuery, data: newQuery }] =
-        useMutation(CREATE_QUERY_TEMPLATE);
+        useMutation(CREATE_QUERY_TEMPLATE, {
+            refetchQueries: ["GetQueryTemplates"],
+        });
 
     const { data } = useQuery(GET_RESOURCES, {
         variables: {
