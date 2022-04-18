@@ -1,7 +1,9 @@
+import { constants } from "@hypertool/common";
+
 export interface IExecuteParameters {
     name: string;
     variables: Record<string, any>;
-    format: string;
+    format: typeof constants.queryResultFormats[number];
 }
 
 export interface IQueryResult {

@@ -249,10 +249,10 @@ const typeDefs = gql`
         getActivityLogs(page: Int, limit: Int): ActivityLogPage!
         getActivityLogById(activityLogId: ID!): ActivityLog!
 
-        getQueryResult(
+        executeQuery(
             name: String!
             variables: GraphQLJSON!
-            format: QueryResultFormats!
+            format: QueryResultFormat!
         ): QueryResult!
 
         listComments(page: Int, limit: Int): CommentPage!
@@ -472,8 +472,8 @@ const resolvers = {
         getActivityLogById: async (parent, values, context) =>
             activityLogs.getById(context.request, values.activityLogId),
 
-        getQueryResult: async (parent, values, context) =>
-            queries.getQueryResult(context.request, values),
+        executeQuery: async (parent, values, context) =>
+            queries.execute(context.request, values),
 
         listComments: async (parent, values, context) =>
             comments.list(context.request, values),

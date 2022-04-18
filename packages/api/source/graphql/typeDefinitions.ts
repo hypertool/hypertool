@@ -242,7 +242,7 @@ const types = `
         records: [Resource!]!
     }
 
-    enum QueryResultFormats {
+    enum QueryResultFormat {
         ${queryResultFormats.join("\n")}
     }
 
