@@ -135,7 +135,7 @@ const validationSchema = yup.object({
 const CREATE_QUERY_TEMPLATE = gql`
     mutation CreateQueryTemplate(
         $name: String!
-        $description: String!
+        $description: String
         $resource: ID!
         $app: ID!
         $content: String!
