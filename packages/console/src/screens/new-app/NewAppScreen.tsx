@@ -315,7 +315,7 @@ const NewAppScreen: FunctionComponent = (): ReactElement => {
                                     fullWidth={true}
                                     help=""
                                 />
-                                <OrganizationSelect>
+                                {/* <OrganizationSelect>
                                     <Select
                                         id="organization"
                                         name="organization"
@@ -328,7 +328,7 @@ const NewAppScreen: FunctionComponent = (): ReactElement => {
                                         }
                                         renderValue={renderOrganizationValue}
                                     />
-                                </OrganizationSelect>
+                                </OrganizationSelect> */}
                                 <DescriptionTextField
                                     name="description"
                                     id="description"
