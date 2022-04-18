@@ -476,11 +476,10 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                     <LeftActionContainer>
                                         {activeStep > 0 && (
                                             <StepperAction
-                                                color="inherit"
                                                 disabled={activeStep === 0}
                                                 onClick={handleBack}
                                                 sx={{ mr: 1 }}
-                                                variant="contained"
+                                                variant="outlined"
                                                 size="small"
                                             >
                                                 {theme.direction === "rtl" ? (
