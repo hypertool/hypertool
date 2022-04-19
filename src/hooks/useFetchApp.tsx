@@ -13,7 +13,6 @@ const GET_APP = gql`
       id
       name
       title
-      slug
       description
       status
       createdAt
