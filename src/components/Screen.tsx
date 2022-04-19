@@ -9,12 +9,13 @@ import {
 } from "react-router-dom";
 
 import { ScreenContext } from "../contexts";
+import { useExecuteQuery } from "../hooks";
 import {
   IHyperContext,
-  ILocation,
   INavigateOptions,
   INode,
   IPatch,
+  IQueryExecutionOptions,
   TNavigationTarget,
 } from "../types";
 
@@ -28,6 +29,11 @@ export interface IProps {
   controller: string;
 }
 
+const defaultQueryExecutionOptions: IQueryExecutionOptions = {
+  variables: {},
+  format: "object",
+};
+
 const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
   const { content, title, controller: patched } = props;
   const [state, setState] = useState<any>({});
@@ -36,6 +42,7 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
   const location = useLocation();
   const pathParams: Record<string, string | undefined> = useParams();
   const navigateNative = useNavigate();
+  const { executeQuery } = useExecuteQuery();
 
   const navigate = useMemo(
     () => (target: TNavigationTarget, options?: INavigateOptions) => {
@@ -144,8 +151,21 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
           applyPatches(draft);
         });
       },
+
+      runQuery: async (
+        name: string,
+        options: Partial<IQueryExecutionOptions> = defaultQueryExecutionOptions
+      ): Promise<any> =>
+        await executeQuery({
+          variables: {
+            name,
+            variables: options.variables,
+            format: options.format,
+          },
+        }),
     }),
     [
+      executeQuery,
       location.hash,
       location.key,
       location.pathname,
