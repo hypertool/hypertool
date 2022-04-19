@@ -6,7 +6,6 @@ import { styled } from "@mui/material/styles";
 import { gql, useMutation } from "@apollo/client";
 
 import * as uuid from "uuid";
-import { useParams } from "react-router-dom";
 
 import {
     BuilderActionsContext,
@@ -14,7 +13,7 @@ import {
     TabContext,
 } from "../../contexts";
 import { Editor, useEditor } from "../../craft";
-import { useModules } from "../../hooks";
+import { useModules, useParam } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type {
     IBuilderActionsContext,
@@ -120,11 +119,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             constants.tabTypes.map((tabType: string) => [tabType, 0]),
         ),
     )[1];
-
-    const { appId } = useParams();
-    if (!appId) {
-        throw new Error("App ID is undefined in URL!");
-    }
+    const appId = useParam("appId");
 
     const modules = useModules(appId);
     const { actions, query } = useEditor();

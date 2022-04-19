@@ -2,7 +2,7 @@ import { constants } from "@hypertool/common";
 
 import { ApolloServer, gql } from "apollo-server-express";
 
-import { apps, controllers, screens, users } from "../controllers";
+import { apps, controllers, queries, screens, users } from "../controllers";
 
 import { types } from "./typeDefinitions";
 
@@ -61,6 +61,12 @@ const typeDefs = gql`
             token: String!
             newPassword: String!
         ): Session!
+
+        executeQuery(
+            name: String!
+            variables: GraphQLJSON!
+            format: QueryResultFormat!
+        ): QueryResult!
     }
 `;
 
@@ -94,6 +100,9 @@ const resolvers = {
 
         completePasswordReset: async (parent, values, context) =>
             users.completePasswordReset(context.request, values),
+
+        executeQuery: async (parent, values, context) =>
+            queries.execute(context.request, values),
     },
 };
 

@@ -135,7 +135,7 @@ const validationSchema = yup.object({
 const CREATE_QUERY_TEMPLATE = gql`
     mutation CreateQueryTemplate(
         $name: String!
-        $description: String!
+        $description: String
         $resource: ID!
         $app: ID!
         $content: String!
@@ -172,7 +172,9 @@ const NewQueryStepper: FunctionComponent = (): ReactElement => {
     const { appId } = useParams();
     // TODO: Destructure `error`, check for non-null, send to Sentry
     const [createQuery, { loading: creatingQuery, data: newQuery }] =
-        useMutation(CREATE_QUERY_TEMPLATE);
+        useMutation(CREATE_QUERY_TEMPLATE, {
+            refetchQueries: ["GetQueryTemplates"],
+        });
 
     const { data } = useQuery(GET_RESOURCES, {
         variables: {

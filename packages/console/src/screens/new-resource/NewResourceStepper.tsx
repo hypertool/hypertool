@@ -27,6 +27,7 @@ import * as yup from "yup";
 import { Formik } from "formik";
 
 import { BuilderActionsContext, TabContext } from "../../contexts";
+import { useParam } from "../../hooks";
 import type { ResourceType } from "../../types";
 
 import ConfigureStep from "./ConfigureStep";
@@ -271,6 +272,7 @@ const CREATE_RESOURCE = gql`
         $name: String!
         $description: String
         $type: ResourceType!
+        $app: ID!
         $mysql: MySQLConfigurationInput
         $postgres: PostgresConfigurationInput
         $mongodb: MongoDBConfigurationInput
@@ -280,6 +282,7 @@ const CREATE_RESOURCE = gql`
             name: $name
             description: $description
             type: $type
+            app: $app
             mysql: $mysql
             postgres: $postgres
             mongodb: $mongodb
@@ -308,6 +311,8 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
         },
     ] = useMutation(CREATE_RESOURCE);
     const { replaceTab } = useContext(BuilderActionsContext);
+    const appId = useParam("appId");
+
     const error = () => {
         throw new Error("Tab context should not be null.");
     };
@@ -336,11 +341,16 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                 );
             }
 
+            if (configuration.hasOwnProperty("port")) {
+                configuration.port = parseInt(configuration.port, 10);
+            }
+
             createResource({
                 variables: {
                     name,
                     description,
                     type: resourceType,
+                    app: appId,
                     [resourceType as string]: configuration,
                 },
             });
@@ -476,11 +486,10 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                                     <LeftActionContainer>
                                         {activeStep > 0 && (
                                             <StepperAction
-                                                color="inherit"
                                                 disabled={activeStep === 0}
                                                 onClick={handleBack}
                                                 sx={{ mr: 1 }}
-                                                variant="contained"
+                                                variant="outlined"
                                                 size="small"
                                             >
                                                 {theme.direction === "rtl" ? (

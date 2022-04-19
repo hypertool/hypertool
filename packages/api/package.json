@@ -28,13 +28,16 @@
         "iso-language-codes": "^1.1.0",
         "joi": "^17.4.2",
         "jsonwebtoken": "^8.5.1",
+        "knex": "^1.0.7",
         "lodash": "^4.17.21",
         "mongoose": "^6.0.12",
         "mongoose-paginate-v2": "^1.4.2",
         "morgan": "^1.10.0",
         "mustache": "^4.2.0",
+        "mysql": "^2.18.1",
         "passport": "^0.5.0",
-        "passport-google-token": "^0.1.2"
+        "passport-google-token": "^0.1.2",
+        "pg": "^8.7.3"
     },
     "devDependencies": {
         "@types/chai": "^4.3.0",

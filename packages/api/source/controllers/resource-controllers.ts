@@ -1,9 +1,10 @@
-import {
-    AppModel,
+import type {
     IBigQueryConfiguration,
     IExternalResource,
+    IResource,
 } from "@hypertool/common";
 import {
+    AppModel,
     BadRequestError,
     NotFoundError,
     ResourceModel,
@@ -22,7 +23,7 @@ const createSchema = joi.object({
         .string()
         .valid(...constants.resourceTypes)
         .required(),
-    app: joi.string().regex(constants.identifierPattern),
+    app: joi.string().regex(constants.identifierPattern).required(),
     mysql: joi.object({
         host: joi.string().required(),
         port: joi.number().integer().required(),
@@ -94,8 +95,8 @@ const updateSchema = joi.object({
     }),
 });
 
-const toExternal = (resource: any): IExternalResource => {
-    const { id, _id, name, description, type, status, createdAt, updatedAt } =
+const toExternal = (resource: IResource): IExternalResource => {
+    const { _id, name, description, app, type, status, createdAt, updatedAt } =
         resource;
     let sanitizedConfiguration = null;
     switch (type) {
@@ -132,9 +133,10 @@ const toExternal = (resource: any): IExternalResource => {
     }
 
     const result = {
-        id: id || _id.toString(),
+        id: _id.toString(),
         name,
         description,
+        app,
         type,
         status,
         createdAt,
@@ -155,6 +157,8 @@ const create = async (context, attributes): Promise<IExternalResource> => {
 
     const newResource = await runAsTransaction(async () => {
         const resourceId = new mongoose.Types.ObjectId();
+
+        // TODO: Check if the user has permission to edit the app.
 
         /*
          * Add `resource` to `app.resources`.
@@ -186,8 +190,8 @@ const create = async (context, attributes): Promise<IExternalResource> => {
         }
 
         const newResource = new ResourceModel({
-            _id: resourceId,
             ...value,
+            _id: resourceId,
             status: "enabled",
             creator: context.user._id,
         });

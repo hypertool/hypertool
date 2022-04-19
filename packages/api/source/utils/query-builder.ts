@@ -1,13 +1,14 @@
 import { Knex, knex } from "knex";
 
 export class QueryBuilder {
-    instance: Knex;
+    private instance: Knex;
 
-    constructor(instance: Knex) {
-        this.instance = instance;
+    constructor(config: Knex.Config) {
+        this.instance = getConnection(config);
     }
 
-    /* TODO: Add the following contructors in if clause of the current
+    /*
+     * TODO: Add the following contructors in if clause of the current
      * constructor to support constructor overloading. Not required right now
      * as the current implementation is not using any other constructor.
      *
@@ -70,3 +71,8 @@ export class QueryBuilder {
         }
     };
 }
+
+/* TODO: Figure out a way to cache and correctly close the connections. */
+export const getConnection = (config: Knex.Config) => {
+    return knex(config);
+};
