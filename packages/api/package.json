@@ -34,7 +34,8 @@
         "morgan": "^1.10.0",
         "mustache": "^4.2.0",
         "passport": "^0.5.0",
-        "passport-google-token": "^0.1.2"
+        "passport-google-token": "^0.1.2",
+        "pg": "^8.7.3"
     },
     "devDependencies": {
         "@types/chai": "^4.3.0",
