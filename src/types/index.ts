@@ -165,6 +165,21 @@ export interface INavigateOptions {
   state?: any;
 }
 
+/**************************************************************************************************
+ * Queries                                                                                        *
+ **************************************************************************************************/
+
+type IQueryResultFormat = typeof constants.queryResultFormats[number];
+
+export interface IQueryExecutionOptions {
+  variables: Record<string, any>;
+  format: IQueryResultFormat;
+}
+
+/**************************************************************************************************
+ * Context                                                                                        *
+ **************************************************************************************************/
+
 export interface IHyperContext<S> {
   readonly location: ILocation;
 
@@ -185,6 +200,11 @@ export interface IHyperContext<S> {
   };
 
   inflate: (name: string, patches?: Record<string, IPatch>) => INode;
+
+  runQuery: (
+    name: string,
+    options?: Partial<IQueryExecutionOptions>
+  ) => Promise<any>;
 }
 
 export interface IHyperController<T> {
