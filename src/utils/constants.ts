@@ -1,4 +1,6 @@
-export const modifierKeys = [
+const tuple = <T extends string[]>(...values: T) => values;
+
+export const modifierKeys = tuple(
   "ALT",
   "ALT_GRAPH",
   "CAPS_LOCK",
@@ -12,5 +14,7 @@ export const modifierKeys = [
   "SYMBOL",
   "SYMBOL_LOCK",
   "SUPER",
-  "HYPER",
-];
+  "HYPER"
+);
+
+export const queryResultFormats = tuple("row", "column", "object");
