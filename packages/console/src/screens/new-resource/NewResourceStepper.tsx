@@ -341,6 +341,10 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                 );
             }
 
+            if (configuration.hasOwnProperty("port")) {
+                configuration.port = parseInt(configuration.port, 10);
+            }
+
             createResource({
                 variables: {
                     name,
