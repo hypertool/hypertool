@@ -242,6 +242,7 @@ export interface IResource {
     name: string;
     description: string;
     type: typeof resourceTypes[number];
+    app: string | IApp;
     mysql: MySQLConfiguration | undefined;
     postgres: IPostgresConfiguration | undefined;
     mongodb: IMongoDBConfiguration | undefined;
@@ -288,6 +289,7 @@ export interface IExternalResource {
     name: string;
     description: string;
     type: string;
+    app: string;
     mysql: IExternalMySQLConfiguration | undefined;
     postgres: IExternalPostgresConfiguration | undefined;
     mongodb: IExternalMongoDBConfiguration | undefined;
