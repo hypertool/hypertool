@@ -178,7 +178,7 @@ const ViewApps: FunctionComponent = (): ReactElement => {
     const handleDelete = useCallback(async (appId: string, name: string) => {
         try {
             await confirm({
-                title: `Are you sure you want to delete?`,
+                title: "Are you sure you want to delete?",
                 description: `This action cannot be undone. This will permanently delete the "${name}" app, resources, queries, screens, and remove all team associations.`,
                 confirmationText: "Delete",
                 cancellationText: "Cancel",
