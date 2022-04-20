@@ -1,6 +1,7 @@
-import { FunctionComponent, ReactElement, useState } from "react";
+import type { FunctionComponent, MouseEvent, ReactElement } from "react";
+import { useCallback, useState } from "react";
 
-import type { AppBarProps, IconButtonProps } from "@mui/material";
+import type { AppBarProps } from "@mui/material";
 import {
     IconButton,
     AppBar as MuiAppBar,
@@ -64,20 +65,22 @@ interface Props {
 
 const AppBar: FunctionComponent<Props> = (props: Props): ReactElement => {
     const [anchor, setAnchor] = useState<null | HTMLElement>(null);
-    const isMenuOpen = Boolean(anchor);
 
-    const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchor(event.currentTarget);
-    };
+    const handleProfileMenuOpen = useCallback(
+        (event: MouseEvent<HTMLElement>) => {
+            setAnchor(event.currentTarget);
+        },
+        [],
+    );
 
-    const handleMenuClose = () => {
+    const handleMenuClose = useCallback(() => {
         setAnchor(null);
-    };
+    }, []);
 
-    const handleLogout = () => {
+    const handleLogout = useCallback(() => {
         localStorage.clear();
         window.location.href = "/login";
-    };
+    }, []);
 
     const renderMenu = (
         <Menu
@@ -86,12 +89,12 @@ const AppBar: FunctionComponent<Props> = (props: Props): ReactElement => {
                 vertical: "top",
                 horizontal: "right",
             }}
-            keepMounted
+            keepMounted={true}
             transformOrigin={{
                 vertical: "top",
                 horizontal: "right",
             }}
-            open={isMenuOpen}
+            open={Boolean(anchor)}
             onClose={handleMenuClose}
         >
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
