@@ -262,6 +262,7 @@ const remove = async (
         {
             _id: queryTemplateId,
             status: { $ne: "deleted" },
+            creator: context.user._id,
         },
         {
             status: "deleted",
