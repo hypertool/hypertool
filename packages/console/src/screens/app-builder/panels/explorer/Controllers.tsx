@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { useConfirm } from "material-ui-confirm";
 
@@ -44,8 +44,19 @@ const GET_CONTROLLERS = gql`
     }
 `;
 
+const DELETE_CONTROLLER = gql`
+    mutation DeleteController($controllerId: ID!) {
+        deleteController(controllerId: $controllerId) {
+            success
+        }
+    }
+`;
+
 const Controllers: FunctionComponent = (): ReactElement => {
     const { createTab } = useContext(BuilderActionsContext);
+    const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+    const confirm = useConfirm();
+
     const { data } = useQuery(GET_CONTROLLERS, {
         variables: {
             page: 0,
@@ -53,8 +64,10 @@ const Controllers: FunctionComponent = (): ReactElement => {
         },
     });
     const { records } = data?.getControllers || { records: [] };
-    const [anchor, setAnchor] = useState<HTMLElement | null>(null);
-    const confirm = useConfirm();
+
+    const [deleteController] = useMutation(DELETE_CONTROLLER, {
+        refetchQueries: ["GetControllers"],
+    });
 
     const handleCreateController = useCallback(() => {
         createTab("new-controller");
@@ -90,6 +103,11 @@ const Controllers: FunctionComponent = (): ReactElement => {
                     confirmationText: "Delete",
                     cancellationText: "Cancel",
                     allowClose: true,
+                });
+                deleteController({
+                    variables: {
+                        controllerId,
+                    },
                 });
             } catch (error: unknown) {}
         };
