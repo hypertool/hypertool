@@ -1,14 +1,7 @@
 import type { FunctionComponent, ReactElement } from "react";
 import { useCallback, useContext } from "react";
 
-import {
-    Button,
-    Icon,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
-} from "@mui/material";
+import { Button, Icon, List } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { gql, useQuery } from "@apollo/client";
@@ -17,6 +10,8 @@ import { useParams } from "react-router-dom";
 
 import { BuilderActionsContext } from "../../../../contexts";
 
+import Screen from "./Screen";
+
 const Actions = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
@@ -24,8 +19,6 @@ const Actions = styled("div")(({ theme }) => ({
         2,
     )} ${theme.spacing(2)}`,
 }));
-
-const StyledListItemAvatar = styled(ListItemAvatar)({ minWidth: 28 });
 
 const GET_SCREENS = gql`
     query GetScreens($appId: ID!, $page: Int, $limit: Int) {
@@ -55,33 +48,27 @@ const Screens: FunctionComponent = (): ReactElement => {
         createTab("new-screen");
     }, [createTab]);
 
-    const handleEditScreen = (screenId: string) => () => {
+    const handleEditScreen = useCallback((screenId: string) => {
         createTab("edit-screen", { screenId });
-    };
+    }, []);
 
-    const renderScreen = (record: any) => (
-        <ListItem
-            key={record.id}
-            button={true}
-            /*
-             * secondaryAction={
-             *     <IconButton edge="end">
-             *         <Icon fontSize="small">delete</Icon>
-             *     </IconButton>
-             * }
-             */
-            onClick={handleEditScreen(record.id)}
-        >
-            <StyledListItemAvatar>
-                <Icon fontSize="small">wysiwyg</Icon>
-            </StyledListItemAvatar>
-            <ListItemText primary={record.name} />
-        </ListItem>
-    );
+    const handleDeleteScreen = useCallback((screenId: string) => {
+        console.log("Delete");
+    }, []);
 
     return (
         <div>
-            <List dense={true}>{records.map(renderScreen)}</List>
+            <List dense={true}>
+                {records.map((screen: any) => (
+                    <Screen
+                        key={screen.id}
+                        id={screen.id}
+                        name={screen.name}
+                        onEdit={handleEditScreen}
+                        onDelete={handleDeleteScreen}
+                    />
+                ))}
+            </List>
             <Actions>
                 <Button
                     size="small"
