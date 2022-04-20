@@ -4,7 +4,7 @@ import { useCallback, useContext, useState } from "react";
 import { Button, Icon, List } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { useParams } from "react-router-dom";
 
@@ -32,9 +32,16 @@ const GET_QUERY_TEMPLATES = gql`
     }
 `;
 
+const DELETE_QUERY_TEMPLATE = gql`
+    mutation DeleteQueryTemplate($queryTemplateId: ID!) {
+        deleteQueryTemplate(queryTemplateId: $queryTemplateId) {
+            success
+        }
+    }
+`;
+
 const Queries: FunctionComponent = (): ReactElement => {
     const { appId } = useParams();
-
     const { createTab } = useContext(BuilderActionsContext);
 
     const { data } = useQuery(GET_QUERY_TEMPLATES, {
@@ -46,6 +53,10 @@ const Queries: FunctionComponent = (): ReactElement => {
     });
     const { records } = data?.getQueryTemplates || { records: [] };
 
+    const [deleteQueryTemplate] = useMutation(DELETE_QUERY_TEMPLATE, {
+        refetchQueries: ["GetQueryTemplates"],
+    });
+
     const handleNewQuery = useCallback(() => {
         createTab("new-query");
     }, [createTab]);
@@ -55,7 +66,7 @@ const Queries: FunctionComponent = (): ReactElement => {
     }, []);
 
     const handleDeleteQuery = useCallback((queryTemplateId: string) => {
-        console.log("delete");
+        deleteQueryTemplate({ variables: { queryTemplateId } });
     }, []);
 
     return (
