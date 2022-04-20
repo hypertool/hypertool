@@ -18,12 +18,21 @@ import Screens from "./Screens";
 const StyledAccordion = styled(Accordion)({});
 
 const AccordionTitle = styled(Typography)({
-    fontSize: 14,
+    fontSize: 12,
 });
 
 const StyledAccordionDetails = styled(AccordionDetails)({
     padding: 0,
 });
+
+const ExpandIcon = styled(Icon)({
+    fontSize: 15,
+});
+
+const AccordionIcon = styled(Icon)(({ theme }) => ({
+    fontSize: 15,
+    marginRight: theme.spacing(1),
+}));
 
 const ExplorerAccordions = () => {
     const renderAccordion = (
@@ -39,12 +48,10 @@ const ExplorerAccordions = () => {
             defaultExpanded={true}
         >
             <AccordionSummary
-                expandIcon={<Icon fontSize="small">expand_more</Icon>}
+                expandIcon={<ExpandIcon>expand_more</ExpandIcon>}
                 id={`${id}-header`}
             >
-                <Icon fontSize="small" sx={{ mr: 1 }}>
-                    {icon}
-                </Icon>
+                <AccordionIcon>{icon}</AccordionIcon>
                 <AccordionTitle>{title}</AccordionTitle>
             </AccordionSummary>
             <StyledAccordionDetails>{node}</StyledAccordionDetails>
