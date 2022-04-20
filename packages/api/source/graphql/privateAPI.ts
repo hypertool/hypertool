@@ -222,6 +222,8 @@ const typeDefs = gql`
             controllerId: ID!
             source: String!
         ): Controller!
+
+        deleteController(controllerId: ID!): RemoveResult!
     }
 
     type Query {
@@ -417,6 +419,9 @@ const resolvers = {
                 values.controllerId,
                 values,
             ),
+
+        deleteController: (parent, values, context) =>
+            controllers.remove(context.request, values.controllerId),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>

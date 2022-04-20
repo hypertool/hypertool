@@ -215,3 +215,34 @@ export const updateWithSource = async (
 
     return toExternal(updatedController);
 };
+
+export const remove = async (context: any, id: string) => {
+    if (!constants.identifierPattern.test(id)) {
+        throw new BadRequestError(
+            "The specified controller identifier is invalid.",
+        );
+    }
+
+    // TODO: Update filters
+    const controller = await ControllerModel.findOneAndUpdate(
+        {
+            _id: id,
+            status: { $ne: "deleted" },
+            creator: context.user._id,
+        },
+        {
+            status: "deleted",
+        },
+        {
+            new: true,
+            lean: true,
+        },
+    );
+    if (!controller) {
+        throw new NotFoundError(
+            "A controller with the specified identifier does not exist.",
+        );
+    }
+
+    return { success: true };
+};
