@@ -319,7 +319,7 @@ const resolvers = {
             teams.update(context.request, values.teamId, values),
 
         deleteTeam: async (parent, values, context) =>
-            teams.remove(context.request, context.teamId),
+            teams.remove(context.request, values.teamId),
 
         createApp: async (parent, values, context) =>
             apps.create(context.request, values),
@@ -350,7 +350,7 @@ const resolvers = {
             ),
 
         deleteQueryTemplate: async (parent, values, context) =>
-            queryTemplates.remove(context.request, context.queryTemplateId),
+            queryTemplates.remove(context.request, values.queryTemplateId),
 
         generateSignedURLs: async (parent, values, context) =>
             deployments.generateSignedURLs(context.request, values),
