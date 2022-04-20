@@ -4,7 +4,7 @@ import { useCallback, useContext } from "react";
 import { Button, Icon, List } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { useParams } from "react-router-dom";
 
@@ -32,9 +32,18 @@ const GET_SCREENS = gql`
     }
 `;
 
+const DELETE_SCREEN = gql`
+    mutation DeleteScreen($screenId: ID!) {
+        deleteScreen(screenId: $screenId) {
+            success
+        }
+    }
+`;
+
 const Screens: FunctionComponent = (): ReactElement => {
     const { createTab } = useContext(BuilderActionsContext);
     const { appId } = useParams();
+
     const { data } = useQuery(GET_SCREENS, {
         variables: {
             page: 0,
@@ -43,6 +52,10 @@ const Screens: FunctionComponent = (): ReactElement => {
         },
     });
     const { records } = data?.getScreens || { records: [] };
+
+    const [deleteScreen] = useMutation(DELETE_SCREEN, {
+        refetchQueries: ["GetScreens"],
+    });
 
     const handleNewScreen = useCallback(() => {
         createTab("new-screen");
@@ -53,7 +66,7 @@ const Screens: FunctionComponent = (): ReactElement => {
     }, []);
 
     const handleDeleteScreen = useCallback((screenId: string) => {
-        console.log("Delete");
+        deleteScreen({ variables: { screenId } });
     }, []);
 
     return (
