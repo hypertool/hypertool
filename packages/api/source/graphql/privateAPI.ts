@@ -206,6 +206,8 @@ const typeDefs = gql`
             description: String
         ): Screen!
 
+        deleteScreen(screenId: ID!): RemoveResult!
+
         createController(
             name: String!
             description: String!
@@ -406,6 +408,9 @@ const resolvers = {
 
         updateScreen: async (parent, values, context) =>
             screens.update(context.request, values.screenId, values),
+
+        deleteScreen: async (parent, values, context) =>
+            screens.remove(context.request, values.screenId),
 
         createController: (parent, values, context) =>
             controllers.create(context.request, values),

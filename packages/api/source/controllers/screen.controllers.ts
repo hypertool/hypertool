@@ -77,7 +77,7 @@ const toExternal = (screen: IScreen): IExternalScreen => {
     };
 };
 
-const create = async (context, attributes): Promise<IExternalScreen> => {
+export const create = async (context, attributes): Promise<IExternalScreen> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -132,7 +132,7 @@ const create = async (context, attributes): Promise<IExternalScreen> => {
     return toExternal(newScreen);
 };
 
-const update = async (
+export const update = async (
     context,
     pageId: string,
     attributes,
@@ -160,7 +160,7 @@ const update = async (
     return toExternal(updatedPage);
 };
 
-const list = async (context, parameters): Promise<TScreenPage> => {
+export const list = async (context, parameters): Promise<TScreenPage> => {
     const { error, value } = filterSchema.validate(parameters);
     if (error) {
         throw new BadRequestError(error.message);
@@ -202,8 +202,10 @@ const helper = controller.createHelper({
     toExternal,
 });
 
-const listByIds = async (context, ids: string[]): Promise<IExternalScreen[]> =>
-    helper.listByIds(context, ids);
+export const listByIds = async (
+    context,
+    ids: string[],
+): Promise<IExternalScreen[]> => helper.listByIds(context, ids);
 
 export const getById = async (
     context: any,
@@ -217,4 +219,33 @@ export const getByName = async (
     name: string,
 ): Promise<IExternalScreen> => helper.getByName(context, name);
 
-export { create, update, list, listByIds };
+export const remove = async (context: any, id: string) => {
+    if (!constants.identifierPattern.test(id)) {
+        throw new BadRequestError(
+            "The specified screen identifier is invalid.",
+        );
+    }
+
+    // TODO: Update filters
+    const screen = await ScreenModel.findOneAndUpdate(
+        {
+            _id: id,
+            status: { $ne: "deleted" },
+            creator: context.user._id,
+        },
+        {
+            status: "deleted",
+        },
+        {
+            new: true,
+            lean: true,
+        },
+    );
+    if (!screen) {
+        throw new NotFoundError(
+            "A screen with the specified identifier does not exist.",
+        );
+    }
+
+    return { success: true };
+};
