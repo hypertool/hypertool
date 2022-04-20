@@ -45,24 +45,32 @@ const QueryTemplate: FunctionComponent<IQueryProps> = (
         setAnchor(null);
     }, []);
 
-    const handleEdit = useCallback(() => {
-        setAnchor(null);
-        onEdit(id, name);
-    }, [id, name]);
+    const handleEdit = useCallback(
+        (event: MouseEvent<HTMLElement>) => {
+            event.stopPropagation();
+            setAnchor(null);
+            onEdit(id, name);
+        },
+        [id, name],
+    );
 
-    const handleDelete = useCallback(async () => {
-        setAnchor(null);
-        try {
-            await confirm({
-                title: "Are you sure you want to delete?",
-                description: `This action cannot be undone. This will permanently delete the "${name}" query template.`,
-                confirmationText: "Delete",
-                cancellationText: "Cancel",
-                allowClose: true,
-            });
-            onDelete(id, name);
-        } catch (error: unknown) {}
-    }, [id, name, onDelete]);
+    const handleDelete = useCallback(
+        async (event: MouseEvent<HTMLElement>) => {
+            event.stopPropagation();
+            setAnchor(null);
+            try {
+                await confirm({
+                    title: "Are you sure you want to delete?",
+                    description: `This action cannot be undone. This will permanently delete the "${name}" query template.`,
+                    confirmationText: "Delete",
+                    cancellationText: "Cancel",
+                    allowClose: true,
+                });
+                onDelete(id, name);
+            } catch (error: unknown) {}
+        },
+        [id, name, onDelete],
+    );
 
     return (
         <ListItem
