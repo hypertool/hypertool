@@ -1,15 +1,7 @@
-import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useContext } from "react";
+import type { FunctionComponent, MouseEvent, ReactElement } from "react";
+import { useCallback, useContext, useState } from "react";
 
-import {
-    Avatar,
-    Button,
-    Icon,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
-} from "@mui/material";
+import { Button, Icon, List } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { gql, useQuery } from "@apollo/client";
@@ -18,6 +10,8 @@ import { useParams } from "react-router-dom";
 
 import { BuilderActionsContext } from "../../../../contexts";
 
+import QueryTemplate from "./QueryTemplate";
+
 const Actions = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
@@ -25,8 +19,6 @@ const Actions = styled("div")(({ theme }) => ({
         2,
     )} ${theme.spacing(2)}`,
 }));
-
-const StyledListItemAvatar = styled(ListItemAvatar)({ minWidth: 32 });
 
 const GET_QUERY_TEMPLATES = gql`
     query GetQueryTemplates($app: ID!, $page: Int, $limit: Int) {
@@ -42,7 +34,9 @@ const GET_QUERY_TEMPLATES = gql`
 
 const Queries: FunctionComponent = (): ReactElement => {
     const { appId } = useParams();
+
     const { createTab } = useContext(BuilderActionsContext);
+
     const { data } = useQuery(GET_QUERY_TEMPLATES, {
         variables: {
             page: 0,
@@ -56,35 +50,27 @@ const Queries: FunctionComponent = (): ReactElement => {
         createTab("new-query");
     }, [createTab]);
 
-    const handleEditQuery = (queryTemplateId: string) => () => {
+    const handleEditQuery = useCallback((queryTemplateId: string) => {
         createTab("edit-query", { queryTemplateId });
-    };
+    }, []);
 
-    const renderQuery = (record: any) => (
-        <ListItem
-            key={record.id}
-            button={true}
-            /*
-             * secondaryAction={
-             *     <IconButton edge="end">
-             *         <Icon fontSize="small">delete</Icon>
-             *     </IconButton>
-             * }
-             */
-            onClick={handleEditQuery(record.id)}
-        >
-            <StyledListItemAvatar>
-                <Avatar sx={{ width: 20, height: 20 }}>
-                    <Icon style={{ fontSize: 14 }}>workspaces</Icon>
-                </Avatar>
-            </StyledListItemAvatar>
-            <ListItemText primary={record.name} />
-        </ListItem>
-    );
+    const handleDeleteQuery = useCallback((queryTemplateId: string) => {
+        console.log("delete");
+    }, []);
 
     return (
         <div>
-            <List dense={true}>{records.map(renderQuery)}</List>
+            <List dense={true}>
+                {records.map((query: any) => (
+                    <QueryTemplate
+                        key={query.id}
+                        id={query.id}
+                        name={query.name}
+                        onEdit={handleEditQuery}
+                        onDelete={handleDeleteQuery}
+                    />
+                ))}
+            </List>
             <Actions>
                 <Button
                     size="small"
