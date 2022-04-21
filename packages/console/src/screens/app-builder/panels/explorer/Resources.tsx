@@ -4,7 +4,7 @@ import { useCallback, useContext } from "react";
 import { Button, Icon, List } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { BuilderActionsContext } from "../../../../contexts";
 
@@ -33,8 +33,21 @@ const GET_RESOURCES = gql`
     }
 `;
 
+const DELETE_RESOURCE = gql`
+    mutation DeleteResource($resourceId: ID!) {
+        deleteResource(resourceId: $resourceId) {
+            success
+        }
+    }
+`;
+
 const Resources: FunctionComponent = (): ReactElement => {
     const { createTab } = useContext(BuilderActionsContext);
+
+    const [deleteResource] = useMutation(DELETE_RESOURCE, {
+        refetchQueries: ["GetResources"],
+    });
+
     const { data } = useQuery(GET_RESOURCES, {
         variables: {
             page: 0,
@@ -52,7 +65,7 @@ const Resources: FunctionComponent = (): ReactElement => {
     }, []);
 
     const handleDeleteResource = useCallback((resourceId: string) => {
-        console.log("delete");
+        deleteResource({ variables: { resourceId } });
     }, []);
 
     return (
