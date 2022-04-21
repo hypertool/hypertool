@@ -180,6 +180,10 @@ export interface ITab<T = TBundleType> {
     bundle?: T;
 }
 
+export type TPredicate<E> = {
+    bivarianceHack(value: E): boolean;
+}["bivarianceHack"];
+
 export interface IBuilderActionsContext {
     tabs: ITab[];
     activeTab: string | null;
@@ -194,6 +198,7 @@ export interface IBuilderActionsContext {
     setTabTitle: (index: number, title: string) => void;
     setActiveTab: (activeTab: string) => void;
     closeTab: (index: number) => void;
+    closeTabs: (predicate: TPredicate<ITab>) => void;
 }
 
 export interface IUser {

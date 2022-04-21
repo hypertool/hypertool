@@ -23,6 +23,7 @@ import type {
     IEditScreenBundle,
     ITab,
     TBundleType,
+    TPredicate,
     TTabType,
 } from "../../types";
 import { constants } from "../../utils";
@@ -311,6 +312,20 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 }
 
                 return result;
+            });
+        },
+
+        closeTabs: (predicate: TPredicate<ITab>): void => {
+            setTabs((oldTabs) => {
+                const newTabs = oldTabs.filter((tab) => !predicate(tab));
+                if (
+                    !newTabs.find((newTab: ITab) => newTab.id === activeTab) &&
+                    newTabs.length > 0
+                ) {
+                    builderActions.setActiveTab(newTabs[newTabs.length - 1].id);
+                }
+
+                return newTabs;
             });
         },
     };

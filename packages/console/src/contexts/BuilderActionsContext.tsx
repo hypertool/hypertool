@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createContext } from "react";
 
-import { IBuilderActionsContext, TBundleType, TTabType } from "../types";
+import {
+    IBuilderActionsContext,
+    ITab,
+    TBundleType,
+    TPredicate,
+    TTabType,
+} from "../types";
 
 const BuilderActionsContext = createContext<IBuilderActionsContext>({
     tabs: [],
@@ -37,6 +43,10 @@ const BuilderActionsContext = createContext<IBuilderActionsContext>({
     },
 
     closeTab: (_index: number): void => {
+        throw new Error("Implementation for this operation is missing.");
+    },
+
+    closeTabs: (_predicate: TPredicate<ITab>): void => {
         throw new Error("Implementation for this operation is missing.");
     },
 });
