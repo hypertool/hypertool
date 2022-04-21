@@ -7,6 +7,7 @@ import { styled } from "@mui/material/styles";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { BuilderActionsContext } from "../../../../contexts";
+import { IEditControllerBundle, ITab } from "../../../../types";
 
 import Controller from "./Controller";
 
@@ -40,7 +41,7 @@ const DELETE_CONTROLLER = gql`
 `;
 
 const Controllers: FunctionComponent = (): ReactElement => {
-    const { createTab } = useContext(BuilderActionsContext);
+    const { createTab, closeTabs } = useContext(BuilderActionsContext);
 
     const { data } = useQuery(GET_CONTROLLERS, {
         variables: {
@@ -63,6 +64,10 @@ const Controllers: FunctionComponent = (): ReactElement => {
     }, []);
 
     const handleDeleteController = useCallback((controllerId: string) => {
+        closeTabs(
+            (tab: ITab<IEditControllerBundle>) =>
+                tab.bundle?.controllerId === controllerId,
+        );
         deleteController({
             variables: {
                 controllerId,
