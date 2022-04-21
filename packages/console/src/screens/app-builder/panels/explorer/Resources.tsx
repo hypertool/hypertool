@@ -1,19 +1,14 @@
 import type { FunctionComponent, ReactElement } from "react";
 import { useCallback, useContext } from "react";
 
-import {
-    Button,
-    Icon,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
-} from "@mui/material";
+import { Button, Icon, List } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { gql, useQuery } from "@apollo/client";
 
 import { BuilderActionsContext } from "../../../../contexts";
+
+import Resource from "./Resource";
 
 const Actions = styled("div")(({ theme }) => ({
     display: "flex",
@@ -22,8 +17,6 @@ const Actions = styled("div")(({ theme }) => ({
         2,
     )} ${theme.spacing(2)}`,
 }));
-
-const StyledListItemAvatar = styled(ListItemAvatar)({ minWidth: 28 });
 
 const GET_RESOURCES = gql`
     query GetResources($page: Int, $limit: Int) {
@@ -54,33 +47,27 @@ const Resources: FunctionComponent = (): ReactElement => {
         createTab("new-resource");
     }, [createTab]);
 
-    const handleEditResource = (resourceId: string) => () => {
+    const handleEditResource = useCallback((resourceId: string) => {
         createTab("edit-resource", { resourceId });
-    };
+    }, []);
 
-    const renderResource = (record: any) => (
-        <ListItem
-            key={record.id}
-            button={true}
-            /*
-             * secondaryAction={
-             *     <IconButton edge="end">
-             *         <Icon fontSize="small">delete</Icon>
-             *     </IconButton>
-             * }
-             */
-            onClick={handleEditResource(record.id)}
-        >
-            <StyledListItemAvatar>
-                <Icon fontSize="small">category</Icon>
-            </StyledListItemAvatar>
-            <ListItemText primary={record.name} />
-        </ListItem>
-    );
+    const handleDeleteResource = useCallback((resourceId: string) => {
+        console.log("delete");
+    }, []);
 
     return (
         <div>
-            <List dense={true}>{records.map(renderResource)}</List>
+            <List dense={true}>
+                {records.map((resource: any) => (
+                    <Resource
+                        key={resource.id}
+                        id={resource.id}
+                        name={resource.name}
+                        onEdit={handleEditResource}
+                        onDelete={handleDeleteResource}
+                    />
+                ))}
+            </List>
             <Actions>
                 <Button
                     size="small"
