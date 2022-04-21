@@ -269,7 +269,7 @@ const typeDefs = gql`
         getScreens(appId: ID!, page: Int, limit: Int): ScreenPage!
         getScreensByIds(appId: ID!, screenIds: [ID!]!): [Screen!]!
         getScreenByName(appId: ID!, name: String!): Screen!
-        getScreenById(appId: ID!, screenId: ID!): Screen!
+        getScreenById(screenId: ID!): Screen!
 
         getControllers(page: Int, limit: Int): ControllerPage!
         getControllersById(controllerIds: [ID!]): [Controller!]!
@@ -508,7 +508,7 @@ const resolvers = {
             screens.getByName(context.request, values.appId, values.name),
 
         getScreenById: async (parent, values, context) =>
-            screens.getById(context.request, values.appId, values.screenId),
+            screens.getById(context.request, values.screenId),
 
         getControllers: async (parent, values, context) =>
             controllers.list(context.request, values),

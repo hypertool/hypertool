@@ -229,9 +229,28 @@ export const listByIds = async (
 
 export const getById = async (
     context: any,
-    appId: string,
     screenId: string,
-): Promise<IExternalScreen> => helper.getById(context, screenId);
+): Promise<IExternalScreen> => {
+    if (!constants.identifierPattern.test(screenId)) {
+        throw new BadRequestError(
+            `The specified screen identifier is invalid.`,
+        );
+    }
+
+    const document = await ScreenModel.findOne({
+        _id: screenId,
+        status: { $ne: "deleted" },
+        creator: context.user._id,
+    }).exec();
+    /* We return a 404 error, if we did not find the entity. */
+    if (!document) {
+        throw new NotFoundError(
+            `Could not find any screen with the specified identifier.`,
+        );
+    }
+
+    return toExternal(document);
+};
 
 export const getByName = async (
     context: any,
