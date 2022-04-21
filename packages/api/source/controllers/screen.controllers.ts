@@ -134,30 +134,32 @@ export const create = async (context, attributes): Promise<IExternalScreen> => {
 
 export const update = async (
     context,
-    pageId: string,
+    screenId: string,
     attributes,
 ): Promise<IExternalScreen> => {
     const { error, value } = updateSchema.validate(attributes, {
         stripUnknown: true,
     });
-
     if (error) {
         throw new BadRequestError(error.message);
     }
 
-    const updatedPage = await ScreenModel.findByIdAndUpdate(
-        pageId,
-        { ...value },
-        { new: true },
-    );
-
-    if (!updatedPage) {
+    const updatedScreen = await ScreenModel.findOneAndUpdate(
+        {
+            _id: screenId,
+            status: { $ne: "deleted" },
+            creator: context.user._id,
+        },
+        value,
+        { new: true, lean: true },
+    ).exec();
+    if (!updatedScreen) {
         throw new NotFoundError(
-            "A page with the specified identifier does not exist.",
+            "A screen with the specified identifier does not exist.",
         );
     }
 
-    return toExternal(updatedPage);
+    return toExternal(updatedScreen);
 };
 
 export const list = async (context, parameters): Promise<TScreenPage> => {
@@ -165,25 +167,25 @@ export const list = async (context, parameters): Promise<TScreenPage> => {
     if (error) {
         throw new BadRequestError(error.message);
     }
-    const { page, limit /*appId*/ } = value;
 
-    const filters = {
-        /*
-         * TODO: Filter based on app IDs
-         * app: appId,
-         */
-    };
-
-    const pages = await (ScreenModel as any).paginate(filters, {
-        limit,
-        page: page + 1,
-        lean: true,
-        leanWithId: true,
-        pagination: true,
-        sort: {
-            updatedAt: -1,
+    const { page, limit, appId } = value;
+    const pages = await (ScreenModel as any).paginate(
+        {
+            app: appId,
+            status: { $ne: "deleted" },
+            creator: context.user._id,
         },
-    });
+        {
+            limit,
+            page: page + 1,
+            lean: true,
+            leanWithId: true,
+            pagination: true,
+            sort: {
+                updatedAt: -1,
+            },
+        },
+    );
 
     return {
         totalRecords: pages.totalDocs,
