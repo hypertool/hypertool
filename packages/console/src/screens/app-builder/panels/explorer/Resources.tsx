@@ -7,6 +7,7 @@ import { styled } from "@mui/material/styles";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { BuilderActionsContext } from "../../../../contexts";
+import { IEditResourceBundle, ITab } from "../../../../types";
 
 import Resource from "./Resource";
 
@@ -42,7 +43,7 @@ const DELETE_RESOURCE = gql`
 `;
 
 const Resources: FunctionComponent = (): ReactElement => {
-    const { createTab } = useContext(BuilderActionsContext);
+    const { createTab, closeTabs } = useContext(BuilderActionsContext);
 
     const [deleteResource] = useMutation(DELETE_RESOURCE, {
         refetchQueries: ["GetResources"],
@@ -65,6 +66,10 @@ const Resources: FunctionComponent = (): ReactElement => {
     }, []);
 
     const handleDeleteResource = useCallback((resourceId: string) => {
+        closeTabs(
+            (tab: ITab<IEditResourceBundle>) =>
+                tab.bundle?.resourceId === resourceId,
+        );
         deleteResource({ variables: { resourceId } });
     }, []);
 
