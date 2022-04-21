@@ -207,7 +207,25 @@ const helper = controller.createHelper({
 export const listByIds = async (
     context,
     ids: string[],
-): Promise<IExternalScreen[]> => helper.listByIds(context, ids);
+): Promise<IExternalScreen[]> => {
+    const items = await ScreenModel.find({
+        _id: { $in: ids },
+        status: { $ne: "deleted" },
+        creator: context.user._id,
+    }).exec();
+    if (items.length !== ids.length) {
+        throw new NotFoundError(
+            `Could not find items for every specified ID. Request ${ids.length} items, but found ${items.length} items.`,
+        );
+    }
+
+    const object = {};
+    for (const item of items) {
+        object[item._id.toString()] = item;
+    }
+
+    return ids.map((key) => toExternal(object[key]));
+};
 
 export const getById = async (
     context: any,
