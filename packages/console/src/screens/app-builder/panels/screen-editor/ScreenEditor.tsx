@@ -1,13 +1,12 @@
 import { FunctionComponent, ReactElement, useCallback } from "react";
 
-import { Button, FormControlLabel } from "@mui/material";
+import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 import * as yup from "yup";
 import { Formik } from "formik";
-import { useParams } from "react-router-dom";
 
 import { TextField } from "../../../../components";
 import { slugPattern } from "../../../../utils/constants";
@@ -60,8 +59,8 @@ export interface IProps {
 }
 
 const GET_SCREEN = gql`
-    query GetScreen($appId: ID!, $screenId: ID!) {
-        getScreenById(appId: $appId, screenId: $screenId) {
+    query GetScreen($screenId: ID!) {
+        getScreenById(screenId: $screenId) {
             id
             name
             title
@@ -95,10 +94,8 @@ const ScreenEditor: FunctionComponent<IProps> = (
     props: IProps,
 ): ReactElement => {
     const { screenId } = props;
-    const { appId } = useParams();
     const { data } = useQuery(GET_SCREEN, {
         variables: {
-            appId,
             screenId,
         },
         notifyOnNetworkStatusChange: true,

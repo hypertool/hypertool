@@ -2,8 +2,6 @@ import { FunctionComponent, ReactElement, useEffect, useRef } from "react";
 
 import { gql, useMutation, useQuery } from "@apollo/client";
 
-import { useParams } from "react-router-dom";
-
 import { Element, Frame, useEditor } from "../../craft";
 import { useInterval, useTabBundle, useUpdateTabTitle } from "../../hooks";
 import { ButtonNode, ContainerNode, FragmentNode } from "../../nodes";
@@ -12,8 +10,8 @@ import { IEditScreenBundle } from "../../types";
 import CanvasViewport from "./CanvasViewport";
 
 const GET_SCREEN = gql`
-    query GetScreen($appId: ID!, $screenId: ID!) {
-        getScreenById(appId: $appId, screenId: $screenId) {
+    query GetScreen($screenId: ID!) {
+        getScreenById(screenId: $screenId) {
             id
             name
             content
@@ -32,11 +30,9 @@ const UPDATE_SCREEN = gql`
 const CanvasEditor: FunctionComponent = (): ReactElement => {
     const bundle = useTabBundle<IEditScreenBundle>();
     const { actions, query } = useEditor();
-    const { appId } = useParams();
     // TODO: Destructure `error`, check for non-null, send to sentry
     const { data } = useQuery(GET_SCREEN, {
         variables: {
-            appId,
             screenId: bundle.screenId,
         },
         notifyOnNetworkStatusChange: true,
