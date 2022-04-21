@@ -309,7 +309,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
             // error: createResourceError,
             data: newResource,
         },
-    ] = useMutation(CREATE_RESOURCE);
+    ] = useMutation(CREATE_RESOURCE, { refetchQueries: ["GetResources"] });
     const { replaceTab } = useContext(BuilderActionsContext);
     const appId = useParam("appId");
 
