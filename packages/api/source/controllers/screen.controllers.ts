@@ -1,17 +1,12 @@
+import type { IExternalScreen, IScreen, TScreenPage } from "@hypertool/common";
 import {
     AppModel,
-    ControllerModel,
-    IExternalScreen,
-    IScreen,
-    TScreenPage,
-    controller,
-    runAsTransaction,
-} from "@hypertool/common";
-import {
     BadRequestError,
+    ControllerModel,
     NotFoundError,
     ScreenModel,
     constants,
+    runAsTransaction,
 } from "@hypertool/common";
 
 import joi from "joi";
@@ -198,12 +193,6 @@ export const list = async (context, parameters): Promise<TScreenPage> => {
     };
 };
 
-const helper = controller.createHelper({
-    entity: "screen",
-    model: ScreenModel,
-    toExternal,
-});
-
 export const listByIds = async (
     context,
     ids: string[],
@@ -232,9 +221,7 @@ export const getById = async (
     screenId: string,
 ): Promise<IExternalScreen> => {
     if (!constants.identifierPattern.test(screenId)) {
-        throw new BadRequestError(
-            `The specified screen identifier is invalid.`,
-        );
+        throw new BadRequestError("The specified identifier is invalid.");
     }
 
     const document = await ScreenModel.findOne({
@@ -245,7 +232,7 @@ export const getById = async (
     /* We return a 404 error, if we did not find the entity. */
     if (!document) {
         throw new NotFoundError(
-            `Could not find any screen with the specified identifier.`,
+            "Could not find any screen with the specified identifier.",
         );
     }
 
@@ -254,9 +241,26 @@ export const getById = async (
 
 export const getByName = async (
     context: any,
-    appId: string,
     name: string,
-): Promise<IExternalScreen> => helper.getByName(context, name);
+): Promise<IExternalScreen> => {
+    if (!constants.namePattern.test(name)) {
+        throw new BadRequestError("The specified name is invalid.");
+    }
+
+    const document = await ScreenModel.findOne({
+        name,
+        status: { $ne: "deleted" },
+        creator: context.user._id,
+    }).exec();
+    /* We return a 404 error, if we did not find the entity. */
+    if (!document) {
+        throw new NotFoundError(
+            "Could not find any screen with the specified identifier.",
+        );
+    }
+
+    return toExternal(document);
+};
 
 export const remove = async (context: any, id: string) => {
     if (!constants.identifierPattern.test(id)) {
@@ -265,7 +269,6 @@ export const remove = async (context: any, id: string) => {
         );
     }
 
-    // TODO: Update filters
     const screen = await ScreenModel.findOneAndUpdate(
         {
             _id: id,
@@ -282,7 +285,7 @@ export const remove = async (context: any, id: string) => {
     );
     if (!screen) {
         throw new NotFoundError(
-            "A screen with the specified identifier does not exist.",
+            "Could not find any screen with the specified identifier.",
         );
     }
 
