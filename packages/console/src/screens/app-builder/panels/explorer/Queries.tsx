@@ -1,5 +1,5 @@
-import type { FunctionComponent, MouseEvent, ReactElement } from "react";
-import { useCallback, useContext, useState } from "react";
+import type { FunctionComponent, ReactElement } from "react";
+import { useCallback, useContext } from "react";
 
 import { Button, Icon, List } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -9,6 +9,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 
 import { BuilderActionsContext } from "../../../../contexts";
+import { IEditQueryBundle, ITab } from "../../../../types";
 
 import QueryTemplate from "./QueryTemplate";
 
@@ -42,7 +43,7 @@ const DELETE_QUERY_TEMPLATE = gql`
 
 const Queries: FunctionComponent = (): ReactElement => {
     const { appId } = useParams();
-    const { createTab } = useContext(BuilderActionsContext);
+    const { createTab, closeTabs } = useContext(BuilderActionsContext);
 
     const { data } = useQuery(GET_QUERY_TEMPLATES, {
         variables: {
@@ -66,6 +67,10 @@ const Queries: FunctionComponent = (): ReactElement => {
     }, []);
 
     const handleDeleteQuery = useCallback((queryTemplateId: string) => {
+        closeTabs(
+            (tab: ITab<IEditQueryBundle>) =>
+                tab.bundle?.queryTemplateId === queryTemplateId,
+        );
         deleteQueryTemplate({ variables: { queryTemplateId } });
     }, []);
 
