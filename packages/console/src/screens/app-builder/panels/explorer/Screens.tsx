@@ -9,6 +9,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 
 import { BuilderActionsContext } from "../../../../contexts";
+import { IEditScreenBundle, ITab } from "../../../../types";
 
 import Screen from "./Screen";
 
@@ -41,7 +42,7 @@ const DELETE_SCREEN = gql`
 `;
 
 const Screens: FunctionComponent = (): ReactElement => {
-    const { createTab } = useContext(BuilderActionsContext);
+    const { createTab, closeTabs } = useContext(BuilderActionsContext);
     const { appId } = useParams();
 
     const { data } = useQuery(GET_SCREENS, {
@@ -66,6 +67,9 @@ const Screens: FunctionComponent = (): ReactElement => {
     }, []);
 
     const handleDeleteScreen = useCallback((screenId: string) => {
+        closeTabs(
+            (tab: ITab<IEditScreenBundle>) => tab.bundle?.screenId === screenId,
+        );
         deleteScreen({ variables: { screenId } });
     }, []);
 
