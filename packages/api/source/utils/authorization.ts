@@ -12,17 +12,20 @@ const groups: IAuthResourceGroup[] = [
                 operations: [
                     {
                         name: "create",
-                        test: async (user, app) => user._id === app.creator,
+                        test: async (user, app) =>
+                            user._id.toString() === app.creator.toString(),
                     },
                     {
                         name: "list",
-                        test: async (user, app) => user._id === app.creator,
+                        test: async (user, app) =>
+                            user._id.toString() === app.creator.toString(),
                     },
                     {
                         name: "listByIds",
                         test: async (user, items) => {
+                            const userId = user._id.toString();
                             for (const item of items) {
-                                if (item.creator !== user._id) {
+                                if (item.creator.toString() !== userId) {
                                     return false;
                                 }
                             }
@@ -31,15 +34,18 @@ const groups: IAuthResourceGroup[] = [
                     },
                     {
                         name: "view",
-                        test: async (user, context) => user._id === context.id,
+                        test: async (user, context) =>
+                            user._id.toString() === context.id.toString(),
                     },
                     {
                         name: "update",
-                        test: async (user, context) => user._id === context.id,
+                        test: async (user, context) =>
+                            user._id.toString() === context.id.toString(),
                     },
                     {
                         name: "delete",
-                        test: async (user, context) => user._id === context.id,
+                        test: async (user, context) =>
+                            user._id.toString() === context.id.toString(),
                     },
                 ],
             },
@@ -94,8 +100,8 @@ export const checkPermissions = async (
     }
 
     const promises = [];
-    for (let i = 0; i < permissions.length; i++) {
-        const permission = permissions[i];
+    for (let i = 0; i < permissions0.length; i++) {
+        const permission = permissions0[i];
         const context = contexts[i];
         const promise = checkPermission(permission, user, context);
         promises.push(promise);
