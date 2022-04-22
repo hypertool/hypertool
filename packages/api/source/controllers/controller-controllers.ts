@@ -262,7 +262,7 @@ export const getById = async (
     checkPermissions(context.user, "appBuilder.controllers.view", [controller]);
 
     /* We return a 404 error, if we did not find the entity. */
-    if (!document) {
+    if (!controller) {
         throw new NotFoundError(
             "Could not find any screen with the specified identifier.",
         );
@@ -286,7 +286,7 @@ export const getByName = async (
     checkPermissions(context.user, "appBuilder.controllers.view", [controller]);
 
     /* We return a 404 error, if we did not find the entity. */
-    if (!document) {
+    if (!controller) {
         throw new NotFoundError(
             "Could not find any screen with the specified identifier.",
         );
