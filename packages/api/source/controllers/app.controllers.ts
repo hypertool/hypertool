@@ -230,26 +230,16 @@ const getById = async (context, appId: string): Promise<IExternalApp> => {
         throw new BadRequestError("The specified app identifier is invalid.");
     }
 
-    const userFilters = {
-        _id: context.user._id,
-        apps: { $in: [appId] },
-    };
-    const user = await UserModel.findOne(userFilters).lean().exec();
-    if (!user) {
-        throw new NotFoundError("The user is not allowed to access this app.");
-    }
-
-    // TODO: Update filters
-    const filters = {
+    const app = await AppModel.findOne({
         _id: appId,
         status: { $ne: "deleted" },
-    };
-    const app = await AppModel.findOne(filters as any).exec();
+    }).exec();
+    checkAccessToApps(context.user, [app]);
 
     /* We return a 404 error, if we did not find the app. */
     if (!app) {
         throw new NotFoundError(
-            "Cannot find an app with the specified identifier.",
+            `Cannot find an app with the specified identifier "${appId}".`,
         );
     }
 
