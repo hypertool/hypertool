@@ -16,6 +16,8 @@ import {
 import joi from "joi";
 import { Types } from "mongoose";
 
+import { checkAccessToApps } from "../utils";
+
 const createSchema = joi.object({
     name: joi.string().regex(constants.namePattern).required(),
     title: joi.string().max(256).required(),
@@ -202,15 +204,24 @@ const listByIds = async (
     context,
     appIds: string[],
 ): Promise<IExternalApp[]> => {
-    const unorderedApps = await AppModel.find({
+    const apps = await AppModel.find({
         _id: { $in: appIds },
         status: { $ne: "deleted" },
     }).exec();
+    if (apps.length !== appIds.length) {
+        throw new NotFoundError(
+            `Could not find apps for every specified ID. Requested ${appIds.length} apps, but found ${apps.length} apps.`,
+        );
+    }
+
+    checkAccessToApps(context.user, apps);
+
     const object = {};
     // eslint-disable-next-line no-restricted-syntax
-    for (const app of unorderedApps) {
+    for (const app of apps) {
         object[app._id.toString()] = app;
     }
+
     return appIds.map((key) => toExternal(object[key]));
 };
 
