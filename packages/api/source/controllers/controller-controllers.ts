@@ -33,7 +33,7 @@ const createSchema = joi.object({
             content: joi.string().allow(""),
         }),
     ),
-    app: joi.string().regex(constants.identifierPattern),
+    app: joi.string().regex(constants.identifierPattern).required(),
 });
 
 const filterSchema = joi.object({
@@ -156,14 +156,14 @@ export const create = async (
          */
         checkPermissions(context.user, "appBuilder.controllers.create", [app]);
 
-        const previousController = await ControllerModel.findOne({
+        const existingController = await ControllerModel.findOne({
             name: value.name,
             app: value.app,
             status: { $ne: "deleted" },
         });
-        if (previousController) {
+        if (existingController) {
             throw new BadRequestError(
-                `Controller with name ${value.name} already exists.`,
+                `Controller with name "${value.name}" already exists.`,
             );
         }
 
