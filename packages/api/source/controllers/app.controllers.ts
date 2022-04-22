@@ -47,14 +47,15 @@ const toExternal = (app: IApp): IExternalApp => {
         name,
         title,
         description,
-        organization,
         resources,
+        deployments,
         screens,
+        controllers,
         creator,
+        organization,
         status,
         createdAt,
         updatedAt,
-        deployments,
     } = app;
 
     const result = {
@@ -62,25 +63,22 @@ const toExternal = (app: IApp): IExternalApp => {
         name,
         title,
         description,
-        organization,
+        resources: resources.map((resource) => resource.toString()),
+        deployments: deployments.map((deployment) => deployment.toString()),
         screens: screens.map((screen) => screen.toString()),
-        /*
-         * resources: extractIds(resources),
-         * creator:
-         *     typeof creator === "string"
-         *         ? creator
-         *         : (creator as IUser)._id.toString(),
-         */
+        controllers: controllers.map((controller) => controller.toString()),
+        creator: creator.toString(),
+        organization: organization.toString(),
         status,
         createdAt,
         updatedAt,
-        deployments,
     };
 
-    return result as any;
+    return result;
 };
 
-// TODO: Check for hypertool.apps.create permission.
+// TODO: Check for permissions.
+
 const create = async (context, attributes): Promise<IExternalApp> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
