@@ -275,7 +275,9 @@ const update = async (
     attributes,
 ): Promise<IExternalApp> => {
     if (!constants.identifierPattern.test(appId)) {
-        throw new BadRequestError("The specified app identifier is invalid.");
+        throw new BadRequestError(
+            `The specified app identifier "${appId}" is invalid.`,
+        );
     }
 
     const { error, value } = updateSchema.validate(attributes, {
@@ -285,24 +287,28 @@ const update = async (
         throw new BadRequestError(error.message);
     }
 
-    // TODO: Check if value.members and value.resources are correct.
-    const app = await AppModel.findOneAndUpdate(
-        {
-            _id: appId,
-            status: { $ne: "deleted" },
-        },
-        value,
-        {
-            new: true,
-            lean: true,
-        },
-    ).exec();
+    const app = await runAsTransaction(async () => {
+        const app = await AppModel.findOneAndUpdate(
+            {
+                _id: appId,
+                status: { $ne: "deleted" },
+            },
+            value,
+            {
+                new: true,
+                lean: true,
+            },
+        ).exec();
+        if (!app) {
+            throw new NotFoundError(
+                `An app with the specified identifier "${appId}" does not exist.`,
+            );
+        }
 
-    if (!app) {
-        throw new NotFoundError(
-            "An app with the specified identifier does not exist.",
-        );
-    }
+        checkAccessToApps(context.user, [app]);
+
+        return app;
+    });
 
     return toExternal(app);
 };
