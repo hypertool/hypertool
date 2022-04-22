@@ -15,7 +15,7 @@ export interface IQueryResult {
 
 export interface IAuthOperation {
     name: string;
-    test: (user: IUser, context: any) => Promise<boolean>;
+    test: (user: IUser, context: any) => boolean;
 }
 
 export interface IAuthResource {

@@ -12,17 +12,17 @@ const groups: IAuthResourceGroup[] = [
                 operations: [
                     {
                         name: "create",
-                        test: async (user, app) =>
+                        test: (user, app) =>
                             user._id.toString() === app.creator.toString(),
                     },
                     {
                         name: "list",
-                        test: async (user, app) =>
+                        test: (user, app) =>
                             user._id.toString() === app.creator.toString(),
                     },
                     {
                         name: "listByIds",
-                        test: async (user, items) => {
+                        test: (user, items) => {
                             const userId = user._id.toString();
                             for (const item of items) {
                                 if (item.creator.toString() !== userId) {
@@ -34,17 +34,17 @@ const groups: IAuthResourceGroup[] = [
                     },
                     {
                         name: "view",
-                        test: async (user, context) =>
+                        test: (user, context) =>
                             user._id.toString() === context.id.toString(),
                     },
                     {
                         name: "update",
-                        test: async (user, context) =>
+                        test: (user, context) =>
                             user._id.toString() === context.id.toString(),
                     },
                     {
                         name: "delete",
-                        test: async (user, context) =>
+                        test: (user, context) =>
                             user._id.toString() === context.id.toString(),
                     },
                 ],
@@ -88,28 +88,26 @@ const checkPermission = async (
     return await operation.test(user, context);
 };
 
-export const checkPermissions = async (
+export const checkPermissions = (
     user: IUser,
     permissions: string | string[],
     contexts: any[] = [],
-): Promise<void> => {
+): void => {
     const permissions0 =
         typeof permissions === "string" ? permissions.split(",") : permissions;
     if (permissions0.length !== contexts.length) {
         throw new Error("Permissions and contexts must have the same length.");
     }
 
-    const promises = [];
+    const deniedList = [];
     for (let i = 0; i < permissions0.length; i++) {
         const permission = permissions0[i];
         const context = contexts[i];
-        const promise = checkPermission(permission, user, context);
-        promises.push(promise);
+        if (!checkPermission(permission, user, context)) {
+            deniedList.push(permission);
+        }
     }
 
-    const deniedList = (await Promise.all(promises))
-        .map((result, index) => (result ? null : permissions0[index]))
-        .filter((value) => !!value);
     if (deniedList.length > 0) {
         throw new ForbiddenError(
             `The following permissions are required to complete the requested operation: ${deniedList.join(
