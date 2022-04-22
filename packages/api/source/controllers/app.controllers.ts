@@ -167,30 +167,25 @@ const list = async (context, parameters): Promise<TAppPage> => {
         throw new BadRequestError(error.message);
     }
 
-    const user = await UserModel.findOne({
-        _id: context.user._id,
-    })
-        .lean()
-        .exec();
-
-    const filters = {
-        _id: { $in: user.apps },
-        status: {
-            $ne: "deleted",
-        },
-    };
     const { page, limit } = value;
-
-    const apps = await (AppModel as any).paginate(filters, {
-        limit,
-        page: page + 1,
-        lean: true,
-        leanWithId: true,
-        pagination: true,
-        sort: {
-            updatedAt: -1,
+    const apps = await (AppModel as any).paginate(
+        {
+            _id: { $in: context.user.apps },
+            status: {
+                $ne: "deleted",
+            },
         },
-    });
+        {
+            limit,
+            page: page + 1,
+            lean: true,
+            leanWithId: true,
+            pagination: true,
+            sort: {
+                updatedAt: -1,
+            },
+        },
+    );
 
     return {
         totalRecords: apps.totalDocs,
