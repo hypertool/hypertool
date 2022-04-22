@@ -12,23 +12,34 @@ const groups: IAuthResourceGroup[] = [
                 operations: [
                     {
                         name: "create",
-                        test: async (user, context) => true,
+                        test: async (user, app) => user._id === app.creator,
                     },
                     {
                         name: "list",
-                        test: async (user, context) => true,
+                        test: async (user, app) => user._id === app.creator,
+                    },
+                    {
+                        name: "listByIds",
+                        test: async (user, items) => {
+                            for (const item of items) {
+                                if (item.creator !== user._id) {
+                                    return false;
+                                }
+                            }
+                            return true;
+                        },
                     },
                     {
                         name: "view",
-                        test: async (user, context) => user._id !== context.id,
+                        test: async (user, context) => user._id === context.id,
                     },
                     {
                         name: "update",
-                        test: async (user, context) => user._id !== context.id,
+                        test: async (user, context) => user._id === context.id,
                     },
                     {
                         name: "delete",
-                        test: async (user, context) => user._id !== context.id,
+                        test: async (user, context) => user._id === context.id,
                     },
                 ],
             },
