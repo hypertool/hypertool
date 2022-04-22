@@ -20,7 +20,7 @@ import { createTwoFilesPatch } from "diff";
 import { Formik } from "formik";
 
 import { Select, TextField } from "../../components";
-import { useBuilderActions, useTab } from "../../hooks";
+import { useBuilderActions, useParam, useTab } from "../../hooks";
 import { templates } from "../../utils";
 import { controllerLanguages } from "../../utils/constants";
 
@@ -105,12 +105,14 @@ const CREATE_CONTROLLER = gql`
         $description: String!
         $language: ControllerLanguage!
         $patches: [ControllerPatchInput!]!
+        $app: ID!
     ) {
         createController(
             name: $name
             description: $description
             language: $language
             patches: $patches
+            app: $app
         ) {
             id
         }
@@ -154,6 +156,7 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
 
     const { replaceTab } = useBuilderActions();
     const { index } = useTab();
+    const appId = useParam("appId");
 
     useEffect(() => {
         if (newController) {
@@ -192,6 +195,7 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
                         ),
                     },
                 ],
+                app: appId,
             },
         });
     }, []);
