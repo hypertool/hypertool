@@ -213,6 +213,7 @@ const typeDefs = gql`
             description: String!
             language: ControllerLanguage!
             patches: [ControllerPatchInput!]!
+            app: ID!
         ): Controller!
 
         updateController(
@@ -271,7 +272,7 @@ const typeDefs = gql`
         getScreenByName(name: String!): Screen!
         getScreenById(screenId: ID!): Screen!
 
-        getControllers(page: Int, limit: Int): ControllerPage!
+        getControllers(app: ID!, page: Int, limit: Int): ControllerPage!
         getControllersById(controllerIds: [ID!]): [Controller!]!
         getControllerByName(name: String!): Controller!
         getControllerById(controllerId: ID!): Controller!

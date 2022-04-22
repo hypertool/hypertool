@@ -2,21 +2,26 @@ import {
     IController,
     IControllerPatch,
     IExternalController,
-    NotFoundError,
+    InternalServerError,
     TControllerPage,
+    runAsTransaction,
 } from "@hypertool/common";
 import {
+    AppModel,
     BadRequestError,
     ControllerModel,
+    NotFoundError,
     constants,
-    controller,
 } from "@hypertool/common";
 
 import { applyPatch, createTwoFilesPatch } from "diff";
 import joi from "joi";
+import { Types } from "mongoose";
+
+import { checkPermissions } from "../utils";
 
 const createSchema = joi.object({
-    name: joi.string().max(256).required(),
+    name: joi.string().regex(constants.namePattern).required(),
     description: joi.string().max(512).allow("").default(""),
     language: joi
         .string()
@@ -28,9 +33,11 @@ const createSchema = joi.object({
             content: joi.string().allow(""),
         }),
     ),
+    app: joi.string().regex(constants.identifierPattern),
 });
 
 const filterSchema = joi.object({
+    app: joi.string().regex(constants.identifierPattern).required(),
     page: joi.number().integer().default(0),
     limit: joi
         .number()
@@ -40,6 +47,7 @@ const filterSchema = joi.object({
         .default(constants.paginateMinLimit),
 });
 
+// TODO: Allow description to be updated
 const updateSchema = joi.object({
     patches: joi.array().items(
         joi.object({
@@ -49,6 +57,7 @@ const updateSchema = joi.object({
     ),
 });
 
+// TODO: Allow description to be updated
 const updateWithSourceSchema = joi.object({
     source: joi.string().allow(""),
 });
@@ -105,12 +114,6 @@ const toExternal = (controller: IController): IExternalController => {
     };
 };
 
-const helper = controller.createHelper({
-    entity: "controller",
-    model: ControllerModel,
-    toExternal,
-});
-
 export const create = async (
     context: any,
     attributes: any,
@@ -118,23 +121,61 @@ export const create = async (
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
-
     if (error) {
         throw new BadRequestError(error.message);
     }
 
-    /*
-     * TODO: Add `controller` to `app.controllers`
-     * TODO: Check if value.creator is correct.
-     * TODO: Check if value.name is unique across the organization and matches
-     * the identifier regex.
-     */
-    const newController = new ControllerModel({
-        ...value,
-        status: "created",
-        creator: context.user._id,
+    const newController = await runAsTransaction(async () => {
+        const newControllerId = new Types.ObjectId();
+        const app = await AppModel.findOneAndUpdate(
+            {
+                _id: value.app,
+                status: { $ne: "deleted" },
+            },
+            {
+                $push: {
+                    controllers: newControllerId,
+                },
+            },
+            {
+                lean: true,
+                new: true,
+            },
+        );
+
+        if (!app) {
+            throw new NotFoundError(
+                "Cannot find an app with the specified identifier.",
+            );
+        }
+
+        /*
+         * At this point, the app has been modified, regardless of the currently
+         * logged in user being authorized or not. When we check for permissions
+         * below, we rely on the transaction failing to undo the changes.
+         */
+        checkPermissions(context.user, "appBuilder.controllers.create", [app]);
+
+        const previousController = await ControllerModel.findOne({
+            name: value.name,
+            app: value.app,
+            status: { $ne: "deleted" },
+        });
+        if (previousController) {
+            throw new BadRequestError(
+                `Controller with name ${value.name} already exists.`,
+            );
+        }
+
+        const newController = new ControllerModel({
+            ...value,
+            status: "created",
+            creator: context.user._id,
+        });
+        await newController.save();
+
+        return newController;
     });
-    await newController.save();
 
     return toExternal(newController);
 };
@@ -142,25 +183,157 @@ export const create = async (
 export const list = async (
     context: any,
     parameters: any,
-): Promise<TControllerPage> => helper.list(context, parameters, filterSchema);
+): Promise<TControllerPage> => {
+    const { error, value } = filterSchema.validate(parameters);
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const { page, limit } = value;
+    const app = await AppModel.findById(value.app);
+    checkPermissions(context.user, "appBuilder.controllers.list", [app]);
+
+    const queries = await (ControllerModel as any).paginate(
+        {
+            app,
+            status: {
+                $ne: "deleted",
+            },
+        },
+        {
+            limit,
+            page: page + 1,
+            lean: true,
+            leanWithId: true,
+            pagination: true,
+            sort: {
+                updatedAt: -1,
+            },
+        },
+    );
+
+    return {
+        totalRecords: queries.totalDocs,
+        totalPages: queries.totalPages,
+        previousPage: queries.prevPage ? queries.prevPage - 1 : -1,
+        nextPage: queries.nextPage ? queries.nextPage - 1 : -1,
+        hasPreviousPage: queries.hasPrevPage,
+        hasNextPage: queries.hasNextPage,
+        records: queries.docs.map(toExternal),
+    };
+};
 
 export const listByIds = async (
     context,
     ids: string[],
-): Promise<IExternalController[]> => helper.listByIds(context, ids);
+): Promise<IExternalController[]> => {
+    const items = await ControllerModel.find({
+        _id: { $in: ids },
+        status: { $ne: "deleted" },
+    }).exec();
+    if (items.length !== ids.length) {
+        throw new NotFoundError(
+            `Could not find items for every specified ID. Request ${ids.length} items, but found ${items.length} items.`,
+        );
+    }
+
+    checkPermissions(context.user, "appBuilder.controllers.listByIds", [items]);
+
+    const object = {};
+    for (const item of items) {
+        object[item._id.toString()] = item;
+    }
+
+    return ids.map((key) => toExternal(object[key]));
+};
 
 export const getById = async (
     context: any,
     id: string,
-): Promise<IExternalController> => helper.getById(context, id);
+): Promise<IExternalController> => {
+    if (!constants.identifierPattern.test(id)) {
+        throw new BadRequestError("The specified identifier is invalid.");
+    }
+
+    const controller = await ControllerModel.findOne({
+        _id: id,
+        status: { $ne: "deleted" },
+    }).exec();
+    checkPermissions(context.user, "appBuilder.controllers.view", [controller]);
+
+    /* We return a 404 error, if we did not find the entity. */
+    if (!document) {
+        throw new NotFoundError(
+            "Could not find any screen with the specified identifier.",
+        );
+    }
+
+    return toExternal(controller);
+};
 
 export const getByName = async (
     context: any,
     name: string,
-): Promise<IExternalController> => helper.getByName(context, name);
+): Promise<IExternalController> => {
+    if (!constants.namePattern.test(name)) {
+        throw new BadRequestError("The specified name is invalid.");
+    }
 
-export const update = async (context: any, id: string, attributes: any) =>
-    helper.update(context, id, attributes, updateSchema);
+    const controller = await ControllerModel.findOne({
+        name,
+        status: { $ne: "deleted" },
+    }).exec();
+    checkPermissions(context.user, "appBuilder.controllers.view", [controller]);
+
+    /* We return a 404 error, if we did not find the entity. */
+    if (!document) {
+        throw new NotFoundError(
+            "Could not find any screen with the specified identifier.",
+        );
+    }
+
+    return toExternal(controller);
+};
+
+export const update = async (context: any, id: string, attributes: any) => {
+    const { error, value } = updateSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
+    const updatedController = await runAsTransaction(async () => {
+        const updatedController = await ControllerModel.findOneAndUpdate(
+            {
+                _id: id,
+                status: { $ne: "deleted" },
+            },
+            value,
+            { new: true, lean: true },
+        ).exec();
+
+        if (!updatedController) {
+            throw new NotFoundError(
+                "A controller with the specified identifier does not exist.",
+            );
+        }
+
+        /*
+         * At this point, the controller has been modified, regardless of the
+         * currently logged in user being authorized or not. When we check for
+         * permissions below, we rely on the transaction failing to undo the
+         * changes.
+         */
+        checkPermissions(context.user, "appBuilder.controllers.update", [
+            updatedController,
+        ]);
+
+        return updatedController;
+    });
+
+    return toExternal(updatedController);
+};
 
 export const updateWithSource = async (
     context: any,
@@ -183,6 +356,10 @@ export const updateWithSource = async (
             `Could not find any controller with the specified identifier.`,
         );
     }
+
+    checkPermissions(context.user, "appBuilder.controllers.update", [
+        controller,
+    ]);
 
     const oldSource = patchAll(controller.patches);
     const newPatch = createTwoFilesPatch(
@@ -210,7 +387,9 @@ export const updateWithSource = async (
         },
     ).exec();
     if (!updatedController) {
-        throw new Error("Failed to update and verify new controller state.");
+        throw new InternalServerError(
+            "Failed to update and verify new controller state.",
+        );
     }
 
     return toExternal(updatedController);
@@ -223,26 +402,37 @@ export const remove = async (context: any, id: string) => {
         );
     }
 
-    // TODO: Update filters
-    const controller = await ControllerModel.findOneAndUpdate(
-        {
-            _id: id,
-            status: { $ne: "deleted" },
-            creator: context.user._id,
-        },
-        {
-            status: "deleted",
-        },
-        {
-            new: true,
-            lean: true,
-        },
-    );
-    if (!controller) {
-        throw new NotFoundError(
-            "A controller with the specified identifier does not exist.",
+    await runAsTransaction(async () => {
+        const controller = await ControllerModel.findOneAndUpdate(
+            {
+                _id: id,
+                status: { $ne: "deleted" },
+                creator: context.user._id,
+            },
+            {
+                status: "deleted",
+            },
+            {
+                new: true,
+                lean: true,
+            },
         );
-    }
+        if (!controller) {
+            throw new NotFoundError(
+                "A controller with the specified identifier does not exist.",
+            );
+        }
+
+        /*
+         * At this point, the controller has been modified, regardless of the
+         * currently logged in user being authorized or not. When we check for
+         * permissions below, we rely on the transaction failing to undo the
+         * changes.
+         */
+        checkPermissions(context.user, "appBuilder.controllers.delete", [
+            controller,
+        ]);
+    });
 
     return { success: true };
 };

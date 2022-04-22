@@ -1,7 +1,6 @@
 import {
     IApp,
     IExternalApp,
-    IUser,
     OrganizationModel,
     TAppPage,
     UserModel,
@@ -11,7 +10,6 @@ import {
     BadRequestError,
     NotFoundError,
     constants,
-    extractIds,
 } from "@hypertool/common";
 
 import joi from "joi";
