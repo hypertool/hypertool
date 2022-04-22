@@ -227,7 +227,9 @@ const listByIds = async (
 
 const getById = async (context, appId: string): Promise<IExternalApp> => {
     if (!constants.identifierPattern.test(appId)) {
-        throw new BadRequestError("The specified app identifier is invalid.");
+        throw new BadRequestError(
+            `The specified app identifier "${appId}" is invalid.`,
+        );
     }
 
     const app = await AppModel.findOne({
@@ -305,6 +307,11 @@ const update = async (
             );
         }
 
+        /*
+         * At this point, the app has been modified, regardless of the
+         * user being authorized or not. When we check for access below,
+         * we rely on the transaction failing to undo the changes.
+         */
         checkAccessToApps(context.user, [app]);
 
         return app;
@@ -338,6 +345,11 @@ const publish = async (context, appId: string): Promise<IExternalApp> => {
             );
         }
 
+        /*
+         * At this point, the app has been modified, regardless of the
+         * user being authorized or not. When we check for access below,
+         * we rely on the transaction failing to undo the changes.
+         */
         checkAccessToApps(context.user, [app]);
 
         return app;
@@ -371,6 +383,11 @@ const unpublish = async (context, appId: string): Promise<IExternalApp> => {
             );
         }
 
+        /*
+         * At this point, the app has been modified, regardless of the
+         * user being authorized or not. When we check for access below,
+         * we rely on the transaction failing to undo the changes.
+         */
         checkAccessToApps(context.user, [app]);
 
         return app;
@@ -384,29 +401,38 @@ const remove = async (
     appId: string,
 ): Promise<{ success: boolean }> => {
     if (!constants.identifierPattern.test(appId)) {
-        throw new BadRequestError("The specified app identifier is invalid.");
-    }
-
-    // TODO: Update filters
-    const app = await AppModel.findOneAndUpdate(
-        {
-            _id: appId,
-            status: { $ne: "deleted" },
-        },
-        {
-            status: "deleted",
-        },
-        {
-            new: true,
-            lean: true,
-        },
-    );
-
-    if (!app) {
-        throw new NotFoundError(
-            "An app with the specified identifier does not exist.",
+        throw new BadRequestError(
+            `The specified app identifier "${appId}" is invalid.`,
         );
     }
+
+    await runAsTransaction(async () => {
+        const app = await AppModel.findOneAndUpdate(
+            {
+                _id: appId,
+                status: { $ne: "deleted" },
+            },
+            {
+                status: "deleted",
+            },
+            {
+                new: true,
+                lean: true,
+            },
+        );
+        if (!app) {
+            throw new NotFoundError(
+                `An app with the specified identifier "${appId}" does not exist.`,
+            );
+        }
+
+        /*
+         * At this point, the app has been modified, regardless of the
+         * user being authorized or not. When we check for access below,
+         * we rely on the transaction failing to undo the changes.
+         */
+        checkAccessToApps(context.user, [app]);
+    });
 
     return { success: true };
 };
