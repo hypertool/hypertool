@@ -1,5 +1,5 @@
 import { FunctionComponent, ReactElement, useMemo } from "react";
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 import {
     Button,
@@ -20,7 +20,7 @@ import { createTwoFilesPatch } from "diff";
 import { Formik } from "formik";
 
 import { Select, TextField } from "../../components";
-import { BuilderActionsContext, TabContext } from "../../contexts";
+import { useBuilderActions, useTab } from "../../hooks";
 import { templates } from "../../utils";
 import { controllerLanguages } from "../../utils/constants";
 
@@ -152,11 +152,8 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
         { loading: creatingController, data: newController },
     ] = useMutation(CREATE_CONTROLLER, { refetchQueries: ["GetControllers"] });
 
-    const { replaceTab } = useContext(BuilderActionsContext);
-    const error = () => {
-        throw new Error("Tab context should not be null.");
-    };
-    const { index } = useContext(TabContext) || error();
+    const { replaceTab } = useBuilderActions();
+    const { index } = useTab();
 
     useEffect(() => {
         if (newController) {
