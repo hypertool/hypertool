@@ -146,7 +146,6 @@ export interface IApp {
     _id: ObjectId;
     name: string;
     title: string;
-    slug: string;
     description: string;
     resources: ObjectId[] | IResource[];
     deployments: ObjectId[] | Deployment[];
@@ -163,7 +162,6 @@ export interface IExternalApp {
     id: string;
     name: string;
     title: string;
-    slug: string;
     description: string;
     resources: string[];
     deployments: string[];
