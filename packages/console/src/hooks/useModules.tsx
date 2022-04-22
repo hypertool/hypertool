@@ -17,8 +17,8 @@ const GET_QUERY_TEMPLATES = gql`
 `;
 
 const GET_CONTROLLERS = gql`
-    query GetControllers($page: Int, $limit: Int) {
-        getControllers(page: $page, limit: $limit) {
+    query GetControllers($app: ID!, $page: Int, $limit: Int) {
+        getControllers(app: $app, page: $page, limit: $limit) {
             totalPages
             records {
                 id
@@ -43,6 +43,7 @@ const useModules = (appId: string): TModulesContext => {
     });
     const { data: controllersData } = useQuery(GET_CONTROLLERS, {
         variables: {
+            app: appId,
             page: 0,
             limit: 20,
         },

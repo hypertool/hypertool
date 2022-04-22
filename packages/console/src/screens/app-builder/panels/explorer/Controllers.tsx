@@ -7,6 +7,7 @@ import { styled } from "@mui/material/styles";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { BuilderActionsContext } from "../../../../contexts";
+import { useParam } from "../../../../hooks";
 import { IEditControllerBundle, ITab } from "../../../../types";
 
 import Controller from "./Controller";
@@ -20,8 +21,8 @@ const Actions = styled("div")(({ theme }) => ({
 }));
 
 const GET_CONTROLLERS = gql`
-    query GetControllers($page: Int, $limit: Int) {
-        getControllers(page: $page, limit: $limit) {
+    query GetControllers($app: ID!, $page: Int, $limit: Int) {
+        getControllers(app: $app, page: $page, limit: $limit) {
             totalPages
             records {
                 id
@@ -42,9 +43,11 @@ const DELETE_CONTROLLER = gql`
 
 const Controllers: FunctionComponent = (): ReactElement => {
     const { createTab, closeTabs } = useContext(BuilderActionsContext);
+    const appId = useParam("appId");
 
     const { data } = useQuery(GET_CONTROLLERS, {
         variables: {
+            app: appId,
             page: 0,
             limit: 20,
         },
