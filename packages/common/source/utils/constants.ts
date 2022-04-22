@@ -276,7 +276,7 @@ const countryCodes = tuple(
 
 const identifierPattern = /^[a-z0-9]{24}$/;
 
-const namePattern = /^[a-zA-Z_][a-zA-Z_0-9-]+[a-zA-Z_0-9]$/;
+const namePattern = /^[a-zA-Z_][a-zA-Z_0-9-]+[a-zA-Z_0-9]{1,256}$/;
 
 const userStatuses = tuple("invited", "cancelled", "activated", "removed");
 
