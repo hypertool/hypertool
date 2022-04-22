@@ -315,58 +315,66 @@ const update = async (
 
 const publish = async (context, appId: string): Promise<IExternalApp> => {
     if (!constants.identifierPattern.test(appId)) {
-        throw new BadRequestError("The specified app identifier is invalid.");
-    }
-
-    // TODO: Update filters
-    const app = await AppModel.findOneAndUpdate(
-        {
-            _id: appId,
-            status: { $ne: "deleted" },
-        },
-        {
-            status: "public",
-        },
-        {
-            new: true,
-            lean: true,
-        },
-    );
-
-    if (!app) {
-        throw new NotFoundError(
-            "An app with the specified identifier does not exist.",
+        throw new BadRequestError(
+            `The specified app identifier "${appId}" is invalid.`,
         );
     }
+
+    const app = await runAsTransaction(async () => {
+        const app = await AppModel.findOneAndUpdate(
+            {
+                _id: appId,
+                status: { $ne: "deleted" },
+            },
+            { status: "public" },
+            {
+                new: true,
+                lean: true,
+            },
+        ).exec();
+        if (!app) {
+            throw new NotFoundError(
+                `An app with the specified identifier "${appId}" does not exist.`,
+            );
+        }
+
+        checkAccessToApps(context.user, [app]);
+
+        return app;
+    });
 
     return toExternal(app);
 };
 
 const unpublish = async (context, appId: string): Promise<IExternalApp> => {
     if (!constants.identifierPattern.test(appId)) {
-        throw new BadRequestError("The specified app identifier is invalid.");
-    }
-
-    // TODO: Update filters
-    const app = await AppModel.findOneAndUpdate(
-        {
-            _id: appId,
-            status: { $ne: "deleted" },
-        },
-        {
-            status: "private",
-        },
-        {
-            new: true,
-            lean: true,
-        },
-    );
-
-    if (!app) {
-        throw new NotFoundError(
-            "An app with the specified identifier does not exist.",
+        throw new BadRequestError(
+            `The specified app identifier "${appId}" is invalid.`,
         );
     }
+
+    const app = await runAsTransaction(async () => {
+        const app = await AppModel.findOneAndUpdate(
+            {
+                _id: appId,
+                status: { $ne: "deleted" },
+            },
+            { status: "private" },
+            {
+                new: true,
+                lean: true,
+            },
+        ).exec();
+        if (!app) {
+            throw new NotFoundError(
+                `An app with the specified identifier "${appId}" does not exist.`,
+            );
+        }
+
+        checkAccessToApps(context.user, [app]);
+
+        return app;
+    });
 
     return toExternal(app);
 };
