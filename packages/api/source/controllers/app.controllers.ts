@@ -4,6 +4,7 @@ import {
     OrganizationModel,
     TAppPage,
     UserModel,
+    runAsTransaction,
 } from "@hypertool/common";
 import {
     AppModel,
@@ -16,29 +17,19 @@ import joi from "joi";
 import { Types } from "mongoose";
 
 const createSchema = joi.object({
-    name: joi.string().max(128).required(),
+    name: joi.string().regex(constants.namePattern).required(),
     title: joi.string().max(256).required(),
     description: joi.string().max(512).allow("").default(""),
     organization: joi.string().regex(constants.identifierPattern),
 });
 
 const updateSchema = joi.object({
-    name: joi.string().max(128),
     title: joi.string().max(256),
     description: joi.string().max(512).allow(""),
-    authServices: joi.object({
-        googleAuth: joi.object({
-            enabled: joi.boolean().required(),
-            clientId: joi.string().required(),
-            secret: joi.string().required(),
-        }),
-    }),
-    resources: joi
-        .array()
-        .items(joi.string().regex(constants.identifierPattern)),
 });
 
 const filterSchema = joi.object({
+    // organization: joi.string().regex(constants.identifierPattern).required(),
     page: joi.number().integer().default(0),
     limit: joi
         .number()
@@ -87,70 +78,85 @@ const toExternal = (app: IApp): IExternalApp => {
     return result as any;
 };
 
+// TODO: Check for hypertool.apps.create permission.
 const create = async (context, attributes): Promise<IExternalApp> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
-
     if (error) {
         throw new BadRequestError(error.message);
     }
 
-    // Check if the app name is already taken.
-    const existingApp = await AppModel.findOne({
-        name: value.name,
-        status: { $ne: "deleted" },
-    }).exec();
-    if (existingApp) {
-        throw new BadRequestError(
-            `App with name ${value.name} already exists.`,
-        );
-    }
-
-    const newAppId = new Types.ObjectId();
-
-    if (value.organization) {
-        const organization = await OrganizationModel.findById(
-            value.organization,
-        ).exec();
-        if (!organization) {
+    const newApp = await runAsTransaction(async () => {
+        /* Check if the app name is already taken. */
+        const existingApp = await AppModel.findOne({
+            name: value.name,
+            status: { $ne: "deleted" },
+        }).exec();
+        if (existingApp) {
             throw new BadRequestError(
-                `Organization with the specified ID "${value.organization}" does not exist.`,
+                `App with name "${value.name}"" already exists.`,
             );
         }
 
-        // Add the app to the organization's apps.
-        await organization
-            .updateOne({
-                $push: {
-                    apps: newAppId,
+        const newAppId = new Types.ObjectId();
+
+        /*
+         * If the app belongs to an organization, establish a bidirectional
+         * relationship.
+         */
+        if (value.organization) {
+            const organization = await OrganizationModel.findOneAndUpdate(
+                {
+                    _id: value.organization,
+                    status: { $ne: "deleted" },
                 },
-            })
-            .exec();
-    }
+                {
+                    $push: {
+                        apps: newAppId,
+                    },
+                },
+                { new: true, lean: true },
+            ).exec();
+            if (!organization) {
+                throw new BadRequestError(
+                    `Organization with the specified identifier "${value.organization}" does not exist.`,
+                );
+            }
+            // TODO: Check if the user belongs to the organization.
+        } else {
+            /*
+             * If the app does not belong to any organization, the ownership of
+             * the app is given to the user.
+             */
+            await UserModel.findOneAndUpdate(
+                {
+                    _id: context.user._id,
+                },
+                {
+                    $push: {
+                        apps: newAppId,
+                    },
+                },
+                {
+                    new: true,
+                    lean: true,
+                },
+            ).exec();
+        }
 
-    // TODO: Check if value.members and value.resources are correct.
-    const newApp = new AppModel({
-        ...value,
-        _id: newAppId,
-        organization: value.organization,
-        creator: context.user._id,
-        status: "private",
+        /* Create the new app. */
+        const newApp = new AppModel({
+            ...value,
+            _id: newAppId,
+            organization: value.organization,
+            creator: context.user._id,
+            status: "private",
+        });
+        await newApp.save();
+
+        return newApp;
     });
-    await newApp.save();
-
-    // Add the app to the user's apps.
-    const user = await UserModel.findOneAndUpdate(
-        {
-            _id: context.user._id,
-        },
-        {
-            $push: {
-                apps: newApp._id,
-            },
-        },
-    ).exec();
-    await user.save();
 
     return toExternal(newApp);
 };
