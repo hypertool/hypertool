@@ -248,19 +248,22 @@ const getById = async (context, appId: string): Promise<IExternalApp> => {
 
 const getByName = async (context, name: string): Promise<IExternalApp> => {
     if (!constants.namePattern.test(name)) {
-        throw new BadRequestError("The specified app name is invalid.");
+        throw new BadRequestError(
+            `The specified app name "${name}" is invalid.`,
+        );
     }
 
-    // TODO: Update filters
-    const filters = {
+    const app = await AppModel.findOne({
         name,
         status: { $ne: "deleted" },
-    };
-    const app = await AppModel.findOne(filters as any).exec();
+    }).exec();
+    checkAccessToApps(context.user, [app]);
 
     /* We return a 404 error, if we did not find the app. */
     if (!app) {
-        throw new NotFoundError("Cannot find an app with the specified name.");
+        throw new NotFoundError(
+            `Cannot find an app with the specified name "${name}".`,
+        );
     }
 
     return toExternal(app);
