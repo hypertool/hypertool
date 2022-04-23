@@ -203,7 +203,7 @@ const listByIds = async (
         _id: { $in: queryTemplateIds },
         status: { $ne: "deleted" },
     }).exec();
-    if (queryTemplates.length !== queryTemplates.length) {
+    if (queryTemplates.length !== queryTemplateIds.length) {
         throw new NotFoundError(
             `Could not find query templates for every specified ID. Requested ${queryTemplateIds.length} query templates, but found ${queryTemplates.length} query templates.`,
         );
