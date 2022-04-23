@@ -203,3 +203,21 @@ export const checkAccessToQueryTemplates = (
         );
     }
 };
+
+export const checkAccessToScreens = (user: IUser, screens: IQuery[]): void => {
+    const userId = user._id.toString();
+    const deniedList = [];
+    for (const screen of screens) {
+        if (screen.creator.toString() !== userId) {
+            deniedList.push(screen._id.toString());
+        }
+    }
+
+    if (deniedList.length > 0) {
+        throw new ForbiddenError(
+            `Access to the following screens are forbidden: ${deniedList.join(
+                ", ",
+            )}`,
+        );
+    }
+};
