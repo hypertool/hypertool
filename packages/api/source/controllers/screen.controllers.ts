@@ -271,22 +271,23 @@ export const getByName = async (
     name: string,
 ): Promise<IExternalScreen> => {
     if (!constants.namePattern.test(name)) {
-        throw new BadRequestError("The specified name is invalid.");
+        throw new BadRequestError(`The specified name "${name}" is invalid.`);
     }
 
-    const document = await ScreenModel.findOne({
+    const screen = await ScreenModel.findOne({
         name,
         status: { $ne: "deleted" },
-        creator: context.user._id,
     }).exec();
     /* We return a 404 error, if we did not find the entity. */
-    if (!document) {
+    if (!screen) {
         throw new NotFoundError(
-            "Could not find any screen with the specified identifier.",
+            `Cannot find a screen with the specified name "${name}".`,
         );
     }
 
-    return toExternal(document);
+    checkAccessToScreens(context.user, [screen]);
+
+    return toExternal(screen);
 };
 
 export const remove = async (context: any, id: string) => {
