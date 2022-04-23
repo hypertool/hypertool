@@ -219,11 +219,15 @@ export const listByIds = async (
     context,
     ids: string[],
 ): Promise<IExternalScreen[]> => {
-    const screens = await ScreenModel.find({
-        _id: { $in: ids },
-        status: { $ne: "deleted" },
-        creator: context.user._id,
-    }).exec();
+    const screens = await ScreenModel.find(
+        {
+            _id: { $in: ids },
+            status: { $ne: "deleted" },
+            creator: context.user._id,
+        },
+        null,
+        { lean: true },
+    ).exec();
     if (screens.length !== ids.length) {
         throw new NotFoundError(
             `Could not find screens for every specified identifier. Requested ${ids.length} screens, but found ${screens.length} screens.`,
@@ -250,10 +254,14 @@ export const getById = async (
         );
     }
 
-    const screen = await ScreenModel.findOne({
-        _id: screenId,
-        status: { $ne: "deleted" },
-    }).exec();
+    const screen = await ScreenModel.findOne(
+        {
+            _id: screenId,
+            status: { $ne: "deleted" },
+        },
+        null,
+        { lean: true },
+    ).exec();
     /* We return a 404 error, if we did not find the entity. */
     if (!screen) {
         throw new NotFoundError(
@@ -274,10 +282,14 @@ export const getByName = async (
         throw new BadRequestError(`The specified name "${name}" is invalid.`);
     }
 
-    const screen = await ScreenModel.findOne({
-        name,
-        status: { $ne: "deleted" },
-    }).exec();
+    const screen = await ScreenModel.findOne(
+        {
+            name,
+            status: { $ne: "deleted" },
+        },
+        null,
+        { lean: true },
+    ).exec();
     /* We return a 404 error, if we did not find the entity. */
     if (!screen) {
         throw new NotFoundError(
@@ -290,32 +302,39 @@ export const getByName = async (
     return toExternal(screen);
 };
 
-export const remove = async (context: any, id: string) => {
-    if (!constants.identifierPattern.test(id)) {
+export const remove = async (context: any, screenId: string) => {
+    if (!constants.identifierPattern.test(screenId)) {
         throw new BadRequestError(
             "The specified screen identifier is invalid.",
         );
     }
 
-    const screen = await ScreenModel.findOneAndUpdate(
-        {
-            _id: id,
-            status: { $ne: "deleted" },
-            creator: context.user._id,
-        },
-        {
-            status: "deleted",
-        },
-        {
-            new: true,
-            lean: true,
-        },
-    );
-    if (!screen) {
-        throw new NotFoundError(
-            "Could not find any screen with the specified identifier.",
+    await runAsTransaction(async () => {
+        const screen = await ScreenModel.findOneAndUpdate(
+            {
+                _id: screenId,
+                status: { $ne: "deleted" },
+            },
+            {
+                status: "deleted",
+            },
+            {
+                new: true,
+                lean: true,
+            },
         );
-    }
+        if (!screen) {
+            throw new NotFoundError(
+                `Cannot find a screen with the specified identifier "${screenId}".`,
+            );
+        }
+        /*
+         * At this point, the screen has been modified, regardless of the
+         * user being authorized or not. When we check for access below, we rely
+         * on the transaction failing to undo the changes.
+         */
+        checkAccessToScreens(context.user, [screen]);
+    });
 
     return { success: true };
 };
