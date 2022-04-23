@@ -15,7 +15,7 @@ import {
 import joi from "joi";
 import mongoose from "mongoose";
 
-import { checkAccessToApps } from "../utils";
+import { checkAccessToApps, checkAccessToResources } from "../utils";
 import { accessApp } from "../utils";
 
 // TODO: Add limits to database configurations!
@@ -247,13 +247,21 @@ const listByIds = async (
     context,
     resourceIds: string[],
 ): Promise<IExternalResource[]> => {
-    const unorderedResources = await ResourceModel.find({
+    const resources = await ResourceModel.find({
         _id: { $in: resourceIds },
         status: { $ne: "deleted" },
     }).exec();
+    if (resources.length !== resourceIds.length) {
+        throw new NotFoundError(
+            `Could not find resources for every specified ID. Requested ${resourceIds.length} resources, but found ${resources.length} resources.`,
+        );
+    }
+
+    checkAccessToResources(context.user, resources);
+
     const object = {};
     // eslint-disable-next-line no-restricted-syntax
-    for (const resource of unorderedResources) {
+    for (const resource of resources) {
         object[resource._id.toString()] = resource;
     }
     return resourceIds.map((key) => toExternal(object[key]));
