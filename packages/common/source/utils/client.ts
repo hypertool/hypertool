@@ -358,28 +358,28 @@ export default class Client<T> {
     }
 
     createApp = async (app: IApp): Promise<void> => {
-        await this.client.mutate({
-            mutation: CREATE_APP,
-            variables: {
-                name: app.name,
-                title: app.title,
-                slug: app.slug,
-                description: app.description,
-            },
-        });
+        // await this.client.mutate({
+        //     mutation: CREATE_APP,
+        //     variables: {
+        //         name: app.name,
+        //         title: app.title,
+        //         slug: app.slug,
+        //         description: app.description,
+        //     },
+        // });
     }
 
     updateApp = async (appId: string, app: IApp): Promise<void> => {
-        await this.client.mutate({
-            mutation: UPDATE_APP,
-            variables: {
-                appId,
-                name: app.name,
-                title: app.title,
-                slug: app.slug,
-                description: app.description,
-            },
-        });
+        // await this.client.mutate({
+        //     mutation: UPDATE_APP,
+        //     variables: {
+        //         appId,
+        //         name: app.name,
+        //         title: app.title,
+        //         slug: app.slug,
+        //         description: app.description,
+        //     },
+        // });
     }
 
     getQueryTemplateByName = async (name: string): Promise<QueryTemplate | null> => {
