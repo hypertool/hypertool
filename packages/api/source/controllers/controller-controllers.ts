@@ -246,7 +246,7 @@ export const listByIds = async (
     }).exec();
     if (controllers.length !== controllerIds.length) {
         throw new NotFoundError(
-            `Could not find controllers for every specified ID. Request ${controllerIds.length} controllers, but found ${controllers.length} controllers.`,
+            `Could not find controllers for every specified ID. Requested ${controllerIds.length} controllers, but found ${controllers.length} controllers.`,
         );
     }
 
@@ -265,18 +265,24 @@ export const getById = async (
     id: string,
 ): Promise<IExternalController> => {
     if (!constants.identifierPattern.test(id)) {
-        throw new BadRequestError("The specified identifier is invalid.");
+        throw new BadRequestError(
+            `The specified identifier "${id}" is invalid.`,
+        );
     }
 
-    const controller = await ControllerModel.findOne({
-        _id: id,
-        status: { $ne: "deleted" },
-    }).exec();
+    const controller = await ControllerModel.findOne(
+        {
+            _id: id,
+            status: { $ne: "deleted" },
+        },
+        null,
+        { lean: true },
+    ).exec();
 
     /* We return a 404 error, if we did not find the entity. */
     if (!controller) {
         throw new NotFoundError(
-            "Could not find any screen with the specified identifier.",
+            `Cannot find a controller with the specified identifier "${id}".`,
         );
     }
 
