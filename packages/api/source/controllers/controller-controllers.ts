@@ -18,11 +18,7 @@ import { applyPatch, createTwoFilesPatch } from "diff";
 import joi from "joi";
 import { Types } from "mongoose";
 
-import {
-    checkAccessToApps,
-    checkAccessToControllers,
-    checkPermissions,
-} from "../utils";
+import { checkAccessToApps, checkAccessToControllers } from "../utils";
 
 const createSchema = joi.object({
     name: joi.string().regex(constants.namePattern).required(),
@@ -263,7 +259,6 @@ export const getById = async (
         _id: id,
         status: { $ne: "deleted" },
     }).exec();
-    checkPermissions(context.user, "appBuilder.controllers.view", [controller]);
 
     /* We return a 404 error, if we did not find the entity. */
     if (!controller) {
@@ -271,6 +266,8 @@ export const getById = async (
             "Could not find any screen with the specified identifier.",
         );
     }
+
+    checkAccessToControllers(context.user, [controller]);
 
     return toExternal(controller);
 };
@@ -287,7 +284,6 @@ export const getByName = async (
         name,
         status: { $ne: "deleted" },
     }).exec();
-    checkPermissions(context.user, "appBuilder.controllers.view", [controller]);
 
     /* We return a 404 error, if we did not find the entity. */
     if (!controller) {
@@ -295,6 +291,8 @@ export const getByName = async (
             "Could not find any screen with the specified identifier.",
         );
     }
+
+    checkAccessToControllers(context.user, [controller]);
 
     return toExternal(controller);
 };
@@ -324,14 +322,11 @@ export const update = async (context: any, id: string, attributes: any) => {
         }
 
         /*
-         * At this point, the controller has been modified, regardless of the
-         * currently logged in user being authorized or not. When we check for
-         * permissions below, we rely on the transaction failing to undo the
-         * changes.
+         * At this point, the controller has been modified, regardless of the currently
+         * user being authorized or not. When we check for access below, we rely
+         * on the transaction failing to undo the changes.
          */
-        checkPermissions(context.user, "appBuilder.controllers.update", [
-            updatedController,
-        ]);
+        checkAccessToControllers(context.user, [updatedController]);
 
         return updatedController;
     });
@@ -361,9 +356,7 @@ export const updateWithSource = async (
         );
     }
 
-    checkPermissions(context.user, "appBuilder.controllers.update", [
-        controller,
-    ]);
+    checkAccessToControllers(context.user, [controller]);
 
     const oldSource = patchAll(controller.patches);
     const newPatch = createTwoFilesPatch(
@@ -428,14 +421,11 @@ export const remove = async (context: any, id: string) => {
         }
 
         /*
-         * At this point, the controller has been modified, regardless of the
-         * currently logged in user being authorized or not. When we check for
-         * permissions below, we rely on the transaction failing to undo the
-         * changes.
+         * At this point, the controller has been modified, regardless of the currently
+         * user being authorized or not. When we check for access below, we rely
+         * on the transaction failing to undo the changes.
          */
-        checkPermissions(context.user, "appBuilder.controllers.delete", [
-            controller,
-        ]);
+        checkAccessToControllers(context.user, [controller]);
     });
 
     return { success: true };
