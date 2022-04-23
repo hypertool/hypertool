@@ -15,7 +15,7 @@ const queryTemplateSchema = new Schema(
         description: {
             type: String,
             minlength: 0,
-            maxlength: 1024,
+            maxlength: 512,
             default: "",
         },
         resource: {
@@ -26,7 +26,8 @@ const queryTemplateSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "App",
         },
-        /* Contingent on the resource type, the content should be treated differently by the service
+        /*
+         * Contingent on the resource type, the content should be treated differently by the service
          * executing the query. For example, for MySQL queries, the content is a SQL statement. On
          * the other hand, for MongoDB queries, the content will be a JSON string that will be
          * parsed before execution.
@@ -36,6 +37,10 @@ const queryTemplateSchema = new Schema(
             minlength: 1,
             maxlength: 10240,
             required: true,
+        },
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
         },
         status: {
             type: String,
