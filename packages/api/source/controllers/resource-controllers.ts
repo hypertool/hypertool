@@ -385,30 +385,39 @@ const remove = async (
 ): Promise<{ success: boolean }> => {
     if (!constants.identifierPattern.test(resourceId)) {
         throw new BadRequestError(
-            "The specified resource identifier is invalid.",
+            `The specified resource identifier "${resourceId}" is invalid.`,
         );
     }
 
-    // TODO: Update filters
-    const resource = await ResourceModel.findOneAndUpdate(
-        {
-            _id: resourceId,
-            status: { $ne: "deleted" },
-        },
-        {
-            status: "deleted",
-        },
-        {
-            new: true,
-            lean: true,
-        },
-    );
-
-    if (!resource) {
-        throw new NotFoundError(
-            "A resource with the specified identifier does not exist.",
+    runAsTransaction(async () => {
+        const resource = await ResourceModel.findOneAndUpdate(
+            {
+                _id: resourceId,
+                status: { $ne: "deleted" },
+            },
+            {
+                status: "deleted",
+            },
+            {
+                new: true,
+                lean: true,
+            },
         );
-    }
+        if (!resource) {
+            throw new NotFoundError(
+                `A resource with the specified identifier "${resourceId}" does not exist.`,
+            );
+        }
+
+        /*
+         * At this point, the resource has been modified, regardless of the
+         * user being authorized or not. When we check for access below, we rely
+         * on the transaction failing to undo the changes.
+         */
+        checkAccessToResources(context.user, [resource]);
+
+        return resource;
+    });
 
     return { success: true };
 };
