@@ -133,13 +133,11 @@ const typeDefs = gql`
             name: String!
             description: String
             resource: ID!
-            app: ID!
             content: String!
         ): QueryTemplate!
 
         updateQueryTemplate(
             queryTemplateId: ID!
-            name: String
             description: String
             content: String
         ): QueryTemplate!

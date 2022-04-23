@@ -1,4 +1,11 @@
-import { AppModel, ExternalQuery, Query, QueryPage } from "@hypertool/common";
+import {
+    AppModel,
+    ExternalQuery,
+    InternalServerError,
+    Query,
+    QueryPage,
+    ResourceModel,
+} from "@hypertool/common";
 import {
     BadRequestError,
     NotFoundError,
@@ -10,21 +17,23 @@ import {
 import joi from "joi";
 import mongoose from "mongoose";
 
+import { checkAccessToApps, checkAccessToResources } from "../utils";
+
 const createSchema = joi.object({
-    name: joi.string().max(128).required(),
-    description: joi.string().max(1024).allow(""),
-    resource: joi.string().regex(constants.identifierPattern),
-    app: joi.string().regex(constants.identifierPattern),
+    name: joi.string().regex(constants.namePattern).required(),
+    description: joi.string().max(512).allow("").default(""),
+    resource: joi.string().regex(constants.identifierPattern).required(),
+    app: joi.string().regex(constants.identifierPattern).required(),
     content: joi.string().max(10240).required(),
 });
 
 const updateSchema = joi.object({
-    name: joi.string().max(128),
-    description: joi.string().max(1024).allow(""),
+    description: joi.string().max(512).allow(""),
     content: joi.string().max(10240),
 });
 
 const filterSchema = joi.object({
+    app: joi.string().regex(constants.identifierPattern).required(),
     page: joi.number().integer().default(0),
     limit: joi
         .number()
@@ -32,7 +41,6 @@ const filterSchema = joi.object({
         .min(constants.paginateMinLimit)
         .max(constants.paginateMaxLimit)
         .default(constants.paginateMinLimit),
-    app: joi.string().regex(constants.identifierPattern),
 });
 
 const toExternal = (query: Query): ExternalQuery => {
@@ -62,11 +70,14 @@ const toExternal = (query: Query): ExternalQuery => {
     };
 };
 
+/*
+ * The query template is associated with the app to which the resource belongs
+ * to.
+ */
 const create = async (context, attributes): Promise<ExternalQuery> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
-
     if (error) {
         throw new BadRequestError(error.message);
     }
@@ -74,28 +85,52 @@ const create = async (context, attributes): Promise<ExternalQuery> => {
     const newQuery = await runAsTransaction(async () => {
         const queryTemplateId = new mongoose.Types.ObjectId();
 
-        /*
-         * Add `query` to `app.queries`
-         */
-        const appId = value.app;
-        await AppModel.findOneAndUpdate(
-            { _id: appId },
+        /* Ensure that the specified resource exists. */
+        const resource = await ResourceModel.findOne(
+            {
+                _id: value.resource,
+                status: { $ne: "deleted" },
+            },
+            null,
+            { lean: true },
+        ).exec();
+        if (!resource) {
+            throw new NotFoundError(
+                `Cannot find a resource with the identifier "${value.resource}".`,
+            );
+        }
+
+        checkAccessToResources(context.user, [resource]);
+
+        /* Establish a bidirectional relationship with the app. */
+        const app = await AppModel.findOneAndUpdate(
+            { _id: resource.app, status: { $ne: "deleted" } },
             { $push: { queries: queryTemplateId } },
-            { new: true },
-        )
-            .lean()
-            .exec();
+            { new: true, lean: true },
+        ).exec();
+        if (!app) {
+            throw new InternalServerError(
+                `Cannot find the app with identifier "${value.app}, referenced by resource "${value.resource}".`,
+            );
+        }
 
         /*
-         * Check if the query name already exists in the app.
+         * At this point, the app has been modified, regardless of the
+         * user being authorized or not. When we check for access below,
+         * we rely on the transaction failing to undo the changes.
          */
-        const filters = {
-            name: value.name,
-            app: value.app,
-        };
-        const query = await QueryTemplateModel.findOne(filters as any)
-            .lean()
-            .exec();
+        checkAccessToApps(context.user, [app]);
+
+        /* Ensure that the name of the query template is unique within the app. */
+        const query = await QueryTemplateModel.findOne(
+            {
+                name: value.name,
+                app: value.app,
+                status: { $ne: "deleted" },
+            },
+            null,
+            { lean: true },
+        ).exec();
         if (query) {
             throw new BadRequestError(
                 `Query with name ${value.name} already exists.`,
@@ -103,8 +138,10 @@ const create = async (context, attributes): Promise<ExternalQuery> => {
         }
 
         const newQuery = new QueryTemplateModel({
-            _id: queryTemplateId,
             ...value,
+            _id: queryTemplateId,
+            app: resource.app,
+            creator: context.user._id,
             status: "enabled",
         });
         await newQuery.save();
