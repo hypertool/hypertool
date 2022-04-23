@@ -18,7 +18,11 @@ import { applyPatch, createTwoFilesPatch } from "diff";
 import joi from "joi";
 import { Types } from "mongoose";
 
-import { checkAccessToApps, checkPermissions } from "../utils";
+import {
+    checkAccessToApps,
+    checkAccessToControllers,
+    checkPermissions,
+} from "../utils";
 
 const createSchema = joi.object({
     name: joi.string().regex(constants.namePattern).required(),
@@ -191,7 +195,7 @@ export const list = async (
 
     const { page, limit } = value;
     const app = await AppModel.findById(value.app);
-    checkPermissions(context.user, "appBuilder.controllers.list", [app]);
+    checkAccessToApps(context.user, [app]);
 
     const queries = await (ControllerModel as any).paginate(
         {
@@ -225,26 +229,26 @@ export const list = async (
 
 export const listByIds = async (
     context,
-    ids: string[],
+    controllerIds: string[],
 ): Promise<IExternalController[]> => {
-    const items = await ControllerModel.find({
-        _id: { $in: ids },
+    const controllers = await ControllerModel.find({
+        _id: { $in: controllerIds },
         status: { $ne: "deleted" },
     }).exec();
-    if (items.length !== ids.length) {
+    if (controllers.length !== controllerIds.length) {
         throw new NotFoundError(
-            `Could not find items for every specified ID. Request ${ids.length} items, but found ${items.length} items.`,
+            `Could not find controllers for every specified ID. Request ${controllerIds.length} controllers, but found ${controllers.length} controllers.`,
         );
     }
 
-    checkPermissions(context.user, "appBuilder.controllers.listByIds", [items]);
+    checkAccessToControllers(context.user, [controllers]);
 
     const object = {};
-    for (const item of items) {
-        object[item._id.toString()] = item;
+    for (const controller of controllers) {
+        object[controller._id.toString()] = controller;
     }
 
-    return ids.map((key) => toExternal(object[key]));
+    return controllerIds.map((key) => toExternal(object[key]));
 };
 
 export const getById = async (
