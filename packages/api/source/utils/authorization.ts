@@ -1,4 +1,4 @@
-import type { IApp, IController, IUser } from "@hypertool/common";
+import type { IApp, IController, IResource, IUser } from "@hypertool/common";
 import { ForbiddenError, InternalServerError } from "@hypertool/common";
 
 import type { IAuthResourceGroup } from "../types";
@@ -150,6 +150,27 @@ export const checkAccessToControllers = (
     if (deniedList.length > 0) {
         throw new ForbiddenError(
             `Access to the following controllers are forbidden: ${deniedList.join(
+                ", ",
+            )}`,
+        );
+    }
+};
+
+export const checkAccessToResources = (
+    user: IUser,
+    resources: IResource[],
+): void => {
+    const userId = user._id.toString();
+    const deniedList = [];
+    for (const resource of resources) {
+        if (resource.creator.toString() !== userId) {
+            deniedList.push(resource._id.toString());
+        }
+    }
+
+    if (deniedList.length > 0) {
+        throw new ForbiddenError(
+            `Access to the following resources are forbidden: ${deniedList.join(
                 ", ",
             )}`,
         );
