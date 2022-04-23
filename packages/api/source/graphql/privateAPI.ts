@@ -242,7 +242,7 @@ const typeDefs = gql`
         getAppById(appId: ID!): App!
         getAppByName(name: String!): App!
 
-        getResources(page: Int, limit: Int): ResourcePage!
+        getResources(app: ID!, page: Int, limit: Int): ResourcePage!
         getResourceById(resourceId: ID!): Resource!
         getResourceByName(name: String!): Resource!
 

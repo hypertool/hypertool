@@ -16,6 +16,7 @@ import joi from "joi";
 import mongoose from "mongoose";
 
 import { checkAccessToApps } from "../utils";
+import { accessApp } from "../utils";
 
 // TODO: Add limits to database configurations!
 const createSchema = joi.object({
@@ -56,6 +57,7 @@ const createSchema = joi.object({
 });
 
 const filterSchema = joi.object({
+    app: joi.string().regex(constants.identifierPattern).required(),
     page: joi.number().integer().default(0),
     limit: joi
         .number()
@@ -209,24 +211,26 @@ const list = async (context, parameters): Promise<IBigQueryConfiguration> => {
         throw new BadRequestError(error.message);
     }
 
-    // TODO: Update filters
-    const filters = {
-        status: {
-            $ne: "deleted",
-        },
-    };
-    const { page, limit } = value;
+    await accessApp(context.user, value.app);
 
-    const resources = await (ResourceModel as any).paginate(filters, {
-        limit,
-        page: page + 1,
-        lean: true,
-        leanWithId: true,
-        pagination: true,
-        sort: {
-            updatedAt: -1,
+    const resources = await (ResourceModel as any).paginate(
+        {
+            app: value.app,
+            status: {
+                $ne: "deleted",
+            },
         },
-    });
+        {
+            limit: value.limit,
+            page: value.page + 1,
+            lean: true,
+            leanWithId: true,
+            pagination: true,
+            sort: {
+                updatedAt: -1,
+            },
+        },
+    );
 
     return {
         totalRecords: resources.totalDocs,
