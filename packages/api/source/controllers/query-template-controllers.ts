@@ -17,7 +17,11 @@ import {
 import joi from "joi";
 import mongoose from "mongoose";
 
-import { checkAccessToApps, checkAccessToResources } from "../utils";
+import {
+    checkAccessToApps,
+    checkAccessToQueryTemplates,
+    checkAccessToResources,
+} from "../utils";
 
 const createSchema = joi.object({
     name: joi.string().regex(constants.namePattern).required(),
@@ -209,13 +213,21 @@ const listByIds = async (
     context,
     queryTemplateIds: string[],
 ): Promise<ExternalQuery[]> => {
-    const unorderedQueries = await QueryTemplateModel.find({
+    const queryTemplates = await QueryTemplateModel.find({
         _id: { $in: queryTemplateIds },
         status: { $ne: "deleted" },
     }).exec();
+    if (queryTemplates.length !== queryTemplates.length) {
+        throw new NotFoundError(
+            `Could not find query templates for every specified ID. Requested ${queryTemplateIds.length} query templates, but found ${queryTemplates.length} query templates.`,
+        );
+    }
+
+    checkAccessToQueryTemplates(context.user, queryTemplates);
+
     const object = {};
     // eslint-disable-next-line no-restricted-syntax
-    for (const query of unorderedQueries) {
+    for (const query of queryTemplates) {
         object[query._id.toString()] = query;
     }
     return queryTemplateIds.map((key) => toExternal(object[key]));
