@@ -1,4 +1,10 @@
-import type { IApp, IController, IResource, IUser } from "@hypertool/common";
+import type {
+    IApp,
+    IController,
+    IQuery,
+    IResource,
+    IUser,
+} from "@hypertool/common";
 import { ForbiddenError, InternalServerError } from "@hypertool/common";
 
 import type { IAuthResourceGroup } from "../types";
@@ -171,6 +177,27 @@ export const checkAccessToResources = (
     if (deniedList.length > 0) {
         throw new ForbiddenError(
             `Access to the following resources are forbidden: ${deniedList.join(
+                ", ",
+            )}`,
+        );
+    }
+};
+
+export const checkAccessToQueryTemplates = (
+    user: IUser,
+    queryTemplates: IQuery[],
+): void => {
+    const userId = user._id.toString();
+    const deniedList = [];
+    for (const queryTemplate of queryTemplates) {
+        if (queryTemplate.creator.toString() !== userId) {
+            deniedList.push(queryTemplate._id.toString());
+        }
+    }
+
+    if (deniedList.length > 0) {
+        throw new ForbiddenError(
+            `Access to the following query templates are forbidden: ${deniedList.join(
                 ", ",
             )}`,
         );
