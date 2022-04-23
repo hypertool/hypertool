@@ -342,7 +342,7 @@ export const update = async (context: any, id: string, attributes: any) => {
 
         if (!updatedController) {
             throw new NotFoundError(
-                "A controller with the specified identifier does not exist.",
+                `Cannot find an app with the specified identifier "${value.app}".`,
             );
         }
 
@@ -377,7 +377,7 @@ export const updateWithSource = async (
     }).exec();
     if (!controller) {
         throw new NotFoundError(
-            `Could not find any controller with the specified identifier.`,
+            `Cannot find a controller with the specified identifier "${id}".`,
         );
     }
 
@@ -420,7 +420,7 @@ export const updateWithSource = async (
 export const remove = async (context: any, id: string) => {
     if (!constants.identifierPattern.test(id)) {
         throw new BadRequestError(
-            "The specified controller identifier is invalid.",
+            `The specified controller identifier "${id}" is invalid.`,
         );
     }
 
@@ -429,7 +429,6 @@ export const remove = async (context: any, id: string) => {
             {
                 _id: id,
                 status: { $ne: "deleted" },
-                creator: context.user._id,
             },
             {
                 status: "deleted",
@@ -441,7 +440,7 @@ export const remove = async (context: any, id: string) => {
         );
         if (!controller) {
             throw new NotFoundError(
-                "A controller with the specified identifier does not exist.",
+                `A controller with the specified identifier "${id}" does not exist.`,
             );
         }
 
