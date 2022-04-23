@@ -273,7 +273,7 @@ const getById = async (
 ): Promise<IExternalResource> => {
     if (!constants.identifierPattern.test(resourceId)) {
         throw new BadRequestError(
-            "The specified resource identifier is invalid.",
+            `The specified resource identifier "${resourceId}" is invalid.`,
         );
     }
 
@@ -300,22 +300,28 @@ const getById = async (
 
 const getByName = async (context, name: string): Promise<IExternalResource> => {
     if (!constants.namePattern.test(name)) {
-        throw new BadRequestError("The specified resource name is invalid.");
+        throw new BadRequestError(
+            `The specified resource name "${name}" is invalid.`,
+        );
     }
 
-    // TODO: Update filters
-    const filters = {
-        name,
-        status: { $ne: "deleted" },
-    };
-    const resource = await ResourceModel.findOne(filters as any).exec();
+    const resource = await ResourceModel.findOne(
+        {
+            name,
+            status: { $ne: "deleted" },
+        },
+        null,
+        { lean: true },
+    ).exec();
 
     /* We return a 404 error, if we did not find the resource. */
     if (!resource) {
         throw new NotFoundError(
-            "Cannot find a resource with the specified name.",
+            `Cannot find a resource with the specified name "${name}".`,
         );
     }
+
+    checkAccessToResources(context.user, [resource]);
 
     return toExternal(resource);
 };
