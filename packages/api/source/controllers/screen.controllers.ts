@@ -12,7 +12,7 @@ import {
 import joi from "joi";
 import mongoose from "mongoose";
 
-import { checkAccessToApps, checkAccessToScreens } from "../utils";
+import { accessApp, checkAccessToApps, checkAccessToScreens } from "../utils";
 
 const createSchema = joi.object({
     app: joi.string().regex(constants.identifierPattern).required(),
@@ -185,16 +185,16 @@ export const list = async (context, parameters): Promise<TScreenPage> => {
         throw new BadRequestError(error.message);
     }
 
-    const { page, limit, appId } = value;
-    const pages = await (ScreenModel as any).paginate(
+    await accessApp(context.user, value.app);
+
+    const screens = await (ScreenModel as any).paginate(
         {
-            app: appId,
+            app: value.app,
             status: { $ne: "deleted" },
-            creator: context.user._id,
         },
         {
-            limit,
-            page: page + 1,
+            limit: value.limit,
+            page: value.page + 1,
             lean: true,
             leanWithId: true,
             pagination: true,
@@ -205,13 +205,13 @@ export const list = async (context, parameters): Promise<TScreenPage> => {
     );
 
     return {
-        totalRecords: pages.totalDocs,
-        totalPages: pages.totalPages,
-        previousPage: pages.prevPage ? pages.prevPage - 1 : -1,
-        nextPage: pages.nextPage ? pages.nextPage - 1 : -1,
-        hasPreviousPage: pages.hasPrevPage,
-        hasNextPage: pages.hasNextPage,
-        records: pages.docs.map(toExternal),
+        totalRecords: screens.totalDocs,
+        totalPages: screens.totalPages,
+        previousPage: screens.prevPage ? screens.prevPage - 1 : -1,
+        nextPage: screens.nextPage ? screens.nextPage - 1 : -1,
+        hasPreviousPage: screens.hasPrevPage,
+        hasNextPage: screens.hasNextPage,
+        records: screens.docs.map(toExternal),
     };
 };
 
