@@ -196,7 +196,6 @@ const typeDefs = gql`
 
         updateScreen(
             screenId: ID!
-            name: String
             title: String
             slug: String
             content: String
@@ -264,7 +263,7 @@ const typeDefs = gql`
         listConversations(page: Int, limit: Int): ConversationPage!
         getConversationsByIds(conversationIds: [ID!]!): [Conversation]!
 
-        getScreens(appId: ID!, page: Int, limit: Int): ScreenPage!
+        getScreens(app: ID!, page: Int, limit: Int): ScreenPage!
         getScreensByIds(appId: ID!, screenIds: [ID!]!): [Screen!]!
         getScreenByName(name: String!): Screen!
         getScreenById(screenId: ID!): Screen!

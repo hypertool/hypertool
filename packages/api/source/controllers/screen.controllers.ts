@@ -12,9 +12,11 @@ import {
 import joi from "joi";
 import mongoose from "mongoose";
 
+import { checkAccessToApps } from "../utils";
+
 const createSchema = joi.object({
     app: joi.string().regex(constants.identifierPattern).required(),
-    name: joi.string().regex(constants.namePattern).min(1).max(256).required(),
+    name: joi.string().regex(constants.namePattern).required(),
     title: joi.string().min(1).max(256).required(),
     description: joi.string().max(512).allow("").default(""),
     slug: joi.string().regex(constants.slugPattern).required(),
@@ -22,7 +24,6 @@ const createSchema = joi.object({
 });
 
 const updateSchema = joi.object({
-    name: joi.string().regex(constants.namePattern).min(1).max(256),
     title: joi.string().min(1).max(256),
     description: joi.string().max(512).allow(""),
     slug: joi.string().regex(constants.slugPattern),
@@ -30,7 +31,7 @@ const updateSchema = joi.object({
 });
 
 const filterSchema = joi.object({
-    appId: joi.string().regex(constants.identifierPattern).required(),
+    app: joi.string().regex(constants.identifierPattern).required(),
     page: joi.number().integer().default(0),
     limit: joi
         .number()
@@ -100,26 +101,30 @@ export const create = async (context, attributes): Promise<IExternalScreen> => {
             status: "created",
         });
 
-        const [_newControllerResult, newScreenResult, updateAppResult] =
-            await Promise.all([
-                newController.save(),
-                newScreen.save(),
-                AppModel.findByIdAndUpdate(
-                    value.app,
-                    {
-                        $push: {
-                            screens: screenId,
-                        },
+        const [_newControllerResult, newScreenResult, app] = await Promise.all([
+            newController.save(),
+            newScreen.save(),
+            AppModel.findOneAndUpdate(
+                { _id: value.app, status: { $ne: "deleted" } },
+                {
+                    $push: {
+                        screens: screenId,
                     },
-                    {
-                        new: true,
-                        lean: true,
-                    },
-                ).exec(),
-            ]);
-        if (!updateAppResult) {
-            throw new NotFoundError(`Cannot find app with the specified ID.`);
+                },
+                {
+                    new: true,
+                    lean: true,
+                },
+            ).exec(),
+        ]);
+
+        if (!app) {
+            throw new NotFoundError(
+                `Cannot find app with the specified identifier "${value.app}".`,
+            );
         }
+
+        checkAccessToApps(context.user, [app]);
 
         return newScreenResult;
     });
