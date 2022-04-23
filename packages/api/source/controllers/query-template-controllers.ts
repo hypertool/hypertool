@@ -159,23 +159,40 @@ const listByAppId = async (context, parameters): Promise<QueryPage> => {
     }
 
     const { page, limit } = value;
-    const filters = {
-        // app,
-        status: {
-            $ne: "deleted",
+    const app = await AppModel.findOne(
+        {
+            _id: value.app,
+            status: { $ne: "deleted" },
         },
-    };
+        null,
+        { lean: true },
+    ).exec();
+    if (!app) {
+        throw new NotFoundError(
+            `Cannot find an app with the specified identifier "${value.app}".`,
+        );
+    }
 
-    const queries = await (QueryTemplateModel as any).paginate(filters, {
-        limit,
-        page: page + 1,
-        lean: true,
-        leanWithId: true,
-        pagination: true,
-        sort: {
-            updatedAt: -1,
+    checkAccessToApps(context.user, [app]);
+
+    const queries = await (QueryTemplateModel as any).paginate(
+        {
+            app: value.app,
+            status: {
+                $ne: "deleted",
+            },
         },
-    });
+        {
+            limit,
+            page: page + 1,
+            lean: true,
+            leanWithId: true,
+            pagination: true,
+            sort: {
+                updatedAt: -1,
+            },
+        },
+    );
 
     return {
         totalRecords: queries.totalDocs,
@@ -319,4 +336,12 @@ const remove = async (
     return { success: true };
 };
 
-export { create, listByIds, listByAppId, getById, getByName, update, remove };
+export {
+    create,
+    listByIds,
+    listByAppId as listByAppId,
+    getById,
+    getByName,
+    update,
+    remove,
+};
