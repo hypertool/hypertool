@@ -259,7 +259,7 @@ const getById = async (
         );
     }
 
-    checkAccessToQueryTemplates(context.user, queryTemplate);
+    checkAccessToQueryTemplates(context.user, [queryTemplate]);
 
     return toExternal(queryTemplate);
 };
@@ -287,7 +287,7 @@ const getByName = async (context, name: string): Promise<ExternalQuery> => {
         );
     }
 
-    checkAccessToQueryTemplates(context.user, queryTemplate);
+    checkAccessToQueryTemplates(context.user, [queryTemplate]);
 
     return toExternal(queryTemplate);
 };
