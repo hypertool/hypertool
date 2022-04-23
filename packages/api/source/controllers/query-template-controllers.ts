@@ -347,30 +347,38 @@ const remove = async (
     queryTemplateId: string,
 ): Promise<{ success: boolean }> => {
     if (!constants.identifierPattern.test(queryTemplateId)) {
-        throw new BadRequestError("The specified query identifier is invalid.");
-    }
-
-    // TODO: Update filters
-    const query = await QueryTemplateModel.findOneAndUpdate(
-        {
-            _id: queryTemplateId,
-            status: { $ne: "deleted" },
-            creator: context.user._id,
-        },
-        {
-            status: "deleted",
-        },
-        {
-            new: true,
-            lean: true,
-        },
-    );
-
-    if (!query) {
-        throw new NotFoundError(
-            "A query with the specified identifier does not exist.",
+        throw new BadRequestError(
+            `The specified query identifier "${queryTemplateId}" is invalid.`,
         );
     }
+
+    await runAsTransaction(async () => {
+        const queryTemplate = await QueryTemplateModel.findOneAndUpdate(
+            {
+                _id: queryTemplateId,
+                status: { $ne: "deleted" },
+            },
+            {
+                status: "deleted",
+            },
+            {
+                new: true,
+                lean: true,
+            },
+        );
+        if (!queryTemplate) {
+            throw new NotFoundError(
+                `A query with the specified identifier "${queryTemplateId}" does not exist.`,
+            );
+        }
+
+        /*
+         * At this point, the query template has been modified, regardless of the
+         * user being authorized or not. When we check for access below, we rely
+         * on the transaction failing to undo the changes.
+         */
+        checkAccessToQueryTemplates(context.user, [queryTemplate]);
+    });
 
     return { success: true };
 };
