@@ -266,7 +266,7 @@ export const getById = async (
 ): Promise<IExternalController> => {
     if (!constants.identifierPattern.test(id)) {
         throw new BadRequestError(
-            `The specified identifier "${id}" is invalid.`,
+            `The specified controller identifier "${id}" is invalid.`,
         );
     }
 
@@ -296,18 +296,24 @@ export const getByName = async (
     name: string,
 ): Promise<IExternalController> => {
     if (!constants.namePattern.test(name)) {
-        throw new BadRequestError("The specified name is invalid.");
+        throw new BadRequestError(
+            `The specified controller name "${name}" is invalid.`,
+        );
     }
 
-    const controller = await ControllerModel.findOne({
-        name,
-        status: { $ne: "deleted" },
-    }).exec();
+    const controller = await ControllerModel.findOne(
+        {
+            name,
+            status: { $ne: "deleted" },
+        },
+        null,
+        { lean: true },
+    ).exec();
 
     /* We return a 404 error, if we did not find the entity. */
     if (!controller) {
         throw new NotFoundError(
-            "Could not find any screen with the specified identifier.",
+            `Cannot find a controller with the specified name "${name}".`,
         );
     }
 
