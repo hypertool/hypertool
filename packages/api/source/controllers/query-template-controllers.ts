@@ -266,22 +266,30 @@ const getById = async (
 
 const getByName = async (context, name: string): Promise<ExternalQuery> => {
     if (!constants.namePattern.test(name)) {
-        throw new BadRequestError("The specified query name is invalid.");
+        throw new BadRequestError(
+            `The specified query template name "${name}" is invalid.`,
+        );
     }
 
-    // TODO: Update filters
-    const filters = {
-        name,
-        status: { $ne: "deleted" },
-    };
-    const query = await QueryTemplateModel.findOne(filters as any).exec();
+    const queryTemplate = await QueryTemplateModel.findOne(
+        {
+            name,
+            status: { $ne: "deleted" },
+        },
+        null,
+        { lean: true },
+    ).exec();
 
     /* We return a 404 error, if we did not find the query. */
-    if (!query) {
-        throw new NotFoundError("Cannot find a query with the specified name.");
+    if (!queryTemplate) {
+        throw new NotFoundError(
+            `Cannot find a query template with the specified name "${name}".`,
+        );
     }
 
-    return toExternal(query);
+    checkAccessToQueryTemplates(context.user, queryTemplate);
+
+    return toExternal(queryTemplate);
 };
 
 const update = async (
