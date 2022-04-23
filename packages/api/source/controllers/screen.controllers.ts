@@ -12,7 +12,7 @@ import {
 import joi from "joi";
 import mongoose from "mongoose";
 
-import { accessApp, checkAccessToApps, checkAccessToScreens, checkAccessToScreens } from "../utils";
+import { accessApp, checkAccessToApps, checkAccessToScreens } from "../utils";
 
 const createSchema = joi.object({
     app: joi.string().regex(constants.identifierPattern).required(),
@@ -245,22 +245,25 @@ export const getById = async (
     screenId: string,
 ): Promise<IExternalScreen> => {
     if (!constants.identifierPattern.test(screenId)) {
-        throw new BadRequestError("The specified identifier is invalid.");
-    }
-
-    const document = await ScreenModel.findOne({
-        _id: screenId,
-        status: { $ne: "deleted" },
-        creator: context.user._id,
-    }).exec();
-    /* We return a 404 error, if we did not find the entity. */
-    if (!document) {
-        throw new NotFoundError(
-            "Could not find any screen with the specified identifier.",
+        throw new BadRequestError(
+            `The specified screen identifier "${screenId}" is invalid.`,
         );
     }
 
-    return toExternal(document);
+    const screen = await ScreenModel.findOne({
+        _id: screenId,
+        status: { $ne: "deleted" },
+    }).exec();
+    /* We return a 404 error, if we did not find the entity. */
+    if (!screen) {
+        throw new NotFoundError(
+            `Cannot find a screen with the specified identifier "${screenId}".`,
+        );
+    }
+
+    checkAccessToScreens(context.user, [screen]);
+
+    return toExternal(screen);
 };
 
 export const getByName = async (
