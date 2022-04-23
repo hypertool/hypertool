@@ -238,24 +238,30 @@ const getById = async (
     queryTemplateId: string,
 ): Promise<ExternalQuery> => {
     if (!constants.identifierPattern.test(queryTemplateId)) {
-        throw new BadRequestError("The specified query identifier is invalid.");
-    }
-
-    // TODO: Update filters
-    const filters = {
-        _id: queryTemplateId,
-        status: { $ne: "deleted" },
-    };
-    const query = await QueryTemplateModel.findOne(filters as any).exec();
-
-    /* We return a 404 error, if we did not find the query. */
-    if (!query) {
-        throw new NotFoundError(
-            "Cannot find a query with the specified identifier.",
+        throw new BadRequestError(
+            `The specified query identifier "${queryTemplateId}" is invalid.`,
         );
     }
 
-    return toExternal(query);
+    const queryTemplate = await QueryTemplateModel.findOne(
+        {
+            _id: queryTemplateId,
+            status: { $ne: "deleted" },
+        },
+        null,
+        { lean: true },
+    ).exec();
+
+    /* We return a 404 error, if we did not find the query. */
+    if (!queryTemplate) {
+        throw new NotFoundError(
+            `Cannot find a query template with the specified identifier "${queryTemplateId}".`,
+        );
+    }
+
+    checkAccessToQueryTemplates(context.user, queryTemplate);
+
+    return toExternal(queryTemplate);
 };
 
 const getByName = async (context, name: string): Promise<ExternalQuery> => {
