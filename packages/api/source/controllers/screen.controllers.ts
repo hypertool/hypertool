@@ -12,7 +12,7 @@ import {
 import joi from "joi";
 import mongoose from "mongoose";
 
-import { checkAccessToApps } from "../utils";
+import { checkAccessToApps, checkAccessToScreens } from "../utils";
 
 const createSchema = joi.object({
     app: joi.string().regex(constants.identifierPattern).required(),
@@ -137,6 +137,12 @@ export const update = async (
     screenId: string,
     attributes,
 ): Promise<IExternalScreen> => {
+    if (!constants.identifierPattern.test(screenId)) {
+        throw new BadRequestError(
+            `The specified screen identifier "${screenId}" is invalid.`,
+        );
+    }
+
     const { error, value } = updateSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -144,22 +150,33 @@ export const update = async (
         throw new BadRequestError(error.message);
     }
 
-    const updatedScreen = await ScreenModel.findOneAndUpdate(
-        {
-            _id: screenId,
-            status: { $ne: "deleted" },
-            creator: context.user._id,
-        },
-        value,
-        { new: true, lean: true },
-    ).exec();
-    if (!updatedScreen) {
-        throw new NotFoundError(
-            "A screen with the specified identifier does not exist.",
-        );
-    }
+    const screen = await runAsTransaction(async () => {
+        const screen = await ScreenModel.findOneAndUpdate(
+            {
+                _id: screenId,
+                status: { $ne: "deleted" },
+                creator: context.user._id,
+            },
+            value,
+            { new: true, lean: true },
+        ).exec();
+        if (!screen) {
+            throw new NotFoundError(
+                `A screen with the specified identifier "${screenId}" does not exist.`,
+            );
+        }
 
-    return toExternal(updatedScreen);
+        /*
+         * At this point, the screen has been modified, regardless of the
+         * user being authorized or not. When we check for access below, we rely
+         * on the transaction failing to undo the changes.
+         */
+        checkAccessToScreens(context.user, [screen]);
+
+        return screen;
+    });
+
+    return toExternal(screen);
 };
 
 export const list = async (context, parameters): Promise<TScreenPage> => {
