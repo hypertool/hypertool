@@ -374,74 +374,6 @@ const update = async (
     return toExternal(resource);
 };
 
-const enable = async (
-    context,
-    resourceId: string,
-): Promise<IExternalResource> => {
-    if (!constants.identifierPattern.test(resourceId)) {
-        throw new BadRequestError(
-            "The specified resource identifier is invalid.",
-        );
-    }
-
-    // TODO: Update filters
-    const resource = await ResourceModel.findOneAndUpdate(
-        {
-            _id: resourceId,
-            status: { $ne: "deleted" },
-        },
-        {
-            status: "enabled",
-        },
-        {
-            new: true,
-            lean: true,
-        },
-    );
-
-    if (!resource) {
-        throw new NotFoundError(
-            "A resource with the specified identifier does not exist.",
-        );
-    }
-
-    return toExternal(resource);
-};
-
-const disable = async (
-    context,
-    resourceId: string,
-): Promise<IExternalResource> => {
-    if (!constants.identifierPattern.test(resourceId)) {
-        throw new BadRequestError(
-            "The specified resource identifier is invalid.",
-        );
-    }
-
-    // TODO: Update filters
-    const resource = await ResourceModel.findOneAndUpdate(
-        {
-            _id: resourceId,
-            status: { $ne: "deleted" },
-        },
-        {
-            status: "disabled",
-        },
-        {
-            new: true,
-            lean: true,
-        },
-    );
-
-    if (!resource) {
-        throw new NotFoundError(
-            "A resource with the specified identifier does not exist.",
-        );
-    }
-
-    return toExternal(resource);
-};
-
 /**
  * Before a resource is deleted, all the apps using it should stop using it.
  * TODO: If there are any apps using the app, the request should fail with appropriate
@@ -481,14 +413,4 @@ const remove = async (
     return { success: true };
 };
 
-export {
-    create,
-    list,
-    listByIds,
-    getById,
-    getByName,
-    update,
-    enable,
-    disable,
-    remove,
-};
+export { create, list, listByIds, getById, getByName, update, remove };
