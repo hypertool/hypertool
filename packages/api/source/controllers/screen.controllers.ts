@@ -12,7 +12,7 @@ import {
 import joi from "joi";
 import mongoose from "mongoose";
 
-import { accessApp, checkAccessToApps, checkAccessToScreens } from "../utils";
+import { accessApp, checkAccessToApps, checkAccessToScreens, checkAccessToScreens } from "../utils";
 
 const createSchema = joi.object({
     app: joi.string().regex(constants.identifierPattern).required(),
@@ -219,19 +219,21 @@ export const listByIds = async (
     context,
     ids: string[],
 ): Promise<IExternalScreen[]> => {
-    const items = await ScreenModel.find({
+    const screens = await ScreenModel.find({
         _id: { $in: ids },
         status: { $ne: "deleted" },
         creator: context.user._id,
     }).exec();
-    if (items.length !== ids.length) {
+    if (screens.length !== ids.length) {
         throw new NotFoundError(
-            `Could not find items for every specified ID. Request ${ids.length} items, but found ${items.length} items.`,
+            `Could not find screens for every specified identifier. Requested ${ids.length} screens, but found ${screens.length} screens.`,
         );
     }
 
+    checkAccessToScreens(context.user, screens);
+
     const object = {};
-    for (const item of items) {
+    for (const item of screens) {
         object[item._id.toString()] = item;
     }
 
