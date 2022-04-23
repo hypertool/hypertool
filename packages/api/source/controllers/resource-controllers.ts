@@ -15,6 +15,8 @@ import {
 import joi from "joi";
 import mongoose from "mongoose";
 
+import { checkAccessToApps } from "../utils";
+
 // TODO: Add limits to database configurations!
 const createSchema = joi.object({
     name: joi.string().regex(constants.namePattern).max(256).required(),
@@ -150,7 +152,6 @@ const create = async (context, attributes): Promise<IExternalResource> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
-
     if (error) {
         throw new BadRequestError(error.message);
     }
@@ -158,31 +159,30 @@ const create = async (context, attributes): Promise<IExternalResource> => {
     const newResource = await runAsTransaction(async () => {
         const resourceId = new mongoose.Types.ObjectId();
 
-        // TODO: Check if the user has permission to edit the app.
-
-        /*
-         * Add `resource` to `app.resources`.
-         */
+        /* Establish a bidirectional relationship betweenresource and app. */
         const app = await AppModel.findOneAndUpdate(
-            { _id: value.app },
+            { _id: value.app, status: { $ne: "deleted" } },
             { $push: { resources: resourceId } },
-            { new: true },
-        )
-            .lean()
-            .exec();
+            { new: true, lean: true },
+        ).exec();
         if (!app) {
-            throw new NotFoundError(`App "${value.app}" not found`);
+            throw new NotFoundError(
+                `Cannot find an app with the specified identifier "${value.app}".`,
+            );
         }
 
-        /*
-         * Check if name already exists in any resource of the given app.
-         */
-        const existingResource = await ResourceModel.findOne({
-            app: value.app,
-            name: value.name,
-        })
-            .lean()
-            .exec();
+        checkAccessToApps(context.user, [app]);
+
+        /* Check if name already exists in any resource of the given app. */
+        const existingResource = await ResourceModel.findOne(
+            {
+                app: value.app,
+                name: value.name,
+                status: { $ne: "deleted" },
+            },
+            null,
+            { lean: true },
+        ).exec();
         if (existingResource) {
             throw new BadRequestError(
                 `Resource with name "${value.name}" already exists`,
