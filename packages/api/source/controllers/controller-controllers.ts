@@ -144,7 +144,7 @@ export const create = async (
         );
         if (!app) {
             throw new NotFoundError(
-                `Cannot find an organization with the specified identifier "${value.app}".`,
+                `Cannot find an app with the specified identifier "${value.app}".`,
             );
         }
 
@@ -190,12 +190,25 @@ export const list = async (
     }
 
     const { page, limit } = value;
-    const app = await AppModel.findById(value.app);
+    const app = await AppModel.findOne(
+        {
+            _id: value.app,
+            status: { $ne: "deleted" },
+        },
+        null,
+        { lean: true },
+    ).exec();
+    if (!app) {
+        throw new NotFoundError(
+            `Cannot find an app with the specified identifier "${value.app}".`,
+        );
+    }
+
     checkAccessToApps(context.user, [app]);
 
-    const queries = await (ControllerModel as any).paginate(
+    const controllers = await (ControllerModel as any).paginate(
         {
-            app,
+            app: value.app,
             status: {
                 $ne: "deleted",
             },
@@ -213,13 +226,13 @@ export const list = async (
     );
 
     return {
-        totalRecords: queries.totalDocs,
-        totalPages: queries.totalPages,
-        previousPage: queries.prevPage ? queries.prevPage - 1 : -1,
-        nextPage: queries.nextPage ? queries.nextPage - 1 : -1,
-        hasPreviousPage: queries.hasPrevPage,
-        hasNextPage: queries.hasNextPage,
-        records: queries.docs.map(toExternal),
+        totalRecords: controllers.totalDocs,
+        totalPages: controllers.totalPages,
+        previousPage: controllers.prevPage ? controllers.prevPage - 1 : -1,
+        nextPage: controllers.nextPage ? controllers.nextPage - 1 : -1,
+        hasPreviousPage: controllers.hasPrevPage,
+        hasNextPage: controllers.hasNextPage,
+        records: controllers.docs.map(toExternal),
     };
 };
 

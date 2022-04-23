@@ -119,8 +119,8 @@ const create = async (context, attributes): Promise<IExternalApp> => {
                 { new: true, lean: true },
             ).exec();
             if (!organization) {
-                throw new BadRequestError(
-                    `Organization with the specified identifier "${value.organization}" does not exist.`,
+                throw new NotFoundError(
+                    `Cannot find an organization with the specified identifier "${value.organization}".`,
                 );
             }
             // TODO: Check if the user belongs to the organization.
