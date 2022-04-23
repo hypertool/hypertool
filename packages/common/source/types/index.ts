@@ -246,6 +246,7 @@ export interface IResource {
     mongodb: IMongoDBConfiguration | undefined;
     bigquery: IBigQueryConfiguration | undefined;
     status: typeof resourceStatuses[number];
+    creator: string | IUser;
     createdAt: Date;
     updatedAt: Date;
     connection?: string;
@@ -292,6 +293,7 @@ export interface IExternalResource {
     postgres: IExternalPostgresConfiguration | undefined;
     mongodb: IExternalMongoDBConfiguration | undefined;
     bigquery: IExternalBigQueryConfiguration | undefined;
+    creator: string;
     status: string;
     createdAt: Date;
     updatedAt: Date;
@@ -322,6 +324,7 @@ export interface Query {
     resource: string | IResource;
     app: string | IApp;
     content: string;
+    creator: string | IUser;
     status: typeof queryStatuses[number];
     createdAt: Date;
     updatedAt: Date;
@@ -334,6 +337,7 @@ export interface ExternalQuery {
     resource: string | IExternalResource;
     app: string | IExternalApp;
     content: string;
+    creator: string;
     status: typeof queryStatuses[number];
     createdAt: Date;
     updatedAt: Date;
