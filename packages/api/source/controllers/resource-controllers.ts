@@ -277,19 +277,23 @@ const getById = async (
         );
     }
 
-    // TODO: Update filters
-    const filters = {
-        _id: resourceId,
-        status: { $ne: "deleted" },
-    };
-    const resource = await ResourceModel.findOne(filters as any).exec();
+    const resource = await ResourceModel.findOne(
+        {
+            _id: resourceId,
+            status: { $ne: "deleted" },
+        },
+        null,
+        { lean: true },
+    ).exec();
 
     /* We return a 404 error, if we did not find the resource. */
     if (!resource) {
         throw new NotFoundError(
-            "Cannot find a resource with the specified identifier.",
+            `Cannot find a resource with the specified identifier "${resourceId}".`,
         );
     }
+
+    checkAccessToResources(context.user, [resource]);
 
     return toExternal(resource);
 };
