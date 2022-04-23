@@ -18,6 +18,7 @@ import joi from "joi";
 import mongoose from "mongoose";
 
 import {
+    accessApp,
     checkAccessToApps,
     checkAccessToQueryTemplates,
     checkAccessToResources,
@@ -162,22 +163,7 @@ const listByAppId = async (context, parameters): Promise<QueryPage> => {
         throw new BadRequestError(error.message);
     }
 
-    const { page, limit } = value;
-    const app = await AppModel.findOne(
-        {
-            _id: value.app,
-            status: { $ne: "deleted" },
-        },
-        null,
-        { lean: true },
-    ).exec();
-    if (!app) {
-        throw new NotFoundError(
-            `Cannot find an app with the specified identifier "${value.app}".`,
-        );
-    }
-
-    checkAccessToApps(context.user, [app]);
+    await accessApp(context.user, value.app);
 
     const queries = await (QueryTemplateModel as any).paginate(
         {
@@ -187,8 +173,8 @@ const listByAppId = async (context, parameters): Promise<QueryPage> => {
             },
         },
         {
-            limit,
-            page: page + 1,
+            limit: value.limit,
+            page: value.page + 1,
             lean: true,
             leanWithId: true,
             pagination: true,
