@@ -68,7 +68,6 @@ const filterSchema = joi.object({
 });
 
 const updateSchema = joi.object({
-    name: joi.string().max(256).allow(""),
     description: joi.string().max(512).allow(""),
     mysql: joi.object({
         host: joi.string().required(),
@@ -333,7 +332,7 @@ const update = async (
 ): Promise<IExternalResource> => {
     if (!constants.identifierPattern.test(resourceId)) {
         throw new BadRequestError(
-            "The specified resource identifier is invalid.",
+            `The specified resource identifier "${resourceId}" is invalid.`,
         );
     }
 
@@ -344,24 +343,33 @@ const update = async (
         throw new BadRequestError(error.message);
     }
 
-    // TODO: Update filters
-    const resource = await ResourceModel.findOneAndUpdate(
-        {
-            _id: resourceId,
-            status: { $ne: "deleted" },
-        },
-        value,
-        {
-            new: true,
-            lean: true,
-        },
-    ).exec();
+    const resource = await runAsTransaction(async () => {
+        const resource = await ResourceModel.findOneAndUpdate(
+            {
+                _id: resourceId,
+                status: { $ne: "deleted" },
+            },
+            value,
+            {
+                new: true,
+                lean: true,
+            },
+        ).exec();
+        if (!resource) {
+            throw new NotFoundError(
+                `A resource with the specified identifier "${resourceId}" does not exist.`,
+            );
+        }
 
-    if (!resource) {
-        throw new NotFoundError(
-            "A resource with the specified identifier does not exist.",
-        );
-    }
+        /*
+         * At this point, the resource has been modified, regardless of the
+         * user being authorized or not. When we check for access below, we rely
+         * on the transaction failing to undo the changes.
+         */
+        checkAccessToResources(context.user, [resource]);
+
+        return resource;
+    });
 
     return toExternal(resource);
 };

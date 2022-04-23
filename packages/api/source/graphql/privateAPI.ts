@@ -119,7 +119,6 @@ const typeDefs = gql`
 
         updateResource(
             resourceId: ID!
-            name: String
             description: String
             mysql: MySQLConfigurationInput
             postgres: PostgresConfigurationInput
