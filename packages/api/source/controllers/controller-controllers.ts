@@ -18,7 +18,7 @@ import { applyPatch, createTwoFilesPatch } from "diff";
 import joi from "joi";
 import { Types } from "mongoose";
 
-import { checkPermissions } from "../utils";
+import { checkAccessToApps, checkPermissions } from "../utils";
 
 const createSchema = joi.object({
     name: joi.string().regex(constants.namePattern).required(),
@@ -142,20 +142,20 @@ export const create = async (
                 new: true,
             },
         );
-
         if (!app) {
             throw new NotFoundError(
-                "Cannot find an app with the specified identifier.",
+                `Cannot find an organization with the specified identifier "${value.app}".`,
             );
         }
 
         /*
          * At this point, the app has been modified, regardless of the currently
-         * logged in user being authorized or not. When we check for permissions
-         * below, we rely on the transaction failing to undo the changes.
+         * user being authorized or not. When we check for access below, we rely
+         * on the transaction failing to undo the changes.
          */
-        checkPermissions(context.user, "appBuilder.controllers.create", [app]);
+        checkAccessToApps(context.user, [app]);
 
+        /* Check for the uniqueness of the controller name within the app. */
         const existingController = await ControllerModel.findOne({
             name: value.name,
             app: value.app,
