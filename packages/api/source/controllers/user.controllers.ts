@@ -6,7 +6,6 @@ import {
     UnauthorizedError,
     UserModel,
     constants,
-    extractIds,
     google,
 } from "@hypertool/common";
 
@@ -58,7 +57,7 @@ const updateSchema = joi.object({
 });
 
 const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,128}$/;
 
 const signUpWithEmailSchema = joi.object({
     firstName: joi.string().min(1).max(256).required(),
@@ -108,12 +107,14 @@ const toExternal = (user: any): IExternalUser => {
     } = user;
 
     return {
-        id: id || _id.toString(),
+        id: _id.toString(),
         firstName,
         lastName,
         description,
-        organizations: extractIds(organizations),
-        apps: extractIds(apps),
+        organizations: organizations.map((organization) =>
+            organization.toString(),
+        ),
+        apps: apps.map((app) => app.toString()),
         gender,
         countryCode,
         pictureURL,
@@ -130,7 +131,6 @@ const create = async (context, attributes): Promise<IExternalUser> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
-
     if (error) {
         throw new BadRequestError(error.message);
     }
@@ -150,24 +150,23 @@ const list = async (context, parameters): Promise<TUserPage> => {
         throw new BadRequestError(error.message);
     }
 
-    // TODO: Update filters
-    const filters = {
-        status: {
-            $ne: "cancelled",
+    const users = await (UserModel as any).paginate(
+        {
+            status: {
+                $ne: "deleted",
+            },
         },
-    };
-    const { page, limit } = value;
-
-    const users = await (UserModel as any).paginate(filters, {
-        limit,
-        page: page + 1,
-        lean: true,
-        leanWithId: true,
-        pagination: true,
-        sort: {
-            updatedAt: -1,
+        {
+            limit: value.limit,
+            page: value.page + 1,
+            lean: true,
+            leanWithId: true,
+            pagination: true,
+            sort: {
+                updatedAt: -1,
+            },
         },
-    });
+    );
 
     return {
         totalRecords: users.totalDocs,
@@ -184,15 +183,23 @@ const listByIds = async (
     context,
     userIds: string[],
 ): Promise<IExternalUser[]> => {
-    const unorderedUsers = await UserModel.find({
-        _id: { $in: userIds },
-        status: { $ne: "cancelled" },
-    }).exec();
+    const users = await UserModel.find(
+        {
+            _id: { $in: userIds },
+            status: { $ne: "deleted" },
+        },
+        null,
+        { lean: true },
+    ).exec();
+
+    // TODO: Check if the user has access to the users.
+
     const object = {};
     // eslint-disable-next-line no-restricted-syntax
-    for (const user of unorderedUsers) {
+    for (const user of users) {
         object[user._id.toString()] = user;
     }
+
     return userIds.map((key) => toExternal(object[key]));
 };
 
@@ -201,13 +208,14 @@ const getById = async (context, userId: string): Promise<IExternalUser> => {
         throw new BadRequestError("The specified user identifier is invalid.");
     }
 
-    // TODO: Update filters
-    const filters = {
-        _id: userId,
-        status: { $ne: "cancelled" },
-    };
-    const user = await UserModel.findOne(filters as any).exec();
-
+    const user = await UserModel.findOne(
+        {
+            _id: userId,
+            status: { $ne: "deleted" },
+        },
+        null,
+        { lean: true },
+    ).exec();
     /* We return a 404 error, if we did not find the user. */
     if (!user) {
         throw new NotFoundError(
@@ -234,13 +242,10 @@ const update = async (
         throw new BadRequestError(error.message);
     }
 
-    console.log("CAME HEREEEEE!!!", userId, value);
-
-    // TODO: Update filters
     const user = await UserModel.findOneAndUpdate(
         {
             _id: userId,
-            status: { $ne: "removed" },
+            status: { $ne: "deleted" },
         },
         value,
         {
@@ -268,21 +273,19 @@ const remove = async (
         throw new BadRequestError("The specified user identifier is invalid.");
     }
 
-    // TODO: Update filters
     const user = await UserModel.findOneAndUpdate(
         {
             _id: userId,
-            status: { $ne: "removed" },
+            status: { $ne: "deleted" },
         },
         {
-            status: "removed",
+            status: "deleted",
         },
         {
             new: true,
             lean: true,
         },
     ).exec();
-
     if (!user) {
         throw new NotFoundError(
             "A user with the specified identifier does not exist.",
