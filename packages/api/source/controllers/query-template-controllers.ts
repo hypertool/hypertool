@@ -28,7 +28,6 @@ const createSchema = joi.object({
     name: joi.string().regex(constants.namePattern).required(),
     description: joi.string().max(512).allow("").default(""),
     resource: joi.string().regex(constants.identifierPattern).required(),
-    app: joi.string().regex(constants.identifierPattern).required(),
     content: joi.string().max(10240).required(),
 });
 

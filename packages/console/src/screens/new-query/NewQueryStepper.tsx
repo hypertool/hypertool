@@ -137,20 +137,19 @@ const CREATE_QUERY_TEMPLATE = gql`
         $name: String!
         $description: String
         $resource: ID!
-        $app: ID!
         $content: String!
     ) {
         createQueryTemplate(
             name: $name
             description: $description
             resource: $resource
-            app: $app
             content: $content
         ) {
             id
         }
     }
 `;
+
 const GET_RESOURCES = gql`
     query GetResources($app: ID!, $page: Int, $limit: Int) {
         getResources(app: $app, page: $page, limit: $limit) {
