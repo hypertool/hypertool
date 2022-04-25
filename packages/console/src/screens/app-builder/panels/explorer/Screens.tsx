@@ -6,9 +6,8 @@ import { styled } from "@mui/material/styles";
 
 import { gql, useMutation, useQuery } from "@apollo/client";
 
-import { useParams } from "react-router-dom";
-
 import { BuilderActionsContext } from "../../../../contexts";
+import { useParam } from "../../../../hooks";
 import { IEditScreenBundle, ITab } from "../../../../types";
 
 import Screen from "./Screen";
@@ -22,8 +21,8 @@ const Actions = styled("div")(({ theme }) => ({
 }));
 
 const GET_SCREENS = gql`
-    query GetScreens($appId: ID!, $page: Int, $limit: Int) {
-        getScreens(appId: $appId, page: $page, limit: $limit) {
+    query GetScreens($app: ID!, $page: Int, $limit: Int) {
+        getScreens(app: $app, page: $page, limit: $limit) {
             totalPages
             records {
                 id
@@ -43,13 +42,13 @@ const DELETE_SCREEN = gql`
 
 const Screens: FunctionComponent = (): ReactElement => {
     const { createTab, closeTabs } = useContext(BuilderActionsContext);
-    const { appId } = useParams();
+    const appId = useParam("appId");
 
     const { data } = useQuery(GET_SCREENS, {
         variables: {
             page: 0,
             limit: 20,
-            appId,
+            app: appId,
         },
     });
     const { records } = data?.getScreens || { records: [] };
