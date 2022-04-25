@@ -250,7 +250,7 @@ export const listByIds = async (
         );
     }
 
-    checkAccessToControllers(context.user, [controllers]);
+    checkAccessToControllers(context.user, controllers);
 
     const object = {};
     for (const controller of controllers) {

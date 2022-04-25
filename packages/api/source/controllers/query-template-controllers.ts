@@ -57,6 +57,7 @@ const toExternal = (query: Query): ExternalQuery => {
         app,
         content,
         status,
+        creator,
         createdAt,
         updatedAt,
     } = query;
@@ -70,6 +71,7 @@ const toExternal = (query: Query): ExternalQuery => {
         app: typeof app === "string" ? app : app._id.toString(),
         content,
         status,
+        creator: creator.toString(),
         createdAt,
         updatedAt,
     };

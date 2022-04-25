@@ -1,9 +1,10 @@
 import type {
     IApp,
     IController,
-    IQuery,
     IResource,
+    IScreen,
     IUser,
+    Query,
 } from "@hypertool/common";
 import { ForbiddenError, InternalServerError } from "@hypertool/common";
 
@@ -185,7 +186,7 @@ export const checkAccessToResources = (
 
 export const checkAccessToQueryTemplates = (
     user: IUser,
-    queryTemplates: IQuery[],
+    queryTemplates: Query[],
 ): void => {
     const userId = user._id.toString();
     const deniedList = [];
@@ -204,7 +205,7 @@ export const checkAccessToQueryTemplates = (
     }
 };
 
-export const checkAccessToScreens = (user: IUser, screens: IQuery[]): void => {
+export const checkAccessToScreens = (user: IUser, screens: IScreen[]): void => {
     const userId = user._id.toString();
     const deniedList = [];
     for (const screen of screens) {
