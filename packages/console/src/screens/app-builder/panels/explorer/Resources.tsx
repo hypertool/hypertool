@@ -7,6 +7,7 @@ import { styled } from "@mui/material/styles";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { BuilderActionsContext } from "../../../../contexts";
+import { useParam } from "../../../../hooks";
 import { IEditResourceBundle, ITab } from "../../../../types";
 
 import Resource from "./Resource";
@@ -20,8 +21,8 @@ const Actions = styled("div")(({ theme }) => ({
 }));
 
 const GET_RESOURCES = gql`
-    query GetResources($page: Int, $limit: Int) {
-        getResources(page: $page, limit: $limit) {
+    query GetResources($app: ID!, $page: Int, $limit: Int) {
+        getResources(app: $app, page: $page, limit: $limit) {
             totalPages
             records {
                 id
@@ -49,10 +50,12 @@ const Resources: FunctionComponent = (): ReactElement => {
         refetchQueries: ["GetResources"],
     });
 
+    const appId = useParam("appId");
     const { data } = useQuery(GET_RESOURCES, {
         variables: {
             page: 0,
             limit: 20,
+            app: appId,
         },
     });
     const { records } = data?.getResources || { records: [] };

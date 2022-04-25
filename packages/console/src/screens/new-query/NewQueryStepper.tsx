@@ -25,9 +25,9 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 
 import * as yup from "yup";
 import { Formik } from "formik";
-import { useParams } from "react-router-dom";
 
 import { BuilderActionsContext, TabContext } from "../../contexts";
+import { useParam } from "../../hooks";
 
 import ConfigureStep from "./ConfigureStep";
 import OperationStep from "./OperationStep";
@@ -152,8 +152,8 @@ const CREATE_QUERY_TEMPLATE = gql`
     }
 `;
 const GET_RESOURCES = gql`
-    query GetResources($page: Int, $limit: Int) {
-        getResources(page: $page, limit: $limit) {
+    query GetResources($app: ID!, $page: Int, $limit: Int) {
+        getResources(app: $app, page: $page, limit: $limit) {
             totalPages
             records {
                 id
@@ -169,7 +169,7 @@ const GET_RESOURCES = gql`
 const NewQueryStepper: FunctionComponent = (): ReactElement => {
     const [activeStep, setActiveStep] = useState(0);
     const theme = useTheme();
-    const { appId } = useParams();
+    const appId = useParam("appId");
     // TODO: Destructure `error`, check for non-null, send to Sentry
     const [createQuery, { loading: creatingQuery, data: newQuery }] =
         useMutation(CREATE_QUERY_TEMPLATE, {
@@ -180,6 +180,7 @@ const NewQueryStepper: FunctionComponent = (): ReactElement => {
         variables: {
             page: 0,
             limit: 20,
+            app: appId,
         },
     });
     const { records } = data?.getResources || { records: [] };

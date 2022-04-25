@@ -16,6 +16,8 @@ import { gql, useQuery } from "@apollo/client";
 
 import { useNavigate } from "react-router";
 
+import { useParam } from "../../hooks";
+
 import ResourcesTable from "./ResourcesTable";
 
 const Root = styled("section")(() => ({
@@ -52,8 +54,8 @@ const TableContainer = styled("div")(({ theme }) => ({
 }));
 
 const GET_RESOURCES = gql`
-    query GetResources($page: Int, $limit: Int) {
-        getResources(page: $page, limit: $limit) {
+    query GetResources($app: ID!, $page: Int, $limit: Int) {
+        getResources(app: $app, page: $page, limit: $limit) {
             totalPages
             records {
                 id
@@ -68,11 +70,13 @@ const GET_RESOURCES = gql`
 
 const ResourceLibrary: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
+    const appId = useParam("appId");
     // TODO: Destructure `error`, check for non-null, send to sentry
     const { data } = useQuery(GET_RESOURCES, {
         variables: {
             page: 0,
             limit: 20,
+            app: appId,
         },
     });
 
