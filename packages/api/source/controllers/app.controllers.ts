@@ -68,7 +68,7 @@ const toExternal = (app: IApp): IExternalApp => {
         screens: screens.map((screen) => screen.toString()),
         controllers: controllers.map((controller) => controller.toString()),
         creator: creator.toString(),
-        organization: organization.toString(),
+        organization: organization?.toString() ?? null,
         status,
         createdAt,
         updatedAt,
