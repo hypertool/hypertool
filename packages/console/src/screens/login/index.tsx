@@ -146,7 +146,7 @@ const Login: FunctionComponent = (): ReactElement => {
                 "session",
                 JSON.stringify(result.data.loginWithGoogle),
             );
-            navigate("/organizations/new");
+            navigate("/apps");
         },
         [navigate],
     );
@@ -180,7 +180,7 @@ const Login: FunctionComponent = (): ReactElement => {
                 JSON.stringify(result.data.loginWithEmail),
             );
             reload();
-            navigate("/organizations/new");
+            navigate("/apps");
         },
         [navigate, reload],
     );
