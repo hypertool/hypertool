@@ -62,6 +62,11 @@ const screenSchema = new Schema(
             required: true,
         },
 
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
+
         /* The status of the screen. */
         status: {
             type: String,

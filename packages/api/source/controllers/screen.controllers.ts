@@ -52,6 +52,7 @@ const toExternal = (screen: IScreen): IExternalScreen => {
         content,
         status,
         controller,
+        creator,
         createdAt,
         updatedAt,
     } = screen;
@@ -68,6 +69,7 @@ const toExternal = (screen: IScreen): IExternalScreen => {
             controller instanceof ControllerModel
                 ? controller._id.toString()
                 : controller.toString(),
+        creator: creator.toString(),
         createdAt,
         updatedAt,
     };
@@ -98,6 +100,7 @@ export const create = async (context, attributes): Promise<IExternalScreen> => {
             ...value,
             _id: screenId,
             controller: controllerId,
+            creator: context.user._id,
             status: "created",
         });
 

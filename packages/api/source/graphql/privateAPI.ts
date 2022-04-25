@@ -576,6 +576,8 @@ const resolvers = {
             apps.getById(context.request, parent.app),
         controller: async (parent, values, context) =>
             controllers.getById(context.request, parent.controller),
+        creator: async (parent, values, context) =>
+            users.getById(context.request, parent.creator),
     },
     Team: {
         organization: async (parent, values, context) =>

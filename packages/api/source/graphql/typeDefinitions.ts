@@ -452,6 +452,7 @@ const types = `
         content: String!
         controller: Controller!
         status: ScreenStatus!
+        creator: User!
         createdAt: Date!
         updatedAt: Date!
     }

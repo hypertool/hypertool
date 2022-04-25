@@ -522,6 +522,8 @@ export interface IScreen {
      */
     controller: ObjectId | IController;
 
+    creator: ObjectId | IUser;
+
     /**
      * The status of the screen.
      */
@@ -555,6 +557,8 @@ export interface IExternalScreen {
      * The controller associated with the screen.
      */
     controller: string;
+
+    creator: string;
 
     status: typeof screenStatuses[number];
     createdAt: Date;
