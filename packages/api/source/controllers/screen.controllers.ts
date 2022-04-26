@@ -226,7 +226,6 @@ export const listByIds = async (
         {
             _id: { $in: ids },
             status: { $ne: "deleted" },
-            creator: context.user._id,
         },
         null,
         { lean: true },
