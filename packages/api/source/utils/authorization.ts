@@ -125,6 +125,11 @@ export const checkPermissions = (
 };
 
 export const checkAccessToApps = (user: IUser, apps: IApp[]): void => {
+    // TODO: Handle anonymous users.
+    if (!user) {
+        return;
+    }
+
     const userId = user._id.toString();
     const deniedList = [];
     for (const app of apps) {
@@ -146,6 +151,11 @@ export const checkAccessToControllers = (
     user: IUser,
     controllers: IController[],
 ): void => {
+    // TODO: Handle anonymous users.
+    if (!user) {
+        return;
+    }
+
     const userId = user._id.toString();
     const deniedList = [];
     for (const controller of controllers) {
@@ -167,6 +177,11 @@ export const checkAccessToResources = (
     user: IUser,
     resources: IResource[],
 ): void => {
+    // TODO: Handle anonymous users.
+    if (!user) {
+        return;
+    }
+
     const userId = user._id.toString();
     const deniedList = [];
     for (const resource of resources) {
@@ -188,6 +203,11 @@ export const checkAccessToQueryTemplates = (
     user: IUser,
     queryTemplates: Query[],
 ): void => {
+    // TODO: Handle anonymous users.
+    if (!user) {
+        return;
+    }
+
     const userId = user._id.toString();
     const deniedList = [];
     for (const queryTemplate of queryTemplates) {
@@ -206,6 +226,11 @@ export const checkAccessToQueryTemplates = (
 };
 
 export const checkAccessToScreens = (user: IUser, screens: IScreen[]): void => {
+    // TODO: Handle anonymous users.
+    if (!user) {
+        return;
+    }
+
     const userId = user._id.toString();
     const deniedList = [];
     for (const screen of screens) {
