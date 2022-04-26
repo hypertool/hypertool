@@ -15,7 +15,7 @@ import {
   INavigateOptions,
   INode,
   IPatch,
-  IQueryExecutionOptions,
+  TQueryResultFormat,
   TNavigationTarget,
 } from "../types";
 
@@ -28,11 +28,6 @@ export interface IProps {
   content: string;
   controller: string;
 }
-
-const defaultQueryExecutionOptions: IQueryExecutionOptions = {
-  variables: {},
-  format: "object",
-};
 
 const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
   const { content, title, controller: patched } = props;
@@ -152,16 +147,16 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
         });
       },
 
-      runQuery: async (
+      query: async (
         name: string,
-        options: Partial<IQueryExecutionOptions> = defaultQueryExecutionOptions
+        variables: Record<string, any> | any[] = {},
+        format: TQueryResultFormat = "object"
       ): Promise<any> => {
-        const finalOptions = { ...defaultQueryExecutionOptions, ...options };
         return await executeQuery({
           variables: {
             name,
-            variables: finalOptions.variables,
-            format: finalOptions.format,
+            variables,
+            format,
           },
         });
       },

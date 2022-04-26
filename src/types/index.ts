@@ -169,11 +169,11 @@ export interface INavigateOptions {
  * Queries                                                                                        *
  **************************************************************************************************/
 
-type IQueryResultFormat = typeof constants.queryResultFormats[number];
+export type TQueryResultFormat = typeof constants.queryResultFormats[number];
 
-export interface IQueryExecutionOptions {
-  variables: Record<string, any>;
-  format: IQueryResultFormat;
+interface IQueryResult {
+  error: any;
+  data: any;
 }
 
 /**************************************************************************************************
@@ -201,10 +201,11 @@ export interface IHyperContext<S> {
 
   inflate: (name: string, patches?: Record<string, IPatch>) => INode;
 
-  runQuery: (
+  query: (
     name: string,
-    options?: Partial<IQueryExecutionOptions>
-  ) => Promise<any>;
+    variables?: Record<string, any> | any[],
+    format?: TQueryResultFormat
+  ) => Promise<IQueryResult>;
 }
 
 export interface IHyperController<T> {
