@@ -144,13 +144,11 @@ const GET_QUERY_TEMPLATE = gql`
 const UPDATE_QUERY = gql`
     mutation UpdateQueryTemplate(
         $queryTemplateId: ID!
-        $name: String
         $description: String
         $content: String
     ) {
         updateQueryTemplate(
             queryTemplateId: $queryTemplateId
-            name: $name
             description: $description
             content: $content
         ) {
