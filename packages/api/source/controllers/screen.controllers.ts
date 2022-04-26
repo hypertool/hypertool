@@ -84,6 +84,20 @@ export const create = async (context, attributes): Promise<IExternalScreen> => {
     }
 
     const newScreen = await runAsTransaction(async () => {
+        const existingScreen = await ScreenModel.findOne(
+            {
+                app: value.app,
+                name: value.name,
+            },
+            null,
+            { lean: true },
+        ).exec();
+        if (existingScreen) {
+            throw new BadRequestError(
+                `Screen with name ${value.name} already exists`,
+            );
+        }
+
         const controllerId = new mongoose.Types.ObjectId();
         const newController = new ControllerModel({
             _id: controllerId,
@@ -92,6 +106,7 @@ export const create = async (context, attributes): Promise<IExternalScreen> => {
             language: "javascript",
             creator: context.user._id,
             patches: [],
+            app: value.app,
             status: "created",
         });
 

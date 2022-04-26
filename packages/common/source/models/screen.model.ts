@@ -6,7 +6,7 @@ import { screenStatuses } from "../utils/constants";
 
 const screenSchema = new Schema(
     {
-        /* An identifier that points to the app where the comment was created. */
+        /* An identifier that points to the app to which the screen belongs. */
         app: {
             type: Schema.Types.ObjectId,
             ref: "App",

@@ -594,6 +594,7 @@ export interface IController {
     language: typeof controllerLanguages[number];
     creator: ObjectId | IUser;
     patches: IControllerPatch[];
+    app: ObjectId | IApp;
     status: typeof controllerStatuses[number];
     createdAt: Date;
     updatedAt: Date;
@@ -613,6 +614,7 @@ export interface IExternalController {
     creator: string;
     patches: IExternalControllerPatch[];
     patched: string;
+    app: string;
     status: typeof controllerStatuses[number];
     createdAt: Date;
     updatedAt: Date;

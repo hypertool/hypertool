@@ -65,6 +65,14 @@ const controllerSchema = new Schema(
             type: [patchSchema],
             default: [],
         },
+
+        /* An identifier that points to the app to which the controller belongs. */
+        app: {
+            type: Schema.Types.ObjectId,
+            ref: "App",
+            required: true,
+            immutable: true,
+        },
         /*
          * An enumeration of string values that describes the status of the
          * controller.

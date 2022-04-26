@@ -85,6 +85,7 @@ const toExternal = (controller: IController): IExternalController => {
         creator,
         patches,
         status,
+        app,
         createdAt,
         updatedAt,
     } = controller;
@@ -108,6 +109,7 @@ const toExternal = (controller: IController): IExternalController => {
             };
         }),
         patched: patchAll(patches),
+        app: app.toString(),
         status,
         createdAt,
         updatedAt,
