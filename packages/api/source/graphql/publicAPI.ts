@@ -31,8 +31,6 @@ const typeDefs = gql`
     }
 
     type Query {
-        dummy: String!
-
         getAppByName(name: String!): App!
     }
 
@@ -80,8 +78,6 @@ const resolvers = {
             controllers.getById(context.request, parent.controller),
     },
     Query: {
-        dummy: async () => "Hello",
-
         getAppByName: async (parent, values, context) =>
             apps.getByName(context.request, values.name),
     },
@@ -110,6 +106,9 @@ const attachRoutes = async (app) => {
     const server = new ApolloServer({
         typeDefs,
         resolvers,
+        context: (context) => ({
+            request: context.req,
+        }),
     });
     await server.start();
     server.applyMiddleware({ app, path: "/graphql/v1/public" });
