@@ -155,14 +155,16 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
       runQuery: async (
         name: string,
         options: Partial<IQueryExecutionOptions> = defaultQueryExecutionOptions
-      ): Promise<any> =>
-        await executeQuery({
+      ): Promise<any> => {
+        const finalOptions = { ...defaultQueryExecutionOptions, ...options };
+        return await executeQuery({
           variables: {
             name,
-            variables: options.variables,
-            format: options.format,
+            variables: finalOptions.variables,
+            format: finalOptions.format,
           },
-        }),
+        });
+      },
     }),
     [
       executeQuery,
