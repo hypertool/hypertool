@@ -7,7 +7,7 @@ import { styled } from "@mui/material/styles";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { BuilderActionsContext } from "../../../../contexts";
-import { useParam } from "../../../../hooks";
+import { useNotification, useParam } from "../../../../hooks";
 import { IEditResourceBundle, ITab } from "../../../../types";
 
 import Resource from "./Resource";
@@ -45,6 +45,7 @@ const DELETE_RESOURCE = gql`
 
 const Resources: FunctionComponent = (): ReactElement => {
     const { createTab, closeTabs } = useContext(BuilderActionsContext);
+    const notification = useNotification();
 
     const [deleteResource] = useMutation(DELETE_RESOURCE, {
         refetchQueries: ["GetResources"],
@@ -68,13 +69,42 @@ const Resources: FunctionComponent = (): ReactElement => {
         createTab("edit-resource", { resourceId });
     }, []);
 
-    const handleDeleteResource = useCallback((resourceId: string) => {
-        closeTabs(
-            (tab: ITab<IEditResourceBundle>) =>
-                tab.bundle?.resourceId === resourceId,
-        );
-        deleteResource({ variables: { resourceId } });
-    }, []);
+    const handleDeleteResource = useCallback(
+        async (resourceId: string, name: string) => {
+            closeTabs(
+                (tab: ITab<IEditResourceBundle>) =>
+                    tab.bundle?.resourceId === resourceId,
+            );
+
+            try {
+                notification.notify({
+                    type: "warning",
+                    message: `Deleting resource "${name}"...`,
+                    closeable: false,
+                    autoCloseDuration: -1,
+                });
+
+                await deleteResource({ variables: { resourceId } });
+
+                notification.notify({
+                    type: "success",
+                    message: `Resource "${name}" deleted successfully`,
+                    closeable: true,
+                    autoCloseDuration: 2000,
+                });
+            } catch (error: any) {
+                notification.notify({
+                    type: "error",
+                    message:
+                        error.graphQLErrors[0].message ||
+                        `Failed to delete resource "${name}"`,
+                    closeable: true,
+                    autoCloseDuration: 2000,
+                });
+            }
+        },
+        [],
+    );
 
     return (
         <div>
