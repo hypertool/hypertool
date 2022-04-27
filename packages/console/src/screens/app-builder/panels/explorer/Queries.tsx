@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactElement } from "react";
+import { FunctionComponent, ReactElement, useEffect } from "react";
 import { useCallback, useContext } from "react";
 
 import { Button, Icon, List } from "@mui/material";
@@ -9,6 +9,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 
 import { BuilderActionsContext } from "../../../../contexts";
+import { useNotification } from "../../../../hooks";
 import { IEditQueryBundle, ITab } from "../../../../types";
 
 import QueryTemplate from "./QueryTemplate";
@@ -44,6 +45,7 @@ const DELETE_QUERY_TEMPLATE = gql`
 const Queries: FunctionComponent = (): ReactElement => {
     const { appId } = useParams();
     const { createTab, closeTabs } = useContext(BuilderActionsContext);
+    const notification = useNotification();
 
     const { data } = useQuery(GET_QUERY_TEMPLATES, {
         variables: {
@@ -54,9 +56,12 @@ const Queries: FunctionComponent = (): ReactElement => {
     });
     const { records } = data?.getQueryTemplates || { records: [] };
 
-    const [deleteQueryTemplate] = useMutation(DELETE_QUERY_TEMPLATE, {
-        refetchQueries: ["GetQueryTemplates"],
-    });
+    const [deleteQueryTemplate, { loading, error }] = useMutation(
+        DELETE_QUERY_TEMPLATE,
+        {
+            refetchQueries: ["GetQueryTemplates"],
+        },
+    );
 
     const handleNewQuery = useCallback(() => {
         createTab("new-query");
@@ -66,13 +71,42 @@ const Queries: FunctionComponent = (): ReactElement => {
         createTab("edit-query", { queryTemplateId });
     }, []);
 
-    const handleDeleteQuery = useCallback((queryTemplateId: string) => {
-        closeTabs(
-            (tab: ITab<IEditQueryBundle>) =>
-                tab.bundle?.queryTemplateId === queryTemplateId,
-        );
-        deleteQueryTemplate({ variables: { queryTemplateId } });
-    }, []);
+    const handleDeleteQuery = useCallback(
+        async (queryTemplateId: string, name: string) => {
+            closeTabs(
+                (tab: ITab<IEditQueryBundle>) =>
+                    tab.bundle?.queryTemplateId === queryTemplateId,
+            );
+
+            try {
+                notification.notify({
+                    type: "warning",
+                    message: `Deleting query template "${name}"...`,
+                    closeable: false,
+                    autoCloseDuration: -1,
+                });
+
+                await deleteQueryTemplate({ variables: { queryTemplateId } });
+
+                notification.notify({
+                    type: "success",
+                    message: `Query template "${name}" deleted successfully`,
+                    closeable: true,
+                    autoCloseDuration: 2000,
+                });
+            } catch (error: any) {
+                notification.notify({
+                    type: "error",
+                    message:
+                        error.graphQLErrors[0].message ||
+                        `Failed to delete query template "${name}"`,
+                    closeable: true,
+                    autoCloseDuration: 2000,
+                });
+            }
+        },
+        [],
+    );
 
     return (
         <div>
