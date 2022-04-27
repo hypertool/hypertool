@@ -41,7 +41,8 @@ const QueryTemplate: FunctionComponent<IQueryProps> = (
         setAnchor(event.currentTarget);
     }, []);
 
-    const handleCloseMenu = useCallback(() => {
+    const handleCloseMenu = useCallback((event: MouseEvent<HTMLElement>) => {
+        event.stopPropagation();
         setAnchor(null);
     }, []);
 
