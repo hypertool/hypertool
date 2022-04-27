@@ -7,7 +7,7 @@ import { styled } from "@mui/material/styles";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { BuilderActionsContext } from "../../../../contexts";
-import { useParam } from "../../../../hooks";
+import { useNotification, useParam } from "../../../../hooks";
 import { IEditControllerBundle, ITab } from "../../../../types";
 
 import Controller from "./Controller";
@@ -53,6 +53,7 @@ const Controllers: FunctionComponent = (): ReactElement => {
         },
     });
     const { records } = data?.getControllers || { records: [] };
+    const notification = useNotification();
 
     const [deleteController] = useMutation(DELETE_CONTROLLER, {
         refetchQueries: ["GetControllers"],
@@ -66,17 +67,46 @@ const Controllers: FunctionComponent = (): ReactElement => {
         createTab("edit-controller", { controllerId });
     }, []);
 
-    const handleDeleteController = useCallback((controllerId: string) => {
-        closeTabs(
-            (tab: ITab<IEditControllerBundle>) =>
-                tab.bundle?.controllerId === controllerId,
-        );
-        deleteController({
-            variables: {
-                controllerId,
-            },
-        });
-    }, []);
+    const handleDeleteController = useCallback(
+        async (controllerId: string, name: string) => {
+            closeTabs(
+                (tab: ITab<IEditControllerBundle>) =>
+                    tab.bundle?.controllerId === controllerId,
+            );
+
+            try {
+                notification.notify({
+                    type: "warning",
+                    message: `Deleting controller "${name}"...`,
+                    closeable: false,
+                    autoCloseDuration: -1,
+                });
+
+                await deleteController({
+                    variables: {
+                        controllerId,
+                    },
+                });
+
+                notification.notify({
+                    type: "success",
+                    message: `Controller "${name}" deleted successfully`,
+                    closeable: true,
+                    autoCloseDuration: 2000,
+                });
+            } catch (error: any) {
+                notification.notify({
+                    type: "error",
+                    message:
+                        error.graphQLErrors[0].message ||
+                        `Failed to delete controller "${name}"`,
+                    closeable: true,
+                    autoCloseDuration: 2000,
+                });
+            }
+        },
+        [],
+    );
 
     return (
         <>
