@@ -7,7 +7,7 @@ import { styled } from "@mui/material/styles";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { BuilderActionsContext } from "../../../../contexts";
-import { useParam } from "../../../../hooks";
+import { useNotification, useParam } from "../../../../hooks";
 import { IEditScreenBundle, ITab } from "../../../../types";
 
 import Screen from "./Screen";
@@ -43,6 +43,7 @@ const DELETE_SCREEN = gql`
 const Screens: FunctionComponent = (): ReactElement => {
     const { createTab, closeTabs } = useContext(BuilderActionsContext);
     const appId = useParam("appId");
+    const notification = useNotification();
 
     const { data } = useQuery(GET_SCREENS, {
         variables: {
@@ -65,12 +66,42 @@ const Screens: FunctionComponent = (): ReactElement => {
         createTab("edit-screen", { screenId });
     }, []);
 
-    const handleDeleteScreen = useCallback((screenId: string) => {
-        closeTabs(
-            (tab: ITab<IEditScreenBundle>) => tab.bundle?.screenId === screenId,
-        );
-        deleteScreen({ variables: { screenId } });
-    }, []);
+    const handleDeleteScreen = useCallback(
+        async (screenId: string, name: string) => {
+            closeTabs(
+                (tab: ITab<IEditScreenBundle>) =>
+                    tab.bundle?.screenId === screenId,
+            );
+
+            try {
+                notification.notify({
+                    type: "warning",
+                    message: `Deleting screen "${name}"...`,
+                    closeable: false,
+                    autoCloseDuration: -1,
+                });
+
+                await deleteScreen({ variables: { screenId } });
+
+                notification.notify({
+                    type: "success",
+                    message: `Screen "${name}" deleted successfully`,
+                    closeable: true,
+                    autoCloseDuration: 2000,
+                });
+            } catch (error: any) {
+                notification.notify({
+                    type: "error",
+                    message:
+                        error.graphQLErrors[0].message ||
+                        `Failed to delete screen "${name}"`,
+                    closeable: true,
+                    autoCloseDuration: 2000,
+                });
+            }
+        },
+        [],
+    );
 
     return (
         <div>
