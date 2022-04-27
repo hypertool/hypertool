@@ -9,6 +9,7 @@ import {
     Typography,
     useTheme,
 } from "@mui/material";
+import type { SnackbarCloseReason } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import * as uuid from "uuid";
@@ -35,6 +36,7 @@ const MessageIcon = styled(Icon)(({ theme }) => ({
 const MessageText = styled(Typography)(({ theme }) => ({
     color: "white",
     fontSize: 14,
+    fontWeight: 500,
 }));
 
 const StyledCircularProgress = styled(CircularProgress)({
@@ -56,23 +58,39 @@ const NotificationProvider: FunctionComponent<INotificationProviderProps> = (
         null,
     );
 
-    const handleClose = useCallback(() => {
-        if (!notification) {
-            throw new Error("Callback called when notification is null.");
-        }
+    const handleClose = useCallback(
+        (_event: any, reason: SnackbarCloseReason) => {
+            if (!notification) {
+                throw new Error("Callback called when notification is null.");
+            }
 
-        notification.onClose?.(notification);
+            /* We do not allow the user to close the notification via clickaway. */
+            if (reason === "clickaway") {
+                return;
+            }
+
+            if (!notification.closeable && reason == "escapeKeyDown") {
+                return;
+            }
+
+            notification.onClose?.(notification);
+            setNotification(null);
+        },
+        [notification],
+    );
+
+    const handleClose0 = useCallback(() => {
         setNotification(null);
-    }, [notification]);
+    }, []);
 
     const context = useMemo(
         () => ({
             notify: (request: INotificationRequest) => {
                 setNotification({ id: uuid.v4(), ...request });
             },
-            close: handleClose,
+            close: handleClose0,
         }),
-        [],
+        [handleClose0],
     );
     return (
         <NotificationContext.Provider value={context}>
@@ -82,7 +100,7 @@ const NotificationProvider: FunctionComponent<INotificationProviderProps> = (
                         ? {
                               style: {
                                   backgroundColor:
-                                      theme.palette[notification.type].main,
+                                      theme.palette[notification.type].dark,
                                   padding: theme.spacing(0.5, 2, 0.5, 1),
                               },
                           }
@@ -110,7 +128,7 @@ const NotificationProvider: FunctionComponent<INotificationProviderProps> = (
                     <>
                         {notification?.action}
                         {notification?.closeable && (
-                            <IconButton sx={{ p: 0.5 }} onClick={handleClose}>
+                            <IconButton sx={{ p: 0.5 }} onClick={handleClose0}>
                                 <Icon fontSize="small">close</Icon>
                             </IconButton>
                         )}
