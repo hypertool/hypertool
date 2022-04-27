@@ -1,4 +1,4 @@
-import type { FunctionComponent } from "react";
+import type { FunctionComponent, ReactNode } from "react";
 
 import type { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
@@ -225,4 +225,41 @@ export interface ITabContext<T = TBundleType> {
     tab: ITab<T>;
     index: number;
     active: boolean;
+}
+
+export type THandleCloseNotification = (notification: INotification) => void;
+
+export interface INotificationRequest {
+    type: "success" | "error" | "info" | "warning";
+
+    message: string;
+
+    /**
+     * Determines whether the notification is closeable by the user.
+     * When `!closeable && autoCloseDuration < 0 && !action`, an indefinite
+     * loader is shown on the right side of the notification.
+     */
+    closeable: boolean;
+
+    /**
+     * Determines the duration after which the notification automatically closes.
+     * If not specified, for closeable notifications, the notification will stay
+     * open until the user dismisses it. And for non-closeable notifications, the
+     * notification will stay open until the notifier manually closes the
+     * notification.
+     */
+    autoCloseDuration?: number;
+
+    action?: ReactNode;
+
+    onClose?: THandleCloseNotification;
+}
+
+export interface INotification extends INotificationRequest {
+    id: string;
+}
+
+export interface INotificationContext {
+    notify: (notification: INotificationRequest) => void;
+    close: () => void;
 }
