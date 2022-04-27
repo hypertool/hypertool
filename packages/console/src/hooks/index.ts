@@ -12,3 +12,4 @@ export { default as usePrivateSession } from "./usePrivateSession";
 export { default as useNavigate } from "./useNavigate";
 export { default as useParam } from "./useParam";
 export { default as useBuilderActions } from "./useBuilderActions";
+export { default as useNotification } from "./useNotification";
