@@ -88,6 +88,16 @@ const NotificationProvider: FunctionComponent<INotificationProviderProps> = (
             notify: (request: INotificationRequest) => {
                 setNotification({ id: uuid.v4(), ...request });
             },
+            notifyError: (error: any): void => {
+                context.notify({
+                    type: "error",
+                    message:
+                        error.graphQLErrors[0].message ||
+                        "An unknown error occurred!",
+                    closeable: true,
+                    autoCloseDuration: 2000,
+                });
+            },
             close: handleClose0,
         }),
         [handleClose0],
