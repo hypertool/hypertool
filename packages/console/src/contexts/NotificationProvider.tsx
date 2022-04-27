@@ -98,6 +98,14 @@ const NotificationProvider: FunctionComponent<INotificationProviderProps> = (
                     autoCloseDuration: 2000,
                 });
             },
+            notifySuccess: (message: string) => {
+                context.notify({
+                    type: "success",
+                    message,
+                    closeable: true,
+                    autoCloseDuration: 2000,
+                });
+            },
             close: handleClose0,
         }),
         [handleClose0],

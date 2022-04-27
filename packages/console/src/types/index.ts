@@ -262,5 +262,6 @@ export interface INotification extends INotificationRequest {
 export interface INotificationContext {
     notify: (notification: INotificationRequest) => void;
     notifyError: (error: any) => void;
+    notifySuccess: (message: string) => void;
     close: () => void;
 }
