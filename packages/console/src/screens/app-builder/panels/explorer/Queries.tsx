@@ -95,14 +95,7 @@ const Queries: FunctionComponent = (): ReactElement => {
                     autoCloseDuration: 2000,
                 });
             } catch (error: any) {
-                notification.notify({
-                    type: "error",
-                    message:
-                        error.graphQLErrors[0].message ||
-                        `Failed to delete query template "${name}"`,
-                    closeable: true,
-                    autoCloseDuration: 2000,
-                });
+                notification.notifyError(error);
             }
         },
         [],

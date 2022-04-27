@@ -93,14 +93,7 @@ const Resources: FunctionComponent = (): ReactElement => {
                     autoCloseDuration: 2000,
                 });
             } catch (error: any) {
-                notification.notify({
-                    type: "error",
-                    message:
-                        error.graphQLErrors[0].message ||
-                        `Failed to delete resource "${name}"`,
-                    closeable: true,
-                    autoCloseDuration: 2000,
-                });
+                notification.notifyError(error);
             }
         },
         [],
