@@ -83,12 +83,9 @@ const Screens: FunctionComponent = (): ReactElement => {
 
                 await deleteScreen({ variables: { screenId } });
 
-                notification.notify({
-                    type: "success",
-                    message: `Screen "${name}" deleted successfully`,
-                    closeable: true,
-                    autoCloseDuration: 2000,
-                });
+                notification.notifySuccess(
+                    `Screen "${name}" deleted successfully`,
+                );
             } catch (error: any) {
                 notification.notifyError(error);
             }

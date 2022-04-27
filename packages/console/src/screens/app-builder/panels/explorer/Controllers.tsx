@@ -88,12 +88,9 @@ const Controllers: FunctionComponent = (): ReactElement => {
                     },
                 });
 
-                notification.notify({
-                    type: "success",
-                    message: `Controller "${name}" deleted successfully`,
-                    closeable: true,
-                    autoCloseDuration: 2000,
-                });
+                notification.notifySuccess(
+                    `Controller "${name}" deleted successfully`,
+                );
             } catch (error: any) {
                 notification.notifyError(error);
             }

@@ -86,12 +86,9 @@ const Resources: FunctionComponent = (): ReactElement => {
 
                 await deleteResource({ variables: { resourceId } });
 
-                notification.notify({
-                    type: "success",
-                    message: `Resource "${name}" deleted successfully`,
-                    closeable: true,
-                    autoCloseDuration: 2000,
-                });
+                notification.notifySuccess(
+                    `Resource "${name}" deleted successfully`,
+                );
             } catch (error: any) {
                 notification.notifyError(error);
             }

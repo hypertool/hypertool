@@ -88,12 +88,9 @@ const Queries: FunctionComponent = (): ReactElement => {
 
                 await deleteQueryTemplate({ variables: { queryTemplateId } });
 
-                notification.notify({
-                    type: "success",
-                    message: `Query template "${name}" deleted successfully`,
-                    closeable: true,
-                    autoCloseDuration: 2000,
-                });
+                notification.notifySuccess(
+                    `Query template "${name}" deleted successfully`,
+                );
             } catch (error: any) {
                 notification.notifyError(error);
             }
