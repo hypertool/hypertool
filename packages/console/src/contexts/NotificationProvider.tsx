@@ -95,7 +95,7 @@ const NotificationProvider: FunctionComponent<INotificationProviderProps> = (
                         error.graphQLErrors[0].message ||
                         "An unknown error occurred!",
                     closeable: true,
-                    autoCloseDuration: 2000,
+                    autoCloseDuration: -1,
                 });
             },
             notifySuccess: (message: string) => {
