@@ -56,12 +56,9 @@ const Queries: FunctionComponent = (): ReactElement => {
     });
     const { records } = data?.getQueryTemplates || { records: [] };
 
-    const [deleteQueryTemplate, { loading, error }] = useMutation(
-        DELETE_QUERY_TEMPLATE,
-        {
-            refetchQueries: ["GetQueryTemplates"],
-        },
-    );
+    const [deleteQueryTemplate] = useMutation(DELETE_QUERY_TEMPLATE, {
+        refetchQueries: ["GetQueryTemplates"],
+    });
 
     const handleNewQuery = useCallback(() => {
         createTab("new-query");

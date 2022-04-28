@@ -9,6 +9,7 @@ import * as yup from "yup";
 import { Formik } from "formik";
 
 import { TextField } from "../../../../components";
+import { useNotification } from "../../../../hooks";
 import { slugPattern } from "../../../../utils/constants";
 
 const Root = styled("div")(({ theme }) => ({
@@ -94,30 +95,28 @@ const ScreenEditor: FunctionComponent<IProps> = (
     props: IProps,
 ): ReactElement => {
     const { screenId } = props;
+    const notification = useNotification();
     const { data } = useQuery(GET_SCREEN, {
         variables: {
             screenId,
         },
         notifyOnNetworkStatusChange: true,
     });
-    const [
-        updateScreen,
-        /*
-         * {
-         *     loading: updatingScreen,
-         *     data: updatedScreen,
-         *     error: updateScreenError,
-         * },
-         */
-    ] = useMutation(UPDATE_SCREEN, { refetchQueries: ["GetScreens"] });
+    const [updateScreen] = useMutation(UPDATE_SCREEN, {
+        refetchQueries: ["GetScreens"],
+    });
 
-    const handleSave = useCallback((values: any) => {
-        updateScreen({
-            variables: {
-                screenId,
-                ...values,
-            },
-        });
+    const handleSave = useCallback(async (values: any) => {
+        try {
+            await updateScreen({
+                variables: {
+                    screenId,
+                    ...values,
+                },
+            });
+        } catch (error: any) {
+            notification.notifyError(error);
+        }
     }, []);
 
     const {

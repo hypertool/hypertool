@@ -19,7 +19,7 @@ import { Formik } from "formik";
 import { useNavigate } from "react-router";
 
 import { Select, TextField } from "../../components";
-import { usePrivateSession } from "../../hooks";
+import { useNotification, usePrivateSession } from "../../hooks";
 
 const Root = styled("div")(({ theme }) => ({
     display: "flex",
@@ -186,6 +186,7 @@ const GET_USER_ORGANIZATIONS = gql`
 const NewAppScreen: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
     const { user } = usePrivateSession();
+    const notification = useNotification();
 
     const [createApp, { loading, data }] = useMutation(CREATE_APP, {
         refetchQueries: ["GetApps"],
@@ -203,18 +204,18 @@ const NewAppScreen: FunctionComponent = (): ReactElement => {
     const organizations = organizationsData?.getUserById?.organizations ?? [];
 
     const handleSubmit = useCallback(
-        (values: FormValues): any => {
-            createApp({
-                variables: {
-                    ...values,
-                    creator: {
-                        user: user.id,
-                        role: "owner",
+        async (values: FormValues) => {
+            try {
+                await createApp({
+                    variables: {
+                        ...values,
                     },
-                },
-            });
+                });
+            } catch (error: any) {
+                notification.notifyError(error);
+            }
         },
-        [createApp, user.id],
+        [createApp, notification],
     );
 
     useEffect(() => {

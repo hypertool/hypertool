@@ -9,7 +9,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Editor from "@monaco-editor/react";
 
-import { useTabBundle, useUpdateTabTitle } from "../../hooks";
+import { useNotification, useTabBundle, useUpdateTabTitle } from "../../hooks";
 import { IEditControllerBundle } from "../../types";
 
 const Root = styled("section")(({ theme }) => ({
@@ -59,6 +59,7 @@ const UPDATE_CONTROLLER = gql`
 const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     const { path } = props;
 
+    const notification = useNotification();
     const [editorRef, setEditorRef] = useState<
         monaco.editor.IStandaloneCodeEditor | undefined
     >();
@@ -82,17 +83,21 @@ const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
         editorRef?.setValue(patched);
     }, [patched, editorRef]);
 
-    const handleSave = useCallback(() => {
+    const handleSave = useCallback(async () => {
         if (!editorRef) {
             return;
         }
 
-        updateController({
-            variables: {
-                controllerId,
-                source: editorRef.getValue(),
-            },
-        });
+        try {
+            await updateController({
+                variables: {
+                    controllerId,
+                    source: editorRef.getValue(),
+                },
+            });
+        } catch (error: any) {
+            notification.notifyError(error);
+        }
     }, [editorRef]);
 
     const handleEditorMount = useCallback(

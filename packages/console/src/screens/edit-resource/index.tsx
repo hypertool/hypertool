@@ -18,6 +18,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { Formik } from "formik";
 
 import { BuilderActionsContext, TabContext } from "../../contexts";
+import { useNotification } from "../../hooks";
 import BigQueryForm from "../new-resource/BigQueryForm";
 import MongoDBForm from "../new-resource/MongoDBForm";
 import MySQLForm from "../new-resource/MySQLForm";
@@ -167,6 +168,8 @@ const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
     const { resourceId } = props;
     const { setTabTitle } = useContext(BuilderActionsContext);
     const { index } = useContext(TabContext) || { index: -1 };
+    const notification = useNotification();
+
     // TODO: Destructure `error`, check for non-null, send to sentry
     const { loading, data, refetch } = useQuery(GET_RESOURCE, {
         variables: {
@@ -197,7 +200,7 @@ const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
     }, [refetch]);
 
     const handleSubmit = useCallback(
-        (values: any) => {
+        async (values: any) => {
             const {
                 resourceName: name,
                 description,
@@ -205,14 +208,18 @@ const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
             } = values;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { __typename, ...sanitizedConfiguration } = configuration;
-            updateResource({
-                variables: {
-                    resourceId,
-                    name,
-                    description,
-                    [type as string]: sanitizedConfiguration,
-                },
-            });
+            try {
+                await updateResource({
+                    variables: {
+                        resourceId,
+                        name,
+                        description,
+                        [type as string]: sanitizedConfiguration,
+                    },
+                });
+            } catch (error: any) {
+                notification.notifyError(error);
+            }
         },
         [resourceId, type, updateResource],
     );

@@ -27,7 +27,7 @@ import * as yup from "yup";
 import { Formik } from "formik";
 
 import { BuilderActionsContext, TabContext } from "../../contexts";
-import { useParam } from "../../hooks";
+import { useNotification, useParam } from "../../hooks";
 import type { ResourceType } from "../../types";
 
 import ConfigureStep from "./ConfigureStep";
@@ -310,6 +310,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
             data: newResource,
         },
     ] = useMutation(CREATE_RESOURCE, { refetchQueries: ["GetResources"] });
+    const notification = useNotification();
     const { replaceTab } = useContext(BuilderActionsContext);
     const appId = useParam("appId");
 
@@ -319,7 +320,7 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
     const { index } = useContext(TabContext) || error();
 
     const handleSubmit = useCallback(
-        (values: any) => {
+        async (values: any) => {
             if (!resourceType) {
                 throw new Error("Resource type should be defined.");
             }
@@ -345,26 +346,26 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                 configuration.port = parseInt(configuration.port, 10);
             }
 
-            createResource({
-                variables: {
-                    name,
-                    description,
-                    type: resourceType,
-                    app: appId,
-                    [resourceType as string]: configuration,
-                },
-            });
-        },
-        [createResource, resourceType],
-    );
+            try {
+                const result = await createResource({
+                    variables: {
+                        name,
+                        description,
+                        type: resourceType,
+                        app: appId,
+                        [resourceType as string]: configuration,
+                    },
+                });
 
-    useEffect(() => {
-        if (newResource) {
-            replaceTab(index, "edit-resource", {
-                resourceId: newResource.createResource.id,
-            });
-        }
-    }, [index, newResource, replaceTab]);
+                replaceTab(index, "edit-resource", {
+                    resourceId: result.data.createResource.id,
+                });
+            } catch (error: any) {
+                notification.notifyError(error);
+            }
+        },
+        [createResource, resourceType, appId, replaceTab, index],
+    );
 
     const handleNext = () => {
         if (activeStep + 1 === steps.length) {

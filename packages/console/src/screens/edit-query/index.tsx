@@ -20,6 +20,7 @@ import { Formik } from "formik";
 
 import { TextField } from "../../components";
 import { BuilderActionsContext, TabContext } from "../../contexts";
+import { useNotification } from "../../hooks";
 import { IEditQueryBundle } from "../../types";
 
 const Title = styled(Typography)(() => ({}));
@@ -171,6 +172,7 @@ const EditQuery: FunctionComponent = (): ReactElement => {
         },
         notifyOnNetworkStatusChange: true,
     });
+    const notification = useNotification();
 
     const [updateQuery] = useMutation(UPDATE_QUERY, {
         refetchQueries: ["GetQueryTemplates"],
@@ -195,13 +197,17 @@ const EditQuery: FunctionComponent = (): ReactElement => {
     }, [refetch]);
 
     const handleSubmit = useCallback(
-        (values: IFormValues) => {
-            updateQuery({
-                variables: {
-                    queryTemplateId,
-                    ...values,
-                },
-            });
+        async (values: IFormValues) => {
+            try {
+                await updateQuery({
+                    variables: {
+                        queryTemplateId,
+                        ...values,
+                    },
+                });
+            } catch (error: any) {
+                notification.notifyError(error);
+            }
         },
         [queryTemplateId, type, updateQuery],
     );

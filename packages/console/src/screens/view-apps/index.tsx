@@ -24,6 +24,7 @@ import { useConfirm } from "material-ui-confirm";
 import { useNavigate } from "react-router";
 
 import { NoRecords } from "../../components";
+import { useNotification } from "../../hooks";
 
 import AppCard from "./AppCard";
 import AppFilter from "./AppFilter";
@@ -155,6 +156,7 @@ const ViewApps: FunctionComponent = (): ReactElement => {
     const [filter, setFilter] = useState<string>(filters[0].url);
     const confirm = useConfirm();
     const navigate = useNavigate();
+    const notification = useNotification();
 
     const [deleteApp] = useMutation(DELETE_APP, {
         refetchQueries: ["GetApps"],
@@ -175,22 +177,33 @@ const ViewApps: FunctionComponent = (): ReactElement => {
         window.open(`https://${name}.hypertool.io/`);
     }, []);
 
-    const handleDelete = useCallback(async (appId: string, name: string) => {
-        try {
-            await confirm({
-                title: "Are you sure you want to delete?",
-                description: `This action cannot be undone. This will permanently delete the "${name}" app, resources, queries, screens, and remove all team associations.`,
-                confirmationText: "Delete",
-                cancellationText: "Cancel",
-                allowClose: true,
-            });
-            deleteApp({
-                variables: {
-                    appId,
-                },
-            });
-        } catch (error: unknown) {}
-    }, []);
+    const handleDelete = useCallback(
+        async (appId: string, name: string) => {
+            try {
+                await confirm({
+                    title: "Are you sure you want to delete?",
+                    description: `This action cannot be undone. This will permanently delete the "${name}" app, resources, queries, screens, and remove all team associations.`,
+                    confirmationText: "Delete",
+                    cancellationText: "Cancel",
+                    allowClose: true,
+                });
+                /*
+                 * Use a different try statement to ignore the error thrown by
+                 * `confirm`.
+                 */
+                try {
+                    await deleteApp({
+                        variables: {
+                            appId,
+                        },
+                    });
+                } catch (error: any) {
+                    notification.notifyError(error);
+                }
+            } catch (error: unknown) {}
+        },
+        [confirm, deleteApp],
+    );
 
     const handleEdit = useCallback((id: string, name: string) => {
         navigate(`/apps/${id}/builder`);

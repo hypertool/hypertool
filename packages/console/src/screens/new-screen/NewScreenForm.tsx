@@ -14,7 +14,7 @@ import { Formik } from "formik";
 import { useParams } from "react-router-dom";
 
 import { TextField } from "../../components";
-import { useReplaceTab } from "../../hooks";
+import { useNotification, useReplaceTab } from "../../hooks";
 import { slugPattern } from "../../utils/constants";
 
 const Root = styled("div")(({ theme }) => ({
@@ -155,19 +155,24 @@ const NewScreenForm: FunctionComponent = (): ReactElement => {
             refetchQueries: ["GetControllers", "GetScreens"],
         });
     const { appId } = useParams();
+    const notification = useNotification();
 
     useReplaceTab(Boolean(newScreen), "edit-screen", {
         screenId: newScreen?.createScreen.id,
     });
 
-    const handleSubmit = useCallback((values: IFormValues) => {
-        createScreen({
-            variables: {
-                ...values,
-                content: "",
-                app: appId,
-            },
-        });
+    const handleSubmit = useCallback(async (values: IFormValues) => {
+        try {
+            await createScreen({
+                variables: {
+                    ...values,
+                    content: "",
+                    app: appId,
+                },
+            });
+        } catch (error: any) {
+            notification.notifyError(error);
+        }
     }, []);
 
     return (

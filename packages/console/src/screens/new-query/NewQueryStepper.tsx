@@ -27,7 +27,7 @@ import * as yup from "yup";
 import { Formik } from "formik";
 
 import { BuilderActionsContext, TabContext } from "../../contexts";
-import { useParam } from "../../hooks";
+import { useNotification, useParam } from "../../hooks";
 
 import ConfigureStep from "./ConfigureStep";
 import OperationStep from "./OperationStep";
@@ -169,6 +169,7 @@ const NewQueryStepper: FunctionComponent = (): ReactElement => {
     const [activeStep, setActiveStep] = useState(0);
     const theme = useTheme();
     const appId = useParam("appId");
+    const notification = useNotification();
     // TODO: Destructure `error`, check for non-null, send to Sentry
     const [createQuery, { loading: creatingQuery, data: newQuery }] =
         useMutation(CREATE_QUERY_TEMPLATE, {
@@ -190,22 +191,25 @@ const NewQueryStepper: FunctionComponent = (): ReactElement => {
     };
     const { index } = useContext(TabContext) || error();
 
-    const handleSubmit = useCallback((values: IFormValues) => {
-        createQuery({
-            variables: {
-                ...values,
-                app: appId,
-            },
-        });
-    }, []);
+    const handleSubmit = useCallback(
+        async (values: IFormValues) => {
+            try {
+                const { data: result } = await createQuery({
+                    variables: {
+                        ...values,
+                        app: appId,
+                    },
+                });
 
-    useEffect(() => {
-        if (newQuery) {
-            replaceTab(index, "edit-query", {
-                queryTemplateId: newQuery.createQueryTemplate.id,
-            });
-        }
-    }, [index, newQuery, replaceTab]);
+                replaceTab(index, "edit-query", {
+                    queryTemplateId: result.data.createQueryTemplate.id,
+                });
+            } catch (error: any) {
+                notification.notifyError(error);
+            }
+        },
+        [createQuery, appId, index, notification, replaceTab],
+    );
 
     const handleNext = () => {
         if (activeStep + 1 === steps.length) {

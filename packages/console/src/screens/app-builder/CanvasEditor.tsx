@@ -3,7 +3,12 @@ import { FunctionComponent, ReactElement, useEffect, useRef } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { Element, Frame, useEditor } from "../../craft";
-import { useInterval, useTabBundle, useUpdateTabTitle } from "../../hooks";
+import {
+    useInterval,
+    useNotification,
+    useTabBundle,
+    useUpdateTabTitle,
+} from "../../hooks";
 import { ButtonNode, ContainerNode, FragmentNode } from "../../nodes";
 import { IEditScreenBundle } from "../../types";
 
@@ -38,32 +43,28 @@ const CanvasEditor: FunctionComponent = (): ReactElement => {
         notifyOnNetworkStatusChange: true,
     });
     useUpdateTabTitle(data?.getScreenById?.name);
+    const notification = useNotification();
 
-    const [
-        updateScreen,
-        /*
-         * {
-         *     loading: updatingScreen,
-         *     data: updatedScreen,
-         *     error: updateScreenError,
-         * },
-         */
-    ] = useMutation(UPDATE_SCREEN);
+    const [updateScreen] = useMutation(UPDATE_SCREEN);
 
     const previousContent = useRef("");
 
-    useInterval(() => {
+    useInterval(async () => {
         const content = query.serialize();
         if (content === previousContent.current) {
             return;
         }
 
-        updateScreen({
-            variables: {
-                screenId: bundle.screenId,
-                content,
-            },
-        });
+        try {
+            await updateScreen({
+                variables: {
+                    screenId: bundle.screenId,
+                    content,
+                },
+            });
+        } catch (error: any) {
+            notification.notifyError(error);
+        }
 
         previousContent.current = content;
     }, 5000);

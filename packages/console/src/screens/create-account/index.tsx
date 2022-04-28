@@ -23,6 +23,7 @@ import { Formik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 
 import { TextField } from "../../components";
+import { useNotification } from "../../hooks";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -145,27 +146,30 @@ const validationSchema = yup.object({
 
 const CreateAccount: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
-    const [createAccount, { loading, error }] = useMutation(CREATE_ACCOUNT, {
+    const notification = useNotification();
+    const [createAccount] = useMutation(CREATE_ACCOUNT, {
         client,
     });
 
     useEffect(() => {
         document.title = "Create Account | Hypertool";
     }, []);
-    const appName = "manage-users"; /* Temporary Declaration */
 
     const handleSubmit = useCallback(
         async (values: FormValues) => {
-            createAccount({
-                mutation: CREATE_ACCOUNT,
-                variables: {
-                    ...values,
-                    role: "developer",
-                },
-            });
-            navigate("/login");
+            try {
+                await createAccount({
+                    variables: {
+                        ...values,
+                        role: "developer",
+                    },
+                });
+                navigate("/login");
+            } catch (error: any) {
+                notification.notifyError(error);
+            }
         },
-        [createAccount, navigate],
+        [createAccount, navigate, notification],
     );
 
     return (

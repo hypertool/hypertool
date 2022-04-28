@@ -1,5 +1,5 @@
 import { FunctionComponent, ReactElement, useMemo } from "react";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 
 import {
     Button,
@@ -20,7 +20,12 @@ import { createTwoFilesPatch } from "diff";
 import { Formik } from "formik";
 
 import { Select, TextField } from "../../components";
-import { useBuilderActions, useParam, useTab } from "../../hooks";
+import {
+    useBuilderActions,
+    useNotification,
+    useParam,
+    useTab,
+} from "../../hooks";
 import { templates } from "../../utils";
 import { controllerLanguages } from "../../utils/constants";
 
@@ -153,18 +158,11 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
         createController,
         { loading: creatingController, data: newController },
     ] = useMutation(CREATE_CONTROLLER, { refetchQueries: ["GetControllers"] });
+    const notification = useNotification();
 
     const { replaceTab } = useBuilderActions();
     const { index } = useTab();
     const appId = useParam("appId");
-
-    useEffect(() => {
-        if (newController) {
-            replaceTab(index, "edit-controller", {
-                controllerId: newController.createController.id,
-            });
-        }
-    }, [index, newController, replaceTab]);
 
     const userId = useMemo(() => {
         const json = localStorage.getItem("session");
@@ -178,27 +176,38 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
         return session.user.id;
     }, []);
 
-    const handleSubmit = useCallback((values: IFormValues) => {
-        createController({
-            variables: {
-                ...values,
-                patches: [
-                    {
-                        author: userId,
-                        content: createTwoFilesPatch(
-                            `a/${values.name}`,
-                            `b/${values.name}`,
-                            "",
-                            templates.CONTROLLER_TEMPLATE,
-                            "",
-                            "",
-                        ),
+    const handleSubmit = useCallback(
+        async (values: IFormValues) => {
+            try {
+                const result = await createController({
+                    variables: {
+                        ...values,
+                        patches: [
+                            {
+                                author: userId,
+                                content: createTwoFilesPatch(
+                                    `a/${values.name}`,
+                                    `b/${values.name}`,
+                                    "",
+                                    templates.CONTROLLER_TEMPLATE,
+                                    "",
+                                    "",
+                                ),
+                            },
+                        ],
+                        app: appId,
                     },
-                ],
-                app: appId,
-            },
-        });
-    }, []);
+                });
+
+                replaceTab(index, "edit-controller", {
+                    controllerId: result.data.createController.id,
+                });
+            } catch (error: any) {
+                notification.notifyError(error);
+            }
+        },
+        [replaceTab, index, userId, appId, createController, notification],
+    );
 
     return (
         <Root>
