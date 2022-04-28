@@ -206,11 +206,22 @@ const NewAppScreen: FunctionComponent = (): ReactElement => {
     const handleSubmit = useCallback(
         async (values: FormValues) => {
             try {
+                notification.notify({
+                    type: "info",
+                    message: `Creating screen "${values.name}"...`,
+                    closeable: false,
+                    autoCloseDuration: -1,
+                });
+
                 await createApp({
                     variables: {
                         ...values,
                     },
                 });
+
+                notification.notifySuccess(
+                    `Created screen "${values.name}" successfully`,
+                );
             } catch (error: any) {
                 notification.notifyError(error);
             }

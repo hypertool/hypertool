@@ -179,6 +179,13 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
     const handleSubmit = useCallback(
         async (values: IFormValues) => {
             try {
+                notification.notify({
+                    type: "info",
+                    message: `Creating controller "${values.name}"...`,
+                    closeable: false,
+                    autoCloseDuration: -1,
+                });
+
                 const result = await createController({
                     variables: {
                         ...values,
@@ -198,6 +205,10 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
                         app: appId,
                     },
                 });
+
+                notification.notifySuccess(
+                    `Created controller "${values.name}" successfully`,
+                );
 
                 replaceTab(index, "edit-controller", {
                     controllerId: result.data.createController.id,

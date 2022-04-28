@@ -163,6 +163,13 @@ const NewScreenForm: FunctionComponent = (): ReactElement => {
 
     const handleSubmit = useCallback(async (values: IFormValues) => {
         try {
+            notification.notify({
+                type: "info",
+                message: `Creating screen "${values.name}"...`,
+                closeable: false,
+                autoCloseDuration: -1,
+            });
+
             await createScreen({
                 variables: {
                     ...values,
@@ -170,6 +177,10 @@ const NewScreenForm: FunctionComponent = (): ReactElement => {
                     app: appId,
                 },
             });
+
+            notification.notifySuccess(
+                `Created screen "${values.name}" successfully`,
+            );
         } catch (error: any) {
             notification.notifyError(error);
         }

@@ -194,12 +194,23 @@ const NewQueryStepper: FunctionComponent = (): ReactElement => {
     const handleSubmit = useCallback(
         async (values: IFormValues) => {
             try {
+                notification.notify({
+                    type: "info",
+                    message: `Creating query template "${values.name}"...`,
+                    closeable: false,
+                    autoCloseDuration: -1,
+                });
+
                 const { data: result } = await createQuery({
                     variables: {
                         ...values,
                         app: appId,
                     },
                 });
+
+                notification.notifySuccess(
+                    `Created query template "${values.name}" successfully`,
+                );
 
                 replaceTab(index, "edit-query", {
                     queryTemplateId: result.data.createQueryTemplate.id,

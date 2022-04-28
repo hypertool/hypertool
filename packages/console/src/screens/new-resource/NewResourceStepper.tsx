@@ -347,6 +347,13 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
             }
 
             try {
+                notification.notify({
+                    type: "info",
+                    message: `Creating resource "${values.resourceName}"...`,
+                    closeable: false,
+                    autoCloseDuration: -1,
+                });
+
                 const result = await createResource({
                     variables: {
                         name,
@@ -356,6 +363,10 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                         [resourceType as string]: configuration,
                     },
                 });
+
+                notification.notifySuccess(
+                    `Created resource "${values.resourceName}" successfully`,
+                );
 
                 replaceTab(index, "edit-resource", {
                     resourceId: result.data.createResource.id,

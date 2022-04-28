@@ -158,12 +158,24 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
     const handleSubmit = useCallback(
         async (values: FormValues) => {
             try {
+                notification.notify({
+                    type: "info",
+                    message: `Creating account "${values.emailAddress}"...`,
+                    closeable: false,
+                    autoCloseDuration: -1,
+                });
+
                 await createAccount({
                     variables: {
                         ...values,
                         role: "developer",
                     },
                 });
+
+                notification.notifySuccess(
+                    `Created account "${values.emailAddress}" successfully`,
+                );
+
                 navigate("/login");
             } catch (error: any) {
                 notification.notifyError(error);
