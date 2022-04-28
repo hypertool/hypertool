@@ -13,7 +13,7 @@ import {
     TabContext,
 } from "../../contexts";
 import { Editor, useEditor } from "../../craft";
-import { useModules, useParam } from "../../hooks";
+import { useModules, useNotification, useParam } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type {
     IBuilderActionsContext,
@@ -121,19 +121,11 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         ),
     )[1];
     const appId = useParam("appId");
+    const notification = useNotification();
 
     const modules = useModules(appId);
     const { actions, query } = useEditor();
-    const [
-        updateScreen,
-        /*
-         * {
-         *     loading: updatingScreen,
-         *     data: updatedScreen,
-         *     error: updateScreenError,
-         * },
-         */
-    ] = useMutation(UPDATE_SCREEN);
+    const [updateScreen] = useMutation(UPDATE_SCREEN);
 
     const { type: activeTabType, bundle: activeTabBundle } = useMemo(
         () =>
@@ -152,17 +144,22 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         tabs,
         activeTab,
 
-        setActiveTab: (newActiveTabId: string) => {
+        setActiveTab: async (newActiveTabId: string) => {
             if (activeTab && activeTabType === "edit-screen") {
                 const content = query.serialize();
                 localStorage.setItem(activeTab, content);
-                updateScreen({
-                    variables: {
-                        screenId: (activeTabBundle as IEditScreenBundle)
-                            .screenId,
-                        content,
-                    },
-                });
+
+                try {
+                    await updateScreen({
+                        variables: {
+                            screenId: (activeTabBundle as IEditScreenBundle)
+                                .screenId,
+                            content,
+                        },
+                    });
+                } catch (error: any) {
+                    notification.notifyError(error);
+                }
             }
 
             /*
