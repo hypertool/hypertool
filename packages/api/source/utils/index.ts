@@ -6,3 +6,4 @@ export * from "./constants";
 export * from "./query-execution-error";
 export * from "./authorization";
 export * from "./data-access";
+export * from "./patches";
