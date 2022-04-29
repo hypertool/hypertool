@@ -95,6 +95,14 @@ const typeDefs = gql`
             organization: ID
         ): App!
 
+        duplicateApp(
+            sourceApp: ID!
+            name: String!
+            title: String!
+            description: String
+            organization: ID
+        ): App!
+
         updateApp(
             appId: ID!
             name: String
@@ -322,6 +330,9 @@ const resolvers = {
 
         createApp: async (parent, values, context) =>
             apps.create(context.request, values),
+
+        duplicateApp: async (parent, values, context) =>
+            apps.duplicate(context.request, values),
 
         updateApp: async (parent, values, context) =>
             apps.update(context.request, values.appId, values),

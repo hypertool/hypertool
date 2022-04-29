@@ -6,14 +6,6 @@ import { screenStatuses } from "../utils/constants";
 
 const screenSchema = new Schema(
     {
-        /* An identifier that points to the app to which the screen belongs. */
-        app: {
-            type: Schema.Types.ObjectId,
-            ref: "App",
-            required: true,
-            immutable: true,
-        },
-
         /*
          * The name of the screen, that uniquely identifies the screen across
          * the application.
@@ -65,6 +57,14 @@ const screenSchema = new Schema(
         creator: {
             type: Schema.Types.ObjectId,
             ref: "User",
+        },
+
+        /* An identifier that points to the app to which the screen belongs. */
+        app: {
+            type: Schema.Types.ObjectId,
+            ref: "App",
+            required: true,
+            immutable: true,
         },
 
         /* The status of the screen. */

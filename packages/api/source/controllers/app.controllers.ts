@@ -1,7 +1,16 @@
 import {
+    ControllerModel,
     IApp,
+    IController,
     IExternalApp,
+    IQueryTemplate,
+    IResource,
+    IScreen,
+    InternalServerError,
     OrganizationModel,
+    QueryTemplateModel,
+    ResourceModel,
+    ScreenModel,
     TAppPage,
     UserModel,
     runAsTransaction,
@@ -16,9 +25,17 @@ import {
 import joi from "joi";
 import { Types } from "mongoose";
 
-import { checkAccessToApps } from "../utils";
+import { checkAccessToApps, patchAll } from "../utils";
 
 const createSchema = joi.object({
+    name: joi.string().regex(constants.namePattern).required(),
+    title: joi.string().max(256).required(),
+    description: joi.string().max(512).allow("").default(""),
+    organization: joi.string().regex(constants.identifierPattern),
+});
+
+const duplicateSchema = joi.object({
+    sourceApp: joi.string().regex(constants.identifierPattern).required(),
     name: joi.string().regex(constants.namePattern).required(),
     title: joi.string().max(256).required(),
     description: joi.string().max(512).allow("").default(""),
@@ -79,6 +96,219 @@ const toExternal = (app: IApp): IExternalApp => {
 
 // TODO: Check for permissions.
 
+const checkDuplicate = async (name: string) => {
+    const existingApp = await AppModel.findOne({
+        name,
+        status: { $ne: "deleted" },
+    }).exec();
+    if (existingApp) {
+        throw new BadRequestError(`App with name "${name}" already exists.`);
+    }
+};
+
+const updateOwnershipToOrganization = async (
+    organizationId: string,
+    appId: Types.ObjectId,
+) => {
+    const organization = await OrganizationModel.findOneAndUpdate(
+        {
+            _id: organizationId,
+            status: { $ne: "deleted" },
+        },
+        {
+            $push: {
+                apps: appId,
+            },
+        },
+        { new: true, lean: true },
+    ).exec();
+    if (!organization) {
+        throw new NotFoundError(
+            `Cannot find an organization with the specified identifier "${organizationId}".`,
+        );
+    }
+    // TODO: Check if the user belongs to the organization.
+};
+
+const updateOwnershipToUser = async (
+    appId: Types.ObjectId,
+    userId: Types.ObjectId,
+) => {
+    await UserModel.findOneAndUpdate(
+        {
+            _id: userId,
+        },
+        {
+            $push: {
+                apps: appId,
+            },
+        },
+        {
+            new: true,
+            lean: true,
+        },
+    ).exec();
+};
+
+/**
+ * Make sure that this function is called within the context of a transaction.
+ */
+const createBaseApp = async (userId: Types.ObjectId, attributes: any) => {
+    /* Check if the app name is already taken. */
+    await checkDuplicate(attributes.name);
+
+    const newAppId = new Types.ObjectId();
+
+    if (attributes.organization) {
+        /*
+         * If the app belongs to an organization, establish a bidirectional
+         * relationship.
+         */
+        updateOwnershipToOrganization(attributes.organization, newAppId);
+    } else {
+        /*
+         * If the app does not belong to any organization, the ownership of
+         * the app is given to the user.
+         */
+        await updateOwnershipToUser(newAppId, userId);
+    }
+
+    /* Create the new app. */
+    const newApp = new AppModel({
+        ...attributes,
+        _id: newAppId,
+        creator: userId,
+        status: "private",
+    });
+    await newApp.save();
+
+    return newApp;
+};
+
+/**
+ * Make sure that this function is called within the context of a transaction.
+ */
+const duplicateEntities = async (
+    sourceApp: IApp,
+    appId: string,
+    userId: Types.ObjectId,
+): Promise<IApp> => {
+    const newResources = [];
+    const resourceMappings: Record<string, Types.ObjectId> = {};
+    for (const resource of sourceApp.resources) {
+        const resource0 = resource as IResource;
+        /*
+         * NOTE: Do not copy configuration data, even within the same organization,
+         * given their sensitive information.
+         */
+        const { name, description, type, status } = resource0;
+        const newResourceId = new Types.ObjectId();
+        newResources.push({
+            _id: newResourceId,
+            name,
+            description,
+            type,
+            status,
+            creator: userId,
+            app: appId,
+        });
+        resourceMappings[resource0._id.toString()] = newResourceId;
+    }
+
+    const newQueryTemplates = [];
+    for (const queryTemplate of sourceApp.queryTemplates) {
+        const queryTemplate0 = queryTemplate as IQueryTemplate;
+        const { name, description, resource, content, status } = queryTemplate0;
+        newQueryTemplates.push({
+            _id: new Types.ObjectId(),
+            name,
+            description,
+            resource: resourceMappings[resource.toString()],
+            app: appId,
+            content,
+            creator: userId,
+            status,
+        });
+    }
+
+    const controllerMappings: Record<string, Types.ObjectId> = {};
+    const newControllers = [];
+    for (const controller of sourceApp.controllers) {
+        const controller0 = controller as IController;
+        const { name, description, language, patches, status } = controller0;
+
+        const newControllerId = new Types.ObjectId();
+        controllerMappings[controller0._id.toString()] = newControllerId;
+
+        newControllers.push({
+            _id: newControllerId,
+            name,
+            description,
+            language,
+            creator: userId,
+            patches: {
+                author: userId,
+                content: patchAll(patches),
+            },
+            app: appId,
+            status,
+        });
+    }
+
+    const newScreens = [];
+    for (const screen of sourceApp.screens) {
+        const screen0 = screen as IScreen;
+        const { name, title, description, slug, content, controller, status } =
+            screen0;
+        newScreens.push({
+            _id: new Types.ObjectId(),
+            name,
+            title,
+            description,
+            slug,
+            content,
+            controller:
+                controller && controllerMappings[controller?.toString()],
+            creator: userId,
+            app: appId,
+            status,
+        });
+    }
+
+    const [_resources, _queryTemplates, _controllers, _screens, app] =
+        await Promise.all([
+            ResourceModel.insertMany(newResources),
+            QueryTemplateModel.insertMany(newQueryTemplates),
+            ControllerModel.insertMany(newControllers),
+            ScreenModel.insertMany(newScreens),
+            AppModel.findOneAndUpdate(
+                {
+                    _id: appId,
+                    status: { $ne: "deleted" },
+                },
+                {
+                    resources: newResources.map((resource) => resource._id),
+                    queryTemplates: newQueryTemplates.map(
+                        (queryTemplate) => queryTemplate._id,
+                    ),
+                    controllers: newControllers.map(
+                        (controller) => controller._id,
+                    ),
+                    screens: newScreens.map((screen) => screen._id),
+                },
+                { new: true, lean: true },
+            ).exec(),
+        ]);
+
+    if (!app) {
+        throw new InternalServerError(
+            `Could not find app with identifier "${appId}"`,
+        );
+    }
+
+    return app;
+};
+
 const create = async (context, attributes): Promise<IExternalApp> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
@@ -87,75 +317,48 @@ const create = async (context, attributes): Promise<IExternalApp> => {
         throw new BadRequestError(error.message);
     }
 
+    const newApp = await runAsTransaction(
+        async () => await createBaseApp(context.user._id, value),
+    );
+
+    return toExternal(newApp);
+};
+
+export const duplicate = async (context, attributes): Promise<IExternalApp> => {
+    const { error, value } = duplicateSchema.validate(attributes, {
+        stripUnknown: true,
+    });
+    if (error) {
+        throw new BadRequestError(error.message);
+    }
+
     const newApp = await runAsTransaction(async () => {
-        /* Check if the app name is already taken. */
-        const existingApp = await AppModel.findOne({
-            name: value.name,
-            status: { $ne: "deleted" },
-        }).exec();
-        if (existingApp) {
-            throw new BadRequestError(
-                `App with name "${value.name}"" already exists.`,
+        const sourceApp = await AppModel.findOne(
+            {
+                _id: value.sourceApp,
+                status: { $ne: "deleted" },
+            },
+            null,
+            { lean: true },
+        )
+            .populate("resources")
+            .populate("screens")
+            .populate("controllers")
+            .exec();
+        if (!sourceApp) {
+            throw new NotFoundError(
+                `Cannot find an app with the specified identifier "${value.sourceApp}".`,
             );
         }
+        checkAccessToApps(context.user, [sourceApp]);
 
-        const newAppId = new Types.ObjectId();
+        const newApp = await createBaseApp(context.user._id, value);
 
-        /*
-         * If the app belongs to an organization, establish a bidirectional
-         * relationship.
-         */
-        if (value.organization) {
-            const organization = await OrganizationModel.findOneAndUpdate(
-                {
-                    _id: value.organization,
-                    status: { $ne: "deleted" },
-                },
-                {
-                    $push: {
-                        apps: newAppId,
-                    },
-                },
-                { new: true, lean: true },
-            ).exec();
-            if (!organization) {
-                throw new NotFoundError(
-                    `Cannot find an organization with the specified identifier "${value.organization}".`,
-                );
-            }
-            // TODO: Check if the user belongs to the organization.
-        } else {
-            /*
-             * If the app does not belong to any organization, the ownership of
-             * the app is given to the user.
-             */
-            await UserModel.findOneAndUpdate(
-                {
-                    _id: context.user._id,
-                },
-                {
-                    $push: {
-                        apps: newAppId,
-                    },
-                },
-                {
-                    new: true,
-                    lean: true,
-                },
-            ).exec();
-        }
-
-        /* Create the new app. */
-        const newApp = new AppModel({
-            ...value,
-            _id: newAppId,
-            organization: value.organization,
-            creator: context.user._id,
-            status: "private",
-        });
-        await newApp.save();
-
-        return newApp;
+        return await duplicateEntities(
+            sourceApp,
+            newApp._id.toString(),
+            context.user._id,
+        );
     });
 
     return toExternal(newApp);
