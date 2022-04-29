@@ -1,6 +1,5 @@
 import {
     IController,
-    IControllerPatch,
     IExternalController,
     InternalServerError,
     TControllerPage,
@@ -14,11 +13,15 @@ import {
     constants,
 } from "@hypertool/common";
 
-import { applyPatch, createTwoFilesPatch } from "diff";
+import { createTwoFilesPatch } from "diff";
 import joi from "joi";
 import { Types } from "mongoose";
 
-import { checkAccessToApps, checkAccessToControllers } from "../utils";
+import {
+    checkAccessToApps,
+    checkAccessToControllers,
+    patchAll,
+} from "../utils";
 
 const createSchema = joi.object({
     name: joi.string().regex(constants.namePattern).required(),
@@ -61,20 +64,6 @@ const updateSchema = joi.object({
 const updateWithSourceSchema = joi.object({
     source: joi.string().allow(""),
 });
-
-const patchAll = (patches: IControllerPatch[]) =>
-    patches.reduce(
-        (previousValue: string, currentValue: { content: string }) => {
-            const patched = applyPatch(previousValue, currentValue.content);
-            if (!patched) {
-                throw new Error(
-                    "Failed to apply patch: " + currentValue.content,
-                );
-            }
-            return patched;
-        },
-        "",
-    );
 
 const toExternal = (controller: IController): IExternalController => {
     const {
