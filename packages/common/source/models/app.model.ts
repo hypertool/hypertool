@@ -59,6 +59,15 @@ const appSchema = new Schema(
             ],
             default: [],
         },
+        queryTemplates: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "QueryTemplate",
+                },
+            ],
+            default: [],
+        },
         deployments: {
             type: [
                 {

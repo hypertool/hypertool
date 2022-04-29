@@ -1,10 +1,10 @@
 import type {
     IApp,
     IController,
+    IQueryTemplate,
     IResource,
     IScreen,
     IUser,
-    Query,
 } from "@hypertool/common";
 import { ForbiddenError, InternalServerError } from "@hypertool/common";
 
@@ -201,7 +201,7 @@ export const checkAccessToResources = (
 
 export const checkAccessToQueryTemplates = (
     user: IUser,
-    queryTemplates: Query[],
+    queryTemplates: IQueryTemplate[],
 ): void => {
     // TODO: Handle anonymous users.
     if (!user) {

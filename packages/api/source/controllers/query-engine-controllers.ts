@@ -4,7 +4,7 @@ import {
     constants,
 } from "@hypertool/common";
 import { QueryTemplateModel } from "@hypertool/common";
-import type { IResource, Query } from "@hypertool/common";
+import type { IQueryTemplate, IResource } from "@hypertool/common";
 
 import joi from "joi";
 import { Knex } from "knex";
@@ -28,7 +28,7 @@ const executeSchema = joi.object({
 
 const executeSQL = async (
     parameters: IExecuteParameters,
-    query: Query,
+    query: IQueryTemplate,
     resource: IResource,
 ): Promise<any> => {
     const sql = resource[resource.type];

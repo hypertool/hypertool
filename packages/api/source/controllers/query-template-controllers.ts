@@ -1,8 +1,8 @@
 import {
     AppModel,
-    ExternalQuery,
+    IExternalQueryTemplate,
+    IQueryTemplate,
     InternalServerError,
-    Query,
     QueryPage,
     ResourceModel,
 } from "@hypertool/common";
@@ -47,7 +47,7 @@ const filterSchema = joi.object({
         .default(constants.paginateMinLimit),
 });
 
-const toExternal = (query: Query): ExternalQuery => {
+const toExternal = (query: IQueryTemplate): IExternalQueryTemplate => {
     const {
         _id,
         name,
@@ -80,7 +80,7 @@ const toExternal = (query: Query): ExternalQuery => {
  * The query template is associated with the app to which the resource belongs
  * to.
  */
-const create = async (context, attributes): Promise<ExternalQuery> => {
+const create = async (context, attributes): Promise<IExternalQueryTemplate> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -111,7 +111,7 @@ const create = async (context, attributes): Promise<ExternalQuery> => {
         /* Establish a bidirectional relationship with the app. */
         const app = await AppModel.findOneAndUpdate(
             { _id: resource.app, status: { $ne: "deleted" } },
-            { $push: { queries: queryTemplateId } },
+            { $push: { queryTemplates: queryTemplateId } },
             { new: true, lean: true },
         ).exec();
         if (!app) {
@@ -166,7 +166,7 @@ const listByAppId = async (context, parameters): Promise<QueryPage> => {
 
     await accessApp(context.user, value.app);
 
-    const queries = await (QueryTemplateModel as any).paginate(
+    const queryTemplates = await (QueryTemplateModel as any).paginate(
         {
             app: value.app,
             status: {
@@ -186,20 +186,22 @@ const listByAppId = async (context, parameters): Promise<QueryPage> => {
     );
 
     return {
-        totalRecords: queries.totalDocs,
-        totalPages: queries.totalPages,
-        previousPage: queries.prevPage ? queries.prevPage - 1 : -1,
-        nextPage: queries.nextPage ? queries.nextPage - 1 : -1,
-        hasPreviousPage: queries.hasPrevPage,
-        hasNextPage: queries.hasNextPage,
-        records: queries.docs.map(toExternal),
+        totalRecords: queryTemplates.totalDocs,
+        totalPages: queryTemplates.totalPages,
+        previousPage: queryTemplates.prevPage
+            ? queryTemplates.prevPage - 1
+            : -1,
+        nextPage: queryTemplates.nextPage ? queryTemplates.nextPage - 1 : -1,
+        hasPreviousPage: queryTemplates.hasPrevPage,
+        hasNextPage: queryTemplates.hasNextPage,
+        records: queryTemplates.docs.map(toExternal),
     };
 };
 
 const listByIds = async (
     context,
     queryTemplateIds: string[],
-): Promise<ExternalQuery[]> => {
+): Promise<IExternalQueryTemplate[]> => {
     const queryTemplates = await QueryTemplateModel.find({
         _id: { $in: queryTemplateIds },
         status: { $ne: "deleted" },
@@ -223,7 +225,7 @@ const listByIds = async (
 const getById = async (
     context,
     queryTemplateId: string,
-): Promise<ExternalQuery> => {
+): Promise<IExternalQueryTemplate> => {
     if (!constants.identifierPattern.test(queryTemplateId)) {
         throw new BadRequestError(
             `The specified query identifier "${queryTemplateId}" is invalid.`,
@@ -251,7 +253,10 @@ const getById = async (
     return toExternal(queryTemplate);
 };
 
-const getByName = async (context, name: string): Promise<ExternalQuery> => {
+const getByName = async (
+    context,
+    name: string,
+): Promise<IExternalQueryTemplate> => {
     if (!constants.namePattern.test(name)) {
         throw new BadRequestError(
             `The specified query template name "${name}" is invalid.`,
@@ -283,7 +288,7 @@ const update = async (
     context,
     queryTemplateId: string,
     attributes,
-): Promise<ExternalQuery> => {
+): Promise<IExternalQueryTemplate> => {
     if (!constants.identifierPattern.test(queryTemplateId)) {
         throw new BadRequestError(
             `The specified query template identifier "${queryTemplateId}" is invalid.`,

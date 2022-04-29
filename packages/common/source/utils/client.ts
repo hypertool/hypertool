@@ -5,7 +5,7 @@ import lodash from "lodash";
 import type {
     Manifest,
     IApp,
-    Query as QueryTemplate,
+    IQueryTemplate as QueryTemplate,
     IExternalResource,
     IResource,
     ActivityLog,

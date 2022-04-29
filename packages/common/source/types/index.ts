@@ -148,6 +148,7 @@ export interface IApp {
     title: string;
     description: string;
     resources: ObjectId[] | IResource[];
+    queryTemplates: ObjectId[] | IQueryTemplate[];
     deployments: ObjectId[] | Deployment[];
     screens: ObjectId[] | IScreen[];
     controllers: ObjectId[] | IController[];
@@ -164,6 +165,7 @@ export interface IExternalApp {
     title: string;
     description: string;
     resources: string[];
+    queryTemplates: string[];
     deployments: string[];
     screens: string[];
     controllers: string[];
@@ -317,7 +319,7 @@ export interface Session {
     createdAt: Date;
 }
 
-export interface Query {
+export interface IQueryTemplate {
     _id: ObjectId;
     name: string;
     description: string;
@@ -330,7 +332,7 @@ export interface Query {
     updatedAt: Date;
 }
 
-export interface ExternalQuery {
+export interface IExternalQueryTemplate {
     id: string;
     name: string;
     description: string;
@@ -343,7 +345,7 @@ export interface ExternalQuery {
     updatedAt: Date;
 }
 
-export type QueryPage = IExternalListPage<ExternalQuery>;
+export type QueryPage = IExternalListPage<IExternalQueryTemplate>;
 
 export interface Context {
     type?: string;
@@ -374,7 +376,7 @@ interface ManifestValues {
 }
 
 export interface Manifest {
-    queries: Query[];
+    queries: IQueryTemplate[];
     resources: IResource[];
     app: IApp;
     file?: string;
