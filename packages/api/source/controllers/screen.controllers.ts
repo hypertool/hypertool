@@ -127,6 +127,7 @@ export const create = async (context, attributes): Promise<IExternalScreen> => {
                 {
                     $push: {
                         screens: screenId,
+                        controllers: controllerId,
                     },
                 },
                 {
