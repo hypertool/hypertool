@@ -92,7 +92,8 @@ const NotificationProvider: FunctionComponent<INotificationProviderProps> = (
                 context.notify({
                     type: "error",
                     message:
-                        error.graphQLErrors[0].message ||
+                        error.graphQLErrors?.[0].message ||
+                        error.message ||
                         "An unknown error occurred!",
                     closeable: true,
                     autoCloseDuration: -1,
