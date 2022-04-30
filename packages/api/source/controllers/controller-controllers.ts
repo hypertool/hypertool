@@ -160,6 +160,7 @@ export const create = async (
 
         const newController = new ControllerModel({
             ...value,
+            _id: newControllerId,
             status: "created",
             creator: context.user._id,
         });
