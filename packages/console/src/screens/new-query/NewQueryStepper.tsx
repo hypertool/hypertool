@@ -201,7 +201,7 @@ const NewQueryStepper: FunctionComponent = (): ReactElement => {
                     autoCloseDuration: -1,
                 });
 
-                const { data: result } = await createQuery({
+                const result = await createQuery({
                     variables: {
                         ...values,
                         app: appId,
