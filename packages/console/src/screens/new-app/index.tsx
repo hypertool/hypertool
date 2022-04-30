@@ -35,6 +35,26 @@ const CREATE_APP = gql`
     }
 `;
 
+const DUPLICATE_APP = gql`
+    mutation DuplicateApp(
+        $sourceApp: ID!
+        $name: String!
+        $title: String!
+        $description: String!
+        $organization: ID
+    ) {
+        duplicateApp(
+            sourceApp: $sourceApp
+            name: $name
+            title: $title
+            organization: $organization
+            description: $description
+        ) {
+            id
+        }
+    }
+`;
+
 interface IFormValues {
     name: string;
     title: string;
@@ -64,7 +84,10 @@ const validationSchema = yup.object({
 const NewApp: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
     const notification = useNotification();
-    const [createApp, { loading, data }] = useMutation(CREATE_APP, {
+    const [createApp] = useMutation(CREATE_APP, {
+        refetchQueries: ["GetApps"],
+    });
+    const [duplicateApp] = useMutation(DUPLICATE_APP, {
         refetchQueries: ["GetApps"],
     });
     const [template, setTemplate] = useState<"$empty" | string>("$empty");
@@ -104,23 +127,31 @@ const NewApp: FunctionComponent = (): ReactElement => {
                     autoCloseDuration: -1,
                 });
 
-                const result = await createApp({
-                    variables: {
-                        ...values,
-                        sourceApp: template === "$empty" ? undefined : template,
-                    },
-                });
+                if (template === "$empty") {
+                    const result = await createApp({
+                        variables: {
+                            ...values,
+                        },
+                    });
+                    navigate(`/apps/${result.data.createApp.id}/builder`);
+                } else {
+                    const result = await duplicateApp({
+                        variables: {
+                            ...values,
+                            sourceApp: template,
+                        },
+                    });
+                    navigate(`/apps/${result.data.duplicateApp.id}/builder`);
+                }
 
                 notification.notifySuccess(
                     `Created screen "${values.name}" successfully`,
                 );
-
-                navigate(`/apps/${result.data.createApp.id}/builder`);
             } catch (error) {
                 notification.notifyError(error);
             }
         },
-        [],
+        [template, notification, createApp, duplicateApp, navigate],
     );
 
     const isStepComplete = useCallback((step: number, context: any) => {
