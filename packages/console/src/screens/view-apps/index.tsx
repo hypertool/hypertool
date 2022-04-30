@@ -209,6 +209,13 @@ const ViewApps: FunctionComponent = (): ReactElement => {
         navigate(`/apps/${id}/builder`);
     }, []);
 
+    const handleDuplicate = useCallback(
+        (id: string, name: string) => {
+            navigate(`/apps/new?template=${id}`);
+        },
+        [navigate],
+    );
+
     const renderFilter = () => (
         <FormControl fullWidth={true}>
             <InputLabel id="filter-label">Filter</InputLabel>
@@ -287,6 +294,7 @@ const ViewApps: FunctionComponent = (): ReactElement => {
                                 onLaunch={handleLaunch}
                                 onDelete={handleDelete}
                                 onEdit={handleEdit}
+                                onDuplicate={handleDuplicate}
                             />
                         ))}
                     </Apps>

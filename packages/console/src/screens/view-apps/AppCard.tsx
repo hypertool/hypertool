@@ -55,12 +55,14 @@ export interface IAppCardProps {
     onLaunch: (id: string, name: string) => void;
     onDelete: (id: string, name: string) => void;
     onEdit: (id: string, name: string) => void;
+    onDuplicate: (id: string, name: string) => void;
 }
 
 const AppCard: FunctionComponent<IAppCardProps> = (
     props: IAppCardProps,
 ): ReactElement => {
-    const { id, name, description, onLaunch, onDelete, onEdit } = props;
+    const { id, name, description, onLaunch, onDelete, onEdit, onDuplicate } =
+        props;
     const [anchor, setAnchor] = useState<null | HTMLElement>(null);
 
     const handleOpenOptions = useCallback((event: MouseEvent<HTMLElement>) => {
@@ -107,7 +109,7 @@ const AppCard: FunctionComponent<IAppCardProps> = (
                         id={id}
                         name={name}
                         onToggleStar={() => null}
-                        onDuplicate={() => null}
+                        onDuplicate={onDuplicate}
                         onTogglePublish={() => null}
                         onRename={() => null}
                         onLaunch={handleLaunch}

@@ -10,7 +10,7 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 
 import Stepper, { IStep } from "../../components/Stepper";
-import { useNotification, usePrivateSession } from "../../hooks";
+import { useNotification, useQueryParams } from "../../hooks";
 
 import AboutStep from "./AboutStep";
 import SelectTemplateStep from "./SelectTemplateStep";
@@ -90,7 +90,10 @@ const NewApp: FunctionComponent = (): ReactElement => {
     const [duplicateApp] = useMutation(DUPLICATE_APP, {
         refetchQueries: ["GetApps"],
     });
-    const [template, setTemplate] = useState<"$empty" | string>("$empty");
+    const params = useQueryParams();
+    const [template, setTemplate] = useState<"$empty" | string>(
+        params.template || "$empty",
+    );
 
     const handleTemplateChange = useCallback((id: string) => {
         setTemplate(id);

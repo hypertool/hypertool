@@ -10,7 +10,7 @@ export interface IAppOptionsMenuProps {
     onClose: () => void;
     anchor: HTMLElement | null;
     onToggleStar: (id: string) => void;
-    onDuplicate: (id: string) => void;
+    onDuplicate: (id: string, name: string) => void;
     onTogglePublish: (id: string) => void;
     onRename: (id: string) => void;
     onDelete: (id: string) => void;
@@ -51,9 +51,9 @@ const AppOptionsMenu: FunctionComponent<IAppOptionsMenuProps> = (
     }, [id, onClose, onToggleStar]);
 
     const handleDuplicate = useCallback(() => {
-        onDuplicate(id);
+        onDuplicate(id, name);
         onClose();
-    }, [id, onClose, onDuplicate]);
+    }, [id, name, onClose, onDuplicate]);
 
     const handleTogglePublish = useCallback(() => {
         onTogglePublish(id);
@@ -79,12 +79,12 @@ const AppOptionsMenu: FunctionComponent<IAppOptionsMenuProps> = (
         {
             title: "Administrator",
             items: [
+                {
+                    title: "Duplicate",
+                    icon: "content_copy",
+                    action: handleDuplicate,
+                },
                 /*
-                 * {
-                 *     title: "Duplicate",
-                 *     icon: "content_copy",
-                 *     action: handleDuplicate,
-                 * },
                  * {
                  *     title: "Publish",
                  *     icon: "publish",
