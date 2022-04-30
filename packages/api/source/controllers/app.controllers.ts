@@ -22,6 +22,7 @@ import {
     constants,
 } from "@hypertool/common";
 
+import { createTwoFilesPatch } from "diff";
 import joi from "joi";
 import { Types } from "mongoose";
 
@@ -189,6 +190,25 @@ const createBaseApp = async (userId: Types.ObjectId, attributes: any) => {
     return newApp;
 };
 
+const defaultResourceConfigurations: Record<string, any> = {
+    mysql: {
+        host: "<redacted>",
+        port: 3306,
+        databaseName: "<redacted>",
+        databaseUserName: "<redacted>",
+        databasePassword: "<redacted>",
+        connectUsingSSL: false,
+    },
+    postgres: {
+        host: "<redacted>",
+        port: 5432,
+        databaseName: "<redacted>",
+        databaseUserName: "<redacted>",
+        databasePassword: "<redacted>",
+        connectUsingSSL: false,
+    },
+};
+
 /**
  * Make sure that this function is called within the context of a transaction.
  */
@@ -215,6 +235,7 @@ const duplicateEntities = async (
             status,
             creator: userId,
             app: appId,
+            [type]: defaultResourceConfigurations[type],
         });
         resourceMappings[resource0._id.toString()] = newResourceId;
     }
@@ -250,10 +271,22 @@ const duplicateEntities = async (
             description,
             language,
             creator: userId,
-            patches: {
-                author: userId,
-                content: patchAll(patches),
-            },
+            patches:
+                patches.length === 0
+                    ? []
+                    : [
+                          {
+                              author: userId,
+                              content: createTwoFilesPatch(
+                                  `a/${controller0.name}`,
+                                  `b/${controller0.name}`,
+                                  "",
+                                  patchAll(patches),
+                                  "",
+                                  "",
+                              ),
+                          },
+                      ],
             app: appId,
             status,
         });
@@ -264,6 +297,7 @@ const duplicateEntities = async (
         const screen0 = screen as IScreen;
         const { name, title, description, slug, content, controller, status } =
             screen0;
+        console.log(controller, controllerMappings);
         newScreens.push({
             _id: new Types.ObjectId(),
             name,
@@ -345,9 +379,10 @@ export const duplicate = async (context, attributes): Promise<IExternalApp> => {
             null,
             { lean: true },
         )
-            .populate("resources")
-            .populate("screens")
-            .populate("controllers")
+            .populate({ path: "resources", model: "Resource" })
+            .populate({ path: "screens", model: "Screen" })
+            .populate({ path: "controllers", model: "Controller" })
+            .populate({ path: "queryTemplates", model: "QueryTemplate" })
             .exec();
         if (!sourceApp) {
             throw new NotFoundError(
@@ -357,7 +392,6 @@ export const duplicate = async (context, attributes): Promise<IExternalApp> => {
         checkAccessToApps(context.user, [sourceApp]);
 
         const newApp = await createBaseApp(context.user._id, value);
-
         return await duplicateEntities(
             sourceApp,
             newApp._id.toString(),
