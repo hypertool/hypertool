@@ -4,6 +4,8 @@ import { useMemo } from "react";
 import { Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import { gql, useQuery } from "@apollo/client";
+
 import TemplateItem from "./TemplateItem";
 
 const Root = styled("section")(({ theme }) => ({
@@ -52,10 +54,23 @@ interface ICategory {
     templates: ITemplate[];
 }
 
+const GET_APPS = gql`
+    query GetApps($page: Int, $limit: Int) {
+        getApps(page: $page, limit: $limit) {
+            totalPages
+            records {
+                id
+                title
+            }
+        }
+    }
+`;
+
 const SelectTemplateStep: FunctionComponent<ISelectTemplateStepProps> = (
     props: ISelectTemplateStepProps,
 ): ReactElement => {
     const { onChange, activeTemplate } = props;
+    const { loading, data } = useQuery(GET_APPS);
     const categories = useMemo(() => {
         return [
             {
@@ -73,8 +88,19 @@ const SelectTemplateStep: FunctionComponent<ISelectTemplateStepProps> = (
                     },
                 ],
             },
-        ];
-    }, []);
+            !loading &&
+                (data?.getApps?.records?.length ?? 0 > 0) && {
+                    title: "Your apps",
+                    templates: (data?.getApps?.records ?? []).map(
+                        (app: any) => ({
+                            id: app.id,
+                            title: app.title,
+                            imageURL: "https://picsum.photos/200/100",
+                        }),
+                    ),
+                },
+        ].filter(Boolean);
+    }, [loading, data]);
 
     const renderCategory = (category: ICategory) => (
         <Category>
