@@ -65,6 +65,7 @@ const toExternal = (app: IApp): IExternalApp => {
         title,
         description,
         resources,
+        queryTemplates,
         deployments,
         screens,
         controllers,
@@ -81,6 +82,9 @@ const toExternal = (app: IApp): IExternalApp => {
         title,
         description,
         resources: resources.map((resource) => resource.toString()),
+        queryTemplates: queryTemplates.map((queryTemplate) =>
+            queryTemplate.toString(),
+        ),
         deployments: deployments.map((deployment) => deployment.toString()),
         screens: screens.map((screen) => screen.toString()),
         controllers: controllers.map((controller) => controller.toString()),
