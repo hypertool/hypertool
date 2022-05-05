@@ -6,7 +6,6 @@ import {
     Button,
     CircularProgress,
     Container,
-    Hidden,
     Icon,
     InputLabel,
     MenuItem,
@@ -27,7 +26,6 @@ import { NoRecords } from "../../components";
 import { useNotification } from "../../hooks";
 
 import AppCard from "./AppCard";
-import AppFilter from "./AppFilter";
 
 const Root = styled("section")(() => ({
     width: "100%",

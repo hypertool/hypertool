@@ -51,7 +51,7 @@ const Right = styled("div")(() => ({
 }));
 
 const Title = styled(Typography)(({ theme }) => ({
-    fontSize: 20,
+    fontSize: 12,
     fontWeight: 500,
     color: theme.palette.getContrastText(theme.palette.background.default),
 }));
