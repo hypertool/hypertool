@@ -22,7 +22,7 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 
-import { TextField } from "../../components";
+import { Password, TextField } from "../../components";
 import { useNotification } from "../../hooks";
 
 const Root = styled("section")(({ theme }) => ({
@@ -52,6 +52,8 @@ const InputField = styled(TextField)(({ theme }) => ({
         fontSize: 22,
     },
 }));
+
+const PasswordField = styled(Password)(({ theme }) => ({}));
 
 const Title = styled(Typography)(({ theme }) => ({
     color: theme.palette.getContrastText(theme.palette.background.default),
@@ -225,15 +227,13 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                                         onChange={formik.handleChange}
                                         help=""
                                     />
-                                    <InputField
+                                    <PasswordField
                                         id="password"
                                         label="Password"
                                         variant="outlined"
                                         name="password"
                                         size="small"
-                                        onChange={formik.handleChange}
                                         helperText="Minimum 8 characters, containing alphanumeric and symbolic characters"
-                                        help=""
                                     />
                                     <PrimaryAction
                                         variant="contained"

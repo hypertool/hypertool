@@ -15,7 +15,7 @@ import { Formik } from "formik";
 import { useGoogleLogin } from "react-google-login";
 import { Link, useNavigate } from "react-router-dom";
 
-import { TextField } from "../../components";
+import { Password, TextField } from "../../components";
 import { useSession } from "../../hooks";
 
 const Root = styled("div")(({ theme }) => ({
@@ -56,6 +56,8 @@ const FormContainer = styled("div")(({ theme }) => ({
 const InputField = styled(TextField)(({ theme }) => ({
     marginTop: theme.spacing(1),
 }));
+
+const PasswordField = styled(Password)(({ theme }) => ({}));
 
 const PrimaryAction = styled(Button)(({ theme }) => ({
     marginTop: theme.spacing(2),
@@ -207,15 +209,17 @@ const Login: FunctionComponent = (): ReactElement => {
                                         size="small"
                                         help=""
                                     />
-                                    <InputField
-                                        id="Password"
-                                        label="Password"
-                                        variant="outlined"
-                                        name="password"
-                                        onChange={formik.handleChange}
-                                        size="small"
-                                        help=""
-                                    />
+                                    <div style={{ marginTop: 16 }}>
+                                        <PasswordField
+                                            id="Password"
+                                            label="Password"
+                                            variant="outlined"
+                                            name="password"
+                                            onChange={formik.handleChange}
+                                            size="small"
+                                            help=""
+                                        />
+                                    </div>
                                     <PrimaryAction
                                         onClick={() => formik.submitForm()}
                                         variant="contained"
