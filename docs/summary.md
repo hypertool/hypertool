@@ -3,9 +3,6 @@
 ## Introduction
 
 -   [What is Hypertool?](introduction/what-is-hypertool.md)
--   [The Problem with Building Internal Tools](introduction/the-problem-with-building-internal-tools.md)
--   [Advantages of Hypertool](introduction/advantages-of-hypertool.md)
--   [Design Choices](introduction/design-choices.md)
 -   [Building Your First App](introduction/building-your-first-app.md)
 -   [Frequently Asked Questions](others/faqs.md)
 
