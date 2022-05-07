@@ -13,6 +13,8 @@ Hypertool requires the following tools installed on your system:
 -   Node.js (v15, v16)
 -   Yarn
 
+> NOTE: As of now, Node.js 17.x is unsupported.
+
 ### Cloning the source code
 
 You can find the source code for Hypertool on [GitHub](https://github.com/hypertool/hypertool).

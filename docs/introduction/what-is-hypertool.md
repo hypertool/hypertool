@@ -4,7 +4,9 @@ Hypertool is an open-source low code platform that helps you build internal
 tools quickly. You can integrate apps with your databases, APIs, spreadsheets,
 and other apps.
 
-With our JavaScript-based visual development platform, build CRUD apps, forms, dashboards, admin panels, and many more 10x faster. It is designed for developers by developers.
+With our JavaScript-based visual development platform, build CRUD apps, forms,
+dashboards, admin panels, and many more 10x faster. It is designed for developers
+by developers.
 
 ## The problems with building internal tools
 
