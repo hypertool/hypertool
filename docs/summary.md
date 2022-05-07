@@ -19,6 +19,7 @@
 -   [Integrating MySQL](data/integrating-mysql.md)
 -   [Integrating PostgreSQL](data/integrating-postgresql.md)
 -   [Integrating MongoDB](data/integrating-mongodb.md)
+-   [Creating Query Templates](data/creating-query-templates.md)
 
 ## Design
 
