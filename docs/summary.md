@@ -3,6 +3,7 @@
 ## Introduction
 
 -   [What is Hypertool?](introduction/what-is-hypertool.md)
+-   [Installation](introduction/installation.md)
 -   [Building Your First App](introduction/building-your-first-app.md)
 -   [Frequently Asked Questions](others/faqs.md)
 
