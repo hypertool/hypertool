@@ -11,6 +11,7 @@
 
 -   [Introduction](apps/introduction.md)
 -   [Activity Logs](apps/activity-logs.md)
+-   [Working with Screens](apps/working-with-screens.md)
 
 ## Working with Data
 
@@ -22,8 +23,6 @@
 -   [Creating Query Templates](data/creating-query-templates.md)
 
 ## Design
-
--   Screens
 
 -   Controllers
 
