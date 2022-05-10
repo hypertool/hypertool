@@ -40,17 +40,21 @@ const Screen: FunctionComponent<IProps> = (props: IProps): ReactElement => {
   const { executeQuery } = useExecuteQuery();
 
   const navigate = useMemo(
-    () => (target: TNavigationTarget, options?: INavigateOptions) => {
-      navigateNative(
-        typeof target === "string"
-          ? target
-          : {
-              pathname: target.path,
-              search: target.query,
-              hash: target.hash,
-            },
-        options
-      );
+    () => (target: TNavigationTarget | number, options?: INavigateOptions) => {
+      if (typeof target === "number") {
+        navigateNative(target);
+      } else {
+        navigateNative(
+          typeof target === "string"
+            ? target
+            : {
+                pathname: target.path,
+                search: target.query,
+                hash: target.hash,
+              },
+          options
+        );
+      }
     },
     [navigateNative]
   );

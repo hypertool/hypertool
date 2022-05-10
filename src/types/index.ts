@@ -180,6 +180,11 @@ interface IQueryResult {
  * Context                                                                                        *
  **************************************************************************************************/
 
+export interface TNavigateFunction {
+  (target: TNavigationTarget, options?: INavigateOptions): void;
+  (delta: number): void;
+}
+
 export interface IHyperContext<S> {
   readonly location: ILocation;
 
@@ -187,7 +192,7 @@ export interface IHyperContext<S> {
 
   readonly refs: Record<string, any>;
 
-  navigate: (target: TNavigationTarget, options?: INavigateOptions) => void;
+  navigate: TNavigateFunction;
 
   setQueryParams: (
     queryParams: TUpdateQueryParams,
