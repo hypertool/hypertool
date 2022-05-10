@@ -81,11 +81,6 @@ const SelectTemplateStep: FunctionComponent<ISelectTemplateStepProps> = (
                         title: "Empty",
                         imageURL: "https://picsum.photos/200/100",
                     },
-                    {
-                        id: "$2",
-                        title: "Empty",
-                        imageURL: "https://picsum.photos/200/100",
-                    },
                 ],
             },
             !loading &&
