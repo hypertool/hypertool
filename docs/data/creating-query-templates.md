@@ -6,7 +6,7 @@ With query templates your application can execute operations against resources. 
 
 To create a new query template, click on the "Create New Query Template" button in the Explorer tab. (If the "Query Templates" accordion is collapsed, you will need to expand it to find the "Create New Query Template" button.) This will open the New Query Template tab.
 
-You will asked to provide a name, an optional description, and select the resource against which the query template will be executed. Click "Next" in the bottom right to continue.
+You will be asked to provide a name, an optional description, and select the resource against which the query template will be executed. Click "Next" in the bottom right to continue.
 
 > Make sure you have create the resource before creating a new query template. You can read more about creating resources in the previous sections.
 

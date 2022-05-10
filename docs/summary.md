@@ -7,22 +7,21 @@
 -   [Building Your First App](introduction/building-your-first-app.md)
 -   [Frequently Asked Questions](others/faqs.md)
 
-## Apps
+## Working with Apps
 
--   [Introduction](apps/introduction.md)
--   [Activity Logs](apps/activity-logs.md)
--   [Working with Screens](apps/working-with-screens.md)
--   [Working with Controllers](apps/working-with-controllers.md)
+-   [Apps](apps/apps.md)
+-   [Screens](apps/screens.md)
+-   [Controllers](apps/controllers.md)
 -   [Routing](apps/routing.md)
+-   [Activity Logs](apps/activity-logs.md)
 
 ## Working with Data
 
--   [Understanding Resources and Query Templates](data/index.md)
--   [SQL Queries](data/sql-queries.md)
+-   [Introduction](data/introduction.md)
 -   [Integrating MySQL](data/integrating-mysql.md)
 -   [Integrating PostgreSQL](data/integrating-postgresql.md)
 -   [Integrating MongoDB](data/integrating-mongodb.md)
--   [Creating Query Templates](data/creating-query-templates.md)
+-   [Query Templates](data/query-templates.md)
 
 ## Design
 
