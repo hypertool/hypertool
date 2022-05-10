@@ -12,8 +12,8 @@
 -   [Introduction](apps/introduction.md)
 -   [Activity Logs](apps/activity-logs.md)
 -   [Working with Screens](apps/working-with-screens.md)
--   [Routing](apps/routing.md)
 -   [Working with Controllers](apps/working-with-controllers.md)
+-   [Routing](apps/routing.md)
 
 ## Working with Data
 

@@ -3,6 +3,49 @@
 In Hypertool, your app can contain several screens. Each screen is located using
 its route, that is, the slug.
 
+## Navigating Between Screens
+
+You can navigate between screens using the `context.navigate` function.
+It has two signatures:
+
+```typescript
+interface IPath {
+    /**
+     * The path component in the URL, beginning with a `/`.
+     */
+    path: string;
+
+    /**
+     * The query string component in the URL, beginning with a `?`.
+     */
+    query: string;
+
+    /**
+     * A URL fragment identifier, beginning with a `#`.
+     */
+    hash: string;
+}
+
+/**
+ * Describes a location that is the destination of some navigation.
+ * It can either be a URL or pieces of a URL.
+ */
+type TNavigationTarget = string | Partial<IPath>;
+
+interface TNavigateFunction {
+    (target: TNavigationTarget, options?: INavigationOptions): void;
+    (delta: number): void;
+}
+```
+
+The first function accepts the target to navigate to, which can be a URL
+or pieces of a URL (partial `IPath`). Optionally, you can specify the `replace`
+and `state` values.
+
+The second function accepts the delta, that is, the number of steps you want to
+go in the history stack. For example, `context.navigate(-1)` is equivalent to
+hitting the back button once.
+
 ## Accessing Path Parameters
 
 A common requirement for apps is to pass information between different screens.
