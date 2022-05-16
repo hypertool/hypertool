@@ -7,7 +7,11 @@ import { styled } from "@mui/material/styles";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 import { BuilderActionsContext } from "../../../../contexts";
-import { useNotification, useParam } from "../../../../hooks";
+import {
+    useBuilderActions,
+    useNotification,
+    useParam,
+} from "../../../../hooks";
 import { IEditControllerBundle, ITab } from "../../../../types";
 
 import Controller from "./Controller";
@@ -42,7 +46,7 @@ const DELETE_CONTROLLER = gql`
 `;
 
 const Controllers: FunctionComponent = (): ReactElement => {
-    const { createTab, closeTabs } = useContext(BuilderActionsContext);
+    const { createTab, closeTabs } = useBuilderActions();
     const appId = useParam("appId");
 
     const { data } = useQuery(GET_CONTROLLERS, {
