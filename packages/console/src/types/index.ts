@@ -2,15 +2,11 @@ import type { FunctionComponent, ReactNode } from "react";
 
 import type { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
-import { constants } from "@hypertool/common";
+import { constants } from "../utils";
 
-import { constants as consoleConstants } from "../utils";
+export type ResourceType = typeof constants.resourceTypes[number];
 
-const { resourceStatuses, resourceTypes } = constants;
-
-export type ResourceType = typeof resourceTypes[number];
-
-export type ResourceStatus = typeof resourceStatuses[number];
+export type ResourceStatus = typeof constants.resourceStatuses[number];
 export interface AuthenticationServicesType {
     id: number;
     name: string;
@@ -145,7 +141,7 @@ export type BaseColor =
 
 export type Color = "inherit" | BaseColor;
 
-export type TTabType = typeof consoleConstants.tabTypes[number];
+export type TTabType = typeof constants.tabTypes[number];
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ITabBundle {}
@@ -264,4 +260,11 @@ export interface INotificationContext {
     notifyError: (error: any) => void;
     notifySuccess: (message: string) => void;
     close: () => void;
+}
+
+export type TProviderType = typeof constants.providerTypes[number];
+
+export interface IProviderConfiguration {
+    type: TProviderType;
+    status: string;
 }
