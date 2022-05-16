@@ -277,7 +277,7 @@ const EditQuery: FunctionComponent = (): ReactElement => {
                                 </Button>
                                 <Button
                                     size="small"
-                                    onClick={() => formik.submitForm()}
+                                    onClick={formik.submitForm}
                                     color="inherit"
                                     disabled={loading}
                                 >
