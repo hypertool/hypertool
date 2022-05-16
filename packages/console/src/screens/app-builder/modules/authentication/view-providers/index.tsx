@@ -1,50 +1,51 @@
 import type { FunctionComponent, ReactElement } from "react";
+import { useCallback, useState } from "react";
 
 import { AppBar, Button, Icon, Toolbar, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useUpdateTabTitle } from "../../../../../hooks";
+import { IProviderConfiguration } from "../../../../../types";
 
-const Title = styled(Typography)(() => ({}));
+import ProvidersTable from "./ProvidersTable";
+import ProvidersToolbar from "./ProvidersToolbar";
 
-const WorkspaceToolbar = styled(Toolbar)(() => ({
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+const ProvidersContainer = styled("div")(({ theme }) => ({
+    padding: theme.spacing(2),
 }));
 
-const ActionContainer = styled("div")(() => ({
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end",
-}));
-
-const ActionIcon = styled(Icon)(({ theme }) => ({
-    marginRight: theme.spacing(1),
-}));
+const configurations: IProviderConfiguration[] = [
+    {
+        id: "627a94ced14773e913227a34",
+        type: "email_password",
+        status: "enabled",
+    },
+    {
+        id: "627a94ced14773e913227a28",
+        type: "anonymous",
+        status: "disabled",
+    },
+];
 
 const ViewProviders: FunctionComponent = (): ReactElement => {
     useUpdateTabTitle("View Providers");
 
+    const [selected, setSelected] = useState<string[]>([]);
+
+    const handleSelect = useCallback((newSelected: string[]) => {
+        setSelected(newSelected);
+    }, []);
+
     return (
         <div>
-            <AppBar position="static" elevation={1}>
-                <WorkspaceToolbar>
-                    <Title>View Providers</Title>
-                    <ActionContainer>
-                        <Button size="small" color="inherit" sx={{ mr: 2 }}>
-                            <ActionIcon fontSize="small">refresh</ActionIcon>
-                            Refresh
-                        </Button>
-                        <Button size="small" color="inherit">
-                            <ActionIcon fontSize="small">add_circle</ActionIcon>
-                            New Provider
-                        </Button>
-                    </ActionContainer>
-                </WorkspaceToolbar>
-            </AppBar>
+            <ProvidersToolbar selectedCount={selected.length} />
+            <ProvidersContainer>
+                <ProvidersTable
+                    configurations={configurations}
+                    selected={selected}
+                    onSelect={handleSelect}
+                />
+            </ProvidersContainer>
         </div>
     );
 };
