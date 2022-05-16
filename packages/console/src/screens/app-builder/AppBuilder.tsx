@@ -37,6 +37,8 @@ import NewScreenEditor from "../new-screen";
 import CanvasEditor from "./CanvasEditor";
 import CodeEditor from "./CodeEditor";
 import { RenderNode } from "./RenderNode";
+import ViewAuthenticationProviders from "./modules/authentication/view-providers";
+import ViewAuthenticationUsers from "./modules/authentication/view-users";
 import { AppBar, LeftDrawer, RightDrawer } from "./navigation";
 
 const Root = styled("div")(({ theme }) => ({
@@ -99,6 +101,14 @@ const tabDetailsByType: Record<string, TabTypeDetails> = {
     "edit-resource": {
         icon: "category",
         title: "Edit Resource",
+    },
+    "authentication.view-users": {
+        icon: "people",
+        title: "Users",
+    },
+    "authentication.view-providers": {
+        icon: "password",
+        title: "Providers",
     },
 };
 
@@ -203,6 +213,11 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                         }
 
                         switch (type) {
+                            case "authentication.view-users":
+                            case "authentication.view-providers": {
+                                return true;
+                            }
+
                             case "edit-resource": {
                                 return (
                                     (bundle as IEditResourceBundle)
@@ -372,6 +387,12 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                     )}
                     {type === "edit-query" && <QueryEditor />}
                     {type === "new-query" && <NewQueryEditor />}
+                    {type === "authentication.view-users" && (
+                        <ViewAuthenticationUsers />
+                    )}
+                    {type === "authentication.view-providers" && (
+                        <ViewAuthenticationProviders />
+                    )}
                 </TabContext.Provider>
             </div>
         );
