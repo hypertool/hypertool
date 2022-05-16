@@ -265,6 +265,7 @@ export interface INotificationContext {
 export type TProviderType = typeof constants.providerTypes[number];
 
 export interface IProviderConfiguration {
+    id: string;
     type: TProviderType;
     status: string;
 }
