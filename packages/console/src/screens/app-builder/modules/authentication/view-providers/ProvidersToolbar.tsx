@@ -1,6 +1,7 @@
 import type { FunctionComponent, ReactElement } from "react";
 
 import {
+    AppBar,
     Button,
     Icon,
     Toolbar,
@@ -15,6 +16,9 @@ interface IWorkspaceToolbarProps {
 
 const WorkspaceToolbar = styled(Toolbar)<IWorkspaceToolbarProps>(
     ({ theme, selectedCount }) => ({
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
         padding: theme.spacing(1, 0),
         ...(selectedCount > 0 && {
             backgroundColor: alpha(
@@ -48,21 +52,53 @@ const ProvidersToolbar: FunctionComponent<IProvidersToolbarProps> = (
     const { selectedCount } = props;
 
     return (
-        <WorkspaceToolbar selectedCount={selectedCount}>
-            {selectedCount === 0 && <Title>View Providers</Title>}
+        <AppBar position="static" elevation={1}>
+            <WorkspaceToolbar selectedCount={selectedCount}>
+                {selectedCount === 0 && (
+                    <>
+                        <Title>View Providers</Title>
+                        <ActionContainer>
+                            <Button size="small" color="inherit" sx={{ mr: 2 }}>
+                                <ActionIcon fontSize="small">
+                                    refresh
+                                </ActionIcon>
+                                Refresh
+                            </Button>
+                            <Button size="small" color="inherit">
+                                <ActionIcon fontSize="small">
+                                    add_circle
+                                </ActionIcon>
+                                New Provider
+                            </Button>
+                        </ActionContainer>
+                    </>
+                )}
 
-            {selectedCount > 0 && (
-                <>
-                    <Title>{selectedCount} selected</Title>
-                    <ActionContainer>
-                        <Button size="small" color="inherit" sx={{ mr: 2 }}>
-                            <ActionIcon fontSize="small">delete</ActionIcon>
-                            Delete
-                        </Button>
-                    </ActionContainer>
-                </>
-            )}
-        </WorkspaceToolbar>
+                {selectedCount > 0 && (
+                    <>
+                        <Title>{selectedCount} selected</Title>
+                        <ActionContainer>
+                            <Button size="small" color="inherit" sx={{ mr: 2 }}>
+                                <ActionIcon fontSize="small">
+                                    toggle_off
+                                </ActionIcon>
+                                Disable
+                            </Button>
+                            <Button size="small" color="inherit" sx={{ mr: 2 }}>
+                                <ActionIcon fontSize="small">
+                                    toggle_on
+                                </ActionIcon>
+                                Enable
+                            </Button>
+                            <Button size="small" color="inherit" sx={{ mr: 2 }}>
+                                <ActionIcon fontSize="small">delete</ActionIcon>
+                                Delete
+                            </Button>
+                        </ActionContainer>
+                    </>
+                )}
+            </WorkspaceToolbar>
+        </AppBar>
     );
 };
 
