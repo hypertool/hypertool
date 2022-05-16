@@ -6,12 +6,11 @@ import { CSSObject, Theme, styled } from "@mui/material/styles";
 
 import { useNavigate } from "react-router";
 
+import { Authentication } from "../panels/authentication";
 import { Explorer } from "../panels/explorer";
 
 import Components from "./Components";
-import Deployment from "./Deployment";
 import LeftDrawerItem from "./LeftDrawerItem";
-import Teams from "./Teams";
 
 const drawerWidth = 304;
 const navigationWidth = 56;
@@ -98,7 +97,7 @@ interface Group {
 
 const groups: Group[] = [
     {
-        title: "General",
+        title: "Build",
         items: [
             {
                 title: "Explorer",
@@ -109,6 +108,11 @@ const groups: Group[] = [
                 title: "Components",
                 id: "components",
                 icon: "bubble_chart",
+            },
+            {
+                title: "Authentication",
+                id: "authentication",
+                icon: "security",
             },
         ],
     },
@@ -189,8 +193,7 @@ const LeftDrawer: FunctionComponent<Props> = (props: Props): ReactElement => {
                     <NavigationContainer>
                         {active === "explorer" && <Explorer />}
                         {active === "components" && <Components />}
-                        {active === "teams" && <Teams />}
-                        {active === "deployment" && <Deployment />}
+                        {active === "authentication" && <Authentication />}
                     </NavigationContainer>
                 )}
             </Root>
