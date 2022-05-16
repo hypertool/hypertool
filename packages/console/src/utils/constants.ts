@@ -7,6 +7,10 @@ export const tabTypes = [
     "edit-screen",
     "new-resource",
     "edit-resource",
+    "authentication.view-users",
+    "authentication.new-user",
+    "authentication.view-providers",
+    "authentication.new-provider",
 ];
 
 export const controllerLanguages = ["javascript", "typescript"];
