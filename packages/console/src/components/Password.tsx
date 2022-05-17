@@ -32,7 +32,7 @@ const Password: FunctionComponent<IPasswordProps> = (
     const error = (formik.touched as any)[name] && (formik.errors as any)[name];
 
     return (
-        <FormControl size="small">
+        <FormControl size="small" style={{ minWidth: 400 }}>
             <InputLabel htmlFor="password">Password</InputLabel>
             <OutlinedInput
                 id="password"
