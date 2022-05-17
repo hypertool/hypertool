@@ -89,6 +89,7 @@ export interface IStepperProps<T> {
     isStepComplete: (step: number, context: any) => boolean;
     initialValues: any;
     validationSchema: any;
+    finalActionText: string;
 }
 
 const Stepper: FunctionComponent<IStepperProps<any>> = <T,>(
@@ -102,6 +103,7 @@ const Stepper: FunctionComponent<IStepperProps<any>> = <T,>(
         validationSchema,
         onComplete,
         isStepComplete,
+        finalActionText,
     } = props;
     const [activeStep, setActiveStep] = useState(0);
     const mounted = useMounted();
@@ -217,7 +219,7 @@ const Stepper: FunctionComponent<IStepperProps<any>> = <T,>(
                                         size="small"
                                         disabled={processing}
                                     >
-                                        Create App
+                                        {finalActionText}
                                         {!processing && (
                                             <Icon
                                                 fontSize="small"

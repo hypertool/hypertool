@@ -192,6 +192,7 @@ const NewApp: FunctionComponent = (): ReactElement => {
                 isStepComplete={isStepComplete}
                 validationSchema={validationSchema}
                 initialValues={initialValues}
+                finalActionText="Create App"
             />
         </Container>
     );
