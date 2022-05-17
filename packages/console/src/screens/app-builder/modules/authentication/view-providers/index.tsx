@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 
 import { styled } from "@mui/material/styles";
 
+import { NoRecords } from "../../../../../components";
 import { useBuilderActions, useUpdateTabTitle } from "../../../../../hooks";
 import { IProviderConfiguration } from "../../../../../types";
 
@@ -14,20 +15,22 @@ const ProvidersContainer = styled("div")(({ theme }) => ({
 }));
 
 const configurations: IProviderConfiguration[] = [
-    {
-        id: "627a94ced14773e913227a34",
-        type: "email_password",
-        status: "enabled",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    },
-    {
-        id: "627a94ced14773e913227a28",
-        type: "anonymous",
-        status: "disabled",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    },
+    /*
+     * {
+     *     id: "627a94ced14773e913227a34",
+     *     type: "email_password",
+     *     status: "enabled",
+     *     createdAt: new Date(),
+     *     updatedAt: new Date(),
+     * },
+     * {
+     *     id: "627a94ced14773e913227a28",
+     *     type: "anonymous",
+     *     status: "disabled",
+     *     createdAt: new Date(),
+     *     updatedAt: new Date(),
+     * },
+     */
 ];
 
 const ViewProviders: FunctionComponent = (): ReactElement => {
@@ -50,13 +53,24 @@ const ViewProviders: FunctionComponent = (): ReactElement => {
                 selectedCount={selected.length}
                 onNew={handleNew}
             />
-            <ProvidersContainer>
-                <ProvidersTable
-                    configurations={configurations}
-                    selected={selected}
-                    onSelect={handleSelect}
+            {configurations.length > 0 && (
+                <ProvidersContainer>
+                    <ProvidersTable
+                        configurations={configurations}
+                        selected={selected}
+                        onSelect={handleSelect}
+                    />
+                </ProvidersContainer>
+            )}
+            {configurations.length === 0 && (
+                <NoRecords
+                    message="We tried our best, but couldn't find any authentication providers."
+                    image="https://res.cloudinary.com/hypertool/image/upload/v1649822115/hypertool-assets/empty-organizations_qajazk.svg"
+                    actionText="Create New Provider"
+                    actionIcon="add_circle_outline"
+                    onAction={handleNew}
                 />
-            </ProvidersContainer>
+            )}
         </div>
     );
 };
