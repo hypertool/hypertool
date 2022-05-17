@@ -14,8 +14,11 @@ import {
     TableCell,
     TableContainer,
     TableRow,
+    Typography,
     styled,
 } from "@mui/material";
+
+import { DateTime } from "luxon";
 
 import { IProviderConfiguration } from "../../../../../types";
 
@@ -26,6 +29,10 @@ const Status = styled("div")(({ theme }) => ({
     flexDirection: "row",
     alignItems: "center",
     gap: theme.spacing(1),
+}));
+
+const DateTimeText = styled(Typography)(({ theme }) => ({
+    fontSize: 14,
 }));
 
 export interface IProvidersTableProps {
@@ -97,6 +104,12 @@ const ProvidersTable: FunctionComponent<IProvidersTableProps> = (
         );
     };
 
+    const renderDate = (date: Date) => (
+        <DateTimeText>
+            {DateTime.fromJSDate(date).toLocaleString(DateTime.DATETIME_SHORT)}
+        </DateTimeText>
+    );
+
     return (
         <Paper>
             <TableContainer>
@@ -140,6 +153,9 @@ const ProvidersTable: FunctionComponent<IProvidersTableProps> = (
                                     </TableCell>
                                     <TableCell>
                                         {renderStatus(row.status)}
+                                    </TableCell>
+                                    <TableCell>
+                                        {renderDate(row.createdAt)}
                                     </TableCell>
                                 </TableRow>
                             );

@@ -22,6 +22,12 @@ const headCells: readonly HeadCell[] = [
         disablePadding: false,
         label: "Status",
     },
+    {
+        id: "createdAt",
+        numeric: false,
+        disablePadding: false,
+        label: "Created At",
+    },
 ];
 
 export interface IProvidersTableHeadProps {

@@ -1,7 +1,6 @@
 import type { FunctionComponent, ReactElement } from "react";
 import { useCallback, useState } from "react";
 
-import { AppBar, Button, Icon, Toolbar, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useUpdateTabTitle } from "../../../../../hooks";
@@ -19,11 +18,15 @@ const configurations: IProviderConfiguration[] = [
         id: "627a94ced14773e913227a34",
         type: "email_password",
         status: "enabled",
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
     {
         id: "627a94ced14773e913227a28",
         type: "anonymous",
         status: "disabled",
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
 ];
 

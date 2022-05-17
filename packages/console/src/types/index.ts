@@ -268,4 +268,6 @@ export interface IProviderConfiguration {
     id: string;
     type: TProviderType;
     status: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
