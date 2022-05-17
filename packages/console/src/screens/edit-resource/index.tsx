@@ -18,7 +18,8 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { Formik } from "formik";
 
 import { BuilderActionsContext, TabContext } from "../../contexts";
-import { useNotification } from "../../hooks";
+import { useNotification, useTabBundle } from "../../hooks";
+import { IEditResourceBundle } from "../../types";
 import BigQueryForm from "../new-resource/BigQueryForm";
 import MongoDBForm from "../new-resource/MongoDBForm";
 import MySQLForm from "../new-resource/MySQLForm";
@@ -160,14 +161,10 @@ const resourceFormByType: ResourceFormByType = {
     bigquery: BigQueryForm,
 };
 
-export interface Props {
-    resourceId: string;
-}
-
-const EditResource: FunctionComponent<Props> = (props: Props): ReactElement => {
-    const { resourceId } = props;
+const EditResource: FunctionComponent = (): ReactElement => {
     const { setTabTitle } = useContext(BuilderActionsContext);
     const { index } = useContext(TabContext) || { index: -1 };
+    const { resourceId } = useTabBundle<IEditResourceBundle>();
     const notification = useNotification();
 
     // TODO: Destructure `error`, check for non-null, send to sentry
