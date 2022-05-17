@@ -7,6 +7,7 @@ import { constants } from "../utils";
 export type ResourceType = typeof constants.resourceTypes[number];
 
 export type ResourceStatus = typeof constants.resourceStatuses[number];
+
 export interface AuthenticationServicesType {
     id: number;
     name: string;
