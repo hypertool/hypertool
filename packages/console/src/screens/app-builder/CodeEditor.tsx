@@ -9,7 +9,12 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Editor from "@monaco-editor/react";
 
-import { useNotification, useTabBundle, useUpdateTabTitle } from "../../hooks";
+import {
+    useNotification,
+    useTab,
+    useTabBundle,
+    useUpdateTabTitle,
+} from "../../hooks";
 import { IEditControllerBundle } from "../../types";
 
 const Root = styled("section")(({ theme }) => ({
@@ -29,10 +34,6 @@ const Right = styled("div")(({ theme }) => ({
     flexDirection: "column",
     justifyContent: "flex-start",
 }));
-
-export interface IProps {
-    path: string;
-}
 
 const GET_CONTROLLER = gql`
     query GetController($controllerId: ID!) {
@@ -56,8 +57,9 @@ const UPDATE_CONTROLLER = gql`
     }
 `;
 
-const CodeEditor: FunctionComponent<IProps> = (props: IProps): ReactElement => {
-    const { path } = props;
+const CodeEditor: FunctionComponent = (): ReactElement => {
+    const { tab } = useTab();
+    const path = tab.id;
 
     const notification = useNotification();
     const [editorRef, setEditorRef] = useState<
