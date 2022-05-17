@@ -39,6 +39,7 @@ import CodeEditor from "./CodeEditor";
 import { RenderNode } from "./RenderNode";
 import {
     NewProviderEditor,
+    NewUserEditor,
     ViewProviders,
     ViewUsers,
 } from "./modules/authentication";
@@ -113,6 +114,11 @@ const tabDetailsByType: Record<string, ITabTypeDetails> = {
         icon: "category",
         title: "Edit Resource",
         component: ResourceEditor,
+    },
+    "authentication.new-user": {
+        icon: "people",
+        title: "New User",
+        component: NewUserEditor,
     },
     "authentication.view-users": {
         icon: "people",
