@@ -37,8 +37,11 @@ import NewScreenEditor from "../new-screen";
 import CanvasEditor from "./CanvasEditor";
 import CodeEditor from "./CodeEditor";
 import { RenderNode } from "./RenderNode";
-import ViewAuthenticationProviders from "./modules/authentication/view-providers";
-import ViewAuthenticationUsers from "./modules/authentication/view-users";
+import {
+    NewProviderEditor,
+    ViewProviders,
+    ViewUsers,
+} from "./modules/authentication";
 import { AppBar, LeftDrawer, RightDrawer } from "./navigation";
 
 const Root = styled("div")(({ theme }) => ({
@@ -64,51 +67,67 @@ const Content = styled("section")(({ theme }) => ({
     padding: theme.spacing(0),
 }));
 
-interface TabTypeDetails {
+interface ITabTypeDetails {
     icon: string;
     title: string;
+    component: FunctionComponent;
 }
 
-const tabDetailsByType: Record<string, TabTypeDetails> = {
+const tabDetailsByType: Record<string, ITabTypeDetails> = {
     "new-query": {
         icon: "workspaces",
         title: "New Query",
+        component: NewQueryEditor,
     },
     "edit-query": {
         icon: "workspaces",
         title: "Edit Query",
+        component: QueryEditor,
     },
     "new-controller": {
         icon: "code",
         title: "New Controller",
+        component: NewControllerEditor,
     },
     "edit-controller": {
         icon: "code",
         title: "Edit Controller",
+        component: CodeEditor,
     },
     "new-screen": {
         icon: "wysiwyg",
         title: "New Screen",
+        component: NewScreenEditor,
     },
     "edit-screen": {
         icon: "wysiwyg",
         title: "Edit Screen",
+        component: CanvasEditor,
     },
     "new-resource": {
         icon: "category",
         title: "New Resource",
+        component: NewResourceEditor,
     },
     "edit-resource": {
         icon: "category",
         title: "Edit Resource",
+        component: ResourceEditor,
     },
     "authentication.view-users": {
         icon: "people",
         title: "Users",
+        component: ViewUsers,
+    },
+    "authentication.new-provider": {
+        icon: "password",
+        title: "New Provider",
+        component: NewProviderEditor,
     },
     "authentication.view-providers": {
         icon: "password",
         title: "Providers",
+        component: ViewProviders,
     },
 };
 
@@ -361,6 +380,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     const renderTabContent = (tab: ITab, index: number) => {
         const { id, type } = tab;
         const active = id === activeTab;
+        const Component = tabDetailsByType[type].component;
         return (
             <div
                 key={tab.id}
@@ -371,28 +391,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 }}
             >
                 <TabContext.Provider value={{ tab, index, active }}>
-                    {type === "new-controller" && <NewControllerEditor />}
-                    {type === "edit-controller" && (
-                        <CodeEditor path={activeTab as string} />
-                    )}
-                    {type === "new-screen" && <NewScreenEditor />}
-                    {type === "edit-screen" && <CanvasEditor />}
-                    {type === "new-resource" && <NewResourceEditor />}
-                    {type === "edit-resource" && (
-                        <ResourceEditor
-                            resourceId={
-                                (tab.bundle as IEditResourceBundle).resourceId
-                            }
-                        />
-                    )}
-                    {type === "edit-query" && <QueryEditor />}
-                    {type === "new-query" && <NewQueryEditor />}
-                    {type === "authentication.view-users" && (
-                        <ViewAuthenticationUsers />
-                    )}
-                    {type === "authentication.view-providers" && (
-                        <ViewAuthenticationProviders />
-                    )}
+                    <Component />
                 </TabContext.Provider>
             </div>
         );
