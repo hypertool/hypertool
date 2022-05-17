@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 
 import { styled } from "@mui/material/styles";
 
-import { useUpdateTabTitle } from "../../../../../hooks";
+import { useBuilderActions, useUpdateTabTitle } from "../../../../../hooks";
 import { IProviderConfiguration } from "../../../../../types";
 
 import ProvidersTable from "./ProvidersTable";
@@ -32,6 +32,7 @@ const configurations: IProviderConfiguration[] = [
 
 const ViewProviders: FunctionComponent = (): ReactElement => {
     useUpdateTabTitle("View Providers");
+    const { createTab } = useBuilderActions();
 
     const [selected, setSelected] = useState<string[]>([]);
 
@@ -39,9 +40,16 @@ const ViewProviders: FunctionComponent = (): ReactElement => {
         setSelected(newSelected);
     }, []);
 
+    const handleNew = useCallback(() => {
+        createTab("authentication.new-provider");
+    }, [createTab]);
+
     return (
         <div>
-            <ProvidersToolbar selectedCount={selected.length} />
+            <ProvidersToolbar
+                selectedCount={selected.length}
+                onNew={handleNew}
+            />
             <ProvidersContainer>
                 <ProvidersTable
                     configurations={configurations}

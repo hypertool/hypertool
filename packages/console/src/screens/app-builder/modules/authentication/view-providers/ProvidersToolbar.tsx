@@ -44,12 +44,13 @@ const ActionIcon = styled(Icon)(({ theme }) => ({
 
 export interface IProvidersToolbarProps {
     selectedCount: number;
+    onNew: () => void;
 }
 
 const ProvidersToolbar: FunctionComponent<IProvidersToolbarProps> = (
     props: IProvidersToolbarProps,
 ): ReactElement => {
-    const { selectedCount } = props;
+    const { selectedCount, onNew } = props;
 
     return (
         <AppBar position="static" elevation={1}>
@@ -64,7 +65,11 @@ const ProvidersToolbar: FunctionComponent<IProvidersToolbarProps> = (
                                 </ActionIcon>
                                 Refresh
                             </Button>
-                            <Button size="small" color="inherit">
+                            <Button
+                                size="small"
+                                color="inherit"
+                                onClick={onNew}
+                            >
                                 <ActionIcon fontSize="small">
                                     add_circle
                                 </ActionIcon>

@@ -72,7 +72,7 @@ const ProvidersTable: FunctionComponent<IProvidersTableProps> = (
         );
     };
 
-    const handleClick = (event: MouseEvent<unknown>, name: string) => {
+    const handleSelect = (event: MouseEvent<unknown>, name: string) => {
         const selectedIndex = selected.indexOf(name);
         let newSelected: string[] = [];
 
@@ -130,7 +130,7 @@ const ProvidersTable: FunctionComponent<IProvidersTableProps> = (
                                 <TableRow
                                     hover={true}
                                     onClick={(event) =>
-                                        handleClick(event, row.id)
+                                        handleSelect(event, row.id)
                                     }
                                     role="checkbox"
                                     tabIndex={-1}
