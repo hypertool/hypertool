@@ -31,6 +31,7 @@ const createSchema = joi.object({
     firstName: joi.string().min(1).max(256).required(),
     lastName: joi.string().min(1).max(256).required(),
     description: joi.string().max(512).allow(""),
+    app: joi.string().regex(constants.identifierPattern).required(),
     organizations: joi
         .array()
         .items(joi.string().regex(constants.identifierPattern)),

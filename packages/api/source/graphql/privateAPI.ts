@@ -46,12 +46,12 @@ const typeDefs = gql`
             firstName: String!
             lastName: String!
             description: String
-            organizations: [ID]
             gender: Gender
             countryCode: Country
             pictureURL: String
             emailAddress: String!
             birthday: Date
+            app: ID!
         ): User!
 
         updateUser(
