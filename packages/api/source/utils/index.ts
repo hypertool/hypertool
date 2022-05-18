@@ -7,3 +7,4 @@ export * from "./query-execution-error";
 export * from "./authorization";
 export * from "./data-access";
 export * from "./patches";
+export * from "./misc";
