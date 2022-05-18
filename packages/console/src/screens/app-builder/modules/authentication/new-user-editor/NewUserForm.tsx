@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import { gql, useMutation } from "@apollo/client";
+
 import * as yup from "yup";
 import { Formik } from "formik";
 
@@ -127,7 +129,29 @@ const validationSchema = yup.object({
         .required("Password is required"),
 });
 
+const CREATE_USER = gql`
+    mutation CreateUser(
+        $firstName: String!
+        $lastName: String!
+        $emailAddress: String!
+        $app: ID!
+    ) {
+        createUser(
+            firstName: $firstName
+            lastName: $lastName
+            emailAddress: $emailAddress
+            app: $app
+        ) {
+            id
+        }
+    }
+`;
+
 const NewUserForm: FunctionComponent = (): ReactElement => {
+    const [createUser, { loading: creatingController }] = useMutation(
+        CREATE_USER,
+        { refetchQueries: ["GetUsers"] },
+    );
     const notification = useNotification();
 
     const { replaceTab } = useBuilderActions();
@@ -154,6 +178,13 @@ const NewUserForm: FunctionComponent = (): ReactElement => {
                     message: `Creating user "${values.emailAddress}"...`,
                     closeable: false,
                     autoCloseDuration: -1,
+                });
+
+                await createUser({
+                    variables: {
+                        ...values,
+                        app: appId,
+                    },
                 });
 
                 notification.notifySuccess(
