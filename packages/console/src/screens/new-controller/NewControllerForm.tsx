@@ -154,10 +154,10 @@ const validationSchema = yup.object({
 
 const NewControllerForm: FunctionComponent = (): ReactElement => {
     // TODO: Destructure `error`, check for non-null, send to Sentry
-    const [
-        createController,
-        { loading: creatingController, data: newController },
-    ] = useMutation(CREATE_CONTROLLER, { refetchQueries: ["GetControllers"] });
+    const [createController, { loading: creatingController }] = useMutation(
+        CREATE_CONTROLLER,
+        { refetchQueries: ["GetControllers"] },
+    );
     const notification = useNotification();
 
     const { replaceTab } = useBuilderActions();
@@ -306,14 +306,8 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
                                     disabled={false}
                                 >
                                     Create Controller
-                                    {!creatingController && !newController && (
+                                    {!creatingController && (
                                         <CheckCircleOutline
-                                            fontSize="small"
-                                            sx={{ ml: 1 }}
-                                        />
-                                    )}
-                                    {!creatingController && newController && (
-                                        <CheckCircle
                                             fontSize="small"
                                             sx={{ ml: 1 }}
                                         />
