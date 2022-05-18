@@ -26,24 +26,6 @@ const userSchema = new Schema(
             maxlength: 512,
             default: "",
         },
-        organizations: {
-            type: [
-                {
-                    type: Schema.Types.ObjectId,
-                    ref: "Organization",
-                },
-            ],
-            default: [],
-        },
-        apps: {
-            type: [
-                {
-                    type: Schema.Types.ObjectId,
-                    ref: "App",
-                },
-            ],
-            default: [],
-        },
         gender: {
             type: String,
             enum: genders,
@@ -82,6 +64,28 @@ const userSchema = new Schema(
             type: String,
             enum: userStatuses,
             default: "active",
+        },
+        app: {
+            type: Schema.Types.ObjectId,
+            ref: "App",
+        },
+        organizations: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "Organization",
+                },
+            ],
+            default: [],
+        },
+        apps: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "App",
+                },
+            ],
+            default: [],
         },
     },
     {

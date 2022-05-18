@@ -61,8 +61,6 @@ export interface IUser {
     firstName: string;
     lastName: string;
     description: string;
-    organizations: string[] | IOrganization[];
-    apps: string[] | IApp[];
     gender: typeof genders[number];
     countryCode: typeof countryCodes[number];
     pictureURL: string;
@@ -71,6 +69,9 @@ export interface IUser {
     emailVerified: boolean;
     birthday: Date;
     status: typeof userStatuses[number];
+    app: ObjectId | IApp;
+    organizations: string[] | IOrganization[];
+    apps: string[] | IApp[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -80,8 +81,6 @@ export interface IExternalUser {
     firstName: string;
     lastName: string;
     description: string;
-    organizations: string[];
-    apps: string[];
     gender: typeof genders[number];
     countryCode: typeof countryCodes[number];
     pictureURL: string;
@@ -89,6 +88,9 @@ export interface IExternalUser {
     emailVerified: boolean;
     birthday: Date;
     status: typeof userStatuses[number];
+    app: string;
+    organizations: string[];
+    apps: string[];
     createdAt: Date;
     updatedAt: Date;
 }
