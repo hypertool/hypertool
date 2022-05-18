@@ -50,6 +50,10 @@ const appSchema = new Schema(
             maxlength: 512,
             default: "",
         },
+        root: {
+            type: Boolean,
+            default: false,
+        },
         resources: {
             type: [
                 {

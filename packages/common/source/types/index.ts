@@ -149,6 +149,7 @@ export interface IApp {
     name: string;
     title: string;
     description: string;
+    root: boolean;
     resources: ObjectId[] | IResource[];
     queryTemplates: ObjectId[] | IQueryTemplate[];
     deployments: ObjectId[] | Deployment[];
@@ -167,6 +168,7 @@ export interface IExternalApp {
     title: string;
     description: string;
     resources: string[];
+    root: boolean;
     queryTemplates: string[];
     deployments: string[];
     screens: string[];
