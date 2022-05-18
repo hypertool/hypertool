@@ -71,6 +71,7 @@ const toExternal = (app: IApp): IExternalApp => {
         name,
         title,
         description,
+        root,
         resources,
         queryTemplates,
         deployments,
@@ -88,6 +89,7 @@ const toExternal = (app: IApp): IExternalApp => {
         name,
         title,
         description,
+        root,
         resources: resources.map((resource) => resource.toString()),
         queryTemplates: queryTemplates.map((queryTemplate) =>
             queryTemplate.toString(),
