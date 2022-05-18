@@ -14,7 +14,13 @@ import joi from "joi";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
-import { createToken, hashPassword, renderTemplate, sendEmail } from "../utils";
+import {
+    createToken,
+    hashPassword,
+    renderTemplate,
+    sendEmail,
+    sendVerificationEmail,
+} from "../utils";
 
 const createSchema = joi.object({
     firstName: joi.string().min(1).max(256).required(),
@@ -56,19 +62,26 @@ const updateSchema = joi.object({
     birthday: joi.date().allow(null),
 });
 
-const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,128}$/;
-
 const signUpWithEmailSchema = joi.object({
     firstName: joi.string().min(1).max(256).required(),
     lastName: joi.string().min(1).max(256).required(),
     emailAddress: joi.string().max(256).required(),
-    password: joi.string().regex(passwordRegex).min(8).max(128).required(),
+    password: joi
+        .string()
+        .regex(constants.passwordRegex)
+        .min(8)
+        .max(128)
+        .required(),
 });
 
 const loginWithEmailSchema = joi.object({
     emailAddress: joi.string().max(256).required(),
-    password: joi.string().regex(passwordRegex).min(8).max(128).required(),
+    password: joi
+        .string()
+        .regex(constants.passwordRegex)
+        .min(8)
+        .max(128)
+        .required(),
 });
 
 const requestPasswordResetSchema = joi.object({
@@ -78,12 +91,27 @@ const requestPasswordResetSchema = joi.object({
 
 const completePasswordResetSchema = joi.object({
     token: joi.string().max(256).required(),
-    newPassword: joi.string().regex(passwordRegex).min(8).max(128).required(),
+    newPassword: joi
+        .string()
+        .regex(constants.passwordRegex)
+        .min(8)
+        .max(128)
+        .required(),
 });
 
 const updatePasswordSchema = joi.object({
-    oldPassword: joi.string().regex(passwordRegex).min(8).max(128).required(),
-    newPassword: joi.string().regex(passwordRegex).min(8).max(128).required(),
+    oldPassword: joi
+        .string()
+        .regex(constants.passwordRegex)
+        .min(8)
+        .max(128)
+        .required(),
+    newPassword: joi
+        .string()
+        .regex(constants.passwordRegex)
+        .min(8)
+        .max(128)
+        .required(),
 });
 
 const toExternal = (user: any): IExternalUser => {
@@ -370,15 +398,15 @@ const signupWithEmail = async (
 
     const { firstName, lastName, emailAddress, password } = value;
 
-    let user = await UserModel.findOne({ emailAddress }).exec();
-    if (user) {
+    const existingUser = await UserModel.findOne({ emailAddress }).exec();
+    if (existingUser) {
         throw new BadRequestError(
             "A user with the specified email address already exists.",
         );
     }
 
     const hashedPassword = await hashPassword(password);
-    user = new UserModel({
+    const user = new UserModel({
         firstName,
         lastName,
         password: hashedPassword,
@@ -392,18 +420,7 @@ const signupWithEmail = async (
     });
     await user.save();
 
-    const token = createToken({ emailAddress }, "7d");
-    const verificationURL = `http://localhost:3001/api/v1/users/verify/${token}`;
-    const params = {
-        from: { name: "Hypertool", email: "noreply@hypertool.io" },
-        to: emailAddress,
-        subject: "Verify your Hypertool email address",
-        text: `Open the following link to validate your email address: ${verificationURL}`,
-        html: await renderTemplate("verify-email.html", {
-            verificationURL,
-        }),
-    };
-    await sendEmail(params);
+    await sendVerificationEmail(emailAddress);
 
     return toExternal(user);
 };
