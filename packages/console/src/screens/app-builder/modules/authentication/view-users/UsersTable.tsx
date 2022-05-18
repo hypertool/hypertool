@@ -49,13 +49,21 @@ const detailsByType: Record<string, any> = {
 };
 
 const detailsByStatus: Record<string, any> = {
-    enabled: {
-        title: "Enabled",
+    invited: {
+        title: "Invited",
+        icon: "send",
+    },
+    cancelled: {
+        title: "Cancelled",
+        icon: "cancel_circle_outline",
+    },
+    activated: {
+        title: "Activated",
         icon: "check_circle_outline",
     },
-    disabled: {
-        title: "Disabled",
-        icon: "cancel_circle_outline",
+    deleted: {
+        title: "Deleted",
+        icon: "delete",
     },
 };
 
@@ -102,9 +110,9 @@ const UsersTable: FunctionComponent<IUsersTableProps> = (
         );
     };
 
-    const renderDate = (date: Date) => (
+    const renderDate = (date: string) => (
         <DateTimeText>
-            {DateTime.fromJSDate(date).toLocaleString(DateTime.DATETIME_SHORT)}
+            {DateTime.fromISO(date).toLocaleString(DateTime.DATETIME_SHORT)}
         </DateTimeText>
     );
 
@@ -139,18 +147,19 @@ const UsersTable: FunctionComponent<IUsersTableProps> = (
                                             checked={isItemSelected}
                                         />
                                     </TableCell>
-                                    <TableCell
-                                        component="th"
-                                        id={labelId}
-                                        scope="row"
-                                        padding="none"
-                                    >
-                                        {detailsByType[row.type].title}
+                                    <TableCell component="th" scope="row">
+                                        {row.id}
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell component="th" scope="row">
+                                        {row.firstName} {row.lastName}
+                                    </TableCell>
+                                    <TableCell component="th" scope="row">
+                                        {row.emailAddress}
+                                    </TableCell>
+                                    <TableCell component="th" scope="row">
                                         {renderStatus(row.status)}
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell component="th" scope="row">
                                         {renderDate(row.createdAt)}
                                     </TableCell>
                                 </TableRow>
