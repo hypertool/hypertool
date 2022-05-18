@@ -11,10 +11,22 @@ interface HeadCell {
 
 const headCells: HeadCell[] = [
     {
-        id: "user",
+        id: "identifier",
         numeric: false,
-        disablePadding: true,
-        label: "User",
+        disablePadding: false,
+        label: "Identifier",
+    },
+    {
+        id: "Name",
+        numeric: false,
+        disablePadding: false,
+        label: "Name",
+    },
+    {
+        id: "emailAddress",
+        numeric: false,
+        disablePadding: false,
+        label: "Email Address",
     },
     {
         id: "status",
