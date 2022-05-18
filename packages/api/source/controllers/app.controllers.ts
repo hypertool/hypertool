@@ -26,7 +26,13 @@ import { createTwoFilesPatch } from "diff";
 import joi from "joi";
 import { Types } from "mongoose";
 
-import { checkAccessToApps, patchAll } from "../utils";
+import {
+    checkAccessToApps,
+    hashPassword,
+    patchAll,
+    sendVerificationEmail,
+    validateAttributes,
+} from "../utils";
 
 const createSchema = joi.object({
     name: joi.string().regex(constants.namePattern).required(),
@@ -347,7 +353,7 @@ const duplicateEntities = async (
     return app;
 };
 
-const create = async (context, attributes): Promise<IExternalApp> => {
+export const create = async (context, attributes): Promise<IExternalApp> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -358,6 +364,94 @@ const create = async (context, attributes): Promise<IExternalApp> => {
     const newApp = await runAsTransaction(
         async () => await createBaseApp(context.user._id, value),
     );
+
+    return toExternal(newApp);
+};
+
+const installSchema = joi.object({
+    name: joi.string().regex(constants.namePattern).required(),
+    title: joi.string().max(256).required(),
+    description: joi.string().max(512).allow("").default(""),
+    firstName: joi.string().min(1).max(256).required(),
+    lastName: joi.string().min(1).max(256).required(),
+    emailAddress: joi.string().max(256).required(),
+    password: joi
+        .string()
+        .regex(constants.passwordRegex)
+        .min(8)
+        .max(128)
+        .required(),
+});
+
+export const install = async (
+    context: any,
+    attributes: any,
+): Promise<IExternalApp> => {
+    const value = validateAttributes(createSchema, attributes);
+
+    const [appCount, userCount] = await Promise.all([
+        AppModel.count().exec(),
+        UserModel.count().exec(),
+    ]);
+    if (appCount > 0) {
+        throw new BadRequestError(
+            "Cannot create root app when other apps exist in the database.",
+        );
+    }
+    if (userCount > 0) {
+        throw new BadRequestError(
+            "Cannot create root user when other users exist in the database.",
+        );
+    }
+
+    const newApp = await runAsTransaction(async () => {
+        const newUserId = new Types.ObjectId();
+        const newAppId = new Types.ObjectId();
+
+        const { firstName, lastName, emailAddress, password } = value;
+        const hashedPassword = await hashPassword(password);
+        const newUser = new UserModel({
+            firstName,
+            lastName,
+            description: "",
+            password: hashedPassword,
+            gender: undefined,
+            countryCode: undefined,
+            pictureURL: undefined,
+            emailAddress,
+            emailVerified: false,
+            birthday: null,
+            status: "activated",
+            app: newAppId,
+            organizations: [],
+            apps: [],
+        });
+
+        const { name, title, description } = value;
+        const newApp = new AppModel({
+            name,
+            title,
+            description,
+            root: true,
+            resources: [],
+            queryTemplates: [],
+            deployments: [],
+            screens: [],
+            controllers: [],
+            creator: newUserId,
+            organization: undefined,
+            status: "private",
+            authServices: undefined,
+        });
+
+        await Promise.all([
+            newUser.save(),
+            sendVerificationEmail(emailAddress),
+            newApp.save(),
+        ]);
+
+        return newApp;
+    });
 
     return toExternal(newApp);
 };
@@ -677,7 +771,6 @@ const remove = async (
 };
 
 export {
-    create,
     list,
     listByIds,
     getById,
