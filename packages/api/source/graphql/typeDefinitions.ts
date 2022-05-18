@@ -50,6 +50,7 @@ const types = `
         firstName: String!
         lastName: String!
         description: String!
+        app: App!
         # Organizations points to User directly, making each other mutually recursive.
         # Therefore, we flatten the data structure here.
         organizations: [Organization!]!
@@ -251,6 +252,7 @@ const types = `
         name: String!
         title: String!
         description: String!
+        root: Boolean!
         resources: [Resource!]!
         screens: [Screen!]!
         controllers: [Controller!]!

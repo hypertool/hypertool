@@ -541,6 +541,8 @@ const resolvers = {
          */
     },
     User: {
+        app: async (parent, values, context) =>
+            apps.getById(context.request, parent.app),
         organizations: async (parent, values, context) =>
             organizations.listByIds(context.request, parent.organizations),
         apps: async (parent, values, context) =>
