@@ -39,12 +39,12 @@ const userSchema = new Schema(
             trim: true,
             default: null,
         },
+        /* The email address should be unique only within an app, not Hypertool. */
         emailAddress: {
             type: String,
             maxlength: 255,
             required: true,
             trim: true,
-            unique: true,
         },
         password: {
             type: String,
