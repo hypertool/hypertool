@@ -1,11 +1,17 @@
 import type { FunctionComponent, ReactElement } from "react";
 import { useCallback, useState } from "react";
 
+import { CircularProgress } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import { gql, useQuery } from "@apollo/client";
+
 import { NoRecords } from "../../../../../components";
-import { useBuilderActions, useUpdateTabTitle } from "../../../../../hooks";
-import { IUser } from "../../../../../types";
+import {
+    useBuilderActions,
+    useParam,
+    useUpdateTabTitle,
+} from "../../../../../hooks";
 
 import UsersTable from "./UsersTable";
 import UsersToolbar from "./UsersToolbar";
@@ -14,23 +20,44 @@ const UsersContainer = styled("div")(({ theme }) => ({
     padding: theme.spacing(2),
 }));
 
-const users: IUser[] = [
-    /*
-     * {
-     *     id: "627a94ced14773e913227a34",
-     *     firstName: "Samuel",
-     *     lastName: "Rowe",
-     *     emailAddress: "samuel@hypertool.io",
-     *     status: "enabled",
-     *     createdAt: new Date(),
-     *     updatedAt: new Date(),
-     * },
-     */
-];
+const ProgressContainer = styled("div")(({ theme }) => ({
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "calc(100vh - 104px)",
+}));
+
+const GET_USERS = gql`
+    query GetUsers($app: ID!, $page: Int, $limit: Int) {
+        getUsers(app: $app, page: $page, limit: $limit) {
+            totalPages
+            records {
+                id
+                firstName
+                lastName
+                emailAddress
+                status
+                createdAt
+                updatedAt
+            }
+        }
+    }
+`;
 
 const ViewUsers: FunctionComponent = (): ReactElement => {
     useUpdateTabTitle("View Users");
     const { createTab } = useBuilderActions();
+    const appId = useParam("appId");
+
+    const { data, loading } = useQuery(GET_USERS, {
+        variables: {
+            app: appId,
+            page: 0,
+            limit: 20,
+        },
+    });
+    const { records: users } = data?.getUsers || { records: [] };
 
     const [selected, setSelected] = useState<string[]>([]);
 
@@ -45,7 +72,7 @@ const ViewUsers: FunctionComponent = (): ReactElement => {
     return (
         <div>
             <UsersToolbar selectedCount={selected.length} onNew={handleNew} />
-            {users.length > 0 && (
+            {!loading && users.length > 0 && (
                 <UsersContainer>
                     <UsersTable
                         configurations={users}
@@ -54,7 +81,7 @@ const ViewUsers: FunctionComponent = (): ReactElement => {
                     />
                 </UsersContainer>
             )}
-            {users.length === 0 && (
+            {!loading && users.length === 0 && (
                 <NoRecords
                     message="We tried our best, but couldn't find any users."
                     image="https://res.cloudinary.com/hypertool/image/upload/v1649822115/hypertool-assets/empty-organizations_qajazk.svg"
@@ -62,6 +89,11 @@ const ViewUsers: FunctionComponent = (): ReactElement => {
                     actionIcon="add_circle_outline"
                     onAction={handleNew}
                 />
+            )}
+            {loading && (
+                <ProgressContainer>
+                    <CircularProgress size="28px" />
+                </ProgressContainer>
             )}
         </div>
     );
