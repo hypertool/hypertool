@@ -43,6 +43,7 @@ const createSchema = joi.object({
 });
 
 const filterSchema = joi.object({
+    app: joi.string().regex(constants.identifierPattern).required(),
     page: joi.number().integer().default(0),
     limit: joi
         .number()
@@ -187,6 +188,7 @@ const list = async (context, parameters): Promise<TUserPage> => {
 
     const users = await (UserModel as any).paginate(
         {
+            app: value.app,
             status: {
                 $ne: "deleted",
             },

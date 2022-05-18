@@ -238,7 +238,7 @@ const typeDefs = gql`
         getOrganizationById(organizationId: ID!): Organization!
         listOrganizationsByIds(organizationIds: [ID!]!): [Organization!]!
 
-        getUsers(page: Int, limit: Int): UserPage!
+        getUsers(app: ID!, page: Int, limit: Int): UserPage!
         getUserById(userId: ID!): User!
 
         getTeams(page: Int, limit: Int): TeamPage!
