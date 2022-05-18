@@ -603,6 +603,29 @@ const getByName = async (context, name: string): Promise<IExternalApp> => {
     return toExternal(app);
 };
 
+export const getRootApp = async (context): Promise<IExternalApp> => {
+    /*
+     * NOTE: The root app cannot be deleted once created. Therefore, we do not
+     * add the status filter.
+     */
+    const app = await AppModel.findOne({
+        root: true,
+    });
+    /*
+     * As of this writing, everyone has public read access to the root app.
+     * Therefore, `checkAccessToApps` is not invoked.
+     */
+
+    /* We return a 404 error, if we did not find the app. */
+    if (!app) {
+        throw new NotFoundError(
+            "The root app is missing, which most likely means Hypertool was not installed correctly. Have you invoked `installHypertool()` yet?",
+        );
+    }
+
+    return toExternal(app);
+};
+
 const update = async (
     context,
     appId: string,
