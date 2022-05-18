@@ -1,4 +1,9 @@
-import type { IExternalUser, Session, TUserPage } from "@hypertool/common";
+import type {
+    IExternalUser,
+    IUser,
+    Session,
+    TUserPage,
+} from "@hypertool/common";
 import {
     AppModel,
     BadRequestError,
@@ -114,13 +119,13 @@ const updatePasswordSchema = joi.object({
         .required(),
 });
 
-const toExternal = (user: any): IExternalUser => {
+const toExternal = (user: IUser): IExternalUser => {
     const {
-        id,
         _id,
         firstName,
         lastName,
         description,
+        app,
         organizations,
         apps,
         gender,
@@ -139,6 +144,7 @@ const toExternal = (user: any): IExternalUser => {
         firstName,
         lastName,
         description,
+        app: app.toString(),
         organizations: organizations.map((organization) =>
             organization.toString(),
         ),
