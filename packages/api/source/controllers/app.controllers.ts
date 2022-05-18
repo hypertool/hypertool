@@ -303,7 +303,6 @@ const duplicateEntities = async (
         const screen0 = screen as IScreen;
         const { name, title, description, slug, content, controller, status } =
             screen0;
-        console.log(controller, controllerMappings);
         newScreens.push({
             _id: new Types.ObjectId(),
             name,
@@ -387,7 +386,7 @@ export const install = async (
     context: any,
     attributes: any,
 ): Promise<IExternalApp> => {
-    const value = validateAttributes(createSchema, attributes);
+    const value = validateAttributes(installSchema, attributes);
 
     const [appCount, userCount] = await Promise.all([
         AppModel.count().exec(),

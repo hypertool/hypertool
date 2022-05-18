@@ -78,6 +78,7 @@ const resolvers = {
             controllers.getById(context.request, parent.controller),
     },
     Query: {
+        /* TODO: Fix critical bug that exposes resource credentials. */
         getAppByName: async (parent, values, context) =>
             apps.getByName(context.request, values.name),
     },
