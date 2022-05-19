@@ -148,10 +148,9 @@ const CREATE_USER = gql`
 `;
 
 const NewUserForm: FunctionComponent = (): ReactElement => {
-    const [createUser, { loading: creatingController }] = useMutation(
-        CREATE_USER,
-        { refetchQueries: ["GetUsers"] },
-    );
+    const [createUser, { loading: creatingUser }] = useMutation(CREATE_USER, {
+        refetchQueries: ["GetUsers"],
+    });
     const notification = useNotification();
 
     const { replaceTab } = useBuilderActions();
@@ -200,8 +199,6 @@ const NewUserForm: FunctionComponent = (): ReactElement => {
         },
         [replaceTab, index, userId, appId, notification],
     );
-
-    const creatingUser = false;
 
     return (
         <Root>
