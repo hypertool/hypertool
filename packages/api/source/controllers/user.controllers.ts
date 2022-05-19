@@ -1,8 +1,9 @@
-import type {
+import {
     IExternalUser,
     IUser,
     Session,
     TUserPage,
+    runAsTransaction,
 } from "@hypertool/common";
 import {
     AppModel,
@@ -20,6 +21,7 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
 import {
+    checkAccessToUsers,
     createToken,
     hashPassword,
     renderTemplate,
@@ -260,6 +262,8 @@ const getById = async (context, userId: string): Promise<IExternalUser> => {
         );
     }
 
+    // TODO: Check access
+
     return toExternal(user);
 };
 
@@ -293,6 +297,8 @@ const update = async (
         .lean()
         .exec();
 
+    // TODO: Check access
+
     if (!user) {
         throw new NotFoundError(
             "A user with the specified identifier does not exist.",
@@ -300,6 +306,54 @@ const update = async (
     }
 
     return toExternal(user);
+};
+
+const validateEmail = (email: string) =>
+    email
+        .toLowerCase()
+        .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+        );
+
+export const updateEmailAddress = async (
+    context,
+    userId: string,
+    emailAddress: string,
+) => {
+    if (!constants.identifierPattern.test(userId)) {
+        throw new BadRequestError(
+            `The specified user identifier "${userId}" is invalid.`,
+        );
+    }
+    if (!validateEmail(emailAddress)) {
+        throw new BadRequestError(
+            `The specified email address "${emailAddress}" is invalid.`,
+        );
+    }
+
+    const updatedUser = await runAsTransaction(async () => {
+        const updatedUser = await UserModel.findOneAndUpdate(
+            {
+                _id: userId,
+                status: { $ne: "deleted" },
+            },
+            { emailAddress, emailVerified: false },
+            { new: true, lean: true },
+        );
+
+        /*
+         * At this point, the user has been modified, regardless of the current
+         * user being authorized or not. When we check for access below, we rely
+         * on the transaction failing to undo the changes.
+         */
+        checkAccessToUsers(context.user, [updatedUser], "write");
+
+        return updatedUser;
+    });
+
+    await sendVerificationEmail(emailAddress);
+
+    return toExternal(updatedUser);
 };
 
 const remove = async (

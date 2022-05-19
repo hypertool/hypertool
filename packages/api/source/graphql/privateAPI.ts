@@ -66,6 +66,8 @@ const typeDefs = gql`
             birthday: Date
         ): User!
 
+        updateEmailAddress(userId: ID!, emailAddress: String!): User!
+
         updatePassword(oldPassword: String!, newPassword: String!): User!
 
         deleteUser(userId: ID!): RemoveResult!
@@ -315,6 +317,13 @@ const resolvers = {
 
         deleteUser: async (parent, values, context) =>
             users.remove(context.request, values.userId),
+
+        updateEmailAddress: async (parent, values, context) =>
+            users.updateEmailAddress(
+                context.request,
+                values.userId,
+                values.emailAddress,
+            ),
 
         updatePassword: async (parent, values, context) =>
             users.updatePassword(context.request, values),
