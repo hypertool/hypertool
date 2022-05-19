@@ -230,6 +230,7 @@ const EditQuery: FunctionComponent = (): ReactElement => {
                 content,
                 resource: resource.name,
             }}
+            enableReinitialize={true}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
         >

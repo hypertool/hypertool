@@ -245,6 +245,7 @@ const EditResource: FunctionComponent = (): ReactElement => {
                 /* Since the form expects flat data, spread the configuration. */
                 ...others[type],
             }}
+            enableReinitialize={true}
             onSubmit={handleSubmit}
         >
             {(formik) => (
