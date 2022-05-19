@@ -75,6 +75,8 @@ const UsersTable: FunctionComponent<IUsersTableProps> = (
     };
 
     const handleSelect = (event: MouseEvent<unknown>, name: string) => {
+        event.stopPropagation();
+
         const selectedIndex = selected.indexOf(name);
         let newSelected: string[] = [];
 
