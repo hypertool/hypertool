@@ -27,3 +27,5 @@ export interface IAuthResourceGroup {
     name: string;
     resources: IAuthResource[];
 }
+
+export type TAccessType = "partial_read" | "read" | "write";
