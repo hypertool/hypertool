@@ -118,12 +118,12 @@ const tabDetailsByType: Record<string, ITabTypeDetails> = {
         component: ResourceEditor,
     },
     "authentication.new-user": {
-        icon: "people",
+        icon: "account_circle",
         title: "New User",
         component: NewUserEditor,
     },
     "authentication.edit-user": {
-        icon: "people",
+        icon: "account_circle",
         title: "Edit User",
         component: UserEditor,
     },
