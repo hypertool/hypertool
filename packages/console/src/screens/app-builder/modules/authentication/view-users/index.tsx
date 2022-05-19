@@ -62,6 +62,10 @@ const ViewUsers: FunctionComponent = (): ReactElement => {
 
     const [selected, setSelected] = useState<string[]>([]);
 
+    const handleEdit = useCallback((userId: string) => {
+        createTab("authentication.edit-user", { userId });
+    }, []);
+
     const handleSelect = useCallback((newSelected: string[]) => {
         setSelected(newSelected);
     }, []);
@@ -87,6 +91,7 @@ const ViewUsers: FunctionComponent = (): ReactElement => {
                         configurations={users}
                         selected={selected}
                         onSelect={handleSelect}
+                        onEdit={handleEdit}
                     />
                 </UsersContainer>
             )}

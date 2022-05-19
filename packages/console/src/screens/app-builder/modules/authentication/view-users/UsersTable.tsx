@@ -37,16 +37,8 @@ export interface IUsersTableProps {
     configurations: any[];
     selected: string[];
     onSelect: (newSelected: string[]) => void;
+    onEdit: (id: string) => void;
 }
-
-const detailsByType: Record<string, any> = {
-    email_password: {
-        title: "Email / Password",
-    },
-    anonymous: {
-        title: "Anonymous",
-    },
-};
 
 const detailsByStatus: Record<string, any> = {
     invited: {
@@ -70,12 +62,16 @@ const detailsByStatus: Record<string, any> = {
 const UsersTable: FunctionComponent<IUsersTableProps> = (
     props: IUsersTableProps,
 ): ReactElement => {
-    const { configurations, selected, onSelect } = props;
+    const { configurations, selected, onSelect, onEdit } = props;
 
     const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
         onSelect(
             event.target.checked ? configurations.map((row) => row.id) : [],
         );
+    };
+
+    const handleEdit = (id: string) => () => {
+        onEdit(id);
     };
 
     const handleSelect = (event: MouseEvent<unknown>, name: string) => {
@@ -133,9 +129,7 @@ const UsersTable: FunctionComponent<IUsersTableProps> = (
                             return (
                                 <TableRow
                                     hover={true}
-                                    onClick={(event) =>
-                                        handleSelect(event, row.id)
-                                    }
+                                    onClick={handleEdit(row.id)}
                                     role="checkbox"
                                     tabIndex={-1}
                                     key={row.id}
@@ -145,6 +139,9 @@ const UsersTable: FunctionComponent<IUsersTableProps> = (
                                         <Checkbox
                                             color="primary"
                                             checked={isItemSelected}
+                                            onClick={(event) =>
+                                                handleSelect(event, row.id)
+                                            }
                                         />
                                     </TableCell>
                                     <TableCell component="th" scope="row">
