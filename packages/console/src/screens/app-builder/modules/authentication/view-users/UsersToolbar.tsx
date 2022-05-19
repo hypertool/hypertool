@@ -31,11 +31,12 @@ const WorkspaceToolbar = styled(Toolbar)<IWorkspaceToolbarProps>(
 
 const Title = styled(Typography)(() => ({}));
 
-const ActionContainer = styled("div")(() => ({
+const ActionContainer = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
+    gap: theme.spacing(2),
 }));
 
 const ActionIcon = styled(Icon)(({ theme }) => ({
@@ -45,12 +46,13 @@ const ActionIcon = styled(Icon)(({ theme }) => ({
 export interface IUsersToolbarProps {
     selectedCount: number;
     onNew: () => void;
+    onRefresh: () => void;
 }
 
 const UsersToolbar: FunctionComponent<IUsersToolbarProps> = (
     props: IUsersToolbarProps,
 ): ReactElement => {
-    const { selectedCount, onNew } = props;
+    const { selectedCount, onNew, onRefresh } = props;
 
     return (
         <AppBar position="static" elevation={1}>
@@ -59,7 +61,11 @@ const UsersToolbar: FunctionComponent<IUsersToolbarProps> = (
                     <>
                         <Title>View Users</Title>
                         <ActionContainer>
-                            <Button size="small" color="inherit" sx={{ mr: 2 }}>
+                            <Button
+                                size="small"
+                                color="inherit"
+                                onClick={onRefresh}
+                            >
                                 <ActionIcon fontSize="small">
                                     refresh
                                 </ActionIcon>

@@ -50,7 +50,7 @@ const ViewUsers: FunctionComponent = (): ReactElement => {
     const { createTab } = useBuilderActions();
     const appId = useParam("appId");
 
-    const { data, loading } = useQuery(GET_USERS, {
+    const { data, loading, refetch } = useQuery(GET_USERS, {
         variables: {
             app: appId,
             page: 0,
@@ -69,9 +69,17 @@ const ViewUsers: FunctionComponent = (): ReactElement => {
         createTab("authentication.new-user");
     }, [createTab]);
 
+    const handleRefresh = useCallback(() => {
+        refetch();
+    }, [refetch]);
+
     return (
         <div>
-            <UsersToolbar selectedCount={selected.length} onNew={handleNew} />
+            <UsersToolbar
+                selectedCount={selected.length}
+                onNew={handleNew}
+                onRefresh={handleRefresh}
+            />
             {!loading && users.length > 0 && (
                 <UsersContainer>
                     <UsersTable
