@@ -21,6 +21,7 @@ import type {
     IEditQueryBundle,
     IEditResourceBundle,
     IEditScreenBundle,
+    IEditUserBundle,
     ITab,
     TBundleType,
     TPredicate,
@@ -280,6 +281,13 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                 return (
                                     (bundle as IEditScreenBundle).screenId ===
                                     (oldBundle as IEditScreenBundle).screenId
+                                );
+                            }
+
+                            case "authentication.edit-user": {
+                                return (
+                                    (bundle as IEditUserBundle).userId ===
+                                    (oldBundle as IEditUserBundle).userId
                                 );
                             }
                         }
