@@ -58,6 +58,7 @@ const Resources: FunctionComponent = (): ReactElement => {
             limit: 20,
             app: appId,
         },
+        notifyOnNetworkStatusChange: true,
     });
     const { records } = data?.getResources || { records: [] };
 

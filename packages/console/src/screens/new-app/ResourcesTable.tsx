@@ -60,6 +60,7 @@ const ResourcesTable: FunctionComponent<Props> = (
             page: 0,
             limit: 20,
         },
+        notifyOnNetworkStatusChange: true,
     });
 
     const handleRowClick = useCallback(

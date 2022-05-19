@@ -160,7 +160,9 @@ const ViewApps: FunctionComponent = (): ReactElement => {
         refetchQueries: ["GetApps"],
     });
 
-    const { loading, data } = useQuery(GET_APPS);
+    const { loading, data } = useQuery(GET_APPS, {
+        notifyOnNetworkStatusChange: true,
+    });
     const records = data?.getApps?.records ?? [];
 
     const handleCreateNew = useCallback(() => {

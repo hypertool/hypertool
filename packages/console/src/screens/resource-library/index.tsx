@@ -78,6 +78,7 @@ const ResourceLibrary: FunctionComponent = (): ReactElement => {
             limit: 20,
             app: appId,
         },
+        notifyOnNetworkStatusChange: true,
     });
 
     const handleCreateNew = useCallback(() => {

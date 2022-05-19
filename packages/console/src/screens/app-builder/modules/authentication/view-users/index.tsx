@@ -56,6 +56,7 @@ const ViewUsers: FunctionComponent = (): ReactElement => {
             page: 0,
             limit: 20,
         },
+        notifyOnNetworkStatusChange: true,
     });
     const { records: users } = data?.getUsers || { records: [] };
 

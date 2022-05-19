@@ -55,6 +55,7 @@ const Controllers: FunctionComponent = (): ReactElement => {
             page: 0,
             limit: 20,
         },
+        notifyOnNetworkStatusChange: true,
     });
     const { records } = data?.getControllers || { records: [] };
     const notification = useNotification();

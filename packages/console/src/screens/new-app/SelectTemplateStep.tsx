@@ -70,7 +70,9 @@ const SelectTemplateStep: FunctionComponent<ISelectTemplateStepProps> = (
     props: ISelectTemplateStepProps,
 ): ReactElement => {
     const { onChange, activeTemplate } = props;
-    const { loading, data } = useQuery(GET_APPS);
+    const { loading, data } = useQuery(GET_APPS, {
+        notifyOnNetworkStatusChange: true,
+    });
     const categories = useMemo(() => {
         return [
             {

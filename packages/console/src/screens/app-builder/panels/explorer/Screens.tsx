@@ -51,6 +51,7 @@ const Screens: FunctionComponent = (): ReactElement => {
             limit: 20,
             app: appId,
         },
+        notifyOnNetworkStatusChange: true,
     });
     const { records } = data?.getScreens || { records: [] };
 

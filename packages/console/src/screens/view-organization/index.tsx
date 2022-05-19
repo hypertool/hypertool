@@ -3,12 +3,10 @@ import { useCallback, useState } from "react";
 
 import {
     AppBar,
-    Button,
     CircularProgress,
     Container,
     Hidden,
     Icon,
-    InputAdornment,
     InputLabel,
     MenuItem,
     FormControl as MuiFormControl,
@@ -21,10 +19,7 @@ import { styled } from "@mui/material/styles";
 
 import { gql, useQuery } from "@apollo/client";
 
-import { useNavigate } from "react-router";
-
 import AppCard from "./AppCard";
-import AppFilter from "./AppFilter";
 
 const Root = styled("section")(() => ({
     width: "100%",
@@ -133,8 +128,9 @@ const GET_APPS = gql`
 
 const ViewApps: FunctionComponent = (): ReactElement => {
     const [filter, setFilter] = useState<string>(filters[0].url);
-    const navigate = useNavigate();
-    const { loading, data } = useQuery(GET_APPS);
+    const { loading, data } = useQuery(GET_APPS, {
+        notifyOnNetworkStatusChange: true,
+    });
 
     const handleFilterChange = useCallback((event) => {
         setFilter(event.target.value);

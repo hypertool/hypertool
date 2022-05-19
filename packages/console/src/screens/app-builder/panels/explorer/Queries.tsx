@@ -53,6 +53,7 @@ const Queries: FunctionComponent = (): ReactElement => {
             limit: 20,
             app: appId,
         },
+        notifyOnNetworkStatusChange: true,
     });
     const { records } = data?.getQueryTemplates || { records: [] };
 
