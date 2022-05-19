@@ -9,8 +9,9 @@ export const tabTypes = tuple(
     "edit-screen",
     "new-resource",
     "edit-resource",
-    "authentication.view-users",
     "authentication.new-user",
+    "authentication.edit-user",
+    "authentication.view-users",
     "authentication.view-providers",
     "authentication.new-provider",
 );

@@ -40,6 +40,7 @@ import { RenderNode } from "./RenderNode";
 import {
     NewProviderEditor,
     NewUserEditor,
+    UserEditor,
     ViewProviders,
     ViewUsers,
 } from "./modules/authentication";
@@ -119,6 +120,11 @@ const tabDetailsByType: Record<string, ITabTypeDetails> = {
         icon: "people",
         title: "New User",
         component: NewUserEditor,
+    },
+    "authentication.edit-user": {
+        icon: "people",
+        title: "Edit User",
+        component: UserEditor,
     },
     "authentication.view-users": {
         icon: "people",
