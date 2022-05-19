@@ -163,11 +163,16 @@ export interface IEditResourceBundle extends ITabBundle {
     resourceId: string;
 }
 
+export interface IEditUserBundle extends ITabBundle {
+    userId: string;
+}
+
 export type TBundleType =
     | IEditQueryBundle
     | IEditControllerBundle
     | IEditScreenBundle
-    | IEditResourceBundle;
+    | IEditResourceBundle
+    | IEditUserBundle;
 
 export interface ITab<T = TBundleType> {
     id: string;
