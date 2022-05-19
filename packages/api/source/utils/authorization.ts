@@ -8,7 +8,9 @@ import type {
 } from "@hypertool/common";
 import { ForbiddenError, InternalServerError } from "@hypertool/common";
 
-import type { IAuthResourceGroup } from "../types";
+import mongoose from "mongoose";
+
+import type { IAuthResourceGroup, TAccessType } from "../types";
 
 const groups: IAuthResourceGroup[] = [
     {
@@ -242,6 +244,64 @@ export const checkAccessToScreens = (user: IUser, screens: IScreen[]): void => {
     if (deniedList.length > 0) {
         throw new ForbiddenError(
             `Access to the following screens are forbidden: ${deniedList.join(
+                ", ",
+            )}`,
+        );
+    }
+};
+
+export const checkAccessToUsers = (
+    currentUser: IUser,
+    users: IUser[] | IUser,
+    type: TAccessType,
+): void => {
+    const users0 = Array.isArray(users) ? users : [users];
+    const currentUserId = currentUser._id.toString();
+    const deniedList = [];
+
+    for (const user of users0) {
+        const userId = user._id.toString();
+
+        switch (type) {
+            /*
+             * Only the following actors can read/write user data:
+             * 1. The owner of the application to which the user belongs.
+             * 2. The user itself.
+             */
+            case "read":
+            case "write": {
+                if (mongoose.isValidObjectId(user.app)) {
+                    throw new InternalServerError(
+                        "The `user.app` attribute should be populated.",
+                    );
+                }
+
+                const app = user.app as IApp;
+                /* NOTE: `creator` could either be a populated user or ObjectId. */
+                const appCreatorId = (
+                    (app.creator as IUser)._id ||
+                    (app.creator as mongoose.Schema.Types.ObjectId)
+                ).toString();
+                if (
+                    appCreatorId !== currentUserId &&
+                    userId !== currentUserId
+                ) {
+                    deniedList.push(userId);
+                }
+
+                break;
+            }
+
+            /* All the other access types are denied. */
+            default: {
+                deniedList.push(userId);
+            }
+        }
+    }
+
+    if (deniedList.length > 0) {
+        throw new ForbiddenError(
+            `${type.toUpperCase()} access to the following users are forbidden: ${deniedList.join(
                 ", ",
             )}`,
         );
