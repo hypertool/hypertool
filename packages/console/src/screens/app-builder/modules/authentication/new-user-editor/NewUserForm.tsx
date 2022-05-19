@@ -180,7 +180,7 @@ const NewUserForm: FunctionComponent = (): ReactElement => {
                     autoCloseDuration: -1,
                 });
 
-                await createUser({
+                const result = await createUser({
                     variables: {
                         ...values,
                         app: appId,
@@ -190,6 +190,10 @@ const NewUserForm: FunctionComponent = (): ReactElement => {
                 notification.notifySuccess(
                     `Created user "${values.emailAddress}" successfully`,
                 );
+
+                replaceTab(index, "authentication.edit-user", {
+                    userId: result.data.createUser.id,
+                });
             } catch (error: any) {
                 notification.notifyError(error);
             }
