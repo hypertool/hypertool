@@ -19,7 +19,7 @@ import {
 import bcrypt from "bcrypt";
 import joi from "joi";
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
+import mongoose, { ClientSession, Schema } from "mongoose";
 
 import {
     checkAccessToUsers,
@@ -174,12 +174,19 @@ const toExternal = (user: IUser): IExternalUser => {
 
 const checkDuplicateEmailAddress = async (
     emailAddress: string,
-    app: mongoose.Schema.Types.ObjectId,
+    appId: Schema.Types.ObjectId,
+    userId: Schema.Types.ObjectId,
 ): Promise<void> => {
     const existingUser = await UserModel.findOne(
         {
+            /*
+             * NOTE: Since we update the user before checking for duplicate email
+             * address, an exception will always be thrown if this condition is
+             * not specified.
+             */
+            _id: { $ne: userId },
             emailAddress,
-            app,
+            app: appId,
             status: { $ne: "deleted" },
         },
         null,
@@ -341,42 +348,49 @@ export const updateEmailAddress = async (context, attributes) => {
         attributes,
     );
 
-    const updatedUser = await runAsTransaction(async () => {
-        const updatedUser = await UserModel.findOneAndUpdate(
-            {
-                _id: id,
-                status: { $ne: "deleted" },
-            },
-            { emailAddress, emailVerified: false },
-            { new: true, lean: true },
-        )
-            .populate("app")
-            .exec();
-        if (!updatedUser) {
-            throw new NotFoundError(
-                `Cannot find user with specified identifier "${id}".`,
-            );
-        }
+    const updatedUser = await runAsTransaction(
+        async (session: ClientSession) => {
+            const updatedUser = await UserModel.findOneAndUpdate(
+                {
+                    _id: id,
+                    status: { $ne: "deleted" },
+                },
+                { emailAddress, emailVerified: false },
+                { new: true, lean: true, session },
+            )
+                .populate("app")
+                .exec();
+            if (!updatedUser) {
+                throw new NotFoundError(
+                    `Cannot find user with specified identifier "${id}".`,
+                );
+            }
 
-        /*
-         * At this point, the user has been modified, regardless of the email
-         * address already existing. When we check for duplicate email address
-         * below, we rely on the transaction to undo the changes.
-         */
-        await checkDuplicateEmailAddress(
-            emailAddress,
-            (updatedUser.app as IApp)._id,
-        );
+            /*
+             * At this point, the user has been modified, regardless of the email
+             * address already existing. When we check for duplicate email address
+             * below, we rely on the transaction to undo the changes.
+             */
+            try {
+                await checkDuplicateEmailAddress(
+                    emailAddress,
+                    (updatedUser.app as IApp)._id,
+                    updatedUser._id,
+                );
+            } catch (error) {
+                throw error;
+            }
 
-        /*
-         * At this point, the user has been modified, regardless of the current
-         * user being authorized or not. When we check for access below, we rely
-         * on the transaction failing to undo the changes.
-         */
-        checkAccessToUsers(context.user, [updatedUser], "write");
+            /*
+             * At this point, the user has been modified, regardless of the current
+             * user being authorized or not. When we check for access below, we rely
+             * on the transaction failing to undo the changes.
+             */
+            checkAccessToUsers(context.user, [updatedUser], "write");
 
-        return updatedUser;
-    });
+            return updatedUser;
+        },
+    );
 
     await sendVerificationEmail(emailAddress);
 
