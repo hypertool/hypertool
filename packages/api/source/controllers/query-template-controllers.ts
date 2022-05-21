@@ -15,7 +15,7 @@ import {
 } from "@hypertool/common";
 
 import joi from "joi";
-import mongoose from "mongoose";
+import mongoose, { ClientSession } from "mongoose";
 
 import {
     accessApp,
@@ -88,7 +88,7 @@ const create = async (context, attributes): Promise<IExternalQueryTemplate> => {
         throw new BadRequestError(error.message);
     }
 
-    const newQuery = await runAsTransaction(async () => {
+    const newQuery = await runAsTransaction(async (session: ClientSession) => {
         const queryTemplateId = new mongoose.Types.ObjectId();
 
         /* Ensure that the specified resource exists. */
@@ -112,7 +112,7 @@ const create = async (context, attributes): Promise<IExternalQueryTemplate> => {
         const app = await AppModel.findOneAndUpdate(
             { _id: resource.app, status: { $ne: "deleted" } },
             { $push: { queryTemplates: queryTemplateId } },
-            { new: true, lean: true },
+            { new: true, lean: true, session },
         ).exec();
         if (!app) {
             throw new InternalServerError(
@@ -150,7 +150,7 @@ const create = async (context, attributes): Promise<IExternalQueryTemplate> => {
             creator: context.user._id,
             status: "enabled",
         });
-        await newQuery.save();
+        await newQuery.save({ session });
 
         return newQuery;
     });
@@ -302,34 +302,37 @@ const update = async (
         throw new BadRequestError(error.message);
     }
 
-    const queryTemplate = await runAsTransaction(async () => {
-        const queryTemplate = await QueryTemplateModel.findOneAndUpdate(
-            {
-                _id: queryTemplateId,
-                status: { $ne: "deleted" },
-            },
-            value,
-            {
-                new: true,
-                lean: true,
-            },
-        ).exec();
+    const queryTemplate = await runAsTransaction(
+        async (session: ClientSession) => {
+            const queryTemplate = await QueryTemplateModel.findOneAndUpdate(
+                {
+                    _id: queryTemplateId,
+                    status: { $ne: "deleted" },
+                },
+                value,
+                {
+                    new: true,
+                    lean: true,
+                    session,
+                },
+            ).exec();
 
-        if (!queryTemplate) {
-            throw new NotFoundError(
-                `A query template with the specified identifier "${queryTemplateId}" does not exist.`,
-            );
-        }
+            if (!queryTemplate) {
+                throw new NotFoundError(
+                    `A query template with the specified identifier "${queryTemplateId}" does not exist.`,
+                );
+            }
 
-        /*
-         * At this point, the query template has been modified, regardless of the
-         * user being authorized or not. When we check for access below, we rely
-         * on the transaction failing to undo the changes.
-         */
-        checkAccessToQueryTemplates(context.user, [queryTemplate]);
+            /*
+             * At this point, the query template has been modified, regardless of the
+             * user being authorized or not. When we check for access below, we rely
+             * on the transaction failing to undo the changes.
+             */
+            checkAccessToQueryTemplates(context.user, [queryTemplate]);
 
-        return queryTemplate;
-    });
+            return queryTemplate;
+        },
+    );
 
     return toExternal(queryTemplate);
 };
@@ -344,7 +347,7 @@ const remove = async (
         );
     }
 
-    await runAsTransaction(async () => {
+    await runAsTransaction(async (session: ClientSession) => {
         const queryTemplate = await QueryTemplateModel.findOneAndUpdate(
             {
                 _id: queryTemplateId,
@@ -356,6 +359,7 @@ const remove = async (
             {
                 new: true,
                 lean: true,
+                session,
             },
         );
         if (!queryTemplate) {

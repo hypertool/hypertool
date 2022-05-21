@@ -15,7 +15,7 @@ import {
 
 import { createTwoFilesPatch } from "diff";
 import joi from "joi";
-import { Types } from "mongoose";
+import { ClientSession, Types } from "mongoose";
 
 import {
     checkAccessToApps,
@@ -116,58 +116,61 @@ export const create = async (
         throw new BadRequestError(error.message);
     }
 
-    const newController = await runAsTransaction(async () => {
-        const newControllerId = new Types.ObjectId();
-        const app = await AppModel.findOneAndUpdate(
-            {
-                _id: value.app,
-                status: { $ne: "deleted" },
-            },
-            {
-                $push: {
-                    controllers: newControllerId,
+    const newController = await runAsTransaction(
+        async (session: ClientSession) => {
+            const newControllerId = new Types.ObjectId();
+            const app = await AppModel.findOneAndUpdate(
+                {
+                    _id: value.app,
+                    status: { $ne: "deleted" },
                 },
-            },
-            {
-                lean: true,
-                new: true,
-            },
-        );
-        if (!app) {
-            throw new NotFoundError(
-                `Cannot find an app with the specified identifier "${value.app}".`,
+                {
+                    $push: {
+                        controllers: newControllerId,
+                    },
+                },
+                {
+                    lean: true,
+                    new: true,
+                    session,
+                },
             );
-        }
+            if (!app) {
+                throw new NotFoundError(
+                    `Cannot find an app with the specified identifier "${value.app}".`,
+                );
+            }
 
-        /*
-         * At this point, the app has been modified, regardless of the currently
-         * user being authorized or not. When we check for access below, we rely
-         * on the transaction failing to undo the changes.
-         */
-        checkAccessToApps(context.user, [app]);
+            /*
+             * At this point, the app has been modified, regardless of the currently
+             * user being authorized or not. When we check for access below, we rely
+             * on the transaction failing to undo the changes.
+             */
+            checkAccessToApps(context.user, [app]);
 
-        /* Check for the uniqueness of the controller name within the app. */
-        const existingController = await ControllerModel.findOne({
-            name: value.name,
-            app: value.app,
-            status: { $ne: "deleted" },
-        });
-        if (existingController) {
-            throw new BadRequestError(
-                `Controller with name "${value.name}" already exists.`,
-            );
-        }
+            /* Check for the uniqueness of the controller name within the app. */
+            const existingController = await ControllerModel.findOne({
+                name: value.name,
+                app: value.app,
+                status: { $ne: "deleted" },
+            });
+            if (existingController) {
+                throw new BadRequestError(
+                    `Controller with name "${value.name}" already exists.`,
+                );
+            }
 
-        const newController = new ControllerModel({
-            ...value,
-            _id: newControllerId,
-            status: "created",
-            creator: context.user._id,
-        });
-        await newController.save();
+            const newController = new ControllerModel({
+                ...value,
+                _id: newControllerId,
+                status: "created",
+                creator: context.user._id,
+            });
+            await newController.save({ session });
 
-        return newController;
-    });
+            return newController;
+        },
+    );
 
     return toExternal(newController);
 };
@@ -322,31 +325,33 @@ export const update = async (context: any, id: string, attributes: any) => {
         throw new BadRequestError(error.message);
     }
 
-    const updatedController = await runAsTransaction(async () => {
-        const updatedController = await ControllerModel.findOneAndUpdate(
-            {
-                _id: id,
-                status: { $ne: "deleted" },
-            },
-            value,
-            { new: true, lean: true },
-        ).exec();
+    const updatedController = await runAsTransaction(
+        async (session: ClientSession) => {
+            const updatedController = await ControllerModel.findOneAndUpdate(
+                {
+                    _id: id,
+                    status: { $ne: "deleted" },
+                },
+                value,
+                { new: true, lean: true, session },
+            ).exec();
 
-        if (!updatedController) {
-            throw new NotFoundError(
-                `Cannot find an app with the specified identifier "${value.app}".`,
-            );
-        }
+            if (!updatedController) {
+                throw new NotFoundError(
+                    `Cannot find an app with the specified identifier "${value.app}".`,
+                );
+            }
 
-        /*
-         * At this point, the controller has been modified, regardless of the currently
-         * user being authorized or not. When we check for access below, we rely
-         * on the transaction failing to undo the changes.
-         */
-        checkAccessToControllers(context.user, [updatedController]);
+            /*
+             * At this point, the controller has been modified, regardless of the currently
+             * user being authorized or not. When we check for access below, we rely
+             * on the transaction failing to undo the changes.
+             */
+            checkAccessToControllers(context.user, [updatedController]);
 
-        return updatedController;
-    });
+            return updatedController;
+        },
+    );
 
     return toExternal(updatedController);
 };
@@ -416,7 +421,7 @@ export const remove = async (context: any, id: string) => {
         );
     }
 
-    await runAsTransaction(async () => {
+    await runAsTransaction(async (session: ClientSession) => {
         const controller = await ControllerModel.findOneAndUpdate(
             {
                 _id: id,
@@ -428,6 +433,7 @@ export const remove = async (context: any, id: string) => {
             {
                 new: true,
                 lean: true,
+                session,
             },
         );
         if (!controller) {

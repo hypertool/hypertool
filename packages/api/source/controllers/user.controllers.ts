@@ -424,6 +424,8 @@ const remove = async (
         );
     }
 
+    // TODO: Check access
+
     return { success: true };
 };
 

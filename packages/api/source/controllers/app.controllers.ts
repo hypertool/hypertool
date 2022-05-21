@@ -24,7 +24,7 @@ import {
 
 import { createTwoFilesPatch } from "diff";
 import joi from "joi";
-import { Types } from "mongoose";
+import { ClientSession, Types } from "mongoose";
 
 import {
     checkAccessToApps,
@@ -120,6 +120,7 @@ const checkDuplicate = async (name: string) => {
 };
 
 const updateOwnershipToOrganization = async (
+    session: ClientSession,
     organizationId: string,
     appId: Types.ObjectId,
 ) => {
@@ -133,7 +134,7 @@ const updateOwnershipToOrganization = async (
                 apps: appId,
             },
         },
-        { new: true, lean: true },
+        { new: true, lean: true, session },
     ).exec();
     if (!organization) {
         throw new NotFoundError(
@@ -144,6 +145,7 @@ const updateOwnershipToOrganization = async (
 };
 
 const updateOwnershipToUser = async (
+    session: ClientSession,
     appId: Types.ObjectId,
     userId: Types.ObjectId,
 ) => {
@@ -159,6 +161,7 @@ const updateOwnershipToUser = async (
         {
             new: true,
             lean: true,
+            session,
         },
     ).exec();
 };
@@ -166,7 +169,11 @@ const updateOwnershipToUser = async (
 /**
  * Make sure that this function is called within the context of a transaction.
  */
-const createBaseApp = async (userId: Types.ObjectId, attributes: any) => {
+const createBaseApp = async (
+    session: ClientSession,
+    userId: Types.ObjectId,
+    attributes: any,
+) => {
     /* Check if the app name is already taken. */
     await checkDuplicate(attributes.name);
 
@@ -177,13 +184,17 @@ const createBaseApp = async (userId: Types.ObjectId, attributes: any) => {
          * If the app belongs to an organization, establish a bidirectional
          * relationship.
          */
-        updateOwnershipToOrganization(attributes.organization, newAppId);
+        updateOwnershipToOrganization(
+            session,
+            attributes.organization,
+            newAppId,
+        );
     } else {
         /*
          * If the app does not belong to any organization, the ownership of
          * the app is given to the user.
          */
-        await updateOwnershipToUser(newAppId, userId);
+        await updateOwnershipToUser(session, newAppId, userId);
     }
 
     /* Create the new app. */
@@ -193,7 +204,7 @@ const createBaseApp = async (userId: Types.ObjectId, attributes: any) => {
         creator: userId,
         status: "private",
     });
-    await newApp.save();
+    await newApp.save({ session });
 
     return newApp;
 };
@@ -221,6 +232,7 @@ const defaultResourceConfigurations: Record<string, any> = {
  * Make sure that this function is called within the context of a transaction.
  */
 const duplicateEntities = async (
+    session: ClientSession,
     sourceApp: IApp,
     appId: string,
     userId: Types.ObjectId,
@@ -322,10 +334,10 @@ const duplicateEntities = async (
 
     const [_resources, _queryTemplates, _controllers, _screens, app] =
         await Promise.all([
-            ResourceModel.insertMany(newResources),
-            QueryTemplateModel.insertMany(newQueryTemplates),
-            ControllerModel.insertMany(newControllers),
-            ScreenModel.insertMany(newScreens),
+            ResourceModel.insertMany(newResources, { session }),
+            QueryTemplateModel.insertMany(newQueryTemplates, { session }),
+            ControllerModel.insertMany(newControllers, { session }),
+            ScreenModel.insertMany(newScreens, { session }),
             AppModel.findOneAndUpdate(
                 {
                     _id: appId,
@@ -341,7 +353,7 @@ const duplicateEntities = async (
                     ),
                     screens: newScreens.map((screen) => screen._id),
                 },
-                { new: true, lean: true },
+                { new: true, lean: true, session },
             ).exec(),
         ]);
 
@@ -363,7 +375,8 @@ export const create = async (context, attributes): Promise<IExternalApp> => {
     }
 
     const newApp = await runAsTransaction(
-        async () => await createBaseApp(context.user._id, value),
+        async (session: ClientSession) =>
+            await createBaseApp(session, context.user._id, value),
     );
 
     return toExternal(newApp);
@@ -405,7 +418,7 @@ export const install = async (
         );
     }
 
-    const newApp = await runAsTransaction(async () => {
+    const newApp = await runAsTransaction(async (session: ClientSession) => {
         const newUserId = new Types.ObjectId();
         const newAppId = new Types.ObjectId();
 
@@ -446,9 +459,9 @@ export const install = async (
         });
 
         await Promise.all([
-            newUser.save(),
+            newUser.save({ session }),
             sendVerificationEmail(emailAddress),
-            newApp.save(),
+            newApp.save({ session }),
         ]);
 
         return newApp;
@@ -465,7 +478,7 @@ export const duplicate = async (context, attributes): Promise<IExternalApp> => {
         throw new BadRequestError(error.message);
     }
 
-    const newApp = await runAsTransaction(async () => {
+    const newApp = await runAsTransaction(async (session: ClientSession) => {
         const sourceApp = await AppModel.findOne(
             {
                 _id: value.sourceApp,
@@ -486,8 +499,9 @@ export const duplicate = async (context, attributes): Promise<IExternalApp> => {
         }
         checkAccessToApps(context.user, [sourceApp]);
 
-        const newApp = await createBaseApp(context.user._id, value);
+        const newApp = await createBaseApp(session, context.user._id, value);
         return await duplicateEntities(
+            session,
             sourceApp,
             newApp._id.toString(),
             context.user._id,
@@ -646,7 +660,7 @@ const update = async (
         throw new BadRequestError(error.message);
     }
 
-    const app = await runAsTransaction(async () => {
+    const app = await runAsTransaction(async (session: ClientSession) => {
         const app = await AppModel.findOneAndUpdate(
             {
                 _id: appId,
@@ -656,6 +670,7 @@ const update = async (
             {
                 new: true,
                 lean: true,
+                session,
             },
         ).exec();
         if (!app) {
@@ -684,7 +699,7 @@ const publish = async (context, appId: string): Promise<IExternalApp> => {
         );
     }
 
-    const app = await runAsTransaction(async () => {
+    const app = await runAsTransaction(async (session: ClientSession) => {
         const app = await AppModel.findOneAndUpdate(
             {
                 _id: appId,
@@ -694,6 +709,7 @@ const publish = async (context, appId: string): Promise<IExternalApp> => {
             {
                 new: true,
                 lean: true,
+                session,
             },
         ).exec();
         if (!app) {
@@ -722,7 +738,7 @@ const unpublish = async (context, appId: string): Promise<IExternalApp> => {
         );
     }
 
-    const app = await runAsTransaction(async () => {
+    const app = await runAsTransaction(async (session: ClientSession) => {
         const app = await AppModel.findOneAndUpdate(
             {
                 _id: appId,
@@ -732,6 +748,7 @@ const unpublish = async (context, appId: string): Promise<IExternalApp> => {
             {
                 new: true,
                 lean: true,
+                session,
             },
         ).exec();
         if (!app) {
@@ -763,7 +780,7 @@ const remove = async (
         );
     }
 
-    await runAsTransaction(async () => {
+    await runAsTransaction(async (session: ClientSession) => {
         const app = await AppModel.findOneAndUpdate(
             {
                 _id: appId,
@@ -775,6 +792,7 @@ const remove = async (
             {
                 new: true,
                 lean: true,
+                session,
             },
         );
         if (!app) {

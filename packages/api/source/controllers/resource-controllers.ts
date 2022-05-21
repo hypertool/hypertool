@@ -13,7 +13,7 @@ import {
 } from "@hypertool/common";
 
 import joi from "joi";
-import mongoose from "mongoose";
+import mongoose, { ClientSession } from "mongoose";
 
 import { checkAccessToApps, checkAccessToResources } from "../utils";
 import { accessApp } from "../utils";
@@ -157,49 +157,51 @@ const create = async (context, attributes): Promise<IExternalResource> => {
         throw new BadRequestError(error.message);
     }
 
-    const newResource = await runAsTransaction(async () => {
-        const resourceId = new mongoose.Types.ObjectId();
+    const newResource = await runAsTransaction(
+        async (session: ClientSession) => {
+            const resourceId = new mongoose.Types.ObjectId();
 
-        /* Establish a bidirectional relationship betweenresource and app. */
-        const app = await AppModel.findOneAndUpdate(
-            { _id: value.app, status: { $ne: "deleted" } },
-            { $push: { resources: resourceId } },
-            { new: true, lean: true },
-        ).exec();
-        if (!app) {
-            throw new NotFoundError(
-                `Cannot find an app with the specified identifier "${value.app}".`,
-            );
-        }
+            /* Establish a bidirectional relationship betweenresource and app. */
+            const app = await AppModel.findOneAndUpdate(
+                { _id: value.app, status: { $ne: "deleted" } },
+                { $push: { resources: resourceId } },
+                { new: true, lean: true, session },
+            ).exec();
+            if (!app) {
+                throw new NotFoundError(
+                    `Cannot find an app with the specified identifier "${value.app}".`,
+                );
+            }
 
-        checkAccessToApps(context.user, [app]);
+            checkAccessToApps(context.user, [app]);
 
-        /* Check if name already exists in any resource of the given app. */
-        const existingResource = await ResourceModel.findOne(
-            {
-                app: value.app,
-                name: value.name,
-                status: { $ne: "deleted" },
-            },
-            null,
-            { lean: true },
-        ).exec();
-        if (existingResource) {
-            throw new BadRequestError(
-                `Resource with name "${value.name}" already exists`,
-            );
-        }
+            /* Check if name already exists in any resource of the given app. */
+            const existingResource = await ResourceModel.findOne(
+                {
+                    app: value.app,
+                    name: value.name,
+                    status: { $ne: "deleted" },
+                },
+                null,
+                { lean: true },
+            ).exec();
+            if (existingResource) {
+                throw new BadRequestError(
+                    `Resource with name "${value.name}" already exists`,
+                );
+            }
 
-        const newResource = new ResourceModel({
-            ...value,
-            _id: resourceId,
-            status: "enabled",
-            creator: context.user._id,
-        });
-        await newResource.save();
+            const newResource = new ResourceModel({
+                ...value,
+                _id: resourceId,
+                status: "enabled",
+                creator: context.user._id,
+            });
+            await newResource.save({ session });
 
-        return newResource;
-    });
+            return newResource;
+        },
+    );
 
     return toExternal(newResource);
 };
@@ -343,7 +345,7 @@ const update = async (
         throw new BadRequestError(error.message);
     }
 
-    const resource = await runAsTransaction(async () => {
+    const resource = await runAsTransaction(async (session: ClientSession) => {
         const resource = await ResourceModel.findOneAndUpdate(
             {
                 _id: resourceId,
@@ -353,6 +355,7 @@ const update = async (
             {
                 new: true,
                 lean: true,
+                session,
             },
         ).exec();
         if (!resource) {
@@ -389,7 +392,7 @@ const remove = async (
         );
     }
 
-    runAsTransaction(async () => {
+    runAsTransaction(async (session: ClientSession) => {
         const resource = await ResourceModel.findOneAndUpdate(
             {
                 _id: resourceId,
@@ -401,6 +404,7 @@ const remove = async (
             {
                 new: true,
                 lean: true,
+                session,
             },
         );
         if (!resource) {

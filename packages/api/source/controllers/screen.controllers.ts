@@ -10,7 +10,7 @@ import {
 } from "@hypertool/common";
 
 import joi from "joi";
-import mongoose from "mongoose";
+import mongoose, { ClientSession } from "mongoose";
 
 import { accessApp, checkAccessToApps, checkAccessToScreens } from "../utils";
 
@@ -83,7 +83,7 @@ export const create = async (context, attributes): Promise<IExternalScreen> => {
         throw new BadRequestError(error.message);
     }
 
-    const newScreen = await runAsTransaction(async () => {
+    const newScreen = await runAsTransaction(async (session: ClientSession) => {
         const existingScreen = await ScreenModel.findOne(
             {
                 app: value.app,
@@ -120,8 +120,8 @@ export const create = async (context, attributes): Promise<IExternalScreen> => {
         });
 
         const [_newControllerResult, newScreenResult, app] = await Promise.all([
-            newController.save(),
-            newScreen.save(),
+            newController.save({ session }),
+            newScreen.save({ session }),
             AppModel.findOneAndUpdate(
                 { _id: value.app, status: { $ne: "deleted" } },
                 {
@@ -133,6 +133,7 @@ export const create = async (context, attributes): Promise<IExternalScreen> => {
                 {
                     new: true,
                     lean: true,
+                    session,
                 },
             ).exec(),
         ]);
@@ -169,7 +170,7 @@ export const update = async (
         throw new BadRequestError(error.message);
     }
 
-    const screen = await runAsTransaction(async () => {
+    const screen = await runAsTransaction(async (session: ClientSession) => {
         const screen = await ScreenModel.findOneAndUpdate(
             {
                 _id: screenId,
@@ -177,7 +178,7 @@ export const update = async (
                 creator: context.user._id,
             },
             value,
-            { new: true, lean: true },
+            { new: true, lean: true, session },
         ).exec();
         if (!screen) {
             throw new NotFoundError(
@@ -327,7 +328,7 @@ export const remove = async (context: any, screenId: string) => {
         );
     }
 
-    await runAsTransaction(async () => {
+    await runAsTransaction(async (session) => {
         const screen = await ScreenModel.findOneAndUpdate(
             {
                 _id: screenId,
@@ -339,6 +340,7 @@ export const remove = async (context: any, screenId: string) => {
             {
                 new: true,
                 lean: true,
+                session,
             },
         );
         if (!screen) {

@@ -14,7 +14,7 @@ import {
 
 import joi from "joi";
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
+import mongoose, { ClientSession } from "mongoose";
 
 import { renderTemplate, sendEmail } from "../utils";
 
@@ -390,7 +390,7 @@ const join = async (context, token: string): Promise<Boolean> => {
             INVITATION_JWT_SIGNATURE,
         );
 
-        await runAsTransaction(async () => {
+        await runAsTransaction(async (session: ClientSession) => {
             const user = await UserModel.findOneAndUpdate(
                 {
                     emailAddress,
@@ -403,6 +403,7 @@ const join = async (context, token: string): Promise<Boolean> => {
                 {
                     new: true,
                     lean: true,
+                    session,
                 },
             ).exec();
 
@@ -420,6 +421,7 @@ const join = async (context, token: string): Promise<Boolean> => {
                 {
                     new: true,
                     lean: true,
+                    session,
                 },
             ).exec();
         });
@@ -441,7 +443,7 @@ const leave = async (context, attributes): Promise<{ success: boolean }> => {
 
     const { emailAddress, organizationId } = value;
 
-    await runAsTransaction(async () => {
+    await runAsTransaction(async (session: ClientSession) => {
         const user = await UserModel.findOneAndUpdate(
             {
                 emailAddress,
@@ -454,6 +456,7 @@ const leave = async (context, attributes): Promise<{ success: boolean }> => {
             {
                 new: true,
                 lean: true,
+                session,
             },
         ).exec();
 
@@ -473,6 +476,7 @@ const leave = async (context, attributes): Promise<{ success: boolean }> => {
             {
                 new: true,
                 lean: true,
+                session,
             },
         ).exec();
     });

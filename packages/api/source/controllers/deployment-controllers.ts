@@ -8,7 +8,7 @@ import {
     BadRequestError,
     NotFoundError,
 } from "@hypertool/common";
-import mongoose from "mongoose";
+import mongoose, { ClientSession } from "mongoose";
 
 const runAsTransaction = async (callback) => {
     return await callback();
@@ -53,13 +53,13 @@ export const generateSignedURLs = async (
         throw new BadRequestError(error.message);
     }
 
-    const { app, deployment } = await runAsTransaction(async () => {
+    const { app, deployment } = await runAsTransaction(async (session: ClientSession) => {
         const deploymentId = new mongoose.Types.ObjectId();
         const app = await AppModel.findByIdAndUpdate(value.appId, {
             $push: {
                 deployments: deploymentId,
             },
-        });
+        }, { new: true, lean: true, session });
         if (!app) {
             throw new NotFoundError(
                 "Cannot find an app with the specified identifier.",
@@ -70,7 +70,7 @@ export const generateSignedURLs = async (
             _id: deploymentId,
             app: value.appId,
         });
-        await deployment.save();
+        await deployment.save({ session });
 
         return { app, deployment };
     });
