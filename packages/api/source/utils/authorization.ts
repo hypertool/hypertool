@@ -270,7 +270,7 @@ export const checkAccessToUsers = (
              */
             case "read":
             case "write": {
-                if (mongoose.isValidObjectId(user.app)) {
+                if (!(user.app as IApp)?._id) {
                     throw new InternalServerError(
                         "The `user.app` attribute should be populated.",
                     );
