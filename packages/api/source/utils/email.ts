@@ -4,6 +4,13 @@ import { createToken } from "./auth";
 import { renderTemplate } from "./templates";
 
 export const sendEmail = async (params: any): Promise<void> => {
+    if (!process.env.SENDGRID_API_KEY) {
+        console.warn(
+            "Cannot find SendGrid API key. Cancelling operation `sendEmail`.",
+        );
+        return;
+    }
+
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     const { to, subject, text, html, from } = params;
     const message = {
