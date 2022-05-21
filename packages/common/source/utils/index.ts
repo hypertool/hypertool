@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+import { TTransactionCallback } from "../types";
+
 export interface ObjectWithID {
     id?: string;
     _id?: mongoose.Types.ObjectId;
@@ -22,19 +24,11 @@ export const extractIds = (items: ObjectWithID[] | string[]): string[] => {
     });
 };
 
-export const runAsTransaction = async (callback) => {
+export const runAsTransaction = async <T>(
+    callback: TTransactionCallback<T>,
+): Promise<T> => {
     const session = await mongoose.startSession();
-    session.startTransaction();
-    try {
-        const result = await callback();
-        await session.commitTransaction();
-        return result;
-    } catch (error) {
-        await session.abortTransaction();
-        throw error;
-    } finally {
-        session.endSession();
-    }
+    return await session.withTransaction(callback);
 };
 
 export * as constants from "./constants";
