@@ -17,6 +17,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 
 import * as yup from "yup";
 import { Formik } from "formik";
+import isEqual from "shallowequal";
 
 import { TextField } from "../../../../../components";
 import {
@@ -118,6 +119,7 @@ const EmailAddressTextField = styled(TextField)(({ theme }) => ({
 }));
 
 interface IFormValues {
+    id: string;
     firstName: string;
     lastName: string;
     emailAddress: string;
@@ -150,18 +152,20 @@ const GET_USER = gql`
 `;
 
 const UPDATE_USER = gql`
-    mutation UpdateUser(
-        $userId: ID!
-        $firstName: String
-        $lastName: String
-        $emailAddress: String
-    ) {
+    mutation UpdateUser($userId: ID!, $firstName: String, $lastName: String) {
         updateUser(
             userId: $userId
             firstName: $firstName
             lastName: $lastName
-            emailAddress: $emailAddress
         ) {
+            id
+        }
+    }
+`;
+
+const UPDATE_EMAIL_ADDRESS = gql`
+    mutation UpdateEmailAddress($userId: ID!, $emailAddress: String!) {
+        updateEmailAddress(userId: $userId, emailAddress: $emailAddress) {
             id
         }
     }
@@ -188,6 +192,9 @@ const UserEditor: FunctionComponent = (): ReactElement => {
     const [updateUser] = useMutation(UPDATE_USER, {
         refetchQueries: ["GetUsers"],
     });
+    const [updateEmailAddress] = useMutation(UPDATE_EMAIL_ADDRESS, {
+        refetchQueries: ["GetUsers"],
+    });
 
     const notification = useNotification();
     const { replaceTab } = useBuilderActions();
@@ -201,28 +208,65 @@ const UserEditor: FunctionComponent = (): ReactElement => {
     const handleSubmit = useCallback(
         async (values: IFormValues) => {
             try {
-                notification.notify({
-                    type: "info",
-                    message: `Updating user "${values.emailAddress}"...`,
-                    closeable: false,
-                    autoCloseDuration: -1,
-                });
+                const {
+                    id,
+                    emailAddress: newEmailAddress,
+                    ...otherValues
+                } = values;
+                if (
+                    !isEqual(otherValues, { firstName, lastName, emailAddress })
+                ) {
+                    notification.notify({
+                        type: "info",
+                        message: `Updating user "${values.emailAddress}"...`,
+                        closeable: false,
+                        autoCloseDuration: -1,
+                    });
 
-                const result = await updateUser({
-                    variables: {
-                        ...values,
-                        userId,
-                    },
-                });
+                    await updateUser({
+                        variables: {
+                            ...otherValues,
+                            userId,
+                        },
+                    });
 
-                notification.notifySuccess(
-                    `Updated user "${values.emailAddress}" successfully`,
-                );
+                    notification.notifySuccess(
+                        `Updated user "${values.emailAddress}" successfully`,
+                    );
+                }
+
+                if (newEmailAddress !== emailAddress) {
+                    notification.notify({
+                        type: "info",
+                        message: `Updating email address to "${values.emailAddress}"...`,
+                        closeable: false,
+                        autoCloseDuration: -1,
+                    });
+
+                    await updateEmailAddress({
+                        variables: { emailAddress: newEmailAddress, userId },
+                    });
+
+                    notification.notifySuccess(
+                        `Updated email address to "${values.emailAddress}" successfully`,
+                    );
+                }
             } catch (error: any) {
                 notification.notifyError(error);
             }
         },
-        [replaceTab, index, userId, appId, notification],
+        [
+            replaceTab,
+            index,
+            userId,
+            appId,
+            notification,
+            firstName,
+            lastName,
+            emailAddress,
+            updateEmailAddress,
+            updateUser,
+        ],
     );
 
     const renderProgress = () => (
