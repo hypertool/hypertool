@@ -331,6 +331,8 @@ export const updateEmailAddress = async (
         );
     }
 
+    // TODO: Check for duplicate email addresses.
+
     const updatedUser = await runAsTransaction(async () => {
         const updatedUser = await UserModel.findOneAndUpdate(
             {
@@ -339,7 +341,9 @@ export const updateEmailAddress = async (
             },
             { emailAddress, emailVerified: false },
             { new: true, lean: true },
-        );
+        )
+            .populate("app")
+            .exec();
 
         /*
          * At this point, the user has been modified, regardless of the current
