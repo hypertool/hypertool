@@ -164,8 +164,8 @@ const UPDATE_USER = gql`
 `;
 
 const UPDATE_EMAIL_ADDRESS = gql`
-    mutation UpdateEmailAddress($userId: ID!, $emailAddress: String!) {
-        updateEmailAddress(userId: $userId, emailAddress: $emailAddress) {
+    mutation UpdateEmailAddress($id: ID!, $emailAddress: String!) {
+        updateEmailAddress(id: $id, emailAddress: $emailAddress) {
             id
         }
     }
@@ -244,7 +244,10 @@ const UserEditor: FunctionComponent = (): ReactElement => {
                     });
 
                     await updateEmailAddress({
-                        variables: { emailAddress: newEmailAddress, userId },
+                        variables: {
+                            emailAddress: newEmailAddress,
+                            id: userId,
+                        },
                     });
 
                     notification.notifySuccess(
