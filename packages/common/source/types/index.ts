@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose";
+import { ClientSession, ObjectId } from "mongoose";
 import type { Model } from "mongoose";
 
 import {
@@ -652,3 +652,5 @@ export interface IControllerHelper<E> {
         updateSchema: any,
     ) => Promise<E>;
 }
+
+export type TTransactionCallback<T> = (session: ClientSession) => Promise<T>;
