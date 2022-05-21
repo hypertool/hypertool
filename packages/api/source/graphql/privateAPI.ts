@@ -66,7 +66,7 @@ const typeDefs = gql`
             birthday: Date
         ): User!
 
-        updateEmailAddress(userId: ID!, emailAddress: String!): User!
+        updateEmailAddress(id: ID!, emailAddress: String!, app: ID!): User!
 
         updatePassword(oldPassword: String!, newPassword: String!): User!
 
@@ -319,11 +319,7 @@ const resolvers = {
             users.remove(context.request, values.userId),
 
         updateEmailAddress: async (parent, values, context) =>
-            users.updateEmailAddress(
-                context.request,
-                values.userId,
-                values.emailAddress,
-            ),
+            users.updateEmailAddress(context.request, values),
 
         updatePassword: async (parent, values, context) =>
             users.updatePassword(context.request, values),

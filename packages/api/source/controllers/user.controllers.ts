@@ -27,6 +27,7 @@ import {
     renderTemplate,
     sendEmail,
     sendVerificationEmail,
+    validateAttributes,
 } from "../utils";
 
 const createSchema = joi.object({
@@ -69,6 +70,12 @@ const updateSchema = joi.object({
     countryCode: joi.string().valid(...constants.countryCodes),
     pictureURL: joi.string().allow(""),
     birthday: joi.date().allow(null),
+});
+
+const updateEmailAddressSchema = joi.object({
+    id: joi.string().regex(constants.identifierPattern),
+    emailAddress: joi.string().regex(constants.emailAddressPattern),
+    user: joi.string().regex(constants.identifierPattern),
 });
 
 const signUpWithEmailSchema = joi.object({
@@ -163,6 +170,26 @@ const toExternal = (user: IUser): IExternalUser => {
         createdAt,
         updatedAt,
     };
+};
+
+const checkDuplicateEmailAddress = async (
+    emailAddress: string,
+    app: mongoose.Types.ObjectId,
+): Promise<void> => {
+    const existingUser = await UserModel.findOne(
+        {
+            emailAddress,
+            app,
+            status: { $ne: "deleted" },
+        },
+        null,
+        { lean: true },
+    ).exec();
+    if (existingUser) {
+        throw new BadRequestError(
+            `The specified email address "${emailAddress}" already exists."`,
+        );
+    }
 };
 
 const create = async (context, attributes): Promise<IExternalUser> => {
@@ -308,35 +335,19 @@ const update = async (
     return toExternal(user);
 };
 
-const validateEmail = (email: string) =>
-    email
-        .toLowerCase()
-        .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        );
-
-export const updateEmailAddress = async (
-    context,
-    userId: string,
-    emailAddress: string,
-) => {
-    if (!constants.identifierPattern.test(userId)) {
-        throw new BadRequestError(
-            `The specified user identifier "${userId}" is invalid.`,
-        );
-    }
-    if (!validateEmail(emailAddress)) {
-        throw new BadRequestError(
-            `The specified email address "${emailAddress}" is invalid.`,
-        );
-    }
-
-    // TODO: Check for duplicate email addresses.
+export const updateEmailAddress = async (context, attributes) => {
+    const { id, emailAddress, app } = validateAttributes(
+        updateEmailAddressSchema,
+        attributes,
+    );
 
     const updatedUser = await runAsTransaction(async () => {
+        await checkDuplicateEmailAddress(emailAddress, app);
+
         const updatedUser = await UserModel.findOneAndUpdate(
             {
-                _id: userId,
+                _id: id,
+                app,
                 status: { $ne: "deleted" },
             },
             { emailAddress, emailVerified: false },
@@ -344,6 +355,11 @@ export const updateEmailAddress = async (
         )
             .populate("app")
             .exec();
+        if (!updatedUser) {
+            throw new NotFoundError(
+                `Cannot find user with specified identifier "${id}" in app with identifier "${app}".`,
+            );
+        }
 
         /*
          * At this point, the user has been modified, regardless of the current
