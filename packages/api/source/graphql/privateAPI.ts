@@ -66,7 +66,7 @@ const typeDefs = gql`
             birthday: Date
         ): User!
 
-        updateEmailAddress(id: ID!, emailAddress: String!, app: ID!): User!
+        updateEmailAddress(id: ID!, emailAddress: String!): User!
 
         updatePassword(oldPassword: String!, newPassword: String!): User!
 

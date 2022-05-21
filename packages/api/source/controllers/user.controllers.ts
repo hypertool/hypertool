@@ -1,4 +1,5 @@
 import {
+    IApp,
     IExternalUser,
     IUser,
     Session,
@@ -75,7 +76,6 @@ const updateSchema = joi.object({
 const updateEmailAddressSchema = joi.object({
     id: joi.string().regex(constants.identifierPattern),
     emailAddress: joi.string().regex(constants.emailAddressPattern),
-    user: joi.string().regex(constants.identifierPattern),
 });
 
 const signUpWithEmailSchema = joi.object({
@@ -174,7 +174,7 @@ const toExternal = (user: IUser): IExternalUser => {
 
 const checkDuplicateEmailAddress = async (
     emailAddress: string,
-    app: mongoose.Types.ObjectId,
+    app: mongoose.Schema.Types.ObjectId,
 ): Promise<void> => {
     const existingUser = await UserModel.findOne(
         {
@@ -336,18 +336,15 @@ const update = async (
 };
 
 export const updateEmailAddress = async (context, attributes) => {
-    const { id, emailAddress, app } = validateAttributes(
+    const { id, emailAddress } = validateAttributes(
         updateEmailAddressSchema,
         attributes,
     );
 
     const updatedUser = await runAsTransaction(async () => {
-        await checkDuplicateEmailAddress(emailAddress, app);
-
         const updatedUser = await UserModel.findOneAndUpdate(
             {
                 _id: id,
-                app,
                 status: { $ne: "deleted" },
             },
             { emailAddress, emailVerified: false },
@@ -357,9 +354,19 @@ export const updateEmailAddress = async (context, attributes) => {
             .exec();
         if (!updatedUser) {
             throw new NotFoundError(
-                `Cannot find user with specified identifier "${id}" in app with identifier "${app}".`,
+                `Cannot find user with specified identifier "${id}".`,
             );
         }
+
+        /*
+         * At this point, the user has been modified, regardless of the email
+         * address already existing. When we check for duplicate email address
+         * below, we rely on the transaction to undo the changes.
+         */
+        await checkDuplicateEmailAddress(
+            emailAddress,
+            (updatedUser.app as IApp)._id,
+        );
 
         /*
          * At this point, the user has been modified, regardless of the current
