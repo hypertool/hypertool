@@ -23,3 +23,5 @@ export { default as ViewUser } from "./view-user";
 export { default as InviteUser } from "./invite-user";
 
 export { default as AppBuilder } from "./app-builder";
+
+export { default as Installation } from "./installation";
