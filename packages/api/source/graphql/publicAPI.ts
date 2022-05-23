@@ -32,6 +32,7 @@ const typeDefs = gql`
 
     type Query {
         getAppByName(name: String!): App!
+        getRootApp: App
     }
 
     type Mutation {
@@ -81,6 +82,9 @@ const resolvers = {
         /* TODO: Fix critical bug that exposes resource credentials. */
         getAppByName: async (parent, values, context) =>
             apps.getByName(context.request, values.name),
+
+        getRootApp: async (parent, values, context) =>
+            apps.getRootApp(context.request),
     },
     Mutation: {
         loginWithGoogle: async (parent, values, context) =>
