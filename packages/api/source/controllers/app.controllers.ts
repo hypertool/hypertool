@@ -425,6 +425,7 @@ export const install = async (
         const { firstName, lastName, emailAddress, password } = value;
         const hashedPassword = await hashPassword(password);
         const newUser = new UserModel({
+            _id: newUserId,
             firstName,
             lastName,
             description: "",
@@ -443,6 +444,7 @@ export const install = async (
 
         const { name, title, description } = value;
         const newApp = new AppModel({
+            _id: newAppId,
             name,
             title,
             description,
