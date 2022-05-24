@@ -8,7 +8,7 @@ import { gql, useMutation } from "@apollo/client";
 import * as yup from "yup";
 
 import Stepper, { IStep } from "../../components/Stepper";
-import { useNotification } from "../../hooks";
+import { useNavigate, useNotification } from "../../hooks";
 
 import AdministratorDetailsStep from "./AdministratorDetailsStep";
 import AppDetailsStep from "./AppDetailsStep";
@@ -87,7 +87,10 @@ const initialValues: IFormValues = {
 const Installation: FunctionComponent = (): ReactElement => {
     const [start, setStart] = useState(false);
     const notification = useNotification();
-    const [installHypertool] = useMutation(INSTALL_HYPERTOOL);
+    const [installHypertool] = useMutation(INSTALL_HYPERTOOL, {
+        refetchQueries: ["GetRootApp"],
+    });
+    const navigate = useNavigate();
 
     const handleStart = useCallback(() => {
         setStart(true);
@@ -161,6 +164,7 @@ const Installation: FunctionComponent = (): ReactElement => {
                         ...values,
                     },
                 });
+                navigate("/login");
 
                 notification.notifySuccess(`Installed Hypertool successfully`);
             } catch (error) {
