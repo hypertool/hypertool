@@ -66,6 +66,15 @@ const typeDefs = gql`
             variables: GraphQLJSON!
             format: QueryResultFormat!
         ): QueryResult!
+
+        installHypertool(
+            name: String!
+            title: String!
+            firstName: String!
+            lastName: String!
+            emailAddress: String!
+            password: String!
+        ): App!
     }
 `;
 
@@ -104,6 +113,9 @@ const resolvers = {
 
         executeQuery: async (parent, values, context) =>
             queries.execute(context.request, values),
+
+        installHypertool: async (parent, values, context) =>
+            apps.install(context.request, values),
     },
 };
 
