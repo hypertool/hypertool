@@ -3,15 +3,40 @@ import { useCallback, useMemo, useState } from "react";
 
 import { Container as MuiContainer, styled } from "@mui/material";
 
+import { gql, useMutation } from "@apollo/client";
+
 import * as yup from "yup";
 
 import Stepper, { IStep } from "../../components/Stepper";
+import { useNotification } from "../../hooks";
 
 import AdministratorDetailsStep from "./AdministratorDetailsStep";
 import AppDetailsStep from "./AppDetailsStep";
 import Welcome from "./Welcome";
 
 const Container = styled(MuiContainer)(({ theme }) => ({}));
+
+const INSTALL_HYPERTOOL = gql`
+    mutation InstallHypertool(
+        $name: String!
+        $title: String!
+        $firstName: String!
+        $lastName: String!
+        $emailAddress: String!
+        $password: String!
+    ) {
+        installHypertool(
+            name: $name
+            title: $title
+            firstName: $firstName
+            lastName: $lastName
+            emailAddress: $emailAddress
+            password: $password
+        ) {
+            id
+        }
+    }
+`;
 
 interface IFormValues {
     name: string;
@@ -51,16 +76,18 @@ const validationSchema = yup.object({
 });
 
 const initialValues: IFormValues = {
-    name: "",
-    title: "",
-    firstName: "",
-    lastName: "",
-    emailAddress: "",
+    name: "hypertool",
+    title: "Hypertool",
+    firstName: "Samuel",
+    lastName: "Rowe",
+    emailAddress: "samuel@hypertool.io",
     password: "",
 };
 
 const Installation: FunctionComponent = (): ReactElement => {
     const [start, setStart] = useState(false);
+    const notification = useNotification();
+    const [installHypertool] = useMutation(INSTALL_HYPERTOOL);
 
     const handleStart = useCallback(() => {
         setStart(true);
@@ -119,9 +146,29 @@ const Installation: FunctionComponent = (): ReactElement => {
         }
     }, []);
 
-    const handleComplete = useCallback(async (values: any): Promise<void> => {
-        return;
-    }, []);
+    const handleComplete = useCallback(
+        async (values: IFormValues): Promise<void> => {
+            try {
+                notification.notify({
+                    type: "info",
+                    message: `Installing Hypertool...`,
+                    closeable: false,
+                    autoCloseDuration: -1,
+                });
+
+                await installHypertool({
+                    variables: {
+                        ...values,
+                    },
+                });
+
+                notification.notifySuccess(`Installed Hypertool successfully`);
+            } catch (error) {
+                notification.notifyError(error);
+            }
+        },
+        [],
+    );
 
     return (
         <div>
