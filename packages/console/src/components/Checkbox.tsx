@@ -9,13 +9,14 @@ interface Props {
 
 const Checkbox = (props: Props) => {
     const { name, ...otherProps } = props;
-    const formik = useFormikContext();
+    const formik: any = useFormikContext();
 
     return (
         <MuiCheckbox
             name={name}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
+            checked={Boolean(formik[name])}
             {...otherProps}
         />
     );
