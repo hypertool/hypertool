@@ -16,7 +16,7 @@ import { useGoogleLogin } from "react-google-login";
 import { Link, useNavigate } from "react-router-dom";
 
 import { Password, TextField } from "../../components";
-import { useSession } from "../../hooks";
+import { useNotification, useSession } from "../../hooks";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -135,6 +135,7 @@ const validationSchema = yup.object({
 const Login: FunctionComponent = (): ReactElement => {
     const navigate = useNavigate();
     const { reload } = useSession(true);
+    const notification = useNotification();
 
     const onSuccess = useCallback(
         async (response: any) => {
@@ -171,18 +172,22 @@ const Login: FunctionComponent = (): ReactElement => {
 
     const handleBasicAuthSubmit = useCallback(
         async (values: FormValues) => {
-            const result = await client.mutate({
-                mutation: LOGIN_WITH_EMAIL,
-                variables: { ...values },
-            });
-            delete result.data.loginWithEmail.__typename;
-            delete result.data.loginWithEmail.user.__typename;
-            localStorage.setItem(
-                "session",
-                JSON.stringify(result.data.loginWithEmail),
-            );
-            reload();
-            navigate("/apps");
+            try {
+                const result = await client.mutate({
+                    mutation: LOGIN_WITH_EMAIL,
+                    variables: { ...values },
+                });
+                delete result.data.loginWithEmail.__typename;
+                delete result.data.loginWithEmail.user.__typename;
+                localStorage.setItem(
+                    "session",
+                    JSON.stringify(result.data.loginWithEmail),
+                );
+                reload();
+                navigate("/apps");
+            } catch (error: any) {
+                notification.notifyError(error);
+            }
         },
         [navigate, reload],
     );
