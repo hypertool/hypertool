@@ -547,7 +547,7 @@ const loginWithEmail = async (
 
     if (!user) {
         throw new NotFoundError(
-            "Cannot find a user with the specified email address.",
+            "The specified email address or password is invalid.",
         );
     }
 
