@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { ClientSession } from "mongoose";
 
 import { TTransactionCallback } from "../types";
 
@@ -28,7 +28,11 @@ export const runAsTransaction = async <T>(
     callback: TTransactionCallback<T>,
 ): Promise<T> => {
     const session = await mongoose.startSession();
-    return await session.withTransaction(callback);
+    let result: any;
+    await session.withTransaction(async (client: ClientSession) => {
+        result = await callback(client);
+    });
+    return result;
 };
 
 export * as constants from "./constants";
