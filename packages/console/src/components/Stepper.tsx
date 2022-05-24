@@ -217,7 +217,10 @@ const Stepper: FunctionComponent<IStepperProps<any>> = <T,>(
                                         onClick={formik.submitForm}
                                         variant="contained"
                                         size="small"
-                                        disabled={processing}
+                                        disabled={
+                                            processing ||
+                                            !isStepComplete(activeStep, formik)
+                                        }
                                     >
                                         {finalActionText}
                                         {!processing && (
