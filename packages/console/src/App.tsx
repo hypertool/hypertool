@@ -16,6 +16,7 @@ import { setContext } from "@apollo/client/link/context";
 import { ConfirmProvider } from "material-ui-confirm";
 import { Navigate, Route, Routes } from "react-router-dom";
 
+import { Splash } from "./components";
 import { NotificationProvider } from "./contexts";
 import SessionContext from "./contexts/SessionContext";
 import { VisitorLayout, WorkspaceLayout } from "./layouts";
@@ -101,11 +102,15 @@ const App: FunctionComponent = (): ReactElement => {
         };
     }, [reload]);
 
-    const { data } = useQuery(GET_ROOT_APP, {
+    const { data, loading } = useQuery(GET_ROOT_APP, {
         notifyOnNetworkStatusChange: true,
         client: publicClient,
     });
     const rootApp = data?.getRootApp;
+
+    if (loading) {
+        return <Splash />;
+    }
 
     return (
         <Root>
