@@ -1,14 +1,10 @@
-import { FunctionComponent, ReactElement, useEffect, useRef } from "react";
+import type { FunctionComponent, ReactElement } from "react";
+import { useEffect } from "react";
 
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 
 import { Element, Frame, useEditor } from "../../craft";
-import {
-    useInterval,
-    useNotification,
-    useTabBundle,
-    useUpdateTabTitle,
-} from "../../hooks";
+import { useTab, useTabBundle, useUpdateTabTitle } from "../../hooks";
 import { ButtonNode, ContainerNode, FragmentNode } from "../../nodes";
 import { IEditScreenBundle } from "../../types";
 
@@ -24,18 +20,10 @@ const GET_SCREEN = gql`
     }
 `;
 
-const UPDATE_SCREEN = gql`
-    mutation UpdateScreen($screenId: ID!, $content: String!) {
-        updateScreen(screenId: $screenId, content: $content) {
-            id
-        }
-    }
-`;
-
 const CanvasEditor: FunctionComponent = (): ReactElement => {
     const bundle = useTabBundle<IEditScreenBundle>();
-    const { actions, query } = useEditor();
-    // TODO: Destructure `error`, check for non-null, send to sentry
+    const { tab } = useTab();
+    const { actions } = useEditor();
     const { data } = useQuery(GET_SCREEN, {
         variables: {
             screenId: bundle.screenId,
@@ -43,40 +31,29 @@ const CanvasEditor: FunctionComponent = (): ReactElement => {
         notifyOnNetworkStatusChange: true,
     });
     useUpdateTabTitle(data?.getScreenById?.name);
-    const notification = useNotification();
-
-    const [updateScreen] = useMutation(UPDATE_SCREEN);
-
-    const previousContent = useRef("");
-
-    useInterval(async () => {
-        const content = query.serialize();
-        if (content === previousContent.current) {
-            return;
-        }
-
-        try {
-            await updateScreen({
-                variables: {
-                    screenId: bundle.screenId,
-                    content,
-                },
-            });
-        } catch (error: any) {
-            notification.notifyError(error);
-        }
-
-        previousContent.current = content;
-    }, 5000);
 
     useEffect(() => {
         if (data?.getScreenById) {
             const { content } = data.getScreenById;
             if (content) {
                 actions.deserialize(content);
+                const oldObject = JSON.parse(
+                    localStorage.getItem("nodes") || "{}",
+                );
+                localStorage.setItem(
+                    "nodes",
+                    JSON.stringify(
+                        {
+                            [bundle.screenId]: content,
+                            ...oldObject,
+                        },
+                        null,
+                        4,
+                    ),
+                );
             }
         }
-    }, [data?.getScreenById?.content]);
+    }, [data?.getScreenById?.content, actions, bundle, bundle.screenId]);
 
     return (
         <CanvasViewport>
