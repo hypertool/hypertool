@@ -14,6 +14,7 @@ import {
     CheckboxNode,
     FragmentNode,
     SelectNode,
+    TextFieldNode,
     TextNode,
     ViewNode,
 } from "../../../nodes";
@@ -71,6 +72,11 @@ const Components: FunctionComponent = (): ReactElement => {
                     ref,
                     <Element is={FragmentNode} canvas={true} />,
                 ),
+        },
+        {
+            title: "TextField",
+            icon: "text_fields",
+            createRef: (ref: any) => connectors.create(ref, <TextFieldNode />),
         },
     ];
 
