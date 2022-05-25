@@ -8,3 +8,4 @@ export { default as Select } from "./Select";
 export { default as NoRecords } from "./NoRecords";
 export { default as Stepper } from "./Stepper";
 export { default as Password } from "./Password";
+export { default as Splash } from "./Splash";
