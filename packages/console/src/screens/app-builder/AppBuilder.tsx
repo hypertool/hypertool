@@ -187,32 +187,28 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         activeTab,
 
         setActiveTab: async (newActiveTabId: string) => {
-            if (activeTab && activeTabType === "edit-screen") {
-                const content = query.serialize();
-                localStorage.setItem(activeTab, content);
-
-                try {
-                    await updateScreen({
-                        variables: {
-                            screenId: (activeTabBundle as IEditScreenBundle)
-                                .screenId,
-                            content,
-                        },
-                    });
-                } catch (error: any) {
-                    notification.notifyError(error);
-                }
-            }
-
             /*
              * If the new active tab is being inserted to the tabs list, then we
              * do not bother with deserializing anything.
              */
             const newActiveTab = tabs.find((tab) => tab.id === newActiveTabId);
             if (newActiveTab && newActiveTab.type === "edit-screen") {
-                const json = localStorage.getItem(newActiveTabId);
-                if (json) {
-                    actions.deserialize(json);
+                const jsonString = localStorage.getItem("nodes");
+                if (jsonString) {
+                    const json =
+                        JSON.parse(jsonString)[
+                            (newActiveTab.bundle as IEditScreenBundle).screenId
+                        ];
+                    /*
+                     * When the tab is activated for the very first time, the
+                     * key should be missing. `CanvasEditor` will download
+                     * the content from the API and update the local storage.
+                     * Thus, from subsequent activations, content from the local
+                     * storage will be used.
+                     */
+                    if (json) {
+                        actions.deserialize(json);
+                    }
                 }
             }
 
@@ -402,18 +398,30 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         const active = id === activeTab;
         const Component = tabDetailsByType[type].component;
         return (
-            <div
-                key={tab.id}
-                style={{
-                    display: active ? "block" : "none",
-                    width: "100%",
-                    height: "auto",
-                }}
-            >
-                <TabContext.Provider value={{ tab, index, active }}>
-                    <Component />
-                </TabContext.Provider>
-            </div>
+            active && (
+                <div
+                    key={tab.id}
+                    style={{
+                        display: active ? "block" : "none",
+                        width: "100%",
+                        height: "auto",
+                    }}
+                >
+                    <TabContext.Provider value={{ tab, index, active }}>
+                        <Component />
+                        {type === "edit-screen" && (
+                            <RightDrawer
+                                open={
+                                    rightDrawerOpen &&
+                                    "edit-screen" === activeTabType
+                                }
+                                onDrawerClose={handleRightDrawerClose}
+                                activeTabBundle={activeTabBundle}
+                            />
+                        )}
+                    </TabContext.Provider>
+                </div>
+            )
         );
     };
 
@@ -430,13 +438,6 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                     <Main>
                         <Content>{tabs.map(renderTabContent)}</Content>
                     </Main>
-                    <RightDrawer
-                        open={
-                            rightDrawerOpen && "edit-screen" === activeTabType
-                        }
-                        onDrawerClose={handleRightDrawerClose}
-                        activeTabBundle={activeTabBundle}
-                    />
                 </Root>
             </ModulesContext.Provider>
         </BuilderActionsContext.Provider>
