@@ -3,6 +3,7 @@ import CheckboxNode from "./CheckboxNode";
 import ContainerNode from "./ContainerNode";
 import FragmentNode from "./FragmentNode";
 import SelectNode from "./SelectNode";
+import TextFieldNode from "./TextFieldNode";
 import TextNode from "./TextNode";
 import ViewNode from "./ViewNode";
 
@@ -14,6 +15,7 @@ export const nodeMappings = {
     Checkbox: CheckboxNode,
     View: ViewNode,
     Fragment: FragmentNode,
+    TextField: TextFieldNode,
 };
 
 export {
@@ -24,4 +26,5 @@ export {
     SelectNode,
     TextNode,
     ViewNode,
+    TextFieldNode,
 };
