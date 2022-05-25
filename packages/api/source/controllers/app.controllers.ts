@@ -439,7 +439,7 @@ export const install = async (
             status: "activated",
             app: newAppId,
             organizations: [],
-            apps: [],
+            apps: [newAppId],
         });
 
         const { name, title, description } = value;
