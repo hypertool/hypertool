@@ -19,7 +19,7 @@ const ImageNode: CraftComponent<IImageProps> = (
 ImageNode.defaultProps = {
     source: "https://res.cloudinary.com/hypertool/image/upload/v1649820987/hypertool-assets/empty-apps_ok9nbh.svg",
     width: "400px",
-    height: "400px",
+    height: "200px",
 };
 
 ImageNode.craft = {
