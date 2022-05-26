@@ -1,12 +1,9 @@
-import { ReactElement, useCallback } from "react";
-import { useEffect, useState } from "react";
+import type { ReactElement } from "react";
 
-import ContentEditable from "react-contenteditable";
-import type { ContentEditableEvent } from "react-contenteditable";
-
-import { useNode } from "../craft";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
 import { CraftComponent } from "../types";
+
+import Node from "./Node";
 
 export interface ITextProps {
     id?: string;
@@ -24,14 +21,6 @@ const TextNode: CraftComponent<ITextProps> = (
     props: ITextProps,
 ): ReactElement => {
     const {
-        connectors: { connect, drag },
-        selected,
-        actions: { setProp },
-    } = useNode((state) => ({
-        selected: state.events.selected,
-        dragged: state.events.dragged,
-    }));
-    const {
         text,
         color,
         fontFamily,
@@ -42,27 +31,9 @@ const TextNode: CraftComponent<ITextProps> = (
         fontWeight,
     } = props as any;
 
-    const [editable, setEditable] = useState(false);
-
-    useEffect(() => {
-        setEditable(!selected);
-    }, [selected]);
-
-    const handleChange = useCallback(
-        (event: ContentEditableEvent) =>
-            setProp((props: any) => {
-                props.text = event.target.value;
-            }),
-        [],
-    );
-
     return (
-        <div ref={(ref) => connect(drag(ref as any))}>
-            <ContentEditable
-                html={props.text || ""}
-                onChange={handleChange}
-                disabled={!editable}
-                tagName="p"
+        <Node>
+            <p
                 style={{
                     color,
                     fontFamily,
@@ -72,8 +43,10 @@ const TextNode: CraftComponent<ITextProps> = (
                     fontStyle,
                     fontWeight,
                 }}
-            />
-        </div>
+            >
+                {text}
+            </p>
+        </Node>
     );
 };
 
