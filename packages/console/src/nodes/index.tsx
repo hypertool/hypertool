@@ -5,6 +5,9 @@ import DialogNode from "./DialogNode";
 import FragmentNode from "./FragmentNode";
 import ImageNode from "./ImageNode";
 import SelectNode from "./SelectNode";
+import TableCellNode from "./TableCellNode";
+import TableNode from "./TableNode";
+import TableRowNode from "./TableRowNode";
 import TextFieldNode from "./TextFieldNode";
 import TextNode from "./TextNode";
 import ViewNode from "./ViewNode";
@@ -20,6 +23,9 @@ export const nodeMappings = {
     TextField: TextFieldNode,
     Image: ImageNode,
     Dialog: DialogNode,
+    Table: TableNode,
+    TableRow: TableRowNode,
+    TableCell: TableCellNode,
 };
 
 export {
@@ -33,4 +39,7 @@ export {
     TextFieldNode,
     ImageNode,
     DialogNode,
+    TableNode,
+    TableRowNode,
+    TableCellNode,
 };
