@@ -68,6 +68,10 @@ const useModules = (appId: string): TModulesContext => {
     useEffect(() => {
         let mounted = true;
 
+        if (controllers.length === 0) {
+            return;
+        }
+
         try {
             const result: Record<string, IModule> = {};
 
