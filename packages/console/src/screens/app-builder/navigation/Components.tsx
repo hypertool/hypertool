@@ -16,6 +16,9 @@ import {
     FragmentNode,
     ImageNode,
     SelectNode,
+    TableCellNode,
+    TableNode,
+    TableRowNode,
     TextFieldNode,
     TextNode,
     ViewNode,
@@ -76,7 +79,7 @@ const Components: FunctionComponent = (): ReactElement => {
                 ),
         },
         {
-            title: "TextField",
+            title: "Text Field",
             icon: "text_fields",
             createRef: (ref: any) => connectors.create(ref, <TextFieldNode />),
         },
@@ -92,6 +95,81 @@ const Components: FunctionComponent = (): ReactElement => {
                 connectors.create(
                     ref,
                     <Element is={DialogNode} canvas={true} open={false} />,
+                ),
+        },
+        {
+            title: "Table",
+            icon: "table",
+            createRef: (ref: any) =>
+                connectors.create(
+                    ref,
+                    <Element is={TableNode} canvas={true}>
+                        <Element is={TableRowNode} canvas={true}>
+                            <Element is={TableCellNode} canvas={true}>
+                                <TextNode text="ID" color="#000000" />
+                            </Element>
+                            <Element is={TableCellNode} canvas={true}>
+                                <TextNode text="Name" color="#000000" />
+                            </Element>
+                        </Element>
+
+                        <Element is={TableRowNode} canvas={true}>
+                            <Element is={TableCellNode} canvas={true}>
+                                <TextNode
+                                    text="628d957056f817cebd945721"
+                                    color="#000000"
+                                />
+                            </Element>
+                            <Element is={TableCellNode} canvas={true}>
+                                <TextNode text="Samuel Rowe" color="#000000" />
+                            </Element>
+                        </Element>
+
+                        <Element is={TableRowNode} canvas={true}>
+                            <Element is={TableCellNode} canvas={true}>
+                                <TextNode
+                                    text="608d95705af817cebd945813"
+                                    color="#000000"
+                                />
+                            </Element>
+                            <Element is={TableCellNode} canvas={true}>
+                                <TextNode
+                                    text="Neeraj Kumawat"
+                                    color="#000000"
+                                />
+                            </Element>
+                        </Element>
+
+                        <Element is={TableRowNode} canvas={true}>
+                            <Element is={TableCellNode} canvas={true}>
+                                <TextNode
+                                    text="608e1e705efa17decdfb1310"
+                                    color="#000000"
+                                />
+                            </Element>
+                            <Element is={TableCellNode} canvas={true}>
+                                <TextNode text="Joel Rego" color="#000000" />
+                            </Element>
+                        </Element>
+                    </Element>,
+                ),
+        },
+        {
+            title: "Table Row",
+            icon: "table",
+            createRef: (ref: any) =>
+                connectors.create(
+                    ref,
+                    <Element is={TableRowNode} canvas={true} />,
+                ),
+        },
+        {
+            title: "Table Cell",
+            icon: "table",
+            createRef: (ref: any) =>
+                connectors.create(
+                    ref,
+                    <Element is={TableCellNode} canvas={true} />,
                 ),
         },
     ];
