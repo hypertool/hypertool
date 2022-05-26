@@ -5,8 +5,8 @@ import { TableCell as MuiTableCell } from "@mui/material";
 export interface ITableCellProps {
     id?: string;
     align?: "center" | "justify" | "left" | "right" | "inherit";
-    padding?: "checkbox" | "none" | "normal";
-    size?: "small" | "medium";
+    padding?: "checkbox" | "none" | "normal" | "inherit";
+    size?: "small" | "medium" | "inherit";
     variant?: "body" | "footer" | "head";
     children?: ReactNode;
 }
@@ -18,8 +18,8 @@ const TableCell: FunctionComponent<ITableCellProps> = (
     return (
         <MuiTableCell
             align={align}
-            padding={padding}
-            size={size}
+            padding={padding === "inherit" ? undefined : padding}
+            size={size === "inherit" ? undefined : size}
             variant={variant}
             style={{ display: "flex", height: "fit-content", width: 200 }}
         >
@@ -30,8 +30,8 @@ const TableCell: FunctionComponent<ITableCellProps> = (
 
 TableCell.defaultProps = {
     align: "inherit",
-    padding: "normal",
-    size: "medium",
+    padding: "inherit",
+    size: "inherit",
     variant: "body",
 };
 

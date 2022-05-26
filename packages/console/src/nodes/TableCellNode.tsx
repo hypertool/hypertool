@@ -61,6 +61,7 @@ TableCellNode.craft = {
                                     { value: "checkbox", title: "Checkbox" },
                                     { value: "none", title: "None" },
                                     { value: "normal", title: "Normal" },
+                                    { value: "inherit", title: "Inherit" },
                                 ],
                             },
                             {
@@ -73,6 +74,7 @@ TableCellNode.craft = {
                                 options: [
                                     { value: "small", title: "Small" },
                                     { value: "medium", title: "Medium" },
+                                    { value: "inherit", title: "Inherit" },
                                 ],
                             },
                             {
