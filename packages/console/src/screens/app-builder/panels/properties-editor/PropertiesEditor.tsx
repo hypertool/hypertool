@@ -15,11 +15,11 @@ const Root = styled("div")(({ theme }) => ({
 }));
 
 const Properties = styled("div")(({ theme }) => ({
-    minHeight: "calc(100vh - 148px)",
+    minHeight: "calc(100vh - 166px)",
 }));
 
 const Actions = styled("div")(({ theme }) => ({
-    padding: theme.spacing(0, 2),
+    padding: theme.spacing(2),
 }));
 
 const UPDATE_SCREEN = gql`
