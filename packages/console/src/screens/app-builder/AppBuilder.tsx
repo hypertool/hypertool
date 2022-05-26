@@ -10,7 +10,7 @@ import {
     ModulesContext,
     TabContext,
 } from "../../contexts";
-import { Editor } from "../../craft";
+import { Editor, useEditor } from "../../craft";
 import { useModules, useParam } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type {
@@ -155,6 +155,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     const appId = useParam("appId");
 
     const modules = useModules(appId);
+    const { actions } = useEditor();
 
     const { type: activeTabType, bundle: activeTabBundle } = useMemo(
         () =>
