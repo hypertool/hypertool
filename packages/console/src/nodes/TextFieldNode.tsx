@@ -2,9 +2,8 @@ import type { ReactElement } from "react";
 
 import { TextField as MuiTextField } from "@mui/material";
 
-import { useSymbolReference } from "../hooks";
 import PropertiesForm from "../screens/app-builder/panels/properties-editor/PropertiesForm";
-import type { Color, CraftComponent, ISymbolReference } from "../types";
+import type { CraftComponent, ISymbolReference } from "../types";
 
 import Node from "./Node";
 
