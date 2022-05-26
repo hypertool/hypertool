@@ -12,6 +12,7 @@ import { Element, useEditor } from "../../../craft";
 import {
     ButtonNode,
     CheckboxNode,
+    DialogNode,
     FragmentNode,
     ImageNode,
     SelectNode,
@@ -83,6 +84,15 @@ const Components: FunctionComponent = (): ReactElement => {
             title: "Image",
             icon: "image",
             createRef: (ref: any) => connectors.create(ref, <ImageNode />),
+        },
+        {
+            title: "Dialog",
+            icon: "dialpad",
+            createRef: (ref: any) =>
+                connectors.create(
+                    ref,
+                    <Element is={DialogNode} canvas={true} open={false} />,
+                ),
         },
     ];
 
