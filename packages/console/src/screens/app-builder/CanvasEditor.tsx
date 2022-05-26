@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { gql, useQuery } from "@apollo/client";
 
 import { Element, Frame, useEditor } from "../../craft";
-import { useTab, useTabBundle, useUpdateTabTitle } from "../../hooks";
+import { useTabBundle, useUpdateTabTitle } from "../../hooks";
 import { ButtonNode, ContainerNode, FragmentNode } from "../../nodes";
 import { IEditScreenBundle } from "../../types";
 
@@ -22,7 +22,6 @@ const GET_SCREEN = gql`
 
 const CanvasEditor: FunctionComponent = (): ReactElement => {
     const bundle = useTabBundle<IEditScreenBundle>();
-    const { tab } = useTab();
     const { actions } = useEditor();
     const { data } = useQuery(GET_SCREEN, {
         variables: {
