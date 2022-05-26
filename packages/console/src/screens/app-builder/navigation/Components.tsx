@@ -13,6 +13,7 @@ import {
     ButtonNode,
     CheckboxNode,
     FragmentNode,
+    ImageNode,
     SelectNode,
     TextFieldNode,
     TextNode,
@@ -77,6 +78,11 @@ const Components: FunctionComponent = (): ReactElement => {
             title: "TextField",
             icon: "text_fields",
             createRef: (ref: any) => connectors.create(ref, <TextFieldNode />),
+        },
+        {
+            title: "Image",
+            icon: "image",
+            createRef: (ref: any) => connectors.create(ref, <ImageNode />),
         },
     ];
 
