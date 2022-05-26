@@ -3,8 +3,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { styled } from "@mui/material/styles";
 
-import { gql, useMutation } from "@apollo/client";
-
 import * as uuid from "uuid";
 
 import {
@@ -12,8 +10,8 @@ import {
     ModulesContext,
     TabContext,
 } from "../../contexts";
-import { Editor, useEditor } from "../../craft";
-import { useModules, useNotification, useParam } from "../../hooks";
+import { Editor } from "../../craft";
+import { useModules, useParam } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type {
     IBuilderActionsContext,
@@ -144,14 +142,6 @@ const tabDetailsByType: Record<string, ITabTypeDetails> = {
     },
 };
 
-const UPDATE_SCREEN = gql`
-    mutation UpdateScreen($screenId: ID!, $content: String!) {
-        updateScreen(screenId: $screenId, content: $content) {
-            id
-        }
-    }
-`;
-
 const AppBuilder: FunctionComponent = (): ReactElement => {
     const [leftDrawerOpen, setLeftDrawerOpen] = useState(true);
     const [rightDrawerOpen, setRightDrawerOpen] = useState(true);
@@ -163,11 +153,8 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         ),
     )[1];
     const appId = useParam("appId");
-    const notification = useNotification();
 
     const modules = useModules(appId);
-    const { actions, query } = useEditor();
-    const [updateScreen] = useMutation(UPDATE_SCREEN);
 
     const { type: activeTabType, bundle: activeTabBundle } = useMemo(
         () =>
