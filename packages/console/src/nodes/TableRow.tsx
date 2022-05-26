@@ -1,6 +1,25 @@
 import type { FunctionComponent, ReactElement, ReactNode } from "react";
 
-import { TableRow as MuiTableRow } from "@mui/material";
+import { TableRow as MuiTableRow, styled } from "@mui/material";
+
+const EmptyRowContainer = styled("div")(({ theme }) => ({
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    borderWidth: 1,
+    borderStyle: "dotted",
+}));
+
+const EmptyRowText = styled("p")(({ theme }) => ({
+    fontStyle: "italic",
+    fontSize: 12,
+    textAlign: "center",
+    width: "100%",
+    padding: 0,
+    margin: 0,
+}));
 
 export interface ITableRowProps {
     id?: string;
@@ -18,13 +37,20 @@ const TableRow: FunctionComponent<ITableRowProps> = (
             style={{
                 display: "flex",
                 flexDirection: "row",
-                ...(children ? { height: "fit-content" } : { height: 56 }),
-                width: "100%",
+                ...(children
+                    ? { height: "fit-content", width: "100%" }
+                    : { height: 56, width: 400 }),
             }}
             hover={hover}
             selected={selected}
         >
-            {children}
+            {children || (
+                <EmptyRowContainer>
+                    <EmptyRowText>
+                        Add one or more table cells for this table row
+                    </EmptyRowText>
+                </EmptyRowContainer>
+            )}
         </MuiTableRow>
     );
 };
