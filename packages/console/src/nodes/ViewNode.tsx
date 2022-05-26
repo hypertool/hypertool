@@ -118,27 +118,6 @@ ViewNode.craft = {
                         ],
                     },
                     {
-                        id: "background",
-                        title: "Background",
-                        fields: [
-                            {
-                                id: "backgroundAttachment",
-                                size: "small",
-                                help: "Determines whether a background image's position is fixed within the viewport, or scrolls with its containing block.",
-                                type: "select",
-                                title: "Attachment",
-                                options: [
-                                    { value: "fixed", title: "Fixed" },
-                                    {
-                                        value: "local",
-                                        title: "Local",
-                                    },
-                                    { value: "scroll", title: "Scroll" },
-                                ],
-                            },
-                        ],
-                    },
-                    {
                         id: "dimensions",
                         title: "Dimensions",
                         fields: [
@@ -198,6 +177,21 @@ ViewNode.craft = {
                                 help: "The background color of the view.",
                                 type: "text",
                                 title: "Background Color",
+                            },
+                            {
+                                id: "backgroundAttachment",
+                                size: "small",
+                                help: "Determines whether a background image's position is fixed within the viewport, or scrolls with its containing block.",
+                                type: "select",
+                                title: "Attachment",
+                                options: [
+                                    { value: "fixed", title: "Fixed" },
+                                    {
+                                        value: "local",
+                                        title: "Local",
+                                    },
+                                    { value: "scroll", title: "Scroll" },
+                                ],
                             },
                         ],
                     },
