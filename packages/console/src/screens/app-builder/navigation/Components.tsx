@@ -38,6 +38,7 @@ const ItemButton = styled(MaterialButton)(({ theme }) => ({
     width: "100%",
     padding: theme.spacing(2),
     flexDirection: "column",
+    fontSize: 12,
 }));
 
 const Components: FunctionComponent = (): ReactElement => {
@@ -174,8 +175,8 @@ const Components: FunctionComponent = (): ReactElement => {
                 ),
         },
         {
-            title: "Circular Progress",
-            icon: "progress_circle",
+            title: "Progress",
+            icon: "update",
             createRef: (ref: any) =>
                 connectors.create(ref, <CircularProgressNode />),
         },

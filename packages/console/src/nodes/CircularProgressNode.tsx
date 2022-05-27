@@ -73,6 +73,13 @@ CircularProgressNode.craft = {
                                 help: "The thickness of the circular progress.",
                             },
                             {
+                                id: "value",
+                                title: "Value",
+                                type: "number",
+                                size: "small",
+                                help: "The value of the circular progress between 1 to 100. It works only when the variant is determinate.",
+                            },
+                            {
                                 id: "variant",
                                 title: "Variant",
                                 type: "select",
