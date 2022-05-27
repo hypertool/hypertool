@@ -12,6 +12,7 @@ import { Element, useEditor } from "../../../craft";
 import {
     ButtonNode,
     CheckboxNode,
+    CircularProgressNode,
     DialogNode,
     FragmentNode,
     ImageNode,
@@ -171,6 +172,12 @@ const Components: FunctionComponent = (): ReactElement => {
                     ref,
                     <Element is={TableCellNode} canvas={true} />,
                 ),
+        },
+        {
+            title: "Circular Progress",
+            icon: "progress_circle",
+            createRef: (ref: any) =>
+                connectors.create(ref, <CircularProgressNode />),
         },
     ];
 

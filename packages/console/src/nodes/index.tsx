@@ -1,5 +1,6 @@
 import ButtonNode from "./ButtonNode";
 import CheckboxNode from "./CheckboxNode";
+import CircularProgressNode from "./CircularProgressNode";
 import ContainerNode from "./ContainerNode";
 import DialogNode from "./DialogNode";
 import FragmentNode from "./FragmentNode";
@@ -26,6 +27,7 @@ export const nodeMappings = {
     Table: TableNode,
     TableRow: TableRowNode,
     TableCell: TableCellNode,
+    CircularProgress: CircularProgressNode,
 };
 
 export {
@@ -42,4 +44,5 @@ export {
     TableNode,
     TableRowNode,
     TableCellNode,
+    CircularProgressNode,
 };
