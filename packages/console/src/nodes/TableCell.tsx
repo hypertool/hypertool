@@ -43,7 +43,8 @@ const TableCell: FunctionComponent<ITableCellProps> = (
             variant={variant}
             style={{
                 display: "flex",
-                ...(children ? { height, width } : { height: 56, width: 200 }),
+                height,
+                width,
             }}
         >
             {children || (

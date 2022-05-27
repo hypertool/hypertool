@@ -6,20 +6,22 @@ export interface ITableProps {
     id?: string;
     padding?: "checkbox" | "none" | "normal";
     size?: "medium" | "small";
+    height?: string;
+    width?: string;
     children?: ReactNode;
 }
 
 const Table: FunctionComponent<ITableProps> = (
     props: ITableProps,
 ): ReactElement => {
-    const { id, padding, size, children } = props;
+    const { id, padding, size, height, width, children } = props;
     return (
         <MuiTable
             padding={padding}
             size={size}
             style={{
-                minWidth: 800,
-                minHeight: 800,
+                height,
+                width,
                 backgroundColor: "white",
             }}
         >
@@ -31,6 +33,8 @@ const Table: FunctionComponent<ITableProps> = (
 Table.defaultProps = {
     padding: "normal",
     size: "medium",
+    height: "800px",
+    width: "800px",
 };
 
 export default Table;
