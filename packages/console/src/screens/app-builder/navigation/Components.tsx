@@ -157,6 +157,15 @@ const Components: FunctionComponent = (): ReactElement => {
                 ),
         },
         {
+            title: "Empty Table",
+            icon: "table",
+            createRef: (ref: any) =>
+                connectors.create(
+                    ref,
+                    <Element is={TableNode} canvas={true} />,
+                ),
+        },
+        {
             title: "Table Row",
             icon: "table",
             createRef: (ref: any) =>
