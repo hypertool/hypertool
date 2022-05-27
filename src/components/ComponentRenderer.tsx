@@ -4,6 +4,9 @@ import Button from "./Button";
 import Fragment from "./Fragment";
 import View from "./View";
 import Text from "./Text";
+import Table from "./Table";
+import TableRow from "./TableRow";
+import TableCell from "./TableCell";
 
 export interface IProps {
   node: INode;
@@ -14,6 +17,9 @@ const componentMapping: Record<string, FunctionComponent<any>> = {
   Fragment,
   View,
   Text,
+  Table,
+  TableRow,
+  TableCell,
 };
 
 const ComponentRenderer: FunctionComponent<IProps> = (
