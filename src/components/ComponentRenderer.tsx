@@ -8,6 +8,7 @@ import Table from "./Table";
 import TableRow from "./TableRow";
 import TableCell from "./TableCell";
 import Dialog from "./Dialog";
+import Image from "./Image";
 
 export interface IProps {
   node: INode;
@@ -22,6 +23,7 @@ const componentMapping: Record<string, FunctionComponent<any>> = {
   TableRow,
   TableCell,
   Dialog,
+  Image
 };
 
 const ComponentRenderer: FunctionComponent<IProps> = (
