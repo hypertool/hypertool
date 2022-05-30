@@ -7,6 +7,7 @@ import Text from "./Text";
 import Table from "./Table";
 import TableRow from "./TableRow";
 import TableCell from "./TableCell";
+import Dialog from "./Dialog";
 
 export interface IProps {
   node: INode;
@@ -20,6 +21,7 @@ const componentMapping: Record<string, FunctionComponent<any>> = {
   Table,
   TableRow,
   TableCell,
+  Dialog,
 };
 
 const ComponentRenderer: FunctionComponent<IProps> = (
