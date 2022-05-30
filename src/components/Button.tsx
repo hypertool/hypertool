@@ -5,7 +5,11 @@ import {
   useCallback,
 } from "react";
 import useCallbackSymbol from "../hooks/useCallbackSymbol";
-import type { INode, ISymbolReference, TMouseEventHandler } from "../types";
+import type {
+  INode,
+  TMouseEventHandler,
+  TSymbolReferenceOrFunction,
+} from "../types";
 import { Button as MuiButton } from "@mui/material";
 import { transformNativeMouseEvent } from "../utils/events";
 
@@ -17,7 +21,7 @@ export interface IProps {
   disableFocusRipple?: boolean;
   disableRipple?: boolean;
   text?: string;
-  onClick?: ISymbolReference;
+  onClick?: TSymbolReferenceOrFunction;
   node: INode;
 }
 
