@@ -3,7 +3,8 @@ import { ControllersContext } from "../contexts";
 import { ISymbolReference } from "../types";
 
 const useSymbolReference = <R,>(
-  reference?: ISymbolReference | null
+  reference?: ISymbolReference | null,
+  ignore = false
 ): R | null => {
   const context = useContext(ControllersContext);
   if (!context) {
@@ -11,6 +12,10 @@ const useSymbolReference = <R,>(
   }
 
   if (!reference) {
+    return null;
+  }
+
+  if (ignore) {
     return null;
   }
 
