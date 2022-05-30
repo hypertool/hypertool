@@ -101,8 +101,13 @@ export interface INode {
   __hyperNode: true;
 }
 
+export type TPatchEntry =
+  | Record<string, TPropertyValue>
+  | INode
+  | TTransformNodeFunction;
+
 export interface IPatch {
-  [key: string]: Record<string, TPropertyValue> | INode;
+  [key: string]: TPatchEntry;
 }
 
 export interface IPath {
@@ -187,6 +192,12 @@ export interface TNavigateFunction {
   (delta: number): void;
 }
 
+export type TMapCallbackFunction<T> = {
+  bivarianceHack: (item: T) => Record<string, IPatch>;
+}["bivarianceHack"];
+
+export type TTransformNodeFunction = (template: INode) => INode;
+
 export interface IHyperContext<S> {
   readonly location: ILocation;
 
@@ -206,7 +217,59 @@ export interface IHyperContext<S> {
     (name: string, value: S[keyof S]): void;
   };
 
+  applyPatches: (node: INode, patches: Record<string, IPatch>) => INode;
+
   inflate: (name: string, patches?: Record<string, IPatch>) => INode;
+
+  /**
+   * Rendering a list of items is a very common operation. For example, let's take an image
+   * with a caption. The list can be represented as:
+   *
+   * ```
+   * <list>
+   *   <item>
+   *     <image />
+   *     <caption />
+   *   </item>
+   *   <item>
+   *     <image />
+   *     <caption />
+   *   </item>
+   * </list>
+   * ```
+   *
+   * To add more items, we simply need to duplicate the `<item>` element. The same idea
+   * is adopted in Hypertool. In other words, we design a single item and then duplicate
+   * the item to represent a list of items.
+   *
+   * There are two ways of implementing this:
+   * 1. Array of inflated fragments
+   * 2. Array of nodes, derived from a template node
+   *
+   * The `map` function implements the second strategy. Basically, it takes a template
+   * node and creates multiple copies of it by applying modifications provided by the
+   * callback.
+   *
+   * For example,
+   * ```
+   * {
+   *     user: context.map(users,
+   *         (user) => ({
+   *             firstName: {
+   *                 text: user.firstName,
+   *             },
+   *             lastName: {
+   *                 text: user.lastName,
+   *             }
+   *          })
+   *    )
+   * }
+   * ```
+   */
+  map: <T>(
+    items: T[],
+    callback: TMapCallbackFunction<T>
+  ) => TTransformNodeFunction[];
 
   query: (
     name: string,
