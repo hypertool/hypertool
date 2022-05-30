@@ -10,6 +10,7 @@ const EmptyRowContainer = styled("div")(({ theme }) => ({
     width: "100%",
     borderWidth: 1,
     borderStyle: "dotted",
+    padding: theme.spacing(2),
 }));
 
 const EmptyRowText = styled("p")(({ theme }) => ({
@@ -38,8 +39,8 @@ const TableRow: FunctionComponent<ITableRowProps> = (
                 display: "flex",
                 flexDirection: "row",
                 ...(children
-                    ? { height: "fit-content", width: "100%" }
-                    : { height: 56, width: 400 }),
+                    ? { height: "fit-content", width: "fit-content" }
+                    : { height: 56, width: "100%" }),
             }}
             hover={hover}
             selected={selected}
