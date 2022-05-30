@@ -1,8 +1,16 @@
-import type { FunctionComponent, ReactElement } from "react";
+import type { FunctionComponent, MouseEvent, ReactElement } from "react";
+import { useCallback, useMemo, useState } from "react";
 
+import {
+    Icon,
+    ListItemIcon,
+    ListItemText,
+    Menu,
+    MenuItem,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { useNode } from "../craft";
+import { useEditor, useNode } from "../craft";
 
 export interface IProps {
     backgroundColor?: string;
@@ -31,14 +39,44 @@ const Root = styled("div", {
 
 const Node: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     const { children, rootProps } = props;
+
+    const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+
     const {
         connectors: { connect, drag },
         hovered,
         selected,
+        id,
     } = useNode((state) => ({
         hovered: state.events.hovered,
         selected: state.events.selected,
     }));
+    const { actions } = useEditor();
+
+    const handleContextMenu = useCallback((event: MouseEvent<HTMLElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setAnchor(event.currentTarget);
+    }, []);
+
+    const handleClose = useCallback(() => {
+        setAnchor(null);
+    }, []);
+
+    const menuItems = useMemo(
+        () => [
+            {
+                id: "delete",
+                text: "Delete",
+                icon: "delete",
+                callback: () => {
+                    handleClose();
+                    actions.delete(id);
+                },
+            },
+        ],
+        [actions, handleClose],
+    );
 
     return (
         <Root
@@ -46,8 +84,24 @@ const Node: FunctionComponent<IProps> = (props: IProps): ReactElement => {
             selected={selected}
             hovered={hovered}
             {...rootProps}
+            onContextMenu={handleContextMenu}
         >
             {children}
+
+            <Menu
+                anchorEl={anchor}
+                open={Boolean(anchor)}
+                onClose={handleClose}
+            >
+                {menuItems.map((menuItem) => (
+                    <MenuItem id={menuItem.id} onClick={menuItem.callback}>
+                        <ListItemIcon>
+                            <Icon fontSize="small">{menuItem.icon}</Icon>
+                        </ListItemIcon>
+                        <ListItemText>{menuItem.text}</ListItemText>
+                    </MenuItem>
+                ))}
+            </Menu>
         </Root>
     );
 };
