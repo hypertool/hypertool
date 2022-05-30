@@ -62,6 +62,8 @@ export interface ISymbolReference {
   target: string;
 }
 
+export type TSymbolReferenceOrFunction = ISymbolReference | Function;
+
 export type TPropertyValue =
   | number
   | boolean
