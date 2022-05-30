@@ -1,10 +1,5 @@
-import type {
-    FunctionComponent,
-    MouseEvent,
-    ReactElement,
-    ReactNode,
-} from "react";
-import { useCallback, useMemo, useState } from "react";
+import type { FunctionComponent, ReactElement, ReactNode } from "react";
+import { useMemo } from "react";
 
 import {
     Icon,
@@ -16,6 +11,7 @@ import {
 import { styled } from "@mui/material/styles";
 
 import { useEditor, useNode } from "../craft";
+import { useContextMenu } from "../hooks";
 
 export interface IProps {
     type?: string;
@@ -65,7 +61,7 @@ const Indicator = styled("div", {
 const Node: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     const { children, rootProps } = props;
 
-    const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+    const { anchor, onContextMenuOpen, onContextMenuClose } = useContextMenu();
 
     const {
         connectors: { connect, drag },
@@ -80,16 +76,6 @@ const Node: FunctionComponent<IProps> = (props: IProps): ReactElement => {
         data: state.nodes[id] && state.nodes[id].data,
     }));
 
-    const handleContextMenu = useCallback((event: MouseEvent<HTMLElement>) => {
-        event.preventDefault();
-        event.stopPropagation();
-        setAnchor(event.currentTarget);
-    }, []);
-
-    const handleClose = useCallback(() => {
-        setAnchor(null);
-    }, []);
-
     const menuItems = useMemo(
         () => [
             {
@@ -97,12 +83,12 @@ const Node: FunctionComponent<IProps> = (props: IProps): ReactElement => {
                 text: "Delete",
                 icon: "delete",
                 callback: () => {
-                    handleClose();
+                    onContextMenuClose();
                     actions.delete(id);
                 },
             },
         ],
-        [actions, handleClose],
+        [actions, onContextMenuClose],
     );
 
     return (
@@ -111,7 +97,7 @@ const Node: FunctionComponent<IProps> = (props: IProps): ReactElement => {
             selected={selected}
             hovered={hovered}
             {...rootProps}
-            onContextMenu={handleContextMenu}
+            onContextMenu={onContextMenuOpen}
         >
             <Indicator hovered={hovered}>{data.name}</Indicator>
 
@@ -120,7 +106,7 @@ const Node: FunctionComponent<IProps> = (props: IProps): ReactElement => {
             <Menu
                 anchorEl={anchor}
                 open={Boolean(anchor)}
-                onClose={handleClose}
+                onClose={onContextMenuClose}
             >
                 {menuItems.map((menuItem) => (
                     <MenuItem id={menuItem.id} onClick={menuItem.callback}>
