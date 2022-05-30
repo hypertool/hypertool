@@ -39,3 +39,9 @@ export const inflateDocument = (document: Record<string, ICraftNode>) => {
 
 export * as events from "./events";
 export * as constants from "./constants";
+
+export type Truthy<T> = T extends false | "" | 0 | null | undefined ? never : T;
+
+export const truthy = <T>(value: T): value is Truthy<T> => {
+    return !!value;
+};
