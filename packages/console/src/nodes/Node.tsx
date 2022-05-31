@@ -38,13 +38,13 @@ const Root = styled("div", {
 }));
 
 interface IIndicatorProps {
-    hovered: boolean;
+    show: boolean;
 }
 
 const Indicator = styled("div", {
     shouldForwardProp: (prop: string) => !["hovered"].includes(prop),
-})<IIndicatorProps>(({ theme, hovered }) => ({
-    visibility: hovered ? "visible" : "hidden",
+})<IIndicatorProps>(({ theme, show }) => ({
+    visibility: show ? "visible" : "hidden",
     borderRadius: "4px 4px 0px 0px",
     backgroundColor: theme.palette.primary.light,
     padding: theme.spacing(0.5, 1),
@@ -99,7 +99,7 @@ const Node: FunctionComponent<IProps> = (props: IProps): ReactElement => {
             {...rootProps}
             onContextMenu={onContextMenuOpen}
         >
-            <Indicator hovered={hovered}>{data.name}</Indicator>
+            <Indicator show={hovered}>{data.name}</Indicator>
 
             {children}
 
