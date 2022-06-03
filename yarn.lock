@@ -2487,7 +2487,6 @@ __metadata:
     "@mui/lab": ^5.0.0-alpha.69
     "@mui/material": ^5.1.0
     "@mui/styled-engine-sc": ^5.1.0
-    "@mui/x-data-grid": ^5.0.1
     "@testing-library/react": ^11.1.0
     "@testing-library/user-event": ^12.1.10
     "@types/diff": ^5.0.2
@@ -2510,6 +2509,7 @@ __metadata:
     react-contenteditable: ^3.3.6
     react-dom: ^17.0.2
     react-google-login: ^5.2.2
+    react-router: ^6.3.0
     react-router-dom: 6
     react-scripts: 5.0.0
     shallowequal: ^1.1.0
@@ -4015,7 +4015,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/utils@npm:^5.4.1, @mui/utils@npm:^5.6.0, @mui/utils@npm:^5.8.0":
+"@mui/utils@npm:^5.6.0, @mui/utils@npm:^5.8.0":
   version: 5.8.0
   resolution: "@mui/utils@npm:5.8.0"
   dependencies:
@@ -4027,23 +4027,6 @@ __metadata:
   peerDependencies:
     react: ^17.0.0 || ^18.0.0
   checksum: 488b4e709e3f86e7a627f2e61b4c8b3d6fcb606922666b829f5a24c77383ee5776446a30e7b5c10007d03e4e764c3190d608485113d5108e54f79308bddafefc
-  languageName: node
-  linkType: hard
-
-"@mui/x-data-grid@npm:^5.0.1":
-  version: 5.12.0
-  resolution: "@mui/x-data-grid@npm:5.12.0"
-  dependencies:
-    "@babel/runtime": ^7.17.2
-    "@mui/utils": ^5.4.1
-    clsx: ^1.1.1
-    prop-types: ^15.8.1
-    reselect: ^4.1.5
-  peerDependencies:
-    "@mui/material": ^5.4.1
-    "@mui/system": ^5.4.1
-    react: ^17.0.2 || ^18.0.0
-  checksum: e906b1a2c48c01874aea55d5acd3abe04177ddf16f6dc926ec9aea05dc70c14bca501314e49e2206a062df5c39ad74b07d212a5c7972c0a7923ada04bf37700f
   languageName: node
   linkType: hard
 
@@ -19394,7 +19377,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:6.3.0":
+"react-router@npm:6.3.0, react-router@npm:^6.3.0":
   version: 6.3.0
   resolution: "react-router@npm:6.3.0"
   dependencies:
@@ -19930,13 +19913,6 @@ __metadata:
   version: 1.0.0
   resolution: "requires-port@npm:1.0.0"
   checksum: eee0e303adffb69be55d1a214e415cf42b7441ae858c76dfc5353148644f6fd6e698926fc4643f510d5c126d12a705e7c8ed7e38061113bdf37547ab356797ff
-  languageName: node
-  linkType: hard
-
-"reselect@npm:^4.1.5":
-  version: 4.1.5
-  resolution: "reselect@npm:4.1.5"
-  checksum: 54c13c1e795b2ea70cba8384138aebe78adda00cbea303cc94b64da0a70d74c896cc9a03115ae38b8bff990e7a60dcd6452ab68cbec01b0b38c1afda70714cf0
   languageName: node
   linkType: hard
 
