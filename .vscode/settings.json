@@ -1,26 +1,34 @@
 {
-    "javascript.updateImportsOnFileMove.enabled": "always",
-    "eslint.workingDirectories": [
-        {
-            "mode": "auto"
-        }
-    ],
-    "eslint.validate": [
-        "javascript",
-        "javascriptreact",
-        "html",
-        "typescriptreact"
-    ],
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.rulers": [80],
-    "editor.formatOnSave": true,
-    "editor.tabSize": 4,
-    "files.watcherExclude": {
-        "**/.git/objects/**": true,
-        "**/.git/subtree-cache/**": true,
-        "**/node_modules/*/**": true
-    },
-    "[yaml]": {
-        "editor.tabSize": 2
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
     }
+  ],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "html",
+    "typescriptreact"
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.rulers": [
+    80
+  ],
+  "editor.formatOnSave": true,
+  "editor.tabSize": 4,
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true
+  },
+  "[yaml]": {
+    "editor.tabSize": 2
+  },
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+  "eslint.nodePath": ".yarn/sdks",
+  "prettier.prettierPath": ".yarn/sdks/prettier/index.js"
 }
