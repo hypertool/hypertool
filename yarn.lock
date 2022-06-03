@@ -1813,35 +1813,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@craftjs/core@npm:^0.2.0-beta.2":
-  version: 0.2.0-beta.5
-  resolution: "@craftjs/core@npm:0.2.0-beta.5"
-  dependencies:
-    "@craftjs/utils": ^0.2.0-beta.5
-    debounce: ^1.2.0
-    lodash: ^4.17.20
-    tiny-invariant: ^1.0.6
-  peerDependencies:
-    react: ^16.8.0 || ^17
-  checksum: 71cb204c106fa3471a990787304599f29a0880ed1e4cbe4a4dba8389d19a338557b490731678499b9dda4733b3c89250fe6feae7a4a07b10cbe923db11048992
-  languageName: node
-  linkType: hard
-
-"@craftjs/utils@npm:^0.2.0-beta.5":
-  version: 0.2.0-beta.5
-  resolution: "@craftjs/utils@npm:0.2.0-beta.5"
-  dependencies:
-    immer: ^9.0.6
-    lodash: ^4.17.20
-    nanoid: ^3.1.23
-    shallowequal: ^1.1.0
-    tiny-invariant: ^1.0.6
-  peerDependencies:
-    react: ^16.8.0 || ^17
-  checksum: 425e44cb5b17f1d149c1c9e90c475bfd98b137ce673df641b7eacbe4b8ef1986be10b9389382c53b3937396e9173a0c81eb9bec82825a7c357e142a75c7c6d9d
-  languageName: node
-  linkType: hard
-
 "@cspotcode/source-map-support@npm:^0.8.0":
   version: 0.8.1
   resolution: "@cspotcode/source-map-support@npm:0.8.1"
@@ -2508,7 +2479,6 @@ __metadata:
   resolution: "@hypertool/console@workspace:packages/console"
   dependencies:
     "@apollo/client": ^3.5.5
-    "@craftjs/core": ^0.2.0-beta.2
     "@date-io/moment": ^2.13.1
     "@emotion/react": ^11.6.0
     "@emotion/styled": ^11.6.0
@@ -9404,7 +9374,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debounce@npm:^1.2.0, debounce@npm:^1.2.1":
+"debounce@npm:^1.2.1":
   version: 1.2.1
   resolution: "debounce@npm:1.2.1"
   checksum: 682a89506d9e54fb109526f4da255c5546102fbb8e3ae75eef3b04effaf5d4853756aee97475cd4650641869794e44f410eeb20ace2b18ea592287ab2038519e
@@ -13072,7 +13042,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immer@npm:^9.0.12, immer@npm:^9.0.6, immer@npm:^9.0.7":
+"immer@npm:^9.0.12, immer@npm:^9.0.7":
   version: 9.0.14
   resolution: "immer@npm:9.0.14"
   checksum: 17f1365c06d653e672a4f609f08e7203e9ab4b4284818332d6ca9b3f3577a0e3c0066ca7933b636fbae560df79a4b3fde70ed717ce3c6e95c39bf3d5861d5be9
@@ -21988,13 +21958,6 @@ __metadata:
   dependencies:
     setimmediate: ^1.0.4
   checksum: ec37ae299066bef6c464dcac29c7adafba1999e7227a9bdc4e105a459bee0f0b27234a46bfd7ab4041da79619e06a58433472867a913d01c26f8a203f87cee70
-  languageName: node
-  linkType: hard
-
-"tiny-invariant@npm:^1.0.6":
-  version: 1.2.0
-  resolution: "tiny-invariant@npm:1.2.0"
-  checksum: e09a718a7c4a499ba592cdac61f015d87427a0867ca07f50c11fd9b623f90cdba18937b515d4a5e4f43dac92370498d7bdaee0d0e7a377a61095e02c4a92eade
   languageName: node
   linkType: hard
 

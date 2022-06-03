@@ -3,7 +3,6 @@
     "version": "0.0.0",
     "license": "MIT",
     "repository": "https://github.com/hypertool/hypertool",
-    "private": false,
     "scripts": {
         "watch": "tsc --project tsconfig.json -w",
         "build": "tsc --project tsconfig.json",
