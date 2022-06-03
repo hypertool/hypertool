@@ -5,9 +5,7 @@ import type {
     ReactNode,
 } from "react";
 
-import { MenuItem, Typography } from "@mui/material";
-
-import { Box, styled } from "@mui/system";
+import { MenuItem, Typography, Box, styled } from "@mui/material";
 
 const StyledMenuItem = styled(MenuItem)({
     paddingRight: 0,
