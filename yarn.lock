@@ -2377,6 +2377,7 @@ __metadata:
     apollo-server-express: ^3.5.0
     axios: ^0.24.0
     bcrypt: ^5.0.1
+    body-parser: ^1.20.0
     chai: ^4.3.4
     cors: ^2.8.5
     diff: ^5.0.0
@@ -7312,7 +7313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"body-parser@npm:1.20.0, body-parser@npm:^1.19.0":
+"body-parser@npm:1.20.0, body-parser@npm:^1.19.0, body-parser@npm:^1.20.0":
   version: 1.20.0
   resolution: "body-parser@npm:1.20.0"
   dependencies:
