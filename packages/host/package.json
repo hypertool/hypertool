@@ -30,12 +30,6 @@
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
-    "eslintConfig": {
-        "extends": [
-            "react-app",
-            "react-app/jest"
-        ]
-    },
     "browserslist": {
         "production": [
             ">0.2%",
@@ -49,6 +43,9 @@
         ]
     },
     "devDependencies": {
-        "@types/lodash.clonedeep": "^4.5.7"
+        "@types/lodash.clonedeep": "^4.5.7",
+        "@typescript-eslint/eslint-plugin": "^5.27.0",
+        "@typescript-eslint/parser": "^5.27.0",
+        "eslint-config-react-app": "^7.0.1"
     }
 }
