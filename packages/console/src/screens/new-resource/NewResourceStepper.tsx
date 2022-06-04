@@ -5,7 +5,7 @@ import {
     Button,
     CircularProgress,
     Divider,
-    Hidden,
+    Hidden as MuiHidden,
     MobileStepper,
     Paper,
     Step,
@@ -32,6 +32,8 @@ import type { ResourceType } from "../../types";
 
 import ConfigureStep from "./ConfigureStep";
 import SelectStep from "./SelectStep";
+
+const Hidden = MuiHidden as any;
 
 const Root = styled("div")(({ theme }) => ({
     display: "flex",

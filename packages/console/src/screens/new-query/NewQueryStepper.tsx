@@ -5,7 +5,7 @@ import {
     Button,
     CircularProgress,
     Divider,
-    Hidden,
+    Hidden as MuiHidden,
     MobileStepper,
     Paper,
     Step,
@@ -31,6 +31,8 @@ import { useNotification, useParam } from "../../hooks";
 
 import ConfigureStep from "./ConfigureStep";
 import OperationStep from "./OperationStep";
+
+const Hidden = MuiHidden as any;
 
 const Root = styled("div")(({ theme }) => ({
     display: "flex",

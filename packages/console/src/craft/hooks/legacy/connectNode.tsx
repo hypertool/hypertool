@@ -7,7 +7,8 @@ export function connectNode<C>(collect?: (state: Node) => C) {
     return function (WrappedComponent: React.ElementType) {
         return (props: any) => {
             const node = useNode(collect);
-            return <WrappedComponent {...node} {...props} />;
+            const WrappedComponent0 = WrappedComponent as any;
+            return <WrappedComponent0 {...node} {...props} />;
         };
     };
 }

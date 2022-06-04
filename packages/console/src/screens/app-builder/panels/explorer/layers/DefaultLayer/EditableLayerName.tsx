@@ -31,8 +31,10 @@ export const EditableLayerName = () => {
         };
     }, [clickOutside]);
 
+    const ContentEditable0 = ContentEditable as any;
+
     return (
-        <ContentEditable
+        <ContentEditable0
             html={displayName}
             disabled={!editingName}
             ref={(ref: any) => {
@@ -42,7 +44,7 @@ export const EditableLayerName = () => {
                     window.addEventListener("click", clickOutside);
                 }
             }}
-            onChange={(e) => {
+            onChange={(e: any) => {
                 actions.setCustom(
                     id,
                     (custom) => (custom.displayName = e.target.value),

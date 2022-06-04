@@ -18,9 +18,6 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { LocalizationProvider } from "@mui/lab";
-import DateAdapter from "@mui/lab/AdapterMoment";
-
 import { Formik } from "formik";
 
 import { TextField } from "../../../../components";
@@ -373,192 +370,88 @@ const PropertiesForm: FunctionComponent<Props> = (
     );
 
     return (
-        <>
-            {/* <div>
-                <FormControl size="small" component="fieldset">
-                    <FormLabel component="legend">Size</FormLabel>
-                    <RadioGroup
-                        defaultValue={componentProps.size}
-                        onChange={(e) =>
-                            setProp(
-                                (props: { size: string }) =>
-                                    (props.size = e.target.value),
-                            )
-                        }>
-                        <FormControlLabel
-                            label="Small"
-                            value="small"
-                            control={<Radio size="small" color="primary" />}
-                        />
-                        <FormControlLabel
-                            label="Medium"
-                            value="medium"
-                            control={<Radio size="small" color="primary" />}
-                        />
-                        <FormControlLabel
-                            label="Large"
-                            value="large"
-                            control={<Radio size="small" color="primary" />}
-                        />
-                    </RadioGroup>
-                </FormControl>
-                <FormControl component="fieldset">
-                    <FormLabel component="legend">Variant</FormLabel>
-                    <RadioGroup
-                        defaultValue={componentProps.variant}
-                        onChange={(e) =>
-                            setProp(
-                                (props: { variant: string }) =>
-                                    (props.variant = e.target.value),
-                            )
-                        }>
-                        <FormControlLabel
-                            label="Text"
-                            value="text"
-                            control={<Radio size="small" color="primary" />}
-                        />
-                        <FormControlLabel
-                            label="Outlined"
-                            value="outlined"
-                            control={<Radio size="small" color="primary" />}
-                        />
-                        <FormControlLabel
-                            label="Contained"
-                            value="contained"
-                            control={<Radio size="small" color="primary" />}
-                        />
-                    </RadioGroup>
-                </FormControl>
-                <FormControl component="fieldset">
-                    <FormLabel component="legend">Color</FormLabel>
-                    <RadioGroup
-                        defaultValue={componentProps.color}
-                        onChange={(e) =>
-                            setProp(
-                                (props: { color: string }) =>
-                                    (props.color = e.target.value),
-                            )
-                        }>
-                        <FormControlLabel
-                            label="Default"
-                            value="default"
-                            control={<Radio size="small" color="default" />}
-                        />
-                        <FormControlLabel
-                            label="Primary"
-                            value="primary"
-                            control={<Radio size="small" color="primary" />}
-                        />
-                        <FormControlLabel
-                            label="Seconday"
-                            value="secondary"
-                            control={<Radio size="small" color="primary" />}
-                        />
-                    </RadioGroup>
-                </FormControl>
-            </div> */}
+        <Formik
+            initialValues={componentProps}
+            enableReinitialize={true}
+            onSubmit={async () => null}
+            validationSchema={validationSchema}
+        >
+            <DecoratedForm>
+                {groups.map((group: FormFieldGroup) => (
+                    <StyledAccordion
+                        key={group.id}
+                        disableGutters={true}
+                        square={true}
+                        defaultExpanded={false}
+                    >
+                        <AccordionSummary
+                            expandIcon={
+                                <Icon fontSize="small">expand_more</Icon>
+                            }
+                            id={`${group.id}-header`}
+                        >
+                            <AccordionTitle>{group.title}</AccordionTitle>
+                        </AccordionSummary>
+                        <StyledAccordionDetails>
+                            {group.fields.map((field) => (
+                                <Fragment key={field.id}>
+                                    {field.type === "text" &&
+                                        renderTextField(field as FormTextField)}
 
-            <LocalizationProvider dateAdapter={DateAdapter}>
-                <Formik
-                    initialValues={componentProps}
-                    enableReinitialize={true}
-                    onSubmit={async () => null}
-                    validationSchema={validationSchema}
-                >
-                    <DecoratedForm>
-                        {groups.map((group: FormFieldGroup) => (
-                            <StyledAccordion
-                                key={group.id}
-                                disableGutters={true}
-                                square={true}
-                                defaultExpanded={false}
-                            >
-                                <AccordionSummary
-                                    expandIcon={
-                                        <Icon fontSize="small">
-                                            expand_more
-                                        </Icon>
-                                    }
-                                    id={`${group.id}-header`}
-                                >
-                                    <AccordionTitle>
-                                        {group.title}
-                                    </AccordionTitle>
-                                </AccordionSummary>
-                                <StyledAccordionDetails>
-                                    {group.fields.map((field) => (
-                                        <Fragment key={field.id}>
-                                            {field.type === "text" &&
-                                                renderTextField(
-                                                    field as FormTextField,
-                                                )}
+                                    {field.type === "large_text" &&
+                                        renderLargeTextField(
+                                            field as FormLargeTextField,
+                                        )}
 
-                                            {field.type === "large_text" &&
-                                                renderLargeTextField(
-                                                    field as FormLargeTextField,
-                                                )}
+                                    {field.type === "number" &&
+                                        renderNumberTextField(
+                                            field as FormTextField,
+                                        )}
 
-                                            {field.type === "number" &&
-                                                renderNumberTextField(
-                                                    field as FormTextField,
-                                                )}
+                                    {field.type === "date" &&
+                                        renderDateField(field as FormTextField)}
 
-                                            {field.type === "date" &&
-                                                renderDateField(
-                                                    field as FormTextField,
-                                                )}
+                                    {field.type === "time" &&
+                                        renderTimeField(field as FormTextField)}
 
-                                            {field.type === "time" &&
-                                                renderTimeField(
-                                                    field as FormTextField,
-                                                )}
+                                    {field.type === "date_time" &&
+                                        renderDateTimeField(
+                                            field as FormTextField,
+                                        )}
 
-                                            {field.type === "date_time" &&
-                                                renderDateTimeField(
-                                                    field as FormTextField,
-                                                )}
+                                    {field.type === "switch" &&
+                                        renderSwitch(field as FormSwitch)}
 
-                                            {field.type === "switch" &&
-                                                renderSwitch(
-                                                    field as FormSwitch,
-                                                )}
+                                    {field.type === "date_range" &&
+                                        renderDateRange(field)}
 
-                                            {field.type === "date_range" &&
-                                                renderDateRange(field)}
+                                    {field.type === "select" &&
+                                        renderSelect(field as FormSelect)}
 
-                                            {field.type === "select" &&
-                                                renderSelect(
-                                                    field as FormSelect,
-                                                )}
+                                    {field.type === "multi_select" &&
+                                        renderMultiSelect(field as FormSelect)}
 
-                                            {field.type === "multi_select" &&
-                                                renderMultiSelect(
-                                                    field as FormSelect,
-                                                )}
+                                    {field.type === "email_address" &&
+                                        renderEmailAddressField(
+                                            field as FormTextField,
+                                        )}
 
-                                            {field.type === "email_address" &&
-                                                renderEmailAddressField(
-                                                    field as FormTextField,
-                                                )}
+                                    {field.type === "phone_number" &&
+                                        renderPhoneNumberField(
+                                            field as FormTextField,
+                                        )}
 
-                                            {field.type === "phone_number" &&
-                                                renderPhoneNumberField(
-                                                    field as FormTextField,
-                                                )}
-
-                                            {field.type === "handler" &&
-                                                renderHandlerField(
-                                                    field as FormTextField,
-                                                )}
-                                        </Fragment>
-                                    ))}
-                                </StyledAccordionDetails>
-                            </StyledAccordion>
-                        ))}
-                    </DecoratedForm>
-                </Formik>
-            </LocalizationProvider>
-        </>
+                                    {field.type === "handler" &&
+                                        renderHandlerField(
+                                            field as FormTextField,
+                                        )}
+                                </Fragment>
+                            ))}
+                        </StyledAccordionDetails>
+                    </StyledAccordion>
+                ))}
+            </DecoratedForm>
+        </Formik>
     );
 };
 

@@ -30,7 +30,7 @@ export interface Props {
     // eslint-disable-next-line no-undef
     onClick?: MouseEventHandler<Element>;
     label?: string;
-    MenuItemProps?: unknown;
+    MenuItemProps?: any;
     className?: string;
     ref?: unknown;
 }
@@ -50,7 +50,8 @@ const IconMenuItem: FunctionComponent<Props> = (props: Props): ReactElement => {
             {...MenuItemProps}
             ref={ref as any}
             className={className}
-            onClick={onClick}>
+            onClick={onClick}
+        >
             <FlexBox>
                 {leftIcon}
                 <StyledTypography>{label}</StyledTypography>
