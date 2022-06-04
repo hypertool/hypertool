@@ -1,9 +1,11 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { Hidden, Typography } from "@mui/material";
+import { Hidden as MuiHidden, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { Terminal } from "../common";
+
+const Hidden = MuiHidden as any;
 
 const Container = styled("div")(({ theme }) => ({
     background:

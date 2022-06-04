@@ -1,7 +1,9 @@
 import type { FunctionComponent, ReactElement } from "react";
 
-import { Hidden } from "@mui/material";
+import { Hidden as MuiHidden } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+const Hidden = MuiHidden as any;
 
 import MainToolbarDesktop from "./MainToolbarDesktop";
 import MainToolbarMobile from "./MainToolbarMobile";

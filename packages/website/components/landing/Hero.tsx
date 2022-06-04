@@ -1,5 +1,7 @@
-import { Button, Hidden, Typography } from "@mui/material";
+import { Button, Hidden as MuiHidden, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+const Hidden = MuiHidden as any;
 
 const heroImage =
     "https://res.cloudinary.com/academyjs/image/upload/v1640405901/path670_pvv1wh.png";

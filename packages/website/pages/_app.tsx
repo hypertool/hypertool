@@ -13,10 +13,12 @@ import type { AppPropsWithLayout } from "../types";
 const MyApp: FunctionComponent<AppPropsWithLayout> = (
     props: AppPropsWithLayout,
 ) => {
-    const { Component, pageProps } = props;
+    const { Component: UncastedComponent, pageProps } = props;
     const router = useRouter();
 
-    const getLayout = Component.getLayout || ((children) => children);
+    const Component = UncastedComponent as any;
+
+    const getLayout = Component.getLayout || ((children: any) => children);
 
     useEffect(() => {
         /* Remove the server-side injected CSS. */
