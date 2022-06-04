@@ -5,7 +5,7 @@ import {
     AppBar,
     CircularProgress,
     Container,
-    Hidden,
+    Hidden as MuiHidden,
     Icon,
     InputLabel,
     MenuItem,
@@ -20,6 +20,8 @@ import { styled } from "@mui/material/styles";
 import { gql, useQuery } from "@apollo/client";
 
 import AppCard from "./AppCard";
+
+const Hidden = MuiHidden as any;
 
 const Root = styled("section")(() => ({
     width: "100%",

@@ -5,9 +5,7 @@ import type {
     ReactNode,
 } from "react";
 
-import { MenuItem, Typography } from "@mui/material";
-
-import { Box, styled } from "@mui/system";
+import { MenuItem, Typography, Box, styled } from "@mui/material";
 
 const StyledMenuItem = styled(MenuItem)({
     paddingRight: 0,
@@ -32,7 +30,7 @@ export interface Props {
     // eslint-disable-next-line no-undef
     onClick?: MouseEventHandler<Element>;
     label?: string;
-    MenuItemProps?: unknown;
+    MenuItemProps?: any;
     className?: string;
     ref?: unknown;
 }
@@ -52,7 +50,8 @@ const IconMenuItem: FunctionComponent<Props> = (props: Props): ReactElement => {
             {...MenuItemProps}
             ref={ref as any}
             className={className}
-            onClick={onClick}>
+            onClick={onClick}
+        >
             <FlexBox>
                 {leftIcon}
                 <StyledTypography>{label}</StyledTypography>

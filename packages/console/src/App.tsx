@@ -112,11 +112,13 @@ const App: FunctionComponent = (): ReactElement => {
         return <Splash />;
     }
 
+    const ConfirmProvider0 = ConfirmProvider as any;
+
     return (
         <Root>
             <SessionContext.Provider value={context}>
                 <ApolloProvider client={context.client}>
-                    <ConfirmProvider>
+                    <ConfirmProvider0>
                         <NotificationProvider>
                             <Routes>
                                 {!rootApp && (
@@ -259,7 +261,7 @@ const App: FunctionComponent = (): ReactElement => {
                                 )}
                             </Routes>
                         </NotificationProvider>
-                    </ConfirmProvider>
+                    </ConfirmProvider0>
                 </ApolloProvider>
             </SessionContext.Provider>
         </Root>
