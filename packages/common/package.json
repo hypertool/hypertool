@@ -1,6 +1,6 @@
 {
     "name": "@hypertool/common",
-    "version": "0.2.25",
+    "version": "0.2.26",
     "license": "MIT",
     "repository": "https://github.com/hypertool/hypertool",
     "main": "./dist/index.js",
@@ -15,7 +15,7 @@
         "build": "yarn clean && tsc --project tsconfig.json",
         "start": "node ./dist/source/index.js",
         "local": "yarn build && npm link",
-        "push": "yarn build && yarn publish --access public",
+        "push": "yarn build && yarn npm publish --access public",
         "test": "mocha --config .mocharc.json ./test",
         "test:watch": "mocha --config .mocharc.json --watch ./test"
     },
