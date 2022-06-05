@@ -6,7 +6,8 @@
     "scripts": {
         "watch": "tsc --project tsconfig.json -w",
         "build": "tsc --project tsconfig.json",
-        "start": "nodemon --exec \"node ./dist/start.js\"",
+        "start": "node ./dist/start.js",
+        "start:dev": "nodemon --exec \"node ./dist/start.js\"",
         "test": "mocha --config .mocharc.json ./test",
         "test:watch": "mocha --config .mocharc.json --watch ./test"
     },
