@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@google-cloud/storage": "^5.16.1",
-        "@hypertool/common": "^0.2.25",
+        "@hypertool/common": "^0.2.26",
         "@sendgrid/mail": "^7.6.0",
         "apollo-server-express": "^3.5.0",
         "axios": "^0.24.0",
