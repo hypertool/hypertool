@@ -16,14 +16,21 @@ const Toolbar = styled("div")(({ theme }) => ({
     padding: theme.spacing(1),
 }));
 
-const MainToolbar: FunctionComponent = (): ReactElement => {
+export interface IMainToolbarProps {
+    stargazers: number;
+}
+
+const MainToolbar: FunctionComponent<IMainToolbarProps> = (
+    props: IMainToolbarProps,
+): ReactElement => {
+    const { stargazers } = props;
     return (
         <Toolbar>
             <Hidden xlUp={true}>
                 <MainToolbarMobile />
             </Hidden>
             <Hidden lgDown={true}>
-                <MainToolbarDesktop />
+                <MainToolbarDesktop stargazers={stargazers} />
             </Hidden>
         </Toolbar>
     );

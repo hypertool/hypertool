@@ -1,7 +1,16 @@
-import { useEffect, useRef } from "react";
+import {
+    FunctionComponent,
+    ReactElement,
+    ReactNode,
+    useEffect,
+    useMemo,
+} from "react";
 
 import { Button, Icon, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import { motion, useCycle } from "framer-motion";
 import Link from "next/link";
@@ -44,6 +53,11 @@ const LogoButton = styled(Button)(({ theme }) => ({
     paddingRight: theme.spacing(2),
     zIndex: 8,
 }));
+
+const FAIcon = styled(FontAwesomeIcon)({
+    fontSize: 22,
+    marginRight: 4,
+});
 
 const ToolbarItem = styled(Button)(({ theme }) => ({
     marginLeft: theme.spacing(1),
@@ -160,11 +174,6 @@ const menuGroups: MenuGroup[] = [
 
 const toolbarMenuItems = [
     {
-        name: "Download",
-        url: "https://github.com/hypertool/hypertool",
-        icon: "download",
-    },
-    {
         name: "Docs",
         url: "/",
         icon: "books",
@@ -200,21 +209,32 @@ const variants = {
     },
 };
 
-const MainToolbarDesktop = () => {
+export interface IMainToolbarDesktopProps {
+    stargazers: number;
+}
+
+const MainToolbarDesktop: FunctionComponent<IMainToolbarDesktopProps> = (
+    props: IMainToolbarDesktopProps,
+): ReactElement => {
+    const { stargazers } = props;
     const [isOpen, toggleOpen] = useCycle(false, true);
-    const containerRef = useRef(null);
 
     const openURL = (url: string) => () => {
+        if (url.startsWith("https://")) {
+            window.open(url);
+            return;
+        }
         Router.push(url);
     };
 
     const renderLink = (menuItem: {
         url: string;
         name: string;
-        icon: string;
+        icon: string | ReactNode;
     }) => (
         <ToolbarItem key={menuItem.url} onClick={openURL(menuItem.url)}>
-            <Icon>{menuItem.icon}</Icon>
+            {typeof menuItem.icon === "string" && <Icon>{menuItem.icon}</Icon>}
+            {typeof menuItem.icon !== "string" && menuItem.icon}
             <ToolbarText>{menuItem.name}</ToolbarText>
         </ToolbarItem>
     );
@@ -248,6 +268,18 @@ const MainToolbarDesktop = () => {
                     <LogoText variant="h1">Hypertool</LogoText>
                 </LogoButton>
                 <div>
+                    <ToolbarItem
+                        onClick={openURL(
+                            "https://github.com/hypertool/hypertool",
+                        )}
+                        variant="outlined"
+                        color="info"
+                    >
+                        <FAIcon icon={faGithub} />
+                        <ToolbarText>
+                            {stargazers || "19,005"} stars on GitHub
+                        </ToolbarText>
+                    </ToolbarItem>
                     {toolbarMenuItems.map((menuItem) => renderLink(menuItem))}
                     {/* <ToolbarItem onClick={() => toggleOpen()}>
             <Icon>menu</Icon>
@@ -289,7 +321,7 @@ const MainToolbarDesktop = () => {
                     )}
                   </motion.div>
                 ))}
-              </NavigationContainer> 
+              </NavigationContainer>
             </Background>
           </motion.nav>*/}
                 </div>
