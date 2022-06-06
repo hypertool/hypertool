@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 
 import Head from "next/head";
 
-import { Features, Hero, Problems } from "../components/landing";
+import { Features, Hero, Hosting, Problems } from "../components/landing";
 import { VisitorLayout } from "../components/layouts";
 import type { Page } from "../types";
 
@@ -31,6 +31,7 @@ const Home: Page = () => {
                 <Hero />
                 <Problems />
                 <Features />
+                <Hosting />
             </Container>
         </div>
     );
