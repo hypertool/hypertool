@@ -14,6 +14,7 @@
         "@emotion/styled": "^11.6.0",
         "@fortawesome/fontawesome-svg-core": "^6.1.1",
         "@fortawesome/free-regular-svg-icons": "^6.1.1",
+        "@fortawesome/react-fontawesome": "latest",
         "@mui/icons-material": "^5.2.5",
         "@mui/material": "^5.2.5",
         "@mui/styled-engine-sc": "^5.1.0",
