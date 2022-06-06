@@ -1,5 +1,6 @@
 import { Button, Hidden as MuiHidden, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import Link from "next/link";
 
 const Hidden = MuiHidden as any;
 
@@ -66,10 +67,6 @@ const PrimaryButton = styled(Button)(({ theme }) => ({
     marginRight: theme.spacing(4),
 }));
 
-const SecondaryButton = styled(Button)(({ theme }) => ({
-    marginTop: theme.spacing(4),
-}));
-
 const HeroImage = styled("img")(({ theme }) => ({
     width: 500,
     height: "auto",
@@ -96,12 +93,11 @@ const Hero = () => {
                     apps.
                 </SubTitle>
                 <ButtonContainer>
-                    <PrimaryButton variant="contained">
-                        Create Account
-                    </PrimaryButton>
-                    <SecondaryButton variant="outlined">
-                        Getting Started
-                    </SecondaryButton>
+                    <Link href="https://console.hypertool.io/create-account">
+                        <PrimaryButton variant="contained">
+                            Try Hypertool for free
+                        </PrimaryButton>
+                    </Link>
                 </ButtonContainer>
             </div>
             <Hidden lgDown={true}>
