@@ -1,10 +1,4 @@
-import {
-    FunctionComponent,
-    ReactElement,
-    ReactNode,
-    useEffect,
-    useMemo,
-} from "react";
+import { FunctionComponent, ReactElement, ReactNode, useEffect } from "react";
 
 import { Button, Icon, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -174,8 +168,13 @@ const menuGroups: MenuGroup[] = [
 
 const toolbarMenuItems = [
     {
-        name: "Docs",
-        url: "/",
+        name: "Blogs",
+        url: "/blogs",
+        icon: "feed",
+    },
+    {
+        name: "Documentation",
+        url: "https://docs.hypertool.io",
         icon: "books",
     },
 ];
@@ -218,6 +217,7 @@ const MainToolbarDesktop: FunctionComponent<IMainToolbarDesktopProps> = (
 ): ReactElement => {
     const { stargazers } = props;
     const [isOpen, toggleOpen] = useCycle(false, true);
+    // const containerRef = useRef<any>();
 
     const openURL = (url: string) => () => {
         if (url.startsWith("https://")) {
@@ -282,48 +282,52 @@ const MainToolbarDesktop: FunctionComponent<IMainToolbarDesktopProps> = (
                     </ToolbarItem>
                     {toolbarMenuItems.map((menuItem) => renderLink(menuItem))}
                     {/* <ToolbarItem onClick={() => toggleOpen()}>
-            <Icon>menu</Icon>
-            <ToolbarText>Explore</ToolbarText>
-          </ToolbarItem>
-          <motion.nav
-            initial={false}
-            animate={isOpen ? "open" : "closed"}
-            ref={containerRef}
-          >
-            <Background variants={sidebar}>
-              <NavigationCloseButton onClick={() => toggleOpen()}>
-                <Icon style={{ color: "white " }}>close</Icon>
-                <ToolbarText>Close</ToolbarText>
-              </NavigationCloseButton>
-              <NavigationContainer>
-                {menuGroups.map((group) => (
-                  <motion.div key={group.name} variants={variants}>
-                    <NavigationText variant="h2">{group.name}</NavigationText>
-                    {group.links.map((item) => (
-                      <MenuItem
-                        key={item.name}
-                        url={item.url}
-                        title={item.name}
-                        icon={item.icon}
-                        description={item.description}
-                      />
-                    ))}
-                    {group.button && (
-                      <Link href={group.button.url} passHref={true}>
-                        <GroupButton
-                          variant="contained"
-                          color="primary"
-                          size="large"
-                        >
-                          {group.button.text}
-                        </GroupButton>
-                      </Link>
-                    )}
-                  </motion.div>
-                ))}
-              </NavigationContainer>
-            </Background>
-          </motion.nav>*/}
+                        <Icon>menu</Icon>
+                        <ToolbarText>Explore</ToolbarText>
+                    </ToolbarItem>
+                    <motion.nav
+                        initial={false}
+                        animate={isOpen ? "open" : "closed"}
+                        ref={containerRef}>
+                        <Background variants={sidebar}>
+                            <NavigationCloseButton onClick={() => toggleOpen()}>
+                                <Icon style={{ color: "white " }}>close</Icon>
+                                <ToolbarText>Close</ToolbarText>
+                            </NavigationCloseButton>
+                            <NavigationContainer>
+                                {menuGroups.map((group) => (
+                                    <motion.div
+                                        key={group.name}
+                                        variants={variants}>
+                                        <NavigationText variant="h2">
+                                            {group.name}
+                                        </NavigationText>
+                                        {group.links.map((item) => (
+                                            <MenuItem
+                                                key={item.name}
+                                                url={item.url}
+                                                title={item.name}
+                                                icon={item.icon}
+                                                description={item.description}
+                                            />
+                                        ))}
+                                        {group.button && (
+                                            <Link
+                                                href={group.button.url}
+                                                passHref={true}>
+                                                <GroupButton
+                                                    variant="contained"
+                                                    color="primary"
+                                                    size="large">
+                                                    {group.button.text}
+                                                </GroupButton>
+                                            </Link>
+                                        )}
+                                    </motion.div>
+                                ))}
+                            </NavigationContainer>
+                        </Background>
+                    </motion.nav> */}
                 </div>
             </Toolbar>
         </>
