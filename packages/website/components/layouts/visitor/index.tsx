@@ -9,13 +9,13 @@ interface Props {
     children?: ReactNode;
     toolbar?: boolean;
     footer?: boolean;
-    stargazers: number;
+    stargazers?: number;
 }
 
 const VisitorLayout: FunctionComponent<Props> = (
     props: Props,
 ): ReactElement => {
-    const { toolbar, children, footer, stargazers } = props;
+    const { toolbar, children, footer, stargazers = 0 } = props;
 
     return (
         <>
@@ -29,6 +29,7 @@ const VisitorLayout: FunctionComponent<Props> = (
 VisitorLayout.defaultProps = {
     toolbar: true,
     footer: true,
+    stargazers: 0,
 };
 
 VisitorLayout.displayName = "VisitorLayout";
