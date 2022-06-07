@@ -277,3 +277,8 @@ export interface IProviderConfiguration {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface IApp {
+    id: string;
+    title: string;
+}
