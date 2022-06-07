@@ -87,10 +87,23 @@ const variants = {
 
 const menuItems = [
     {
+        name: "Sign up",
+        url: "https://console.hypertool.io/create-account",
+        description: "Create your free Hypertool account now.",
+        icon: "account_circle",
+    },
+    {
+        name: "Sign in",
+        url: "https://console.hypertool.io/create-account",
+        description:
+            "Already have an account? Head over to our sign in screen to continue.",
+        icon: "login",
+    },
+    {
         name: "Download Free",
         url: "https://github.com/hypertool/hypertool",
         description:
-            "The Hypertool CLI is completely open-sourced and free. Checkout our GitHub repository.",
+            "Hypertool is completely open-sourced and free. Checkout our GitHub repository.",
         icon: "download",
     },
     {
