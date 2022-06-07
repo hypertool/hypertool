@@ -3,6 +3,7 @@ import {
     FunctionComponent,
     ReactElement,
     useCallback,
+    useContext,
     useEffect,
     useMemo,
 } from "react";
@@ -24,6 +25,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { Password, TextField } from "../../components";
 import { useNotification } from "../../hooks";
+import { RootAppContext } from "../../contexts";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -116,6 +118,7 @@ const CREATE_ACCOUNT = gql`
         $role: String
         $emailAddress: String!
         $password: String!
+        $app: ID!
     ) {
         signupWithEmail(
             firstName: $firstName
@@ -123,6 +126,7 @@ const CREATE_ACCOUNT = gql`
             role: $role
             emailAddress: $emailAddress
             password: $password
+            app: $app
         ) {
             emailAddress
         }
@@ -152,10 +156,16 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
     const [createAccount] = useMutation(CREATE_ACCOUNT, {
         client,
     });
+    const rootApp = useContext(RootAppContext);
 
     useEffect(() => {
         document.title = "Create Account | Hypertool";
     }, []);
+
+    /* TODO: Create `useRootApp()` hook. */
+    if (!rootApp) {
+        throw new Error("Could not find root app context!");
+    }
 
     const handleSubmit = useCallback(
         async (values: FormValues) => {
@@ -171,6 +181,7 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                     variables: {
                         ...values,
                         role: "developer",
+                        app: rootApp.id,
                     },
                 });
 
@@ -183,7 +194,7 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                 notification.notifyError(error);
             }
         },
-        [createAccount, navigate, notification],
+        [createAccount, navigate, notification, rootApp.id],
     );
 
     return (
