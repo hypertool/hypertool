@@ -12,17 +12,19 @@ const Container = styled("div")(({ theme }) => ({
     alignItems: "center",
     width: "100%",
     minHeight: "calc(100vh - 64px)",
+    padding: theme.spacing(4),
+    columnGap: theme.spacing(4),
+    rowGap: theme.spacing(4),
     [theme.breakpoints.down("md")]: {
         flexDirection: "column",
+        padding: theme.spacing(8, 4, 8, 4),
     },
-    padding: theme.spacing(4, 0, 4, 0),
 }));
 
 const LeftContainer = styled("div")(({ theme }) => ({
     marginRight: theme.spacing(6),
     [theme.breakpoints.down("md")]: {
         marginRight: theme.spacing(0),
-        padding: theme.spacing(4),
     },
 }));
 
