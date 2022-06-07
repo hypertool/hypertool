@@ -87,65 +87,6 @@ const Features: FunctionComponent = (): ReactElement => {
         </>
     );
 
-    const renderInstall = () => (
-        <Terminal>
-            <Line>
-                {renderPrompt()}
-                <span>npm install --global @hypertool/cli</span>
-            </Line>
-            <br />
-            <Line>
-                <span
-                    style={{
-                        color: "white",
-                        fontWeight: "bold",
-                    }}
-                >
-                    Installed 1 new package
-                </span>{" "}
-                <span
-                    style={{
-                        color: "green",
-                        fontWeight: "bold",
-                    }}
-                >
-                    (42ms)
-                </span>
-            </Line>
-        </Terminal>
-    );
-
-    const renderSafeAndSecure = () => (
-        <Terminal>
-            <Line>
-                {renderPrompt()}
-                <span>hypertool auth</span>
-            </Line>
-            <br />
-            <Line>
-                <span
-                    style={{
-                        color: "white",
-                        fontWeight: "bold",
-                    }}
-                >
-                    Hello, John.
-                </span>
-            </Line>
-            <br />
-            <Line>
-                <span
-                    style={{
-                        color: "white",
-                        fontWeight: "bold",
-                    }}
-                >
-                    You are authenticated with johndoe@gmail.com.
-                </span>
-            </Line>
-        </Terminal>
-    );
-
     const renderOpenSource = () => (
         <Terminal>
             <Line>
@@ -188,16 +129,6 @@ const Features: FunctionComponent = (): ReactElement => {
             title: "Build applications with powerful features",
             text: "Hypertool gives you everything you need out of the box: component library, routing, authentication, authorization, team management, audit logging, automated deployment pipelines, and a lot more!",
             terminal: renderStart,
-        },
-        {
-            title: "Manage your apps from the terminal",
-            text: "Hypertool CLI is light-weight and does not have high system requirements. All you need is NodeJS installed on your machine. Hypertool can be installed using NPM or Yarn, and takes just a few seconds to be up and running.",
-            terminal: renderInstall,
-        },
-        {
-            title: "Built for developers with GitOps in mind",
-            text: "App definitions, configurations, and environments are declarative and version controlled. Deployments and lifecycle management of your apps are automated, auditable, and easy to understand.",
-            terminal: renderSafeAndSecure,
         },
         {
             title: "Avoid vendor lock-in with Hypertool",
