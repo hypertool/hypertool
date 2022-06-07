@@ -88,6 +88,7 @@ const signUpWithEmailSchema = joi.object({
         .min(8)
         .max(128)
         .required(),
+    app: joi.string().regex(constants.identifierPattern).required(),
 });
 
 const loginWithEmailSchema = joi.object({
@@ -502,7 +503,7 @@ const signupWithEmail = async (
         throw new BadRequestError(error.message);
     }
 
-    const { firstName, lastName, emailAddress, password } = value;
+    const { firstName, lastName, emailAddress, password, app } = value;
 
     const existingUser = await UserModel.findOne({ emailAddress }).exec();
     if (existingUser) {
@@ -522,6 +523,7 @@ const signupWithEmail = async (
         emailAddress,
         emailVerified: false,
         birthday: null,
+        app,
         status: "activated",
     });
     await user.save();

@@ -44,6 +44,7 @@ const typeDefs = gql`
             role: String
             emailAddress: String!
             password: String!
+            app: ID!
         ): User!
 
         loginWithEmail(
