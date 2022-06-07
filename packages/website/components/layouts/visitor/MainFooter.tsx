@@ -102,19 +102,21 @@ const CompanyTitle = styled(Typography)({
 });
 
 const groups = [
-    {
-        title: "Company",
-        children: [
-            {
-                title: "Pricing",
-                url: "/pricing",
-            },
-            {
-                title: "Articles",
-                url: "/articles",
-            },
-        ],
-    },
+    /*
+     * {
+     *     title: "Company",
+     *     children: [
+     *         {
+     *             title: "Pricing",
+     *             url: "/pricing",
+     *         },
+     *         {
+     *             title: "Articles",
+     *             url: "/articles",
+     *         },
+     *     ],
+     * },
+     */
     {
         title: "Connect",
         children: [
