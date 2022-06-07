@@ -165,7 +165,7 @@ const MainFooter = () => {
                     ))}
                 </Right>
             </Top>
-            <Copyright>Copyright 2021 Hypertool</Copyright>
+            <Copyright>Copyright 2021—2022, Mothership Technologies</Copyright>
         </Container>
     );
 };
