@@ -172,11 +172,13 @@ const toolbarMenuItems = [
         url: "https://docs.hypertool.io",
         icon: "books",
     },
-    {
-        name: "Blogs",
-        url: "/blogs",
-        icon: "feed",
-    },
+    /*
+     * {
+     *     name: "Blogs",
+     *     url: "/blogs",
+     *     icon: "feed",
+     * },
+     */
     {
         name: "Sign up",
         url: "https://console.hypertool.io/create-account",
