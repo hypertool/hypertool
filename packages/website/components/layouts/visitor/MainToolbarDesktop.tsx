@@ -168,14 +168,24 @@ const menuGroups: MenuGroup[] = [
 
 const toolbarMenuItems = [
     {
+        name: "Docs",
+        url: "https://docs.hypertool.io",
+        icon: "books",
+    },
+    {
         name: "Blogs",
         url: "/blogs",
         icon: "feed",
     },
     {
-        name: "Documentation",
-        url: "https://docs.hypertool.io",
-        icon: "books",
+        name: "Sign up",
+        url: "https://console.hypertool.io/create-account",
+        icon: "account_circle",
+    },
+    {
+        name: "Sign in",
+        url: "https://console.hypertool.io/login",
+        icon: "login",
     },
 ];
 
