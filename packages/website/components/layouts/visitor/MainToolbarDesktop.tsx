@@ -50,6 +50,7 @@ const LogoButton = styled(Button)(({ theme }) => ({
 
 const FAIcon = styled(FontAwesomeIcon)({
     fontSize: 22,
+    width: 22,
     marginRight: 4,
 });
 
