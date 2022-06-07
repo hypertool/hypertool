@@ -15,6 +15,7 @@ const Container = styled("div")(({ theme }) => ({
     [theme.breakpoints.down("md")]: {
         flexDirection: "column",
     },
+    padding: theme.spacing(4, 0, 4, 0),
 }));
 
 const LeftContainer = styled("div")(({ theme }) => ({
@@ -30,10 +31,7 @@ const RightContainer = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     rowGap: theme.spacing(5),
-    [theme.breakpoints.down("md")]: {
-        marginTop: theme.spacing(6),
-        padding: theme.spacing(4),
-    },
+    [theme.breakpoints.down("md")]: {},
 }));
 
 const Title = styled(Typography)(({ theme }) => ({
@@ -72,6 +70,11 @@ const Item = styled("div")(({ theme }) => ({
     alignItems: "center",
     justifyContent: "flex-start",
     columnGap: theme.spacing(3),
+
+    [theme.breakpoints.down("md")]: {
+        flexDirection: "column",
+        rowGap: theme.spacing(2),
+    },
 }));
 
 const ItemImage = styled("img")(({ theme }) => ({
