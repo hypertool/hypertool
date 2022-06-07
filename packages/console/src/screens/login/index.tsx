@@ -133,42 +133,41 @@ const validationSchema = yup.object({
 });
 
 const Login: FunctionComponent = (): ReactElement => {
-    const navigate = useNavigate();
     const { reload } = useSession(true);
     const notification = useNotification();
 
-    const onSuccess = useCallback(
-        async (response: any) => {
-            const result = await client.mutate({
-                mutation: LOGIN_WITH_GOOGLE,
-                variables: { token: response.code },
-            });
-            delete result.data.loginWithGoogle.__typename;
-            delete result.data.loginWithGoogle.user.__typename;
-            localStorage.setItem(
-                "session",
-                JSON.stringify(result.data.loginWithGoogle),
-            );
-            navigate("/apps");
-        },
-        [navigate],
-    );
+    // const onSuccess = useCallback(
+    //     async (response: any) => {
+    //         const result = await client.mutate({
+    //             mutation: LOGIN_WITH_GOOGLE,
+    //             variables: { token: response.code },
+    //         });
+    //         delete result.data.loginWithGoogle.__typename;
+    //         delete result.data.loginWithGoogle.user.__typename;
+    //         localStorage.setItem(
+    //             "session",
+    //             JSON.stringify(result.data.loginWithGoogle),
+    //         );
+    //         navigate("/apps");
+    //     },
+    //     [navigate],
+    // );
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const onFailure = () => {};
+    // const onFailure = () => {};
 
-    const { signIn } = useGoogleLogin({
-        onSuccess,
-        onFailure,
-        clientId: process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID || "",
-        cookiePolicy: "single_host_origin",
-        // isSignedIn: true,
-        responseType: "code",
-    });
+    // const { signIn } = useGoogleLogin({
+    //     onSuccess,
+    //     onFailure,
+    //     clientId: process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID || "",
+    //     cookiePolicy: "single_host_origin",
+    //     // isSignedIn: true,
+    //     responseType: "code",
+    // });
 
-    const handleContinueWithGoogle = useCallback(() => {
-        signIn();
-    }, [signIn]);
+    // const handleContinueWithGoogle = useCallback(() => {
+    //     signIn();
+    // }, [signIn]);
 
     const handleBasicAuthSubmit = useCallback(
         async (values: FormValues) => {
@@ -184,12 +183,11 @@ const Login: FunctionComponent = (): ReactElement => {
                     JSON.stringify(result.data.loginWithEmail),
                 );
                 reload();
-                navigate("/apps");
             } catch (error: any) {
                 notification.notifyError(error);
             }
         },
-        [navigate, reload],
+        [notification, reload],
     );
 
     return (
