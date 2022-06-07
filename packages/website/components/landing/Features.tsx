@@ -71,13 +71,10 @@ const Line = styled("span")(({ theme }) => ({
     lineHeight: 1.5,
 }));
 
-const GreenText = styled("span")(({ theme }) => ({
-    color: "green",
-}));
-
-const GreyText = styled("span")(({ theme }) => ({
-    color: "green",
-}));
+const Image = styled("img")({
+    width: 600,
+    height: "auto",
+});
 
 const Features: FunctionComponent = (): ReactElement => {
     const renderPrompt = () => (
@@ -97,31 +94,7 @@ const Features: FunctionComponent = (): ReactElement => {
     );
 
     const renderStart = () => (
-        <Terminal>
-            <Line>
-                {renderPrompt()}
-                <span>hypertool start</span>
-            </Line>
-            <br />
-            <Line>
-                <span
-                    style={{
-                        color: "white",
-                        fontWeight: "bold",
-                    }}
-                >
-                    hypertool v0.2.2
-                </span>{" "}
-                <span
-                    style={{
-                        color: "green",
-                        fontWeight: "bold",
-                    }}
-                >
-                    (https://hypertool.io)
-                </span>
-            </Line>
-        </Terminal>
+        <Image src="https://res.cloudinary.com/hypertool/image/upload/v1649820987/hypertool-assets/empty-apps_ok9nbh.svg" />
     );
 
     const sections = [
