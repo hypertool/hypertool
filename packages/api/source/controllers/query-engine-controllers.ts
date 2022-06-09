@@ -44,16 +44,16 @@ const executeSQL = async (
     };
 
     try {
-        if (typeof query.content === "object") {
-            const builder = new QueryBuilder(config);
-            const run = builder.parse(query.content);
-            return (await run())[0];
-        } else {
-            const connection = getConnection(config);
-            return (
-                await connection.raw(query.content, parameters.variables)
-            )[0];
-        }
+        const connection =
+            typeof query.content === "object"
+                ? new QueryBuilder(config).parse(query.content)
+                : getConnection(config);
+        const result = await connection.raw(
+            query.content,
+            parameters.variables,
+        );
+        connection.destroy();
+        return result.rows;
     } catch (error: any) {
         throw new QueryExecutionError(
             error.message || "An unknown error occurred while executing query.",
