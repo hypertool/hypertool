@@ -14,15 +14,8 @@ heroku config:set --app hypertoolx-api \
     NODE_ENV="production" \
     DATABASE_URL="..." \
     PORT="80" \
+    API_URL="..." \
     JWT_SIGNATURE_KEY="..." \
-    CLI_GOOGLE_CLIENT_ID="..." \
-    CLI_GOOGLE_CLIENT_SECRET="..." \
-    CLI_GOOGLE_REDIRECT_URI="http://localhost:2819/oauth" \
-    WEB_GOOGLE_CLIENT_ID="..." \
-    WEB_GOOGLE_CLIENT_SECRET="..." \
-    API_SERVICE_ACCOUNT_PROJECT_ID="..." \
-    API_SERVICE_ACCOUNT_CLIENT_EMAIL="..." \
-    API_SERVICE_ACCOUNT_PRIVATE_KEY="..." \
-    APP_BUNDLES_BUCKET_NAME="..."
+    SENDGRID_API_KEY="..."
 
 git push $API_APP_NAME main
