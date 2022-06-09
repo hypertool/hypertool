@@ -13,7 +13,7 @@ git remote add $API_APP_NAME https://git.heroku.com/$API_APP_NAME.git
 heroku config:set --app hypertoolx-api \
     NODE_ENV="production" \
     DATABASE_URL="..." \
-    API_PORT="80" \
+    PORT="80" \
     JWT_SIGNATURE_KEY="..." \
     CLI_GOOGLE_CLIENT_ID="..." \
     CLI_GOOGLE_CLIENT_SECRET="..." \
