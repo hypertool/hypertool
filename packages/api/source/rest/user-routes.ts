@@ -26,7 +26,7 @@ const attachRoutes = async (router: Router): Promise<void> => {
                 user.emailVerified = true;
                 await user.save();
 
-                response.redirect(process.env.CONSOLE_URL);
+                response.redirect(`${process.env.CONSOLE_URL}/login`);
             } catch (error) {
                 response
                     .status(constants.httpStatuses.UNAUTHORIZED)
