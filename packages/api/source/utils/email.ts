@@ -25,7 +25,7 @@ export const sendEmail = async (params: any): Promise<void> => {
 
 export const sendVerificationEmail = async (emailAddress: string) => {
     const token = createToken({ emailAddress }, "30m");
-    const verificationURL = `http://localhost:3001/api/v1/users/verify/${token}`;
+    const verificationURL = `${process.env.API_URL}/api/v1/users/verify/${token}`;
     const params = {
         from: { name: "Hypertool", email: "noreply@hypertool.io" },
         to: emailAddress,
