@@ -42,8 +42,14 @@ const GET_APP = gql`
     }
 `;
 
-const useFetchApp = (): IApp | null => {
+export interface IFetchAppResult {
+    app: IApp | null;
+    loading: boolean;
+}
+
+const useFetchApp = (): IFetchAppResult => {
     const [app, setApp] = useState<IApp | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         let mounted = true;
@@ -67,6 +73,7 @@ const useFetchApp = (): IApp | null => {
                 },
             });
             if (mounted) {
+                setLoading(false);
                 setApp(result.data.getAppByName);
             }
         })();
@@ -76,7 +83,7 @@ const useFetchApp = (): IApp | null => {
         };
     }, []);
 
-    return app;
+    return { app, loading };
 };
 
 export default useFetchApp;
