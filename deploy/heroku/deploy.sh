@@ -16,6 +16,7 @@ heroku config:set --app hypertoolx-api \
     PORT="80" \
     API_URL="..." \
     JWT_SIGNATURE_KEY="..." \
-    SENDGRID_API_KEY="..."
+    SENDGRID_API_KEY="..." \
+    CONSOLE_URL="..."
 
 git push $API_APP_NAME main
