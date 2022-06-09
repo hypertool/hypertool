@@ -3,7 +3,7 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 
 dotenv.config({
-    path: `${__dirname}/../../../.env.test`,
+    path: `${__dirname}/.env.test`,
 });
 
 before(async function () {

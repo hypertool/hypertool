@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import { initialize } from "./app";
 
 dotenv.config({
-    path: `${__dirname}/../../../.env`,
+    path: `${__dirname}/../.env`,
 });
 
 const { PORT, DATABASE_URL } = process.env;
