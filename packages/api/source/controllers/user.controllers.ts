@@ -328,9 +328,7 @@ const update = async (
             new: true,
             lean: true,
         },
-    )
-        .lean()
-        .exec();
+    ).exec();
 
     // TODO: Check access
 
