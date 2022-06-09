@@ -51,10 +51,10 @@
         "yup": "^0.32.11"
     },
     "scripts": {
-        "start": "react-scripts start",
+        "start:dev": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
-        "test:watch": "react-scripts test --watchAll=true --passWithNoTests",
+        "test:dev": "react-scripts test --watchAll=true --passWithNoTests",
         "eject": "react-scripts eject"
     },
     "browserslist": {
