@@ -189,7 +189,7 @@ const CreateAccount: FunctionComponent = (): ReactElement => {
                     `Created account "${values.emailAddress}" successfully`,
                 );
 
-                navigate("/login");
+                navigate("/verification-email-sent");
             } catch (error: any) {
                 notification.notifyError(error);
             }
