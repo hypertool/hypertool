@@ -2,6 +2,7 @@ export { default as Login } from "./login";
 export { default as CreateAccount } from "./create-account";
 export { default as NewPassword } from "./new-password";
 export { default as UpdatePassword } from "./update-password";
+export { default as VerificationEmailSent } from "./verification-email-sent";
 
 export { default as ViewApps } from "./view-apps";
 export { default as NewApp } from "./new-app";

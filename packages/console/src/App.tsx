@@ -32,6 +32,7 @@ import {
     NewPassword,
     NewTeam,
     UpdatePassword,
+    VerificationEmailSent,
     ViewApp,
     ViewApps,
     ViewOrganization,
@@ -146,8 +147,7 @@ const App: FunctionComponent = (): ReactElement => {
                                             {!context.jwtToken && (
                                                 <Route
                                                     path="/"
-                                                    element={<VisitorLayout />}
-                                                >
+                                                    element={<VisitorLayout />}>
                                                     <Route
                                                         path="/login"
                                                         element={<Login />}
@@ -162,6 +162,12 @@ const App: FunctionComponent = (): ReactElement => {
                                                         path="/new-password"
                                                         element={
                                                             <NewPassword />
+                                                        }
+                                                    />
+                                                    <Route
+                                                        path="/verification-email-sent"
+                                                        element={
+                                                            <VerificationEmailSent />
                                                         }
                                                     />
                                                     <Route
@@ -181,8 +187,7 @@ const App: FunctionComponent = (): ReactElement => {
                                                         path="/"
                                                         element={
                                                             <WorkspaceLayout />
-                                                        }
-                                                    >
+                                                        }>
                                                         {/* Routes associated with Organizations */}
                                                         <Route
                                                             path="/organizations"
