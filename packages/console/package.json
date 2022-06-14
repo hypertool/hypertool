@@ -22,6 +22,7 @@
         "@types/styled-components": "^5.1.23",
         "csstype": "^3.1.0",
         "diff": "^5.0.0",
+        "esbuild-wasm": "^0.14.43",
         "formik": "^2.2.9",
         "graphql": "^16.0.1",
         "history": "5",

@@ -2451,6 +2451,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.27.0
     csstype: ^3.1.0
     diff: ^5.0.0
+    esbuild-wasm: ^0.14.43
     eslint-config-react-app: ^7.0.1
     formik: ^2.2.9
     graphql: ^16.0.1
@@ -9820,6 +9821,15 @@ __metadata:
     es6-iterator: ^2.0.3
     es6-symbol: ^3.1.1
   checksum: 19ca15f46d50948ce78c2da5f21fb5b1ef45addd4fe17b5df952ff1f2a3d6ce4781249bc73b90995257264be2a98b2ec749bb2aba0c14b5776a1154178f9c927
+  languageName: node
+  linkType: hard
+
+"esbuild-wasm@npm:^0.14.43":
+  version: 0.14.43
+  resolution: "esbuild-wasm@npm:0.14.43"
+  bin:
+    esbuild: bin/esbuild
+  checksum: b7f316b3950c7dba04074a936bf62fa81afc9ffb79dfd2335d451210f606c555b67b9e608f679802375ec40202a8ab83a856c10afeb9bad32ec66eec2c48962e
   languageName: node
   linkType: hard
 
