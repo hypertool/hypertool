@@ -3,6 +3,7 @@ import type { FunctionComponent, ReactNode } from "react";
 import type { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
 import { constants } from "../utils";
+import type { BuildResult } from "esbuild-wasm";
 
 export type ResourceType = typeof constants.resourceTypes[number];
 
@@ -281,4 +282,8 @@ export interface IProviderConfiguration {
 export interface IApp {
     id: string;
     title: string;
+}
+
+export interface IESBuildContext {
+    build: () => Promise<BuildResult>;
 }
