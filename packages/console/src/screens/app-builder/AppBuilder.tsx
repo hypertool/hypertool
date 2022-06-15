@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactElement } from "react";
+import { FunctionComponent, ReactElement, useContext } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { styled } from "@mui/material/styles";
@@ -44,6 +44,7 @@ import {
     ViewUsers,
 } from "./modules/authentication";
 import { AppBar, LeftDrawer, RightDrawer } from "./navigation";
+import ESBuildContext from "../../contexts/ESBuildContext";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: (theme.palette.background as any).main,
@@ -380,6 +381,13 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     const handleRightDrawerClose = useCallback(() => {
         setRightDrawerOpen(false);
     }, []);
+
+    const context = useContext(ESBuildContext);
+    useEffect(() => {
+        if (context) {
+            context.build();
+        }
+    }, [context]);
 
     const renderTabContent = (tab: ITab, index: number) => {
         const { id, type } = tab;
