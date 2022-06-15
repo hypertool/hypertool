@@ -287,3 +287,14 @@ export interface IApp {
 export interface IESBuildContext {
     build: () => Promise<BuildResult>;
 }
+
+export interface IPathNode {
+    name: string;
+    children: IPathNode[];
+    path: IPath | null;
+}
+
+export interface IPath {
+    key: string;
+    directory: boolean;
+}
