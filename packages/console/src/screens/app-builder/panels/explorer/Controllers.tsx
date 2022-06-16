@@ -1,136 +1,108 @@
-import type { FunctionComponent, ReactElement } from "react";
-import { useCallback, useContext, useState } from "react";
+import Collapse from "@mui/material/Collapse";
+import SvgIcon, { SvgIconProps } from "@mui/material/SvgIcon";
+import { alpha, styled } from "@mui/material/styles";
+import { TransitionProps } from "@mui/material/transitions";
 
-import { Button, Icon, List } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import TreeItem, { TreeItemProps, treeItemClasses } from "@mui/lab/TreeItem";
+import TreeView from "@mui/lab/TreeView";
 
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { files } from "../../../../utils";
 
-import { BuilderActionsContext } from "../../../../contexts";
-import {
-    useBuilderActions,
-    useNotification,
-    useParam,
-} from "../../../../hooks";
-import { IEditControllerBundle, ITab } from "../../../../types";
+function MinusSquare(props: SvgIconProps) {
+    return (
+        <SvgIcon
+            fontSize="inherit"
+            style={{ width: 14, height: 14 }}
+            {...props}
+        >
+            {/* tslint:disable-next-line: max-line-length */}
+            <path d="M22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0zM17.873 11.023h-11.826q-.375 0-.669.281t-.294.682v0q0 .401.294 .682t.669.281h11.826q.375 0 .669-.281t.294-.682v0q0-.401-.294-.682t-.669-.281z" />
+        </SvgIcon>
+    );
+}
 
-import Controller from "./Controller";
+function PlusSquare(props: SvgIconProps) {
+    return (
+        <SvgIcon
+            fontSize="inherit"
+            style={{ width: 14, height: 14 }}
+            {...props}
+        >
+            {/* tslint:disable-next-line: max-line-length */}
+            <path d="M22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0zM17.873 12.977h-4.923v4.896q0 .401-.281.682t-.682.281v0q-.375 0-.669-.281t-.294-.682v-4.896h-4.923q-.401 0-.682-.294t-.281-.669v0q0-.401.281-.682t.682-.281h4.923v-4.896q0-.401.294-.682t.669-.281v0q.401 0 .682.281t.281.682v4.896h4.923q.401 0 .682.281t.281.682v0q0 .375-.281.669t-.682.294z" />
+        </SvgIcon>
+    );
+}
 
-const Actions = styled("div")(({ theme }) => ({
-    display: "flex",
-    flexDirection: "row",
-    padding: `${theme.spacing(1)} ${theme.spacing(2)} ${theme.spacing(
-        2,
-    )} ${theme.spacing(2)}`,
+function CloseSquare(props: SvgIconProps) {
+    return (
+        <SvgIcon
+            className="close"
+            fontSize="inherit"
+            style={{ width: 14, height: 14 }}
+            {...props}
+        >
+            {/* tslint:disable-next-line: max-line-length */}
+            <path d="M17.485 17.512q-.281.281-.682.281t-.696-.268l-4.12-4.147-4.12 4.147q-.294.268-.696.268t-.682-.281-.281-.682.294-.669l4.12-4.147-4.12-4.147q-.294-.268-.294-.669t.281-.682.682-.281.696 .268l4.12 4.147 4.12-4.147q.294-.268.696-.268t.682.281 .281.669-.294.682l-4.12 4.147 4.12 4.147q.294.268 .294.669t-.281.682zM22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0z" />
+        </SvgIcon>
+    );
+}
+
+function TransitionComponent(props: TransitionProps) {
+    return <Collapse {...props} />;
+}
+
+const root = files.createPathTree([
+    {
+        key: "hello-world/components/button.tsx",
+        directory: false,
+    },
+    {
+        key: "hello-world/components/checkbox.tsx",
+        directory: false,
+    },
+    {
+        key: "hello-world/components/text-field.tsx",
+        directory: false,
+    },
+    {
+        key: "hello-world/screens/index.tsx",
+        directory: false,
+    },
+]);
+
+const StyledTreeItem = styled((props: TreeItemProps) => (
+    <TreeItem {...props} TransitionComponent={TransitionComponent} />
+))(({ theme }) => ({
+    [`& .${treeItemClasses.iconContainer}`]: {
+        "& .close": {
+            opacity: 0.3,
+        },
+    },
+    [`& .${treeItemClasses.group}`]: {
+        marginLeft: 15,
+        paddingLeft: 18,
+        borderLeft: `1px dashed ${alpha(theme.palette.text.primary, 0.4)}`,
+    },
 }));
 
-const GET_CONTROLLERS = gql`
-    query GetControllers($app: ID!, $page: Int, $limit: Int) {
-        getControllers(app: $app, page: $page, limit: $limit) {
-            totalPages
-            records {
-                id
-                name
-                language
-            }
-        }
-    }
-`;
-
-const DELETE_CONTROLLER = gql`
-    mutation DeleteController($controllerId: ID!) {
-        deleteController(controllerId: $controllerId) {
-            success
-        }
-    }
-`;
-
-const Controllers: FunctionComponent = (): ReactElement => {
-    const { createTab, closeTabs } = useBuilderActions();
-    const appId = useParam("appId");
-
-    const { data } = useQuery(GET_CONTROLLERS, {
-        variables: {
-            app: appId,
-            page: 0,
-            limit: 20,
-        },
-        notifyOnNetworkStatusChange: true,
-    });
-    const { records } = data?.getControllers || { records: [] };
-    const notification = useNotification();
-
-    const [deleteController] = useMutation(DELETE_CONTROLLER, {
-        refetchQueries: ["GetControllers"],
-    });
-
-    const handleCreateController = useCallback(() => {
-        createTab("new-controller");
-    }, [createTab]);
-
-    const handleEditController = useCallback((controllerId: string) => {
-        createTab("edit-controller", { controllerId });
-    }, []);
-
-    const handleDeleteController = useCallback(
-        async (controllerId: string, name: string) => {
-            closeTabs(
-                (tab: ITab<IEditControllerBundle>) =>
-                    tab.bundle?.controllerId === controllerId,
-            );
-
-            try {
-                notification.notify({
-                    type: "warning",
-                    message: `Deleting controller "${name}"...`,
-                    closeable: false,
-                    autoCloseDuration: -1,
-                });
-
-                await deleteController({
-                    variables: {
-                        controllerId,
-                    },
-                });
-
-                notification.notifySuccess(
-                    `Controller "${name}" deleted successfully`,
-                );
-            } catch (error: any) {
-                notification.notifyError(error);
-            }
-        },
-        [],
+const Controllers = () => {
+    const renderNode = (node: any) => (
+        <StyledTreeItem nodeId={Math.random().toString()} label={node.name}>
+            {node.children.map(renderNode)}
+        </StyledTreeItem>
     );
 
     return (
-        <>
-            <div>
-                <List dense={true}>
-                    {records.map((controller: any) => (
-                        <Controller
-                            key={controller.id}
-                            id={controller.id}
-                            name={controller.name}
-                            onEdit={handleEditController}
-                            onDelete={handleDeleteController}
-                        />
-                    ))}
-                </List>
-                <Actions>
-                    <Button
-                        size="small"
-                        fullWidth={true}
-                        variant="outlined"
-                        color="primary"
-                        endIcon={<Icon>add</Icon>}
-                        onClick={handleCreateController}
-                    >
-                        Create New Controller
-                    </Button>
-                </Actions>
-            </div>
-        </>
+        <TreeView
+            defaultExpanded={["1"]}
+            defaultCollapseIcon={<MinusSquare />}
+            defaultExpandIcon={<PlusSquare />}
+            defaultEndIcon={<CloseSquare />}
+            sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
+        >
+            {renderNode(root)}
+        </TreeView>
     );
 };
 
