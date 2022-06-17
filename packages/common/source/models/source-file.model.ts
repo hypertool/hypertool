@@ -29,15 +29,8 @@ const controllerSchema = new Schema(
             trim: true,
             required: true,
         },
-        description: {
-            type: String,
-            minlength: 0,
-            maxlength: 512,
-            default: "",
-        },
-        language: {
-            type: String,
-            enum: controllerLanguages,
+        directory: {
+            type: Boolean,
             required: true,
         },
         /* An identifier that points to the User who created the controller. */
@@ -61,9 +54,9 @@ const controllerSchema = new Schema(
          * 2. Autosave triggered every 1s (configurable by the user) -- data stored as patches
          * 3. Parallel writes to local storage as the user types -- data stored as plain text
          */
-        patches: {
-            type: [patchSchema],
-            default: [],
+        content: {
+            type: String,
+            required: true,
         },
 
         /* An identifier that points to the app to which the controller belongs. */
