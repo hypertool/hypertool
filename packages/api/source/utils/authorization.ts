@@ -1,9 +1,8 @@
 import type {
     IApp,
-    IController,
+    ISourceFile,
     IQueryTemplate,
     IResource,
-    IScreen,
     IUser,
 } from "@hypertool/common";
 import { ForbiddenError, InternalServerError } from "@hypertool/common";
@@ -17,7 +16,7 @@ const groups: IAuthResourceGroup[] = [
         name: "appBuilder",
         resources: [
             {
-                name: "controllers",
+                name: "sourceFiles",
                 operations: [
                     {
                         name: "create",
@@ -151,7 +150,7 @@ export const checkAccessToApps = (user: IUser, apps: IApp[]): void => {
 
 export const checkAccessToControllers = (
     user: IUser,
-    controllers: IController[],
+    sourceFiles: ISourceFile[],
 ): void => {
     // TODO: Handle anonymous users.
     if (!user) {
@@ -160,7 +159,7 @@ export const checkAccessToControllers = (
 
     const userId = user._id.toString();
     const deniedList = [];
-    for (const controller of controllers) {
+    for (const controller of sourceFiles) {
         if (controller.creator.toString() !== userId) {
             deniedList.push(controller._id.toString());
         }
@@ -168,7 +167,7 @@ export const checkAccessToControllers = (
 
     if (deniedList.length > 0) {
         throw new ForbiddenError(
-            `Access to the following controllers are forbidden: ${deniedList.join(
+            `Access to the following sourceFiles are forbidden: ${deniedList.join(
                 ", ",
             )}`,
         );
@@ -221,29 +220,6 @@ export const checkAccessToQueryTemplates = (
     if (deniedList.length > 0) {
         throw new ForbiddenError(
             `Access to the following query templates are forbidden: ${deniedList.join(
-                ", ",
-            )}`,
-        );
-    }
-};
-
-export const checkAccessToScreens = (user: IUser, screens: IScreen[]): void => {
-    // TODO: Handle anonymous users.
-    if (!user) {
-        return;
-    }
-
-    const userId = user._id.toString();
-    const deniedList = [];
-    for (const screen of screens) {
-        if (screen.creator.toString() !== userId) {
-            deniedList.push(screen._id.toString());
-        }
-    }
-
-    if (deniedList.length > 0) {
-        throw new ForbiddenError(
-            `Access to the following screens are forbidden: ${deniedList.join(
                 ", ",
             )}`,
         );
