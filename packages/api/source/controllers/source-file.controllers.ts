@@ -1,41 +1,34 @@
 import {
-    IController,
-    IExternalController,
+    ISourceFile,
+    IExternalSourceFile,
     InternalServerError,
-    TControllerPage,
+    TSourceFilePage,
     runAsTransaction,
 } from "@hypertool/common";
 import {
     AppModel,
     BadRequestError,
-    ControllerModel,
+    SourceFileModel,
     NotFoundError,
     constants,
 } from "@hypertool/common";
 
 import { createTwoFilesPatch } from "diff";
+import { appendFile } from "fs";
 import joi from "joi";
 import { ClientSession, Types } from "mongoose";
 
 import {
     checkAccessToApps,
-    checkAccessToControllers,
+    checkAccessToSourceFiles,
     patchAll,
+    validateAttributes,
 } from "../utils";
 
 const createSchema = joi.object({
     name: joi.string().regex(constants.namePattern).required(),
-    description: joi.string().max(512).allow("").default(""),
-    language: joi
-        .string()
-        .valid(...constants.controllerLanguages)
-        .required(),
-    patches: joi.array().items(
-        joi.object({
-            author: joi.string().regex(constants.identifierPattern),
-            content: joi.string().allow(""),
-        }),
-    ),
+    directory: joi.boolean().required(),
+    content: joi.string().default(""),
     app: joi.string().regex(constants.identifierPattern).required(),
 });
 
@@ -52,52 +45,39 @@ const filterSchema = joi.object({
 
 // TODO: Allow description to be updated
 const updateSchema = joi.object({
-    patches: joi.array().items(
-        joi.object({
-            author: joi.string().regex(constants.identifierPattern),
-            content: joi.string().allow(""),
-        }),
-    ),
+    id: joi.string().regex(constants.identifierPattern).required(),
+    name: joi.string().regex(constants.namePattern),
+    content: joi.string(),
 });
 
-// TODO: Allow description to be updated
-const updateWithSourceSchema = joi.object({
-    source: joi.string().allow(""),
+const getByNameSchema = joi.object({
+    app: joi.string().regex(constants.identifierPattern).required(),
+    name: joi.string().regex(constants.namePattern).required(),
 });
 
-const toExternal = (controller: IController): IExternalController => {
+const toExternal = (sourceFile: ISourceFile): IExternalSourceFile => {
     const {
         _id,
         name,
-        description,
-        language,
+        directory,
         creator,
-        patches,
-        status,
+        content,
         app,
+        status,
         createdAt,
         updatedAt,
-    } = controller;
+    } = sourceFile;
 
     /*
-     * NOTE: At the moment, all the controllers provide unpopulated fields.
+     * NOTE: At the moment, all the sourceFiles provide unpopulated fields.
      * Therefore, we consider all the IDs to be of type ObjectId.
      */
     return {
         id: _id.toString(),
         name,
-        description,
-        language,
+        directory,
         creator: creator.toString(),
-        patches: patches.map((patch) => {
-            const { author, content, createdAt } = patch;
-            return {
-                author: author.toString(),
-                content,
-                createdAt,
-            };
-        }),
-        patched: patchAll(patches),
+        content,
         app: app.toString(),
         status,
         createdAt,
@@ -108,7 +88,7 @@ const toExternal = (controller: IController): IExternalController => {
 export const create = async (
     context: any,
     attributes: any,
-): Promise<IExternalController> => {
+): Promise<IExternalSourceFile> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
     });
@@ -116,9 +96,9 @@ export const create = async (
         throw new BadRequestError(error.message);
     }
 
-    const newController = await runAsTransaction(
+    const newSourceFile = await runAsTransaction(
         async (session: ClientSession) => {
-            const newControllerId = new Types.ObjectId();
+            const newSourceFileId = new Types.ObjectId();
             const app = await AppModel.findOneAndUpdate(
                 {
                     _id: value.app,
@@ -126,7 +106,7 @@ export const create = async (
                 },
                 {
                     $push: {
-                        controllers: newControllerId,
+                        sourceFiles: newSourceFileId,
                     },
                 },
                 {
@@ -148,37 +128,37 @@ export const create = async (
              */
             checkAccessToApps(context.user, [app]);
 
-            /* Check for the uniqueness of the controller name within the app. */
-            const existingController = await ControllerModel.findOne({
+            /* Check for the uniqueness of the source file name within the app. */
+            const existingSourceFile = await SourceFileModel.findOne({
                 name: value.name,
                 app: value.app,
                 status: { $ne: "deleted" },
             });
-            if (existingController) {
+            if (existingSourceFile) {
                 throw new BadRequestError(
-                    `Controller with name "${value.name}" already exists.`,
+                    `SourceFile with name "${value.name}" already exists.`,
                 );
             }
 
-            const newController = new ControllerModel({
+            const newSourceFile = new SourceFileModel({
                 ...value,
-                _id: newControllerId,
+                _id: newSourceFileId,
                 status: "created",
                 creator: context.user._id,
             });
-            await newController.save({ session });
+            await newSourceFile.save({ session });
 
-            return newController;
+            return newSourceFile;
         },
     );
 
-    return toExternal(newController);
+    return toExternal(newSourceFile);
 };
 
 export const list = async (
     context: any,
     parameters: any,
-): Promise<TControllerPage> => {
+): Promise<TSourceFilePage> => {
     const { error, value } = filterSchema.validate(parameters);
     if (error) {
         throw new BadRequestError(error.message);
@@ -201,7 +181,7 @@ export const list = async (
 
     checkAccessToApps(context.user, [app]);
 
-    const controllers = await (ControllerModel as any).paginate(
+    const sourceFiles = await (SourceFileModel as any).paginate(
         {
             app: value.app,
             status: {
@@ -221,51 +201,51 @@ export const list = async (
     );
 
     return {
-        totalRecords: controllers.totalDocs,
-        totalPages: controllers.totalPages,
-        previousPage: controllers.prevPage ? controllers.prevPage - 1 : -1,
-        nextPage: controllers.nextPage ? controllers.nextPage - 1 : -1,
-        hasPreviousPage: controllers.hasPrevPage,
-        hasNextPage: controllers.hasNextPage,
-        records: controllers.docs.map(toExternal),
+        totalRecords: sourceFiles.totalDocs,
+        totalPages: sourceFiles.totalPages,
+        previousPage: sourceFiles.prevPage ? sourceFiles.prevPage - 1 : -1,
+        nextPage: sourceFiles.nextPage ? sourceFiles.nextPage - 1 : -1,
+        hasPreviousPage: sourceFiles.hasPrevPage,
+        hasNextPage: sourceFiles.hasNextPage,
+        records: sourceFiles.docs.map(toExternal),
     };
 };
 
 export const listByIds = async (
     context,
-    controllerIds: string[],
-): Promise<IExternalController[]> => {
-    const controllers = await ControllerModel.find({
-        _id: { $in: controllerIds },
+    sourceFileIds: string[],
+): Promise<IExternalSourceFile[]> => {
+    const sourceFiles = await SourceFileModel.find({
+        _id: { $in: sourceFileIds },
         status: { $ne: "deleted" },
     }).exec();
-    if (controllers.length !== controllerIds.length) {
+    if (sourceFiles.length !== sourceFileIds.length) {
         throw new NotFoundError(
-            `Could not find controllers for every specified ID. Requested ${controllerIds.length} controllers, but found ${controllers.length} controllers.`,
+            `Could not find sourceFiles for every specified ID. Requested ${sourceFileIds.length} sourceFiles, but found ${sourceFiles.length} sourceFiles.`,
         );
     }
 
-    checkAccessToControllers(context.user, controllers);
+    checkAccessToSourceFiles(context.user, sourceFiles);
 
     const object = {};
-    for (const controller of controllers) {
-        object[controller._id.toString()] = controller;
+    for (const sourceFile of sourceFiles) {
+        object[sourceFile._id.toString()] = sourceFile;
     }
 
-    return controllerIds.map((key) => toExternal(object[key]));
+    return sourceFileIds.map((key) => toExternal(object[key]));
 };
 
 export const getById = async (
     context: any,
     id: string,
-): Promise<IExternalController> => {
+): Promise<IExternalSourceFile> => {
     if (!constants.identifierPattern.test(id)) {
         throw new BadRequestError(
-            `The specified controller identifier "${id}" is invalid.`,
+            `The specified sourceFile identifier "${id}" is invalid.`,
         );
     }
 
-    const controller = await ControllerModel.findOne(
+    const sourceFile = await SourceFileModel.findOne(
         {
             _id: id,
             status: { $ne: "deleted" },
@@ -275,30 +255,27 @@ export const getById = async (
     ).exec();
 
     /* We return a 404 error, if we did not find the entity. */
-    if (!controller) {
+    if (!sourceFile) {
         throw new NotFoundError(
-            `Cannot find a controller with the specified identifier "${id}".`,
+            `Cannot find a sourceFile with the specified identifier "${id}".`,
         );
     }
 
-    checkAccessToControllers(context.user, [controller]);
+    checkAccessToSourceFiles(context.user, [sourceFile]);
 
-    return toExternal(controller);
+    return toExternal(sourceFile);
 };
 
 export const getByName = async (
     context: any,
-    name: string,
-): Promise<IExternalController> => {
-    if (!constants.namePattern.test(name)) {
-        throw new BadRequestError(
-            `The specified controller name "${name}" is invalid.`,
-        );
-    }
+    attributes,
+): Promise<IExternalSourceFile> => {
+    const value = validateAttributes(getByNameSchema, attributes);
 
-    const controller = await ControllerModel.findOne(
+    const sourceFile = await SourceFileModel.findOne(
         {
-            name,
+            name: value.name,
+            app: value.app,
             status: { $ne: "deleted" },
         },
         null,
@@ -306,15 +283,15 @@ export const getByName = async (
     ).exec();
 
     /* We return a 404 error, if we did not find the entity. */
-    if (!controller) {
+    if (!sourceFile) {
         throw new NotFoundError(
-            `Cannot find a controller with the specified name "${name}".`,
+            `Cannot find a sourceFile with the specified name "${name}".`,
         );
     }
 
-    checkAccessToControllers(context.user, [controller]);
+    checkAccessToSourceFiles(context.user, [sourceFile]);
 
-    return toExternal(controller);
+    return toExternal(sourceFile);
 };
 
 export const update = async (context: any, id: string, attributes: any) => {
@@ -325,9 +302,9 @@ export const update = async (context: any, id: string, attributes: any) => {
         throw new BadRequestError(error.message);
     }
 
-    const updatedController = await runAsTransaction(
+    const updatedSourceFile = await runAsTransaction(
         async (session: ClientSession) => {
-            const updatedController = await ControllerModel.findOneAndUpdate(
+            const updatedSourceFile = await SourceFileModel.findOneAndUpdate(
                 {
                     _id: id,
                     status: { $ne: "deleted" },
@@ -336,93 +313,35 @@ export const update = async (context: any, id: string, attributes: any) => {
                 { new: true, lean: true, session },
             ).exec();
 
-            if (!updatedController) {
+            if (!updatedSourceFile) {
                 throw new NotFoundError(
                     `Cannot find an app with the specified identifier "${value.app}".`,
                 );
             }
 
             /*
-             * At this point, the controller has been modified, regardless of the currently
+             * At this point, the sourceFile has been modified, regardless of the currently
              * user being authorized or not. When we check for access below, we rely
              * on the transaction failing to undo the changes.
              */
-            checkAccessToControllers(context.user, [updatedController]);
+            checkAccessToSourceFiles(context.user, [updatedSourceFile]);
 
-            return updatedController;
+            return updatedSourceFile;
         },
     );
 
-    return toExternal(updatedController);
-};
-
-export const updateWithSource = async (
-    context: any,
-    id: string,
-    attributes: any,
-): Promise<IExternalController> => {
-    const { error, value } = updateWithSourceSchema.validate(attributes, {
-        stripUnknown: true,
-    });
-    if (error) {
-        throw new BadRequestError(error.message);
-    }
-
-    const controller = await ControllerModel.findOne({
-        _id: id,
-        status: { $ne: "delete" },
-    }).exec();
-    if (!controller) {
-        throw new NotFoundError(
-            `Cannot find a controller with the specified identifier "${id}".`,
-        );
-    }
-
-    checkAccessToControllers(context.user, [controller]);
-
-    const oldSource = patchAll(controller.patches);
-    const newPatch = createTwoFilesPatch(
-        `a/${controller.name}`,
-        `b/${controller.name}`,
-        oldSource,
-        value.source,
-        "",
-        "",
-    );
-
-    const updatedController = await ControllerModel.findByIdAndUpdate(
-        id,
-        {
-            $push: {
-                patches: {
-                    author: context.user._id,
-                    content: newPatch,
-                },
-            },
-        },
-        {
-            new: true,
-            lean: true,
-        },
-    ).exec();
-    if (!updatedController) {
-        throw new InternalServerError(
-            "Failed to update and verify new controller state.",
-        );
-    }
-
-    return toExternal(updatedController);
+    return toExternal(updatedSourceFile);
 };
 
 export const remove = async (context: any, id: string) => {
     if (!constants.identifierPattern.test(id)) {
         throw new BadRequestError(
-            `The specified controller identifier "${id}" is invalid.`,
+            `The specified sourceFile identifier "${id}" is invalid.`,
         );
     }
 
     await runAsTransaction(async (session: ClientSession) => {
-        const controller = await ControllerModel.findOneAndUpdate(
+        const sourceFile = await SourceFileModel.findOneAndUpdate(
             {
                 _id: id,
                 status: { $ne: "deleted" },
@@ -436,18 +355,18 @@ export const remove = async (context: any, id: string) => {
                 session,
             },
         );
-        if (!controller) {
+        if (!sourceFile) {
             throw new NotFoundError(
-                `A controller with the specified identifier "${id}" does not exist.`,
+                `A sourceFile with the specified identifier "${id}" does not exist.`,
             );
         }
 
         /*
-         * At this point, the controller has been modified, regardless of the currently
+         * At this point, the sourceFile has been modified, regardless of the currently
          * user being authorized or not. When we check for access below, we rely
          * on the transaction failing to undo the changes.
          */
-        checkAccessToControllers(context.user, [controller]);
+        checkAccessToSourceFiles(context.user, [sourceFile]);
     });
 
     return { success: true };
