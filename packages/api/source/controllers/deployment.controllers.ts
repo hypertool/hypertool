@@ -46,34 +46,41 @@ const toExternal = (deployment: Deployment): ExternalDeployment => {
 
 export const generateSignedURLs = async (
     context,
-    attributes: GenerateSignedURLsAttributes): Promise<GenerateSignedURLsResult> => {
+    attributes: GenerateSignedURLsAttributes,
+): Promise<GenerateSignedURLsResult> => {
     const { error, value } = generateSchema.validate(attributes);
 
     if (error) {
         throw new BadRequestError(error.message);
     }
 
-    const { app, deployment } = await runAsTransaction(async (session: ClientSession) => {
-        const deploymentId = new mongoose.Types.ObjectId();
-        const app = await AppModel.findByIdAndUpdate(value.appId, {
-            $push: {
-                deployments: deploymentId,
-            },
-        }, { new: true, lean: true, session });
-        if (!app) {
-            throw new NotFoundError(
-                "Cannot find an app with the specified identifier.",
+    const { app, deployment } = await runAsTransaction(
+        async (session: ClientSession) => {
+            const deploymentId = new mongoose.Types.ObjectId();
+            const app = await AppModel.findByIdAndUpdate(
+                value.appId,
+                {
+                    $push: {
+                        deployments: deploymentId,
+                    },
+                },
+                { new: true, lean: true, session },
             );
-        }
+            if (!app) {
+                throw new NotFoundError(
+                    "Cannot find an app with the specified identifier.",
+                );
+            }
 
-        const deployment = new DeploymentModel({
-            _id: deploymentId,
-            app: value.appId,
-        });
-        await deployment.save({ session });
+            const deployment = new DeploymentModel({
+                _id: deploymentId,
+                app: value.appId,
+            });
+            await deployment.save({ session });
 
-        return { app, deployment };
-    });
+            return { app, deployment };
+        },
+    );
 
     const promises = [];
     for (const file of value.files) {
