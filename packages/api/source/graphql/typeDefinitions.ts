@@ -15,8 +15,8 @@ const {
     queryResultFormats,
     commentStatuses,
     conversationStatuses,
-    controllerStatuses,
-    controllerLanguages,
+    sourceFileStatuses,
+    sourceFileLanguages,
     screenStatuses,
     organizationRoles,
     teamRoles,
@@ -254,8 +254,7 @@ const types = `
         description: String!
         root: Boolean!
         resources: [Resource!]!
-        screens: [Screen!]!
-        controllers: [Controller!]!
+        sourceFiles: [SourceFile!]!
         # TODO: Add queries
         creator: User!
         status: AppStatus!
@@ -322,11 +321,7 @@ const types = `
         id: ID!
         name: String!
         description: String!
-        # Resource does not point to QueryTemplate directly, making each other not mutually 
-        # recursive. Therefore, we don't have to flatten the data structure here.
         resource: Resource!
-        # App points to QueryTemplate directly, making each other mutually recursive. But since 
-        # queries is flattened in App, we can use the aggregate type here.         
         app: App!
         content: String!
         status: QueryStatus!
@@ -388,125 +383,44 @@ const types = `
         deployment: Deployment!
     }
 
-    enum CommentStatuses {
-        ${commentStatuses.join("\n")}
+    enum SourceFileStatus {
+        ${sourceFileStatuses.join("\n")}
     }
 
-    enum ConversationStatuses {
-        ${conversationStatuses.join("\n")}
-    }   
-
-    type Comment {
-        id: ID!
-        author: ID!
-        content: String!
-        edited: Boolean!
-        status: CommentStatuses!
-        conversation: ID!
+    enum SourceFileLanguage {
+        ${sourceFileLanguages.join("\n")}
     }
 
-    type CommentPage {
-        totalRecords: Int!
-        totalPages: Int!
-        previousPage: Int!
-        nextPage: Int!
-        hasPreviousPage: Int!
-        hasNextPage: Int!
-        records: [Comment!]!
-    }
-
-    type Coordinates {
-        x: Int!
-        y: Int!
-    }
-
-    type Conversation {
-        id: ID!
-        app: ID!
-        page: ID!
-        coordinates: Coordinates!
-        taggedUsers: [ID!]!
-        comments: [ID!]!
-        status: ConversationStatuses!
-    }
-
-    type ConversationPage {
-        totalRecords: Int!
-        totalPages: Int!
-        previousPage: Int!
-        nextPage: Int!
-        hasPreviousPage: Int!
-        hasNextPage: Int!
-        records: [Conversation!]!
-    }
-
-    enum ScreenStatus {
-        ${screenStatuses.join("\n")}
-    }
-
-    type Screen {
-        id: ID!
-        app: App!
-        name: String!
-        title: String!
-        description: String!
-        slug: String!
-        content: String!
-        controller: Controller!
-        status: ScreenStatus!
-        creator: User!
-        createdAt: Date!
-        updatedAt: Date!
-    }
-
-    type ScreenPage {
-        totalRecords: Int!
-        totalPages: Int!
-        previousPage: Int!
-        nextPage: Int!
-        hasPreviousPage: Int!
-        hasNextPage: Int!
-        records: [Screen!]!
-    }
-
-    enum ControllerStatus {
-        ${controllerStatuses.join("\n")}
-    }
-
-    enum ControllerLanguage {
-        ${controllerLanguages.join("\n")}
-    }
-
-    type ControllerPatch {
+    type SourceFilePatch {
         author: User!
         content: String!
         createdAt: Date!
     }
 
-    type Controller {
+    type SourceFile {
         id: ID!
         name: String!
         description: String!
-        language: ControllerLanguage!
+        language: SourceFileLanguage!
         creator: User!
-        patches: [ControllerPatch!]!
+        patches: [SourceFilePatch!]!
         patched: String!
-        status: ControllerStatus!
+        status: SourceFileStatus!
         createdAt: Date!
         updatedAt: Date!
     }
 
-    type ControllerPage {
+    type SourceFilePage {
         totalRecords: Int!
         totalPages: Int!
         previousPage: Int!
         nextPage: Int!
         hasPreviousPage: Int!
         hasNextPage: Int!
-        records: [Controller!]!
+        records: [SourceFile!]!
     }
 
-    input ControllerPatchInput {
+    input SourceFilePatchInput {
         author: ID!
         content: String!
     }
