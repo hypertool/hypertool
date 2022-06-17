@@ -81,16 +81,7 @@ const appSchema = new Schema(
             ],
             default: [],
         },
-        screens: {
-            type: [
-                {
-                    type: Schema.Types.ObjectId,
-                    ref: "Screen",
-                },
-            ],
-            default: [],
-        },
-        controllers: {
+        sourceFiles: {
             type: [
                 {
                     type: Schema.Types.ObjectId,
