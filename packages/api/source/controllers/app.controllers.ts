@@ -1,16 +1,14 @@
 import {
     ControllerModel,
     IApp,
-    IController,
+    ISourceFile,
     IExternalApp,
     IQueryTemplate,
     IResource,
-    IScreen,
     InternalServerError,
     OrganizationModel,
     QueryTemplateModel,
     ResourceModel,
-    ScreenModel,
     TAppPage,
     UserModel,
     runAsTransaction,
@@ -75,8 +73,7 @@ const toExternal = (app: IApp): IExternalApp => {
         resources,
         queryTemplates,
         deployments,
-        screens,
-        controllers,
+        sourceFiles,
         creator,
         organization,
         status,
@@ -95,8 +92,7 @@ const toExternal = (app: IApp): IExternalApp => {
             queryTemplate.toString(),
         ),
         deployments: deployments.map((deployment) => deployment.toString()),
-        screens: screens.map((screen) => screen.toString()),
-        controllers: controllers.map((controller) => controller.toString()),
+        sourceFiles: sourceFiles.map((controller) => controller.toString()),
         creator: creator.toString(),
         organization: organization?.toString() ?? null,
         status,
@@ -278,8 +274,8 @@ const duplicateEntities = async (
 
     const controllerMappings: Record<string, Types.ObjectId> = {};
     const newControllers = [];
-    for (const controller of sourceApp.controllers) {
-        const controller0 = controller as IController;
+    for (const controller of sourceApp.sourceFiles) {
+        const controller0 = controller as ISourceFile;
         const { name, description, language, patches, status } = controller0;
 
         const newControllerId = new Types.ObjectId();
@@ -312,50 +308,25 @@ const duplicateEntities = async (
         });
     }
 
-    const newScreens = [];
-    for (const screen of sourceApp.screens) {
-        const screen0 = screen as IScreen;
-        const { name, title, description, slug, content, controller, status } =
-            screen0;
-        newScreens.push({
-            _id: new Types.ObjectId(),
-            name,
-            title,
-            description,
-            slug,
-            content,
-            controller:
-                controller && controllerMappings[controller?.toString()],
-            creator: userId,
-            app: appId,
-            status,
-        });
-    }
-
-    const [_resources, _queryTemplates, _controllers, _screens, app] =
-        await Promise.all([
-            ResourceModel.insertMany(newResources, { session }),
-            QueryTemplateModel.insertMany(newQueryTemplates, { session }),
-            ControllerModel.insertMany(newControllers, { session }),
-            ScreenModel.insertMany(newScreens, { session }),
-            AppModel.findOneAndUpdate(
-                {
-                    _id: appId,
-                    status: { $ne: "deleted" },
-                },
-                {
-                    resources: newResources.map((resource) => resource._id),
-                    queryTemplates: newQueryTemplates.map(
-                        (queryTemplate) => queryTemplate._id,
-                    ),
-                    controllers: newControllers.map(
-                        (controller) => controller._id,
-                    ),
-                    screens: newScreens.map((screen) => screen._id),
-                },
-                { new: true, lean: true, session },
-            ).exec(),
-        ]);
+    const [_resources, _queryTemplates, _controllers, app] = await Promise.all([
+        ResourceModel.insertMany(newResources, { session }),
+        QueryTemplateModel.insertMany(newQueryTemplates, { session }),
+        ControllerModel.insertMany(newControllers, { session }),
+        AppModel.findOneAndUpdate(
+            {
+                _id: appId,
+                status: { $ne: "deleted" },
+            },
+            {
+                resources: newResources.map((resource) => resource._id),
+                queryTemplates: newQueryTemplates.map(
+                    (queryTemplate) => queryTemplate._id,
+                ),
+                sourceFiles: newControllers.map((controller) => controller._id),
+            },
+            { new: true, lean: true, session },
+        ).exec(),
+    ]);
 
     if (!app) {
         throw new InternalServerError(
@@ -452,8 +423,7 @@ export const install = async (
             resources: [],
             queryTemplates: [],
             deployments: [],
-            screens: [],
-            controllers: [],
+            sourceFiles: [],
             creator: newUserId,
             organization: undefined,
             status: "private",
@@ -490,8 +460,7 @@ export const duplicate = async (context, attributes): Promise<IExternalApp> => {
             { lean: true },
         )
             .populate({ path: "resources", model: "Resource" })
-            .populate({ path: "screens", model: "Screen" })
-            .populate({ path: "controllers", model: "Controller" })
+            .populate({ path: "sourceFiles", model: "Controller" })
             .populate({ path: "queryTemplates", model: "QueryTemplate" })
             .exec();
         if (!sourceApp) {
