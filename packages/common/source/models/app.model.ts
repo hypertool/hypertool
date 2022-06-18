@@ -85,7 +85,7 @@ const appSchema = new Schema(
             type: [
                 {
                     type: Schema.Types.ObjectId,
-                    ref: "Controller",
+                    ref: "SourceFile",
                 },
             ],
             default: [],

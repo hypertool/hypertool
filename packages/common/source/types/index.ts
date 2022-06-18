@@ -3,11 +3,8 @@ import type { Model } from "mongoose";
 
 import {
     appStatuses,
-    commentStatuses,
     componentOrigins,
-    controllerLanguages,
-    controllerStatuses,
-    conversationStatuses,
+    sourceFileStatuses,
     countryCodes,
     genders,
     organizationRoles,
@@ -15,7 +12,6 @@ import {
     queryStatuses,
     resourceStatuses,
     resourceTypes,
-    screenStatuses,
     teamRoles,
     teamStatuses,
     userStatuses,
@@ -35,7 +31,7 @@ import {
  *   - Queries
  *   - Conversations
  *   - Comments
- *   - Controllers
+ *   - SourceFiles
  *   - Activity Logs
  *
  * ---
@@ -50,7 +46,7 @@ import {
  * `External` suffix. An example of this is `IExternalSourceFile`.
  *
  * 3. Interface that i used within the client. It is prepended with the `Client`
- * suffix. An example of this is `IClientController`. The declaration for such
+ * suffix. An example of this is `IClientSourceFile`. The declaration for such
  * interfaces are not included in the `@hypertool/common` module. Instead, it
  * should be declared in `@hypertool/console` or `@hypertool/frontend-common`.
  */
@@ -398,108 +394,6 @@ export interface ExternalDeployment {
     updatedAt: Date;
 }
 
-export interface Comment {
-    /* An identifier that uniquely identifies the comment across Hypertool. */
-    _id: string;
-
-    /* An identifier that points to the User whose created the comment. */
-    author: ObjectId | IUser;
-
-    /* A string that describes the contents of the comment. */
-    content: string;
-
-    /* A boolean value that describes if the comment is edited or not. */
-    edited: boolean;
-
-    /*
-     * An enumeration of string values that describes the status of the
-     * comment.
-     */
-    status: typeof commentStatuses[number];
-
-    /*
-     * An identifier that points to the Conversation where the comment was
-     * created.
-     */
-    conversation: ObjectId | Conversation;
-
-    /* Specifies the timestamp that indicates when the comment was created.  */
-    createdAt: Date;
-
-    /* Specifies the timestamp that indicates when the comment was last modified. */
-    updatedAt: Date;
-}
-
-export interface ExternalComment {
-    id: string;
-    author: string | IUser;
-    content: string;
-    edited: boolean;
-    status: typeof commentStatuses[number];
-    conversation: string | Conversation;
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export type CommentPage = IExternalListPage<ExternalComment>;
-
-export interface Coordinates {
-    x: number;
-    y: number;
-}
-
-export interface Conversation {
-    /* An identifier uniquely identifies the conversation across Hypertool. */
-    _id: string;
-
-    /* An identifier that points to the App where the comment was created. */
-    app: ObjectId | IApp;
-
-    /*
-     * An object that describes the x and y coordinates of the conversation in
-     * the canvas.
-     */
-    coordinates: Coordinates;
-
-    /* A list of users who have participated in the conversation. */
-    taggedUsers: [ObjectId | IUser];
-
-    /*
-     * A list of comments in the conversation. The first member is the
-     * initiator’s comment.
-     */
-    comments: ObjectId[] | Comment[];
-
-    /*
-     * An enumeration of string values that describes the status of the
-     * conversation.
-     */
-    status: typeof conversationStatuses[number];
-
-    /* Specifies the timestamp that indicates when the conversation was created */
-    createdAt: Date;
-
-    /*
-     * Specifies the timestamp that indicates when the conversation was last
-     * modified
-     */
-    updatedAt: Date;
-}
-
-export interface ExternalConversation {
-    id: string;
-    app: string;
-    page: string;
-    coordinates: Coordinates;
-    taggedUsers: [string | IUser];
-    comments: [string | Comment];
-    status: typeof conversationStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export type ConversationPage = IExternalListPage<ExternalConversation>;
-
 export interface ISourceFile {
     _id?: ObjectId;
     name: string;
@@ -507,7 +401,7 @@ export interface ISourceFile {
     creator: ObjectId | IUser;
     content: string;
     app: ObjectId | IApp;
-    status: typeof controllerStatuses[number];
+    status: typeof sourceFileStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -519,12 +413,12 @@ export interface IExternalSourceFile {
     creator: string;
     content: string;
     app: string;
-    status: typeof controllerStatuses[number];
+    status: typeof sourceFileStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
 
-export type TControllerPage = IExternalListPage<IExternalSourceFile>;
+export type TSourceFilePage = IExternalListPage<IExternalSourceFile>;
 
 export type TToExternalFunction<T, E> = (internal: T) => E;
 
