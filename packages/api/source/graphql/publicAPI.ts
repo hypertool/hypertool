@@ -2,7 +2,7 @@ import { constants } from "@hypertool/common";
 
 import { ApolloServer, gql } from "apollo-server-express";
 
-import { apps, queries, users } from "../sourceFiles";
+import { apps, queries, users } from "../controllers";
 
 import { types } from "./typeDefinitions";
 

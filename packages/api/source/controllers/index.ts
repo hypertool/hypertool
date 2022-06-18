@@ -7,6 +7,4 @@ export * as queryTemplates from "./query-template.controllers";
 export * as deployments from "./deployment.controllers";
 export * as activityLogs from "./activity-log.controllers";
 export * as queries from "./query-engine.controllers";
-export * as comments from "./comment.controllers";
-export * as conversations from "./conversation.controllers";
 export * as sourceFiles from "./source-file.controllers";

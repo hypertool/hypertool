@@ -1,5 +1,5 @@
 import {
-    ControllerModel,
+    SourceFileModel,
     IApp,
     ISourceFile,
     IExternalApp,
@@ -20,14 +20,12 @@ import {
     constants,
 } from "@hypertool/common";
 
-import { createTwoFilesPatch } from "diff";
 import joi from "joi";
 import { ClientSession, Types } from "mongoose";
 
 import {
     checkAccessToApps,
     hashPassword,
-    patchAll,
     sendVerificationEmail,
     validateAttributes,
 } from "../utils";
@@ -92,7 +90,7 @@ const toExternal = (app: IApp): IExternalApp => {
             queryTemplate.toString(),
         ),
         deployments: deployments.map((deployment) => deployment.toString()),
-        sourceFiles: sourceFiles.map((controller) => controller.toString()),
+        sourceFiles: sourceFiles.map((sourceFile) => sourceFile.toString()),
         creator: creator.toString(),
         organization: organization?.toString() ?? null,
         status,
@@ -272,46 +270,30 @@ const duplicateEntities = async (
         });
     }
 
-    const controllerMappings: Record<string, Types.ObjectId> = {};
-    const newControllers = [];
-    for (const controller of sourceApp.sourceFiles) {
-        const controller0 = controller as ISourceFile;
-        const { name, description, language, patches, status } = controller0;
+    const sourceFileMappings: Record<string, Types.ObjectId> = {};
+    const newSourceFiles = [];
+    for (const sourceFile of sourceApp.sourceFiles) {
+        const sourceFile0 = sourceFile as ISourceFile;
+        const { name, directory, content, status } = sourceFile0;
 
-        const newControllerId = new Types.ObjectId();
-        controllerMappings[controller0._id.toString()] = newControllerId;
+        const newSourceFileId = new Types.ObjectId();
+        sourceFileMappings[sourceFile0._id.toString()] = newSourceFileId;
 
-        newControllers.push({
-            _id: newControllerId,
+        newSourceFiles.push({
+            _id: newSourceFileId,
             name,
-            description,
-            language,
+            directory,
             creator: userId,
-            patches:
-                patches.length === 0
-                    ? []
-                    : [
-                          {
-                              author: userId,
-                              content: createTwoFilesPatch(
-                                  `a/${controller0.name}`,
-                                  `b/${controller0.name}`,
-                                  "",
-                                  patchAll(patches),
-                                  "",
-                                  "",
-                              ),
-                          },
-                      ],
+            content,
             app: appId,
             status,
         });
     }
 
-    const [_resources, _queryTemplates, _controllers, app] = await Promise.all([
+    const [_resources, _queryTemplates, _sourceFiles, app] = await Promise.all([
         ResourceModel.insertMany(newResources, { session }),
         QueryTemplateModel.insertMany(newQueryTemplates, { session }),
-        ControllerModel.insertMany(newControllers, { session }),
+        SourceFileModel.insertMany(newSourceFiles, { session }),
         AppModel.findOneAndUpdate(
             {
                 _id: appId,
@@ -322,7 +304,7 @@ const duplicateEntities = async (
                 queryTemplates: newQueryTemplates.map(
                     (queryTemplate) => queryTemplate._id,
                 ),
-                sourceFiles: newControllers.map((controller) => controller._id),
+                sourceFiles: newSourceFiles.map((sourceFile) => sourceFile._id),
             },
             { new: true, lean: true, session },
         ).exec(),
@@ -460,7 +442,7 @@ export const duplicate = async (context, attributes): Promise<IExternalApp> => {
             { lean: true },
         )
             .populate({ path: "resources", model: "Resource" })
-            .populate({ path: "sourceFiles", model: "Controller" })
+            .populate({ path: "sourceFiles", model: "SourceFile" })
             .populate({ path: "queryTemplates", model: "QueryTemplate" })
             .exec();
         if (!sourceApp) {

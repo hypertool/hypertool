@@ -13,15 +13,12 @@ import {
     constants,
 } from "@hypertool/common";
 
-import { createTwoFilesPatch } from "diff";
-import { appendFile } from "fs";
 import joi from "joi";
 import { ClientSession, Types } from "mongoose";
 
 import {
     checkAccessToApps,
     checkAccessToSourceFiles,
-    patchAll,
     validateAttributes,
 } from "../utils";
 

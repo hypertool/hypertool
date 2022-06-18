@@ -4,9 +4,7 @@ import { GraphQLScalarType } from "graphql";
 import {
     activityLogs,
     apps,
-    comments,
     sourceFiles,
-    conversations,
     deployments,
     organizations,
     queries,
@@ -14,7 +12,7 @@ import {
     resources,
     teams,
     users,
-} from "../sourceFiles";
+} from "../controllers";
 import { jwtAuth } from "../middleware";
 
 import { types } from "./typeDefinitions";
@@ -165,54 +163,25 @@ const typeDefs = gql`
             component: ComponentOrigin!
         ): ActivityLog!
 
-        createComment(
-            author: ID!
-            content: String!
-            conversation: ID!
-        ): Comment!
-
-        updateComment(commentId: String!, content: String!): Comment!
-
-        deleteComment(commentId: String!): RemoveResult!
-
-        createConversation(
-            app: ID!
-            page: ID!
-            coordinates: CoordinatesInput!
-            user: ID!
-            comment: String!
-        ): Conversation!
-
-        updateConversation(
-            conversationId: String!
-            coordinates: CoordinatesInput!
-        ): Conversation!
-
-        deleteConversation(conversationId: String!): Conversation!
-
-        resolveConversation(conversationId: String!): Conversation!
-
-        unresolveConversation(conversationId: String!): Conversation!
-
-        createController(
+        createSourceFile(
             name: String!
-            description: String!
-            language: ControllerLanguage!
-            patches: [ControllerPatchInput!]!
+            directory: Boolean!
+            content: String!
             app: ID!
-        ): Controller!
+        ): SourceFile!
 
-        updateController(
-            controllerId: ID!
-            patches: [ControllerPatchInput!]!
-        ): Controller!
+        updateSourceFile(
+            sourceFileId: ID!
+            name: String
+            content: String
+        ): SourceFile!
 
-        updateControllerWithSource(
-            controllerId: ID!
+        updateSourceFileWithSource(
+            sourceFileId: ID!
             source: String!
-        ): Controller!
+        ): SourceFile!
 
-        deleteController(controllerId: ID!): RemoveResult!
+        deleteSourceFile(sourceFileId: ID!): RemoveResult!
     }
 
     type Query {
@@ -247,16 +216,10 @@ const typeDefs = gql`
             format: QueryResultFormat!
         ): QueryResult!
 
-        listComments(page: Int, limit: Int): CommentPage!
-        listCommentsById(commentIds: [ID!]!): [Comment]!
-
-        listConversations(page: Int, limit: Int): ConversationPage!
-        getConversationsByIds(conversationIds: [ID!]!): [Conversation]!
-
-        getControllers(app: ID!, page: Int, limit: Int): ControllerPage!
-        getControllersById(controllerIds: [ID!]): [Controller!]!
-        getControllerByName(name: String!): Controller!
-        getControllerById(controllerId: ID!): Controller!
+        getSourceFiles(app: ID!, page: Int, limit: Int): SourceFilePage!
+        getSourceFilesById(sourceFileIds: [ID!]): [SourceFile!]!
+        getSourceFileByName(name: String!): SourceFile!
+        getSourceFileById(sourceFileId: ID!): SourceFile!
     }
 `;
 
@@ -348,64 +311,14 @@ const resolvers = {
         createActivityLog: async (parent, values, context) =>
             activityLogs.create(context.request, values),
 
-        createComment: async (parent, values, context) =>
-            comments.create(context.request, values),
-
-        updateComment: async (parent, values, context) =>
-            comments.update(context.request, values.commentId, values),
-
-        deleteComment: async (parent, values, context) =>
-            comments.remove(context.request, values.commentId),
-
-        createConversation: async (parent, values, context) =>
-            conversations.create(context.request, values),
-
-        updateConversation: async (parent, values, context) =>
-            conversations.update(
-                context.request,
-                values.conversationId,
-                values,
-            ),
-
-        deleteConversation: async (parent, values, context) =>
-            conversations.changeStatus(
-                context.request,
-                values.conversationId,
-                "deleted",
-                ["deleted"],
-            ),
-
-        resolveConversation: async (parent, values, context) =>
-            conversations.changeStatus(
-                context.request,
-                values.conversationId,
-                "resolved",
-                ["resolved", "deleted"],
-            ),
-
-        unresolveConversation: async (parent, values, context) =>
-            conversations.changeStatus(
-                context.request,
-                values.conversationId,
-                "pending",
-                ["pending", "deleted"],
-            ),
-
-        createController: (parent, values, context) =>
+        createSourceFile: (parent, values, context) =>
             sourceFiles.create(context.request, values),
 
-        updateController: (parent, values, context) =>
-            sourceFiles.update(context.request, values.controllerId, values),
+        updateSourceFile: (parent, values, context) =>
+            sourceFiles.update(context.request, values.sourceFileId, values),
 
-        updateControllerWithSource: (parent, values, context) =>
-            sourceFiles.updateWithSource(
-                context.request,
-                values.controllerId,
-                values,
-            ),
-
-        deleteController: (parent, values, context) =>
-            sourceFiles.remove(context.request, values.controllerId),
+        deleteSourceFile: (parent, values, context) =>
+            sourceFiles.remove(context.request, values.sourceFileId),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>
@@ -465,29 +378,17 @@ const resolvers = {
         executeQuery: async (parent, values, context) =>
             queries.execute(context.request, values),
 
-        listComments: async (parent, values, context) =>
-            comments.list(context.request, values),
-
-        listCommentsById: async (parent, values, context) =>
-            comments.listByIds(context.request, values.commentIds),
-
-        listConversations: async (parent, values, context) =>
-            conversations.list(context.request, values),
-
-        getConversationsByIds: async (parent, values, context) =>
-            conversations.listByIds(context.request, values.conversationIds),
-
-        getControllers: async (parent, values, context) =>
+        getSourceFiles: async (parent, values, context) =>
             sourceFiles.list(context.request, values),
 
-        getControllersById: async (parent, values, context) =>
-            sourceFiles.listByIds(context.request, values.controllerIds),
+        getSourceFilesById: async (parent, values, context) =>
+            sourceFiles.listByIds(context.request, values.sourceFileIds),
 
-        getControllerByName: async (parent, values, context) =>
+        getSourceFileByName: async (parent, values, context) =>
             sourceFiles.getByName(context.request, values.name),
 
-        getControllerById: async (parent, values, context) =>
-            sourceFiles.getById(context.request, values.controllerId),
+        getSourceFileById: async (parent, values, context) =>
+            sourceFiles.getById(context.request, values.sourceFileId),
     },
     App: {
         resources: async (parent, values, context) =>
@@ -507,25 +408,17 @@ const resolvers = {
         apps: async (parent, values, context) =>
             apps.listByIds(context.request, parent.apps),
     },
-    Comment: {
-        author: async (parent, values, context) =>
-            users.getById(context.request, parent.author),
-        /*
-         * conversation: async (parent, values, context) =>
-         *     conversations.getById(context.request, parent.conversation),
-         */
-    },
     QueryTemplate: {
         resource: async (parent, values, context) =>
             resources.getById(context.request, parent.resource),
         app: async (parent, values, context) =>
             apps.getById(context.request, parent.app),
     },
-    Controller: {
+    SourceFile: {
         creator: async (parent, values, context) =>
             users.getById(context.request, parent.creator),
     },
-    ControllerPatch: {
+    SourceFilePatch: {
         author: async (parent, values, context) =>
             users.getById(context.request, parent.author),
     },

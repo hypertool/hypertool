@@ -13,11 +13,7 @@ const {
     queryStatuses,
     componentOrigins,
     queryResultFormats,
-    commentStatuses,
-    conversationStatuses,
     sourceFileStatuses,
-    sourceFileLanguages,
-    screenStatuses,
     organizationRoles,
     teamRoles,
 } = constants;
@@ -387,10 +383,6 @@ const types = `
         ${sourceFileStatuses.join("\n")}
     }
 
-    enum SourceFileLanguage {
-        ${sourceFileLanguages.join("\n")}
-    }
-
     type SourceFilePatch {
         author: User!
         content: String!
@@ -400,11 +392,10 @@ const types = `
     type SourceFile {
         id: ID!
         name: String!
-        description: String!
-        language: SourceFileLanguage!
+        directory: Boolean!
         creator: User!
-        patches: [SourceFilePatch!]!
-        patched: String!
+        content: String!
+        app: App!
         status: SourceFileStatus!
         createdAt: Date!
         updatedAt: Date!

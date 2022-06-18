@@ -148,7 +148,7 @@ export const checkAccessToApps = (user: IUser, apps: IApp[]): void => {
     }
 };
 
-export const checkAccessToControllers = (
+export const checkAccessToSourceFiles = (
     user: IUser,
     sourceFiles: ISourceFile[],
 ): void => {
@@ -159,9 +159,9 @@ export const checkAccessToControllers = (
 
     const userId = user._id.toString();
     const deniedList = [];
-    for (const controller of sourceFiles) {
-        if (controller.creator.toString() !== userId) {
-            deniedList.push(controller._id.toString());
+    for (const sourceFile of sourceFiles) {
+        if (sourceFile.creator.toString() !== userId) {
+            deniedList.push(sourceFile._id.toString());
         }
     }
 

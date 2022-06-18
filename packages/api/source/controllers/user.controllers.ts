@@ -57,7 +57,7 @@ const filterSchema = joi.object({
         .default(constants.paginateMinLimit),
 });
 
-// TODO: Changing email address and organization should have their own controllers.
+// TODO: Changing email address and organization should have their own sourceFiles.
 
 const updateSchema = joi.object({
     firstName: joi.string().min(1).max(256),

@@ -2,7 +2,7 @@ import { constants } from "@hypertool/common";
 
 import type { NextFunction, Request, Response, Router } from "express";
 
-// import { memberships } from "../controllers";
+// import { memberships } from "../controllers;
 
 const { httpStatuses } = constants;
 // const { INVITATION_JWT_SIGNATURE } = process.env;
@@ -13,10 +13,12 @@ const attachRoutes = async (router: Router): Promise<void> => {
         async (request: Request, response: Response, next: NextFunction) => {
             const { jwt } = request.params;
             const result = true;
-            // const result = await memberships.verify(
-            //     INVITATION_JWT_SIGNATURE,
-            //     jwt,
-            // );
+            /*
+             * const result = await memberships.verify(
+             *     INVITATION_JWT_SIGNATURE,
+             *     jwt,
+             * );
+             */
 
             if (result) {
                 return response
