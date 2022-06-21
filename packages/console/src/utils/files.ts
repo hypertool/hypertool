@@ -12,15 +12,15 @@ interface IPathLevel {
  *     JSON.stringify(
  *         createPathTree([
  *             {
- *                 key: "/components/button.tsx",
+ *                 name: "/components/button.tsx",
  *                 directory: false,
  *             },
  *             {
- *                 key: "/components/checkbox.tsx",
+ *                 name: "/components/checkbox.tsx",
  *                 directory: false,
  *             },
  *             {
- *                 key: "/result",
+ *                 name: "/result",
  *                 directory: true,
  *             },
  *         ]),
@@ -30,35 +30,55 @@ interface IPathLevel {
  * );
  * ```
  */
-export const createPathTree = (paths: IPath[]): IPathNode | null => {
+export const createPathTree = (
+    paths: IPath[],
+    multipleRoots = false,
+): IPathNode | IPathNode[] | null => {
+    if (paths.length === 0) {
+        return null;
+    }
+
     const level: IPathLevel = { "<result>": [] as IPathNode[] };
 
     paths.forEach((path) => {
-        path.key.split("/").reduce(
-            ((
-                currentLevel: IPathLevel,
-                name: string,
-                index: number,
-                array: string[],
-            ) => {
-                if (!currentLevel[name]) {
-                    currentLevel[name] = { "<result>": [] };
-                    (currentLevel["<result>"] as IPathNode[]).push({
-                        name,
-                        children: (currentLevel[name] as IPathLevel)[
-                            "<result>"
-                        ] as IPathNode[],
-                        /* Attach the path object to the leaf node. */
-                        path: index === array.length - 1 ? path : null,
-                    });
-                }
+        (path.name[0] === "/" ? path.name.replace("/", "") : path.name)
+            .split("/")
+            .reduce(
+                ((
+                    currentLevel: IPathLevel,
+                    name: string,
+                    index: number,
+                    array: string[],
+                ) => {
+                    if (!currentLevel[name]) {
+                        currentLevel[name] = { "<result>": [] };
+                        (currentLevel["<result>"] as IPathNode[]).push({
+                            name,
+                            children: (currentLevel[name] as IPathLevel)[
+                                "<result>"
+                            ] as IPathNode[],
+                            /* Attach the path object to the leaf node. */
+                            path: index === array.length - 1 ? path : null,
+                        });
+                    }
 
-                return currentLevel[name];
-            }) as any,
-            level,
-        );
+                    return currentLevel[name];
+                }) as any,
+                level,
+            );
     });
 
     const finalArray = level["<result>"] as IPathNode[];
-    return finalArray.length > 0 ? finalArray[0] : null;
+
+    if (multipleRoots) {
+        return finalArray;
+    }
+
+    if (finalArray.length > 1 && !multipleRoots) {
+        throw new Error(
+            `Expected a single root, but found multiple roots (${finalArray.length})!`,
+        );
+    }
+
+    return finalArray[0];
 };
