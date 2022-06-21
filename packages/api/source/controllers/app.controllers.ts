@@ -167,11 +167,10 @@ const createBaseApp = async (
     session: ClientSession,
     userId: Types.ObjectId,
     attributes: any,
+    newAppId: Types.ObjectId = new Types.ObjectId(),
 ) => {
     /* Check if the app name is already taken. */
     await checkDuplicate(attributes.name);
-
-    const newAppId = new Types.ObjectId();
 
     if (attributes.organization) {
         /*
@@ -319,6 +318,91 @@ const duplicateEntities = async (
     return app;
 };
 
+const createEmptyTemplate = (
+    creator: Types.ObjectId,
+    appId: Types.ObjectId,
+    appName: string,
+) => [
+    {
+        _id: new Types.ObjectId(),
+        name: `/${appName}`,
+        directory: true,
+        creator,
+        content: "",
+        app: appId,
+        status: "created",
+    },
+    {
+        _id: new Types.ObjectId(),
+        name: `/${appName}/screens`,
+        directory: true,
+        creator,
+        content: "",
+        app: appId,
+        status: "created",
+    },
+    {
+        _id: new Types.ObjectId(),
+        name: `/${appName}/screens/home`,
+        directory: true,
+        creator,
+        content: "",
+        app: appId,
+        status: "created",
+    },
+    {
+        _id: new Types.ObjectId(),
+        name: `/${appName}/screens/home/home.htx`,
+        directory: false,
+        creator,
+        content: `<fragment id="default">
+    <meta>
+        <title>Home | Built with Hypertool</title>
+        <route path="/" weight=999 />
+    </meta>
+    <View id="root">
+        <Button id="counter" text="[PLACEHOLDER TEXT]" />
+    </View>
+</fragment>`,
+        app: appId,
+        status: "created",
+    },
+    {
+        _id: new Types.ObjectId(),
+        name: `/${appName}/screens/home/home.css`,
+        directory: false,
+        creator,
+        content: `#root {
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}`,
+        app: appId,
+        status: "created",
+    },
+    {
+        _id: new Types.ObjectId(),
+        name: `/${appName}/screens/home/home.js`,
+        directory: false,
+        creator,
+        content: `import { useState } from "react";
+
+const Home = () => {
+    const [count, setCount] = useState(0);
+
+    return {
+        counter: {
+            onClick: () => setCount(count => count + 1),
+            text: \`This button was clicked \${count} times.\`
+        }
+    };
+};
+`,
+        app: appId,
+        status: "created",
+    },
+];
+
 export const create = async (context, attributes): Promise<IExternalApp> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
@@ -327,10 +411,29 @@ export const create = async (context, attributes): Promise<IExternalApp> => {
         throw new BadRequestError(error.message);
     }
 
-    const newApp = await runAsTransaction(
-        async (session: ClientSession) =>
-            await createBaseApp(session, context.user._id, value),
-    );
+    const newApp = await runAsTransaction(async (session: ClientSession) => {
+        const appId = new Types.ObjectId();
+        const templateSourceFiles = createEmptyTemplate(
+            context.user._id,
+            appId,
+            value.name,
+        );
+        const [app] = await Promise.all([
+            createBaseApp(
+                session,
+                context.user._id,
+                {
+                    ...value,
+                    sourceFiles: templateSourceFiles.map(
+                        (template) => template._id,
+                    ),
+                },
+                appId,
+            ),
+            SourceFileModel.insertMany(templateSourceFiles, { session }),
+        ]);
+        return app;
+    });
 
     return toExternal(newApp);
 };
