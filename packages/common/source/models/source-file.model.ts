@@ -40,7 +40,6 @@ const sourceFileSchema = new Schema(
          */
         content: {
             type: String,
-            required: true,
         },
 
         /* An identifier that points to the app to which the controller belongs. */
