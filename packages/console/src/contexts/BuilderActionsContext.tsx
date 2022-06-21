@@ -2,6 +2,7 @@
 import { createContext } from "react";
 
 import {
+    IApp,
     IBuilderActionsContext,
     ITab,
     TBundleType,
@@ -12,6 +13,10 @@ import {
 const BuilderActionsContext = createContext<IBuilderActionsContext>({
     tabs: [],
     activeTab: null,
+
+    getApp: (): IApp => {
+        throw new Error("Implementation for this operation is missing.");
+    },
 
     insertTab: (
         _index: number,

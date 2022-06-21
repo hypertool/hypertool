@@ -24,6 +24,7 @@ import type {
     TBundleType,
     TPredicate,
     TTabType,
+    IApp,
 } from "../../types";
 import { constants } from "../../utils";
 import QueryEditor from "../edit-query";
@@ -45,6 +46,7 @@ import {
 } from "./modules/authentication";
 import { AppBar, LeftDrawer, RightDrawer } from "./navigation";
 import ESBuildContext from "../../contexts/ESBuildContext";
+import { gql, useQuery } from "@apollo/client";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: (theme.palette.background as any).main,
@@ -143,6 +145,15 @@ const tabDetailsByType: Record<string, ITabTypeDetails> = {
     },
 };
 
+const GET_APP = gql`
+    query GetApp($id: ID!) {
+        getAppById(appId: $id) {
+            id
+            name
+        }
+    }
+`;
+
 const AppBuilder: FunctionComponent = (): ReactElement => {
     const [leftDrawerOpen, setLeftDrawerOpen] = useState(true);
     const [rightDrawerOpen, setRightDrawerOpen] = useState(true);
@@ -154,6 +165,14 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         ),
     )[1];
     const appId = useParam("appId");
+
+    const { data: getAppData } = useQuery(GET_APP, {
+        notifyOnNetworkStatusChange: true,
+        variables: {
+            id: appId,
+        },
+    });
+    const app = getAppData?.getAppById ?? null;
 
     const modules = useModules(appId);
     const { actions } = useEditor();
@@ -174,6 +193,15 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     const builderActions: IBuilderActionsContext = {
         tabs,
         activeTab,
+
+        getApp: (): IApp => {
+            if (!app) {
+                throw new Error(
+                    "App is currently unavailable. Looks like app builder's children were rendered before loading the app.",
+                );
+            }
+            return app;
+        },
 
         setActiveTab: async (newActiveTabId: string) => {
             /*

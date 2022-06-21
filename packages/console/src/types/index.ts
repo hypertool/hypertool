@@ -2,8 +2,9 @@ import type { FunctionComponent, ReactNode } from "react";
 
 import type { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
-import { constants } from "../utils";
 import type { BuildResult } from "esbuild-wasm";
+
+import { constants } from "../utils";
 
 export type ResourceType = typeof constants.resourceTypes[number];
 
@@ -190,6 +191,7 @@ export type TPredicate<E> = {
 export interface IBuilderActionsContext {
     tabs: ITab[];
     activeTab: string | null;
+    getApp: () => IApp;
     insertTab: (
         index: number,
         replace: boolean,
