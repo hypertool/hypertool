@@ -22,8 +22,10 @@ import {
     validateAttributes,
 } from "../utils";
 
+const pathPattern = /^[a-zA-Z_0-9-/\.]{1,256}$/;
+
 const createSchema = joi.object({
-    name: joi.string().regex(constants.namePattern).required(),
+    name: joi.string().regex(pathPattern).required(),
     directory: joi.boolean().required(),
     content: joi.string().default(""),
     app: joi.string().regex(constants.identifierPattern).required(),
@@ -43,13 +45,13 @@ const filterSchema = joi.object({
 // TODO: Allow description to be updated
 const updateSchema = joi.object({
     id: joi.string().regex(constants.identifierPattern).required(),
-    name: joi.string().regex(constants.namePattern),
+    name: joi.string().regex(pathPattern),
     content: joi.string(),
 });
 
 const getByNameSchema = joi.object({
     app: joi.string().regex(constants.identifierPattern).required(),
-    name: joi.string().regex(constants.namePattern).required(),
+    name: joi.string().regex(pathPattern).required(),
 });
 
 const toExternal = (sourceFile: ISourceFile): IExternalSourceFile => {
