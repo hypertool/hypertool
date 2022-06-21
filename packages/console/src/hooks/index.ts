@@ -15,3 +15,4 @@ export { default as useBuilderActions } from "./useBuilderActions";
 export { default as useNotification } from "./useNotification";
 export { default as useMounted } from "./useMounted";
 export { default as useContextMenu } from "./useContextMenu";
+export { default as useApp } from "./useApp";
