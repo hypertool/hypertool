@@ -166,7 +166,7 @@ const typeDefs = gql`
         createSourceFile(
             name: String!
             directory: Boolean!
-            content: String!
+            content: String
             app: ID!
         ): SourceFile!
 
