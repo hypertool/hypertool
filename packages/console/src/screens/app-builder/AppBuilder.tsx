@@ -15,7 +15,7 @@ import { useModules, useParam } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type {
     IBuilderActionsContext,
-    IEditControllerBundle,
+    IEditSourceFileBundle,
     IEditQueryBundle,
     IEditResourceBundle,
     IEditScreenBundle,
@@ -272,12 +272,12 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                 );
                             }
 
-                            case "edit-controller": {
+                            case "edit-source-file": {
                                 return (
-                                    (bundle as IEditControllerBundle)
-                                        .controllerId ===
-                                    (oldBundle as IEditControllerBundle)
-                                        .controllerId
+                                    (bundle as IEditSourceFileBundle)
+                                        .sourceFileId ===
+                                    (oldBundle as IEditSourceFileBundle)
+                                        .sourceFileId
                                 );
                             }
 

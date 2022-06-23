@@ -76,6 +76,7 @@ const GET_ROOT_APP = gql`
         getRootApp {
             id
             name
+            title
         }
     }
 `;

@@ -15,7 +15,7 @@ import {
     useTabBundle,
     useUpdateTabTitle,
 } from "../../hooks";
-import { IEditControllerBundle } from "../../types";
+import { IEditSourceFileBundle } from "../../types";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -36,8 +36,8 @@ const Right = styled("div")(({ theme }) => ({
 }));
 
 const GET_CONTROLLER = gql`
-    query GetController($controllerId: ID!) {
-        getControllerById(controllerId: $controllerId) {
+    query GetController($sourceFileId: ID!) {
+        getControllerById(sourceFileId: $sourceFileId) {
             id
             name
             language
@@ -47,9 +47,9 @@ const GET_CONTROLLER = gql`
 `;
 
 const UPDATE_CONTROLLER = gql`
-    mutation UpdateControllerWithSource($controllerId: ID!, $source: String!) {
+    mutation UpdateControllerWithSource($sourceFileId: ID!, $source: String!) {
         updateControllerWithSource(
-            controllerId: $controllerId
+            sourceFileId: $sourceFileId
             source: $source
         ) {
             id
@@ -65,11 +65,11 @@ const CodeEditor: FunctionComponent = (): ReactElement => {
     const [editorRef, setEditorRef] = useState<
         monaco.editor.IStandaloneCodeEditor | undefined
     >();
-    const { controllerId } = useTabBundle<IEditControllerBundle>();
+    const { sourceFileId } = useTabBundle<IEditSourceFileBundle>();
     // TODO: Destructure `error`, check for non-null, send to sentry
     const { data } = useQuery(GET_CONTROLLER, {
         variables: {
-            controllerId,
+            sourceFileId,
         },
         notifyOnNetworkStatusChange: true,
     });
@@ -93,14 +93,14 @@ const CodeEditor: FunctionComponent = (): ReactElement => {
         try {
             await updateController({
                 variables: {
-                    controllerId,
+                    sourceFileId,
                     source: editorRef.getValue(),
                 },
             });
         } catch (error: any) {
             notification.notifyError(error);
         }
-    }, [editorRef]);
+    }, [editorRef, notification, sourceFileId, updateController]);
 
     const handleEditorMount = useCallback(
         (editor: monaco.editor.IStandaloneCodeEditor) => {

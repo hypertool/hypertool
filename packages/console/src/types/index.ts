@@ -153,8 +153,8 @@ export interface IEditQueryBundle extends ITabBundle {
     queryTemplateId: string;
 }
 
-export interface IEditControllerBundle extends ITabBundle {
-    controllerId: string;
+export interface IEditSourceFileBundle extends ITabBundle {
+    sourceFileId: string;
 }
 
 export interface IEditScreenBundle extends ITabBundle {
@@ -171,7 +171,7 @@ export interface IEditUserBundle extends ITabBundle {
 
 export type TBundleType =
     | IEditQueryBundle
-    | IEditControllerBundle
+    | IEditSourceFileBundle
     | IEditScreenBundle
     | IEditResourceBundle
     | IEditUserBundle;
@@ -191,6 +191,7 @@ export type TPredicate<E> = {
 export interface IBuilderActionsContext {
     tabs: ITab[];
     activeTab: string | null;
+
     getApp: () => IApp;
     insertTab: (
         index: number,
@@ -284,6 +285,7 @@ export interface IProviderConfiguration {
 export interface IApp {
     id: string;
     title: string;
+    name: string;
 }
 
 export interface IESBuildContext {
@@ -293,10 +295,12 @@ export interface IESBuildContext {
 export interface IPathNode {
     name: string;
     children: IPathNode[];
-    path: IPath | null;
+    path: IPath;
 }
 
 export interface IPath {
-    key: string;
+    name: string;
     directory: boolean;
 }
+
+export type TNewFileType = "folder" | "regular_file" | "screen";
