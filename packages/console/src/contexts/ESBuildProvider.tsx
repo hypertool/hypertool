@@ -1,10 +1,12 @@
-import type { ReactNode, FunctionComponent, ReactElement } from "react";
+import type { FunctionComponent, ReactElement, ReactNode } from "react";
 import { useCallback, useEffect, useState } from "react";
 
 import esbuild from "esbuild-wasm";
-import ESBuildContext from "./ESBuildContext";
+
 import { Splash } from "../components";
 import { hyperpack } from "../hyperpack";
+
+import ESBuildContext from "./ESBuildContext";
 
 export interface IESBuildProviderProps {
     children: ReactNode;
