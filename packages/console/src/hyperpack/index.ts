@@ -4,6 +4,7 @@ const source = `
 const main = (): void => {
     console.log("Hello, world!");
 };
+main();
 `;
 
 export const hyperpack = (): Plugin => {
