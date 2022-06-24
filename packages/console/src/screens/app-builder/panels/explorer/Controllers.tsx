@@ -160,7 +160,12 @@ const Controllers = () => {
 
     const handleEdit = useCallback(
         (path: IPath) => {
-            createTab("edit-screen", { sourceFileId: path.name });
+            const { name } = path;
+            const extension = name.substring(name.lastIndexOf("."));
+            createTab(
+                extension === ".htx" ? "edit-screen" : "edit-source-file",
+                { sourceFileId: path.name },
+            );
         },
         [createTab],
     );
