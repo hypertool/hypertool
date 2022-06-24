@@ -4,12 +4,11 @@ import { useEffect } from "react";
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { gql, useMutation } from "@apollo/client";
-
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Editor from "@monaco-editor/react";
 
 import {
+    useBuilderActions,
     useNotification,
     useSourceFile,
     useTab,
@@ -36,28 +35,17 @@ const Right = styled("div")(({ theme }) => ({
     justifyContent: "flex-start",
 }));
 
-const UPDATE_CONTROLLER = gql`
-    mutation UpdateControllerWithSource($id: ID!, $content: String!) {
-        updateSourceFile(id: $id, content: $content) {
-            id
-        }
-    }
-`;
-
 const CodeEditor: FunctionComponent = (): ReactElement => {
     const { tab } = useTab();
     const path = tab.id;
 
     const notification = useNotification();
+    const actions = useBuilderActions();
     const [editorRef, setEditorRef] = useState<
         monaco.editor.IStandaloneCodeEditor | undefined
     >();
     const { sourceFileId } = useTabBundle<IEditSourceFileBundle>();
     const { name, content, id } = useSourceFile(sourceFileId);
-
-    const [updateController] = useMutation(UPDATE_CONTROLLER, {
-        refetchQueries: ["GetController"],
-    });
 
     useUpdateTabTitle(name);
 
@@ -71,16 +59,14 @@ const CodeEditor: FunctionComponent = (): ReactElement => {
         }
 
         try {
-            await updateController({
-                variables: {
-                    id,
-                    content: editorRef.getValue(),
-                },
+            await actions.updateSourceFile({
+                id,
+                content: editorRef.getValue(),
             });
         } catch (error: any) {
             notification.notifyError(error);
         }
-    }, [editorRef, id, notification, updateController]);
+    }, [actions, editorRef, id, notification]);
 
     const handleEditorMount = useCallback(
         (editor: monaco.editor.IStandaloneCodeEditor) => {
