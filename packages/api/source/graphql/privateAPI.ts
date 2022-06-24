@@ -170,16 +170,7 @@ const typeDefs = gql`
             app: ID!
         ): SourceFile!
 
-        updateSourceFile(
-            sourceFileId: ID!
-            name: String
-            content: String
-        ): SourceFile!
-
-        updateSourceFileWithSource(
-            sourceFileId: ID!
-            source: String!
-        ): SourceFile!
+        updateSourceFile(id: ID!, name: String, content: String): SourceFile!
 
         deleteSourceFile(sourceFileId: ID!): RemoveResult!
     }
