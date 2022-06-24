@@ -4,13 +4,14 @@ import { useEffect } from "react";
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Editor from "@monaco-editor/react";
 
 import {
     useNotification,
+    useSourceFile,
     useTab,
     useTabBundle,
     useUpdateTabTitle,
@@ -35,17 +36,6 @@ const Right = styled("div")(({ theme }) => ({
     justifyContent: "flex-start",
 }));
 
-const GET_CONTROLLER = gql`
-    query GetController($sourceFileId: ID!) {
-        getControllerById(sourceFileId: $sourceFileId) {
-            id
-            name
-            language
-            patched
-        }
-    }
-`;
-
 const UPDATE_CONTROLLER = gql`
     mutation UpdateControllerWithSource($sourceFileId: ID!, $source: String!) {
         updateControllerWithSource(
@@ -66,14 +56,7 @@ const CodeEditor: FunctionComponent = (): ReactElement => {
         monaco.editor.IStandaloneCodeEditor | undefined
     >();
     const { sourceFileId } = useTabBundle<IEditSourceFileBundle>();
-    // TODO: Destructure `error`, check for non-null, send to sentry
-    const { data } = useQuery(GET_CONTROLLER, {
-        variables: {
-            sourceFileId,
-        },
-        notifyOnNetworkStatusChange: true,
-    });
-    const { name = "", patched = "" } = data?.getControllerById ?? {};
+    const { name, content } = useSourceFile(sourceFileId);
 
     const [updateController] = useMutation(UPDATE_CONTROLLER, {
         refetchQueries: ["GetController"],
@@ -82,8 +65,8 @@ const CodeEditor: FunctionComponent = (): ReactElement => {
     useUpdateTabTitle(name);
 
     useEffect(() => {
-        editorRef?.setValue(patched);
-    }, [patched, editorRef]);
+        editorRef?.setValue(content);
+    }, [content, editorRef]);
 
     const handleSave = useCallback(async () => {
         if (!editorRef) {
