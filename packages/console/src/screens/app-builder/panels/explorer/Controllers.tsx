@@ -6,8 +6,15 @@ import FileTreeNode from "./FileTreeNode";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { createPathTree } from "../../../../utils/files";
 import { useBuilderActions, useParam } from "../../../../hooks";
-import { Icon } from "@mui/material";
+import { Icon, styled } from "@mui/material";
 import { INewFileOptions, IPath, IPathNode } from "../../../../types";
+
+const StyledTreeView = styled(TreeView)`
+    height: 264px;
+    flexgrow: 1;
+    overflowy: "auto";
+`;
+
 const GET_SOURCE_FILES = gql`
     query GetSourceFiles($app: ID!, $page: Int, $limit: Int) {
         getSourceFiles(app: $app, page: $page, limit: $limit) {
@@ -159,12 +166,11 @@ const Controllers = () => {
     );
 
     return (
-        <TreeView
+        <StyledTreeView
             defaultExpanded={["1"]}
             defaultCollapseIcon={<Icon>keyboard_arrow_down</Icon>}
             defaultExpandIcon={<Icon>chevron_right</Icon>}
             defaultEndIcon={<Icon>article</Icon>}
-            sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
         >
             {root && (
                 <FileTreeNode
@@ -173,7 +179,7 @@ const Controllers = () => {
                     onEdit={handleEdit}
                 />
             )}
-        </TreeView>
+        </StyledTreeView>
     );
 };
 
