@@ -281,10 +281,38 @@ export interface IProviderConfiguration {
     updatedAt: Date;
 }
 
+// TODO: Changed `createdAt` and `updatedAt` to `Date`.
+// TODO: Change `type` and `status` type to enumeration.
+
+export interface IResource {
+    id: string;
+    name: string;
+    description: string;
+    type: string;
+    status: string;
+}
+
+export interface ISourceFile {
+    id: string;
+    name: string;
+    directory: boolean;
+    content: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export interface IApp {
     id: string;
-    title: string;
     name: string;
+    title: string;
+    description: string;
+    root: boolean;
+    resources: IResource[];
+    sourceFiles: ISourceFile[];
+    status: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface IESBuildContext {
