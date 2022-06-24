@@ -24,6 +24,7 @@ import type {
     TPredicate,
     TTabType,
     IApp,
+    IUpdateSourceFileOptions,
 } from "../../types";
 import { constants } from "../../utils";
 import QueryEditor from "../edit-query";
@@ -45,7 +46,7 @@ import {
 } from "./modules/authentication";
 import { AppBar, LeftDrawer, RightDrawer } from "./navigation";
 import ESBuildContext from "../../contexts/ESBuildContext";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Splash } from "../../components";
 
 const Root = styled("div")(({ theme }) => ({
@@ -185,6 +186,14 @@ const GET_APP = gql`
     }
 `;
 
+const UPDATE_CONTROLLER = gql`
+    mutation UpdateControllerWithSource($id: ID!, $content: String!) {
+        updateSourceFile(id: $id, content: $content) {
+            id
+        }
+    }
+`;
+
 const AppBuilder: FunctionComponent = (): ReactElement => {
     const [leftDrawerOpen, setLeftDrawerOpen] = useState(true);
     const [rightDrawerOpen, setRightDrawerOpen] = useState(true);
@@ -204,6 +213,10 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         },
     });
     const app = getAppData?.getAppById ?? null;
+
+    const [updateController] = useMutation(UPDATE_CONTROLLER, {
+        refetchQueries: ["GetApp"],
+    });
 
     const modules = useModules(appId);
     const { actions } = useEditor();
@@ -417,6 +430,16 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 return newTabs;
             });
         },
+
+        updateSourceFile: async (
+            options: IUpdateSourceFileOptions,
+        ): Promise<any> =>
+            await updateController({
+                variables: {
+                    ...options,
+                },
+                notifyOnNetworkStatusChange: true,
+            }),
     };
 
     useEffect(() => {
@@ -474,7 +497,8 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         );
     };
 
-    if (loading) {
+    /* Show the splash screen only when the app builder is being mounted. */
+    if (loading && !app) {
         return <Splash />;
     }
 

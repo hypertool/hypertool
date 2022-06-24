@@ -5,6 +5,7 @@ import {
     IApp,
     IBuilderActionsContext,
     ITab,
+    IUpdateSourceFileOptions,
     TBundleType,
     TPredicate,
     TTabType,
@@ -52,6 +53,12 @@ const BuilderActionsContext = createContext<IBuilderActionsContext>({
     },
 
     closeTabs: (_predicate: TPredicate<ITab>): void => {
+        throw new Error("Implementation for this operation is missing.");
+    },
+
+    updateSourceFile: async (
+        _options: IUpdateSourceFileOptions,
+    ): Promise<any> => {
         throw new Error("Implementation for this operation is missing.");
     },
 });

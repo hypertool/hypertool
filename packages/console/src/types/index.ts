@@ -210,6 +210,8 @@ export interface IBuilderActionsContext {
     setActiveTab: (activeTab: string) => void;
     closeTab: (index: number) => void;
     closeTabs: (predicate: TPredicate<ITab>) => void;
+
+    updateSourceFile: (options: IUpdateSourceFileOptions) => Promise<any>;
 }
 
 export interface IUser {
