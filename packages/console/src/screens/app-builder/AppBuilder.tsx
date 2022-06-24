@@ -46,6 +46,7 @@ import {
 import { AppBar, LeftDrawer, RightDrawer } from "./navigation";
 import ESBuildContext from "../../contexts/ESBuildContext";
 import { gql, useQuery } from "@apollo/client";
+import { Splash } from "../../components";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: (theme.palette.background as any).main,
@@ -92,7 +93,7 @@ const tabDetailsByType: Record<string, ITabTypeDetails> = {
         title: "New Controller",
         component: NewControllerEditor,
     },
-    "edit-controller": {
+    "edit-source-file": {
         icon: "code",
         title: "Edit Controller",
         component: CodeEditor,
@@ -174,13 +175,13 @@ const GET_APP = gql`
                 createdAt
                 updatedAt
             }
+            creator {
+                id
+            }
+            status
+            createdAt
+            updatedAt
         }
-        creator {
-            id
-        }
-        status
-        createdAt
-        updatedAt
     }
 `;
 
@@ -196,7 +197,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
     )[1];
     const appId = useParam("appId");
 
-    const { data: getAppData } = useQuery(GET_APP, {
+    const { loading, data: getAppData } = useQuery(GET_APP, {
         notifyOnNetworkStatusChange: true,
         variables: {
             id: appId,
@@ -472,6 +473,10 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             )
         );
     };
+
+    if (loading) {
+        return <Splash />;
+    }
 
     return (
         <BuilderActionsContext.Provider value={builderActions}>
