@@ -304,3 +304,9 @@ export interface IPath {
 }
 
 export type TNewFileType = "folder" | "regular_file" | "screen";
+
+export interface INewFileOptions {
+    name: string;
+    type: TNewFileType;
+    parent: IPathNode;
+}
