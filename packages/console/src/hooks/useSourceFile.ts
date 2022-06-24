@@ -1,12 +1,15 @@
 import { useMemo } from "react";
 import type { ISourceFile } from "../types";
-import useApp from "./useApp";
+import useBuilderActions from "./useBuilderActions";
 
 const useSourceFile = (name: string): ISourceFile => {
-    const app = useApp();
+    const actions = useBuilderActions();
     const result = useMemo(
-        () => app.sourceFiles.find((sourceFile) => sourceFile.name === name),
-        [app.sourceFiles, name],
+        () =>
+            actions
+                .getApp()
+                .sourceFiles.find((sourceFile) => sourceFile.name === name),
+        [actions, name],
     );
 
     if (!result) {
