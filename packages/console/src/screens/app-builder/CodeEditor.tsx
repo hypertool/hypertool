@@ -37,11 +37,8 @@ const Right = styled("div")(({ theme }) => ({
 }));
 
 const UPDATE_CONTROLLER = gql`
-    mutation UpdateControllerWithSource($sourceFileId: ID!, $source: String!) {
-        updateControllerWithSource(
-            sourceFileId: $sourceFileId
-            source: $source
-        ) {
+    mutation UpdateControllerWithSource($id: ID!, $content: String!) {
+        updateSourceFile(id: $id, content: $content) {
             id
         }
     }
@@ -56,7 +53,7 @@ const CodeEditor: FunctionComponent = (): ReactElement => {
         monaco.editor.IStandaloneCodeEditor | undefined
     >();
     const { sourceFileId } = useTabBundle<IEditSourceFileBundle>();
-    const { name, content } = useSourceFile(sourceFileId);
+    const { name, content, id } = useSourceFile(sourceFileId);
 
     const [updateController] = useMutation(UPDATE_CONTROLLER, {
         refetchQueries: ["GetController"],
@@ -76,14 +73,14 @@ const CodeEditor: FunctionComponent = (): ReactElement => {
         try {
             await updateController({
                 variables: {
-                    sourceFileId,
-                    source: editorRef.getValue(),
+                    id,
+                    content: editorRef.getValue(),
                 },
             });
         } catch (error: any) {
             notification.notifyError(error);
         }
-    }, [editorRef, notification, sourceFileId, updateController]);
+    }, [editorRef, id, notification, updateController]);
 
     const handleEditorMount = useCallback(
         (editor: monaco.editor.IStandaloneCodeEditor) => {
