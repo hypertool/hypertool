@@ -11,9 +11,9 @@ import {
 import { TreeItem, treeItemClasses } from "@mui/lab";
 import type { TreeItemProps } from "@mui/lab";
 import { alpha, styled } from "@mui/material/styles";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { TransitionProps } from "@mui/material/transitions";
-import { IPath, IPathNode, TNewFileType } from "../../../../types";
+import { INewFileOptions, IPath, IPathNode } from "../../../../types";
 import { useBuilderActions, useContextMenu } from "../../../../hooks";
 import { truthy } from "../../../../utils";
 
@@ -50,13 +50,13 @@ const StyledTreeItem = styled((props: IStyledTreeItemProps) => (
 }));
 
 export interface IFileTreeNodeProps {
-    absolutePath: string;
-    name: string;
-    onNew: (name: string, type: TNewFileType, parent: IPath) => void;
+    node: IPathNode;
+    onNew: (options: INewFileOptions) => void;
+    onEdit: (node: IPath) => void;
 }
 
-const FileTreeNode = (props: any) => {
-    const { node, onNew } = props;
+const FileTreeNode = (props: IFileTreeNodeProps) => {
+    const { node, onNew, onEdit } = props;
     const { anchor, mouseX, mouseY, onContextMenuOpen, onContextMenuClose } =
         useContextMenu();
     const actions = useBuilderActions();
@@ -122,6 +122,10 @@ const FileTreeNode = (props: any) => {
         [appName, directory, node.path?.name, onContextMenuClose],
     );
 
+    const handleEdit = useCallback(() => {
+        onEdit(node.path);
+    }, [node.path, onEdit]);
+
     return (
         <>
             <NewScreenDialog
@@ -135,9 +139,10 @@ const FileTreeNode = (props: any) => {
                 label={node.name}
                 onContextMenu={onContextMenuOpen}
                 contextMenuOpen={Boolean(anchor)}
+                onClick={handleEdit}
             >
                 {node.children.map((child: IPathNode) => (
-                    <FileTreeNode node={child} onNew={onNew} />
+                    <FileTreeNode node={child} onNew={onNew} onEdit={onEdit} />
                 ))}
             </StyledTreeItem>
 

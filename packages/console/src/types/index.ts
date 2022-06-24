@@ -172,7 +172,6 @@ export interface IEditUserBundle extends ITabBundle {
 export type TBundleType =
     | IEditQueryBundle
     | IEditSourceFileBundle
-    | IEditScreenBundle
     | IEditResourceBundle
     | IEditUserBundle;
 

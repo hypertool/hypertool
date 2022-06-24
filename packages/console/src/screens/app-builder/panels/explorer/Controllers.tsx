@@ -5,10 +5,9 @@ import { TreeView } from "@mui/lab";
 import FileTreeNode from "./FileTreeNode";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { createPathTree } from "../../../../utils/files";
-import { useParam } from "../../../../hooks";
+import { useBuilderActions, useParam } from "../../../../hooks";
 import { Icon } from "@mui/material";
-import { IPathNode, TNewFileType } from "../../../../types";
-
+import { INewFileOptions, IPath, IPathNode } from "../../../../types";
 const GET_SOURCE_FILES = gql`
     query GetSourceFiles($app: ID!, $page: Int, $limit: Int) {
         getSourceFiles(app: $app, page: $page, limit: $limit) {
@@ -72,12 +71,6 @@ const Home = () => {
 };
 `;
 
-interface INewFile {
-    name: string;
-    type: TNewFileType;
-    parent: IPathNode;
-}
-
 const Controllers = () => {
     const appId = useParam("appId");
     const { data } = useQuery(GET_SOURCE_FILES, {
@@ -89,16 +82,17 @@ const Controllers = () => {
         notifyOnNetworkStatusChange: true,
     });
     const { records } = data?.getSourceFiles || { records: [] };
-    const root = useMemo(() => createPathTree(records), [records]);
+    const root = useMemo(() => createPathTree(records), [records]) as IPathNode;
 
     const [createSourceFile] = useMutation(CREATE_SOURCE_FILE, {
         refetchQueries: ["GetSourceFiles"],
     });
 
+    const { createTab } = useBuilderActions();
+
     const handleNew = useCallback(
-        (values: INewFile) => {
-            const { name, type, parent } = values;
-            console.log(values);
+        (options: INewFileOptions) => {
+            const { name, type, parent } = options;
             const create = (
                 name: string,
                 directory: boolean,
@@ -157,6 +151,13 @@ const Controllers = () => {
         [appId, createSourceFile],
     );
 
+    const handleEdit = useCallback(
+        (path: IPath) => {
+            createTab("edit-screen", { sourceFileId: path.name });
+        },
+        [createTab],
+    );
+
     return (
         <TreeView
             defaultExpanded={["1"]}
@@ -165,7 +166,13 @@ const Controllers = () => {
             defaultEndIcon={<Icon>article</Icon>}
             sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
         >
-            {root && <FileTreeNode node={root} onNew={handleNew} />}
+            {root && (
+                <FileTreeNode
+                    node={root}
+                    onNew={handleNew}
+                    onEdit={handleEdit}
+                />
+            )}
         </TreeView>
     );
 };
