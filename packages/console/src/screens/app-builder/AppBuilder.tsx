@@ -18,7 +18,6 @@ import type {
     IEditSourceFileBundle,
     IEditQueryBundle,
     IEditResourceBundle,
-    IEditScreenBundle,
     IEditUserBundle,
     ITab,
     TBundleType,
@@ -245,7 +244,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 if (jsonString) {
                     const json =
                         JSON.parse(jsonString)[
-                            (newActiveTab.bundle as IEditScreenBundle).screenId
+                            "" // (newActiveTab.bundle as IEditScreenBundle).screenId
                         ];
                     /*
                      * When the tab is activated for the very first time, the
@@ -303,6 +302,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                 );
                             }
 
+                            case "edit-screen":
                             case "edit-source-file": {
                                 return (
                                     (bundle as IEditSourceFileBundle)
@@ -318,13 +318,6 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                         .queryTemplateId ===
                                     (oldBundle as IEditQueryBundle)
                                         .queryTemplateId
-                                );
-                            }
-
-                            case "edit-screen": {
-                                return (
-                                    (bundle as IEditScreenBundle).screenId ===
-                                    (oldBundle as IEditScreenBundle).screenId
                                 );
                             }
 
