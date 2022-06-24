@@ -250,8 +250,8 @@ const types = `
         description: String!
         root: Boolean!
         resources: [Resource!]!
+        queryTemplates: [QueryTemplate!]!
         sourceFiles: [SourceFile!]!
-        # TODO: Add queries
         creator: User!
         status: AppStatus!
         createdAt: Date!

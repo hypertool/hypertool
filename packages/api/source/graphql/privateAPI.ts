@@ -392,7 +392,11 @@ const resolvers = {
     },
     App: {
         resources: async (parent, values, context) =>
-            resources.listByIds(context.request, values.resources),
+            resources.listByIds(context.request, parent.resources),
+        queryTemplates: async (parent, values, context) =>
+            queryTemplates.listByIds(context.request, parent.queryTemplates),
+        sourceFiles: async (parent, values, context) =>
+            sourceFiles.listByIds(context.request, parent.sourceFiles),
         creator: async (parent, values, context) =>
             users.getById(context.request, parent.creator),
         /*
