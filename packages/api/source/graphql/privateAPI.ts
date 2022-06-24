@@ -306,7 +306,7 @@ const resolvers = {
             sourceFiles.create(context.request, values),
 
         updateSourceFile: (parent, values, context) =>
-            sourceFiles.update(context.request, values.sourceFileId, values),
+            sourceFiles.update(context.request, values),
 
         deleteSourceFile: (parent, values, context) =>
             sourceFiles.remove(context.request, values.sourceFileId),

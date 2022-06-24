@@ -293,19 +293,14 @@ export const getByName = async (
     return toExternal(sourceFile);
 };
 
-export const update = async (context: any, id: string, attributes: any) => {
-    const { error, value } = updateSchema.validate(attributes, {
-        stripUnknown: true,
-    });
-    if (error) {
-        throw new BadRequestError(error.message);
-    }
+export const update = async (context: any, attributes: any) => {
+    const value = validateAttributes(updateSchema, attributes);
 
     const updatedSourceFile = await runAsTransaction(
         async (session: ClientSession) => {
             const updatedSourceFile = await SourceFileModel.findOneAndUpdate(
                 {
-                    _id: id,
+                    _id: value.id,
                     status: { $ne: "deleted" },
                 },
                 value,
@@ -314,7 +309,7 @@ export const update = async (context: any, id: string, attributes: any) => {
 
             if (!updatedSourceFile) {
                 throw new NotFoundError(
-                    `Cannot find an app with the specified identifier "${value.app}".`,
+                    `Cannot find a source file with the specified identifier "${value.id}".`,
                 );
             }
 
