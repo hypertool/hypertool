@@ -187,6 +187,12 @@ export type TPredicate<E> = {
     bivarianceHack(value: E): boolean;
 }["bivarianceHack"];
 
+export interface IUpdateSourceFileOptions {
+    id: string;
+    name?: string;
+    content?: string;
+}
+
 export interface IBuilderActionsContext {
     tabs: ITab[];
     activeTab: string | null;
