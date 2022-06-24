@@ -55,6 +55,13 @@ export interface IFileTreeNodeProps {
     onEdit: (node: IPath) => void;
 }
 
+interface IMenuItem {
+    id: string;
+    text: string;
+    icon: string;
+    callback: () => void;
+}
+
 const FileTreeNode = (props: IFileTreeNodeProps) => {
     const { node, onNew, onEdit } = props;
     const { anchor, mouseX, mouseY, onContextMenuOpen, onContextMenuClose } =
@@ -65,8 +72,8 @@ const FileTreeNode = (props: IFileTreeNodeProps) => {
     const directory = node.path?.directory || false;
     const appName = actions.getApp().name;
 
-    const menuItems = useMemo(
-        () =>
+    const menuItems: [IMenuItem | string] = useMemo(
+        (): any =>
             [
                 node.path?.name === `/${appName}/screens` && {
                     id: "new_screen",
@@ -154,7 +161,7 @@ const FileTreeNode = (props: IFileTreeNodeProps) => {
             >
                 {menuItems.map((menuItem) => (
                     <>
-                        {menuItem !== "<divider>" && (
+                        {typeof menuItem !== "string" && (
                             <MenuItem
                                 id={menuItem.id}
                                 onClick={menuItem.callback}
