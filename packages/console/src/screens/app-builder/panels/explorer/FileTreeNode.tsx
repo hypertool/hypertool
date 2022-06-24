@@ -69,13 +69,13 @@ const FileTreeNode = (props: IFileTreeNodeProps) => {
     const actions = useBuilderActions();
     const [open, setOpen] = useState(false);
 
-    const directory = node.path?.directory || false;
+    const { directory, name } = node.path;
     const appName = actions.getApp().name;
 
     const menuItems: [IMenuItem | string] = useMemo(
         (): any =>
             [
-                node.path?.name === `/${appName}/screens` && {
+                name === `/${appName}/screens` && {
                     id: "new_screen",
                     text: "New Screen",
                     icon: "wysiwyg",
@@ -126,12 +126,16 @@ const FileTreeNode = (props: IFileTreeNodeProps) => {
                     },
                 },
             ].filter(truthy),
-        [appName, directory, node.path?.name, onContextMenuClose],
+        [appName, directory, name, onContextMenuClose],
     );
 
     const handleEdit = useCallback(() => {
+        if (directory) {
+            return;
+        }
+
         onEdit(node.path);
-    }, [node.path, onEdit]);
+    }, [directory, node.path, onEdit]);
 
     return (
         <>
