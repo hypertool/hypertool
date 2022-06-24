@@ -150,7 +150,38 @@ const GET_APP = gql`
         getAppById(appId: $id) {
             id
             name
+            title
+            description
+            root
+            resources {
+                id
+                name
+                description
+                creator {
+                    id
+                }
+                type
+                status
+            }
+            sourceFiles {
+                id
+                name
+                directory
+                creator {
+                    id
+                }
+                content
+                status
+                createdAt
+                updatedAt
+            }
         }
+        creator {
+            id
+        }
+        status
+        createdAt
+        updatedAt
     }
 `;
 
