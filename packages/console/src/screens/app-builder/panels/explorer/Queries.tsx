@@ -62,12 +62,15 @@ const Queries: FunctionComponent = (): ReactElement => {
     });
 
     const handleNewQuery = useCallback(() => {
-        createTab("new-query");
+        createTab("app-builder.new-query");
     }, [createTab]);
 
-    const handleEditQuery = useCallback((queryTemplateId: string) => {
-        createTab("edit-query", { queryTemplateId });
-    }, []);
+    const handleEditQuery = useCallback(
+        (queryTemplateId: string) => {
+            createTab("app-builder.edit-query", { queryTemplateId });
+        },
+        [createTab],
+    );
 
     const handleDeleteQuery = useCallback(
         async (queryTemplateId: string, name: string) => {

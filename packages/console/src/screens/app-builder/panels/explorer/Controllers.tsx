@@ -163,7 +163,9 @@ const Controllers = () => {
             const { name } = path;
             const extension = name.substring(name.lastIndexOf("."));
             createTab(
-                extension === ".htx" ? "edit-screen" : "edit-source-file",
+                extension === ".htx"
+                    ? "app-builder.edit-screen"
+                    : "app-builder.edit-source-file",
                 { sourceFileId: path.name },
             );
         },

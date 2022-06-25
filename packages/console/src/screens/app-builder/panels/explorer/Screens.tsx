@@ -60,12 +60,15 @@ const Screens: FunctionComponent = (): ReactElement => {
     });
 
     const handleNewScreen = useCallback(() => {
-        createTab("new-screen");
+        createTab("app-builder.new-screen");
     }, [createTab]);
 
-    const handleEditScreen = useCallback((screenId: string) => {
-        createTab("edit-screen", { screenId });
-    }, []);
+    const handleEditScreen = useCallback(
+        (screenId: string) => {
+            createTab("app-builder.edit-screen", { screenId });
+        },
+        [createTab],
+    );
 
     const handleDeleteScreen = useCallback(
         async (screenId: string, name: string) => {

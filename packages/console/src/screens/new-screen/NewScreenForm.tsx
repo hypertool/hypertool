@@ -157,7 +157,7 @@ const NewScreenForm: FunctionComponent = (): ReactElement => {
     const { appId } = useParams();
     const notification = useNotification();
 
-    useReplaceTab(Boolean(newScreen), "edit-screen", {
+    useReplaceTab(Boolean(newScreen), "app-builder.edit-screen", {
         screenId: newScreen?.createScreen.id,
     });
 

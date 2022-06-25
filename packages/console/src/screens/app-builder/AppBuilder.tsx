@@ -79,42 +79,42 @@ interface ITabTypeDetails {
 }
 
 const tabDetailsByType: Record<string, ITabTypeDetails> = {
-    "new-query": {
+    "app-builder.new-query": {
         icon: "workspaces",
         title: "New Query",
         component: NewQueryEditor,
     },
-    "edit-query": {
+    "app-builder.edit-query": {
         icon: "workspaces",
         title: "Edit Query",
         component: QueryEditor,
     },
-    "new-controller": {
+    "app-builder.new-controller": {
         icon: "code",
         title: "New Controller",
         component: NewControllerEditor,
     },
-    "edit-source-file": {
+    "app-builder.edit-source-file": {
         icon: "code",
         title: "Edit Source File",
         component: SourceFileEditor,
     },
-    "new-screen": {
+    "app-builder.new-screen": {
         icon: "wysiwyg",
         title: "New Screen",
         component: NewScreenEditor,
     },
-    "edit-screen": {
+    "app-builder.edit-screen": {
         icon: "wysiwyg",
         title: "Edit Screen",
         component: CanvasEditor,
     },
-    "new-resource": {
+    "app-builder.new-resource": {
         icon: "category",
         title: "New Resource",
         component: NewResourceEditor,
     },
-    "edit-resource": {
+    "app-builder.edit-resource": {
         icon: "category",
         title: "Edit Resource",
         component: ResourceEditor,
@@ -253,7 +253,10 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
              * do not bother with deserializing anything.
              */
             const newActiveTab = tabs.find((tab) => tab.id === newActiveTabId);
-            if (newActiveTab && newActiveTab.type === "edit-screen") {
+            if (
+                newActiveTab &&
+                newActiveTab.type === "app-builder.edit-screen"
+            ) {
                 const jsonString = localStorage.getItem("nodes");
                 if (jsonString) {
                     const json =
@@ -307,7 +310,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                 return true;
                             }
 
-                            case "edit-resource": {
+                            case "app-builder.edit-resource": {
                                 return (
                                     (bundle as IEditResourceBundle)
                                         .resourceId ===
@@ -316,8 +319,8 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                 );
                             }
 
-                            case "edit-screen":
-                            case "edit-source-file": {
+                            case "app-builder.edit-screen":
+                            case "app-builder.edit-source-file": {
                                 return (
                                     (bundle as IEditSourceFileBundle)
                                         .sourceFileId ===
@@ -326,7 +329,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                 );
                             }
 
-                            case "edit-query": {
+                            case "app-builder.edit-query": {
                                 return (
                                     (bundle as IEditQueryBundle)
                                         .queryTemplateId ===
@@ -481,11 +484,11 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 >
                     <TabContext.Provider value={{ tab, index, active }}>
                         <Component />
-                        {type === "edit-screen" && (
+                        {type === "app-builder.edit-screen" && (
                             <RightDrawer
                                 open={
                                     rightDrawerOpen &&
-                                    "edit-screen" === activeTabType
+                                    "app-builder.edit-screen" === activeTabType
                                 }
                                 onDrawerClose={handleRightDrawerClose}
                                 activeTabBundle={activeTabBundle}

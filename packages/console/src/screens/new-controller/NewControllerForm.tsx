@@ -191,7 +191,7 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
                     `Created controller "${values.name}" successfully`,
                 );
 
-                replaceTab(index, "edit-source-file", {
+                replaceTab(index, "app-builder.edit-source-file", {
                     sourceFileId: result.data.createController.id,
                 });
             } catch (error: any) {

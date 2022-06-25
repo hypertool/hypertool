@@ -1,14 +1,14 @@
 const tuple = <T extends string[]>(...values: T) => values;
 
 export const tabTypes = tuple(
-    "edit-query",
-    "new-query",
-    "new-source-file",
-    "edit-source-file",
-    "new-screen",
-    "edit-screen",
-    "new-resource",
-    "edit-resource",
+    "app-builder.edit-query",
+    "app-builder.new-query",
+    "app-builder.new-source-file",
+    "app-builder.edit-source-file",
+    "app-builder.new-screen",
+    "app-builder.edit-screen",
+    "app-builder.new-resource",
+    "app-builder.edit-resource",
     "authentication.new-user",
     "authentication.edit-user",
     "authentication.view-users",
