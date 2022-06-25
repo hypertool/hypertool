@@ -92,19 +92,18 @@ const Controllers = () => {
     const root = useMemo(() => createPathTree(records), [records]) as IPathNode;
 
     const [createSourceFile] = useMutation(CREATE_SOURCE_FILE, {
-        refetchQueries: ["GetSourceFiles"],
+        refetchQueries: ["GetApp"],
     });
 
     const { createTab } = useBuilderActions();
 
     const handleNew = useCallback(
         (options: INewFileOptions) => {
-            const { name, type, parent } = options;
             const create = (
                 name: string,
                 directory: boolean,
-                content: string | null,
                 parent: IPathNode,
+                content?: string,
             ) => {
                 return createSourceFile({
                     variables: {
@@ -115,37 +114,41 @@ const Controllers = () => {
                     },
                 });
             };
+
+            const { name, type, parent } = options;
+
             switch (type) {
                 case "folder": {
-                    create(name, true, null, parent);
+                    create(name, true, parent);
                     break;
                 }
 
                 case "regular_file": {
-                    create(name, false, null, parent);
+                    create(name, false, parent);
                     break;
                 }
 
                 case "screen": {
+                    console.log("newPath", `/${name}/${name}.htx`);
                     // TODO: Move multiple calls operations to the API for atomicity.
-                    create(`/${name}`, true, null, parent);
+                    create(`/${name}`, true, parent);
                     create(
                         `/${name}/${name}.htx`,
                         false,
-                        EMPTY_SCREEN_HTX_TEMPLATE,
                         parent,
+                        EMPTY_SCREEN_HTX_TEMPLATE,
                     );
                     create(
                         `/${name}/${name}.css`,
                         false,
-                        EMPTY_SCREEN_CSS_TEMPLATE,
                         parent,
+                        EMPTY_SCREEN_CSS_TEMPLATE,
                     );
                     create(
                         `/${name}/${name}.js`,
                         false,
-                        EMPTY_SCREEN_JS_TEMPLATE,
                         parent,
+                        EMPTY_SCREEN_JS_TEMPLATE,
                     );
                     break;
                 }
