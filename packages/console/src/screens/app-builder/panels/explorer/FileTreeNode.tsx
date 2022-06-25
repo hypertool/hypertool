@@ -7,6 +7,7 @@ import {
     Collapse,
     Divider,
 } from "@mui/material";
+import type { MouseEvent } from "react";
 
 import { TreeItem, treeItemClasses } from "@mui/lab";
 import type { TreeItemProps } from "@mui/lab";
@@ -72,6 +73,19 @@ const FileTreeNode = (props: IFileTreeNodeProps) => {
     const { directory, name } = node.path;
     const appName = actions.getApp().name;
 
+    const handleCreate = useCallback(
+        (values: any) => {
+            onNew({ ...values, type: "screen", parent: node });
+            // TODO: Should we show errors in the dialog itself?
+            setOpen(false);
+        },
+        [node, onNew],
+    );
+
+    const handleClose = useCallback(() => {
+        setOpen(false);
+    }, []);
+
     const menuItems: [IMenuItem | string] = useMemo(
         (): any =>
             [
@@ -129,21 +143,23 @@ const FileTreeNode = (props: IFileTreeNodeProps) => {
         [appName, directory, name, onContextMenuClose],
     );
 
-    const handleEdit = useCallback(() => {
-        if (directory) {
-            return;
-        }
+    const handleEdit = useCallback(
+        (event: MouseEvent<HTMLElement>) => {
+            if (directory) {
+                return;
+            }
 
-        onEdit(node.path);
-    }, [directory, node.path, onEdit]);
+            onEdit(node.path);
+        },
+        [directory, node, onEdit],
+    );
 
     return (
         <>
             <NewScreenDialog
                 open={open}
-                onCreate={(values: any) =>
-                    onNew({ ...values, type: "screen", parent: node })
-                }
+                onCreate={handleCreate}
+                onClose={handleClose}
             />
             <StyledTreeItem
                 nodeId={node.name}

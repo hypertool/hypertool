@@ -124,6 +124,7 @@ const validationSchema = yup.object({
 export interface INewScreenDialogProps {
     open: boolean;
     onCreate: (values: any) => void;
+    onClose: () => void;
 }
 
 const NewScreenDialog: FunctionComponent<INewScreenDialogProps> = (
