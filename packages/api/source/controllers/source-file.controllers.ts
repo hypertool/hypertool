@@ -84,6 +84,8 @@ const toExternal = (sourceFile: ISourceFile): IExternalSourceFile => {
     };
 };
 
+const normalize = (name: string) => name.replace(/\/{2,}/, "/");
+
 export const create = async (
     context: any,
     attributes: any,
@@ -141,6 +143,8 @@ export const create = async (
 
             const newSourceFile = new SourceFileModel({
                 ...value,
+                /* Normalize path to remove unnecessary characters. */
+                name: normalize(value.name),
                 _id: newSourceFileId,
                 status: "created",
                 creator: context.user._id,
