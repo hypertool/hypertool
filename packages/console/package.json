@@ -34,6 +34,7 @@
         "moment": "^2.29.1",
         "monaco-editor": "^0.32.1",
         "nanoid": "^3.3.4",
+        "parse5": "^7.0.0",
         "prop-types": "^15.8.1",
         "react": "^17.0.2",
         "react-contenteditable": "^3.3.6",
