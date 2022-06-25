@@ -55,6 +55,10 @@ const CreateAction = styled(Button)(({ theme }) => ({
     padding: theme.spacing(0.5, 3),
 }));
 
+const CancelAction = styled(Button)(({ theme }) => ({
+    padding: theme.spacing(0.5, 3),
+}));
+
 const NameTextField = styled(TextField)({
     maxWidth: 400,
 }) as any;
@@ -132,7 +136,7 @@ const NewScreenDialog: FunctionComponent<INewScreenDialogProps> = (
 ): ReactElement => {
     // TODO: Destructure `error`, check for non-null, send to Sentry
 
-    const { open, onCreate } = props;
+    const { open, onCreate, onClose } = props;
     const { appId } = useParams();
 
     const handleSubmit = useCallback(
@@ -221,8 +225,15 @@ const NewScreenDialog: FunctionComponent<INewScreenDialogProps> = (
                                     />
                                 </FormRoot>
                                 <ActionContainer>
+                                    <CancelAction
+                                        onClick={onClose}
+                                        variant="outlined"
+                                        size="small"
+                                    >
+                                        Cancel
+                                    </CancelAction>
                                     <CreateAction
-                                        onClick={() => formik.submitForm()}
+                                        onClick={formik.submitForm}
                                         variant="contained"
                                         size="small"
                                         disabled={false}
