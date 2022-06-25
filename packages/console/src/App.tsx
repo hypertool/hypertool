@@ -42,6 +42,7 @@ import {
 } from "./screens";
 import type { ISession, ISessionContext } from "./types";
 import { useNavigate } from "./hooks";
+import ESBuildProvider from "./contexts/ESBuildProvider";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -75,6 +76,7 @@ const GET_ROOT_APP = gql`
         getRootApp {
             id
             name
+            title
         }
     }
 `;
@@ -120,176 +122,188 @@ const App: FunctionComponent = (): ReactElement => {
 
     return (
         <Root>
-            <SessionContext.Provider value={context}>
-                <ApolloProvider client={context.client}>
-                    <ConfirmProvider0>
-                        <NotificationProvider>
-                            <RootAppContext.Provider value={rootApp}>
-                                <Routes>
-                                    {!rootApp && (
-                                        <>
-                                            <Route
-                                                path="/installation"
-                                                element={<Installation />}
-                                            />
-                                            <Route
-                                                index={true}
-                                                element={
-                                                    <Navigate
-                                                        to={"/installation"}
-                                                    />
-                                                }
-                                            />
-                                        </>
-                                    )}
-                                    {rootApp && (
-                                        <>
-                                            {!context.jwtToken && (
+            <ESBuildProvider>
+                <SessionContext.Provider value={context}>
+                    <ApolloProvider client={context.client}>
+                        <ConfirmProvider0>
+                            <NotificationProvider>
+                                <RootAppContext.Provider value={rootApp}>
+                                    <Routes>
+                                        {!rootApp && (
+                                            <>
                                                 <Route
-                                                    path="/"
-                                                    element={<VisitorLayout />}>
-                                                    <Route
-                                                        path="/login"
-                                                        element={<Login />}
-                                                    />
-                                                    <Route
-                                                        path="/create-account"
-                                                        element={
-                                                            <CreateAccount />
-                                                        }
-                                                    />
-                                                    <Route
-                                                        path="/new-password"
-                                                        element={
-                                                            <NewPassword />
-                                                        }
-                                                    />
-                                                    <Route
-                                                        path="/verification-email-sent"
-                                                        element={
-                                                            <VerificationEmailSent />
-                                                        }
-                                                    />
-                                                    <Route
-                                                        index={true}
-                                                        element={
-                                                            <Navigate
-                                                                to={"/login"}
-                                                            />
-                                                        }
-                                                    />
-                                                </Route>
-                                            )}
-
-                                            {context.jwtToken && (
-                                                <>
+                                                    path="/installation"
+                                                    element={<Installation />}
+                                                />
+                                                <Route
+                                                    index={true}
+                                                    element={
+                                                        <Navigate
+                                                            to={"/installation"}
+                                                        />
+                                                    }
+                                                />
+                                            </>
+                                        )}
+                                        {rootApp && (
+                                            <>
+                                                {!context.jwtToken && (
                                                     <Route
                                                         path="/"
                                                         element={
-                                                            <WorkspaceLayout />
-                                                        }>
-                                                        {/* Routes associated with Organizations */}
+                                                            <VisitorLayout />
+                                                        }
+                                                    >
                                                         <Route
-                                                            path="/organizations"
+                                                            path="/login"
+                                                            element={<Login />}
+                                                        />
+                                                        <Route
+                                                            path="/create-account"
                                                             element={
-                                                                <ViewOrganizations />
+                                                                <CreateAccount />
                                                             }
                                                         />
                                                         <Route
-                                                            path="/organizations/new"
+                                                            path="/new-password"
                                                             element={
-                                                                <NewOrganization />
+                                                                <NewPassword />
                                                             }
                                                         />
                                                         <Route
-                                                            path="/organizations/:organizationId"
+                                                            path="/verification-email-sent"
                                                             element={
-                                                                <ViewOrganization />
-                                                            }
-                                                        />
-
-                                                        {/* Routes associated with Teams */}
-                                                        <Route
-                                                            path="/teams/:teamId"
-                                                            element={
-                                                                <ViewTeam />
+                                                                <VerificationEmailSent />
                                                             }
                                                         />
                                                         <Route
-                                                            path="/teams/new"
+                                                            index={true}
                                                             element={
-                                                                <NewTeam />
-                                                            }
-                                                        />
-
-                                                        {/* Routes associated with Users */}
-                                                        <Route
-                                                            path="/:username"
-                                                            element={
-                                                                <ViewUser />
-                                                            }
-                                                        />
-                                                        <Route
-                                                            path="/update-password"
-                                                            element={
-                                                                <UpdatePassword />
-                                                            }
-                                                        />
-                                                        <Route
-                                                            path="/invite-user"
-                                                            element={
-                                                                <InviteUser />
-                                                            }
-                                                        />
-
-                                                        {/* Routes associated with Apps */}
-                                                        <Route
-                                                            path="/apps"
-                                                            element={
-                                                                <ViewApps />
-                                                            }
-                                                        />
-                                                        <Route
-                                                            path="/apps/new"
-                                                            element={<NewApp />}
-                                                        />
-                                                        <Route
-                                                            path="/apps/:appId"
-                                                            element={
-                                                                <ViewApp />
-                                                            }
-                                                        />
-                                                        <Route
-                                                            path="/apps/:appId/authentication"
-                                                            element={
-                                                                <AuthenticationServices />
+                                                                <Navigate
+                                                                    to={
+                                                                        "/login"
+                                                                    }
+                                                                />
                                                             }
                                                         />
                                                     </Route>
+                                                )}
 
-                                                    <Route
-                                                        path="/apps/:appId/builder"
-                                                        element={<AppBuilder />}
-                                                    />
-
-                                                    <Route
-                                                        index={true}
-                                                        element={
-                                                            <Navigate
-                                                                to={"/apps"}
+                                                {context.jwtToken && (
+                                                    <>
+                                                        <Route
+                                                            path="/"
+                                                            element={
+                                                                <WorkspaceLayout />
+                                                            }
+                                                        >
+                                                            {/* Routes associated with Organizations */}
+                                                            <Route
+                                                                path="/organizations"
+                                                                element={
+                                                                    <ViewOrganizations />
+                                                                }
                                                             />
-                                                        }
-                                                    />
-                                                </>
-                                            )}
-                                        </>
-                                    )}
-                                </Routes>
-                            </RootAppContext.Provider>
-                        </NotificationProvider>
-                    </ConfirmProvider0>
-                </ApolloProvider>
-            </SessionContext.Provider>
+                                                            <Route
+                                                                path="/organizations/new"
+                                                                element={
+                                                                    <NewOrganization />
+                                                                }
+                                                            />
+                                                            <Route
+                                                                path="/organizations/:organizationId"
+                                                                element={
+                                                                    <ViewOrganization />
+                                                                }
+                                                            />
+
+                                                            {/* Routes associated with Teams */}
+                                                            <Route
+                                                                path="/teams/:teamId"
+                                                                element={
+                                                                    <ViewTeam />
+                                                                }
+                                                            />
+                                                            <Route
+                                                                path="/teams/new"
+                                                                element={
+                                                                    <NewTeam />
+                                                                }
+                                                            />
+
+                                                            {/* Routes associated with Users */}
+                                                            <Route
+                                                                path="/:username"
+                                                                element={
+                                                                    <ViewUser />
+                                                                }
+                                                            />
+                                                            <Route
+                                                                path="/update-password"
+                                                                element={
+                                                                    <UpdatePassword />
+                                                                }
+                                                            />
+                                                            <Route
+                                                                path="/invite-user"
+                                                                element={
+                                                                    <InviteUser />
+                                                                }
+                                                            />
+
+                                                            {/* Routes associated with Apps */}
+                                                            <Route
+                                                                path="/apps"
+                                                                element={
+                                                                    <ViewApps />
+                                                                }
+                                                            />
+                                                            <Route
+                                                                path="/apps/new"
+                                                                element={
+                                                                    <NewApp />
+                                                                }
+                                                            />
+                                                            <Route
+                                                                path="/apps/:appId"
+                                                                element={
+                                                                    <ViewApp />
+                                                                }
+                                                            />
+                                                            <Route
+                                                                path="/apps/:appId/authentication"
+                                                                element={
+                                                                    <AuthenticationServices />
+                                                                }
+                                                            />
+                                                        </Route>
+
+                                                        <Route
+                                                            path="/apps/:appId/builder"
+                                                            element={
+                                                                <AppBuilder />
+                                                            }
+                                                        />
+
+                                                        <Route
+                                                            index={true}
+                                                            element={
+                                                                <Navigate
+                                                                    to={"/apps"}
+                                                                />
+                                                            }
+                                                        />
+                                                    </>
+                                                )}
+                                            </>
+                                        )}
+                                    </Routes>
+                                </RootAppContext.Provider>
+                            </NotificationProvider>
+                        </ConfirmProvider0>
+                    </ApolloProvider>
+                </SessionContext.Provider>
+            </ESBuildProvider>
         </Root>
     );
 };

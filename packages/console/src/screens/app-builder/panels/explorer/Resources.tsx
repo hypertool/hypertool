@@ -63,12 +63,15 @@ const Resources: FunctionComponent = (): ReactElement => {
     const { records } = data?.getResources || { records: [] };
 
     const handleNewResource = useCallback(() => {
-        createTab("new-resource");
+        createTab("app-builder.new-resource");
     }, [createTab]);
 
-    const handleEditResource = useCallback((resourceId: string) => {
-        createTab("edit-resource", { resourceId });
-    }, []);
+    const handleEditResource = useCallback(
+        (resourceId: string) => {
+            createTab("app-builder.edit-resource", { resourceId });
+        },
+        [createTab],
+    );
 
     const handleDeleteResource = useCallback(
         async (resourceId: string, name: string) => {

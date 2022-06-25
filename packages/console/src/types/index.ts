@@ -2,6 +2,8 @@ import type { FunctionComponent, ReactNode } from "react";
 
 import type { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
+import type { BuildResult } from "esbuild-wasm";
+
 import { constants } from "../utils";
 
 export type ResourceType = typeof constants.resourceTypes[number];
@@ -151,8 +153,8 @@ export interface IEditQueryBundle extends ITabBundle {
     queryTemplateId: string;
 }
 
-export interface IEditControllerBundle extends ITabBundle {
-    controllerId: string;
+export interface IEditSourceFileBundle extends ITabBundle {
+    sourceFileId: string;
 }
 
 export interface IEditScreenBundle extends ITabBundle {
@@ -169,8 +171,7 @@ export interface IEditUserBundle extends ITabBundle {
 
 export type TBundleType =
     | IEditQueryBundle
-    | IEditControllerBundle
-    | IEditScreenBundle
+    | IEditSourceFileBundle
     | IEditResourceBundle
     | IEditUserBundle;
 
@@ -186,9 +187,17 @@ export type TPredicate<E> = {
     bivarianceHack(value: E): boolean;
 }["bivarianceHack"];
 
+export interface IUpdateSourceFileOptions {
+    id: string;
+    name?: string;
+    content?: string;
+}
+
 export interface IBuilderActionsContext {
     tabs: ITab[];
     activeTab: string | null;
+
+    getApp: () => IApp;
     insertTab: (
         index: number,
         replace: boolean,
@@ -201,6 +210,8 @@ export interface IBuilderActionsContext {
     setActiveTab: (activeTab: string) => void;
     closeTab: (index: number) => void;
     closeTabs: (predicate: TPredicate<ITab>) => void;
+
+    updateSourceFile: (options: IUpdateSourceFileOptions) => Promise<any>;
 }
 
 export interface IUser {
@@ -278,7 +289,59 @@ export interface IProviderConfiguration {
     updatedAt: Date;
 }
 
+// TODO: Changed `createdAt` and `updatedAt` to `Date`.
+// TODO: Change `type` and `status` type to enumeration.
+
+export interface IResource {
+    id: string;
+    name: string;
+    description: string;
+    type: string;
+    status: string;
+}
+
+export interface ISourceFile {
+    id: string;
+    name: string;
+    directory: boolean;
+    content: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export interface IApp {
     id: string;
+    name: string;
     title: string;
+    description: string;
+    root: boolean;
+    resources: IResource[];
+    sourceFiles: ISourceFile[];
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface IESBuildContext {
+    build: () => Promise<BuildResult>;
+}
+
+export interface IPathNode {
+    name: string;
+    children: IPathNode[];
+    path: IPath;
+}
+
+export interface IPath {
+    name: string;
+    directory: boolean;
+}
+
+export type TNewFileType = "folder" | "regular_file" | "screen";
+
+export interface INewFileOptions {
+    name: string;
+    type: TNewFileType;
+    parent: IPathNode;
 }

@@ -61,7 +61,8 @@ const Indicator = styled("div", {
 const Node: FunctionComponent<IProps> = (props: IProps): ReactElement => {
     const { children, rootProps } = props;
 
-    const { anchor, onContextMenuOpen, onContextMenuClose } = useContextMenu();
+    const { anchor, mouseX, mouseY, onContextMenuOpen, onContextMenuClose } =
+        useContextMenu();
 
     const {
         connectors: { connect, drag },
@@ -88,7 +89,7 @@ const Node: FunctionComponent<IProps> = (props: IProps): ReactElement => {
                 },
             },
         ],
-        [actions, onContextMenuClose],
+        [actions, id, onContextMenuClose],
     );
 
     return (
@@ -104,7 +105,8 @@ const Node: FunctionComponent<IProps> = (props: IProps): ReactElement => {
             {children}
 
             <Menu
-                anchorEl={anchor}
+                anchorReference="anchorPosition"
+                anchorPosition={{ top: mouseY - 4, left: mouseX - 4 }}
                 open={Boolean(anchor)}
                 onClose={onContextMenuClose}
             >

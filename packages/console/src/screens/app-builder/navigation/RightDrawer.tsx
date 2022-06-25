@@ -6,7 +6,7 @@ import { CSSObject, Theme, styled } from "@mui/material/styles";
 
 import { useEditor } from "../../../craft";
 import { PropertiesEditor } from "../panels/properties-editor";
-import { ScreenEditor } from "../panels/screen-editor";
+import { ScreenEditor } from "../modules/builder/screen-editor";
 
 const drawerWidth = 304;
 

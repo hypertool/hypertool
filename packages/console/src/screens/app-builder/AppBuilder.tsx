@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactElement } from "react";
+import { FunctionComponent, ReactElement, useContext } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { styled } from "@mui/material/styles";
@@ -15,15 +15,16 @@ import { useModules, useParam } from "../../hooks";
 import { nodeMappings } from "../../nodes";
 import type {
     IBuilderActionsContext,
-    IEditControllerBundle,
+    IEditSourceFileBundle,
     IEditQueryBundle,
     IEditResourceBundle,
-    IEditScreenBundle,
     IEditUserBundle,
     ITab,
     TBundleType,
     TPredicate,
     TTabType,
+    IApp,
+    IUpdateSourceFileOptions,
 } from "../../types";
 import { constants } from "../../utils";
 import QueryEditor from "../edit-query";
@@ -34,7 +35,6 @@ import NewResourceEditor from "../new-resource";
 import NewScreenEditor from "../new-screen";
 
 import CanvasEditor from "./CanvasEditor";
-import CodeEditor from "./CodeEditor";
 import { RenderNode } from "./RenderNode";
 import {
     NewProviderEditor,
@@ -42,8 +42,12 @@ import {
     UserEditor,
     ViewProviders,
     ViewUsers,
-} from "./modules/authentication";
+    SourceFileEditor,
+} from "./modules";
 import { AppBar, LeftDrawer, RightDrawer } from "./navigation";
+import ESBuildContext from "../../contexts/ESBuildContext";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { Splash } from "../../components";
 
 const Root = styled("div")(({ theme }) => ({
     backgroundColor: (theme.palette.background as any).main,
@@ -75,42 +79,42 @@ interface ITabTypeDetails {
 }
 
 const tabDetailsByType: Record<string, ITabTypeDetails> = {
-    "new-query": {
+    "app-builder.new-query": {
         icon: "workspaces",
         title: "New Query",
         component: NewQueryEditor,
     },
-    "edit-query": {
+    "app-builder.edit-query": {
         icon: "workspaces",
         title: "Edit Query",
         component: QueryEditor,
     },
-    "new-controller": {
+    "app-builder.new-controller": {
         icon: "code",
         title: "New Controller",
         component: NewControllerEditor,
     },
-    "edit-controller": {
+    "app-builder.edit-source-file": {
         icon: "code",
-        title: "Edit Controller",
-        component: CodeEditor,
+        title: "Edit Source File",
+        component: SourceFileEditor,
     },
-    "new-screen": {
+    "app-builder.new-screen": {
         icon: "wysiwyg",
         title: "New Screen",
         component: NewScreenEditor,
     },
-    "edit-screen": {
+    "app-builder.edit-screen": {
         icon: "wysiwyg",
         title: "Edit Screen",
         component: CanvasEditor,
     },
-    "new-resource": {
+    "app-builder.new-resource": {
         icon: "category",
         title: "New Resource",
         component: NewResourceEditor,
     },
-    "edit-resource": {
+    "app-builder.edit-resource": {
         icon: "category",
         title: "Edit Resource",
         component: ResourceEditor,
@@ -142,6 +146,54 @@ const tabDetailsByType: Record<string, ITabTypeDetails> = {
     },
 };
 
+const GET_APP = gql`
+    query GetApp($id: ID!) {
+        getAppById(appId: $id) {
+            id
+            name
+            title
+            description
+            root
+            resources {
+                id
+                name
+                description
+                creator {
+                    id
+                }
+                type
+                status
+            }
+            sourceFiles {
+                id
+                name
+                directory
+                creator {
+                    id
+                }
+                content
+                status
+                createdAt
+                updatedAt
+            }
+            creator {
+                id
+            }
+            status
+            createdAt
+            updatedAt
+        }
+    }
+`;
+
+const UPDATE_CONTROLLER = gql`
+    mutation UpdateControllerWithSource($id: ID!, $content: String!) {
+        updateSourceFile(id: $id, content: $content) {
+            id
+        }
+    }
+`;
+
 const AppBuilder: FunctionComponent = (): ReactElement => {
     const [leftDrawerOpen, setLeftDrawerOpen] = useState(true);
     const [rightDrawerOpen, setRightDrawerOpen] = useState(true);
@@ -153,6 +205,18 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         ),
     )[1];
     const appId = useParam("appId");
+
+    const { loading, data: getAppData } = useQuery(GET_APP, {
+        notifyOnNetworkStatusChange: true,
+        variables: {
+            id: appId,
+        },
+    });
+    const app = getAppData?.getAppById ?? null;
+
+    const [updateController] = useMutation(UPDATE_CONTROLLER, {
+        refetchQueries: ["GetApp"],
+    });
 
     const modules = useModules(appId);
     const { actions } = useEditor();
@@ -174,18 +238,30 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         tabs,
         activeTab,
 
+        getApp: (): IApp => {
+            if (!app) {
+                throw new Error(
+                    "App is currently unavailable. Looks like app builder's children were rendered before loading the app.",
+                );
+            }
+            return app;
+        },
+
         setActiveTab: async (newActiveTabId: string) => {
             /*
              * If the new active tab is being inserted to the tabs list, then we
              * do not bother with deserializing anything.
              */
             const newActiveTab = tabs.find((tab) => tab.id === newActiveTabId);
-            if (newActiveTab && newActiveTab.type === "edit-screen") {
+            if (
+                newActiveTab &&
+                newActiveTab.type === "app-builder.edit-screen"
+            ) {
                 const jsonString = localStorage.getItem("nodes");
                 if (jsonString) {
                     const json =
                         JSON.parse(jsonString)[
-                            (newActiveTab.bundle as IEditScreenBundle).screenId
+                            "" // (newActiveTab.bundle as IEditScreenBundle).screenId
                         ];
                     /*
                      * When the tab is activated for the very first time, the
@@ -234,7 +310,7 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                 return true;
                             }
 
-                            case "edit-resource": {
+                            case "app-builder.edit-resource": {
                                 return (
                                     (bundle as IEditResourceBundle)
                                         .resourceId ===
@@ -243,28 +319,22 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                                 );
                             }
 
-                            case "edit-controller": {
+                            case "app-builder.edit-screen":
+                            case "app-builder.edit-source-file": {
                                 return (
-                                    (bundle as IEditControllerBundle)
-                                        .controllerId ===
-                                    (oldBundle as IEditControllerBundle)
-                                        .controllerId
+                                    (bundle as IEditSourceFileBundle)
+                                        .sourceFileId ===
+                                    (oldBundle as IEditSourceFileBundle)
+                                        .sourceFileId
                                 );
                             }
 
-                            case "edit-query": {
+                            case "app-builder.edit-query": {
                                 return (
                                     (bundle as IEditQueryBundle)
                                         .queryTemplateId ===
                                     (oldBundle as IEditQueryBundle)
                                         .queryTemplateId
-                                );
-                            }
-
-                            case "edit-screen": {
-                                return (
-                                    (bundle as IEditScreenBundle).screenId ===
-                                    (oldBundle as IEditScreenBundle).screenId
                                 );
                             }
 
@@ -363,6 +433,16 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 return newTabs;
             });
         },
+
+        updateSourceFile: async (
+            options: IUpdateSourceFileOptions,
+        ): Promise<any> =>
+            await updateController({
+                variables: {
+                    ...options,
+                },
+                notifyOnNetworkStatusChange: true,
+            }),
     };
 
     useEffect(() => {
@@ -381,6 +461,13 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
         setRightDrawerOpen(false);
     }, []);
 
+    const context = useContext(ESBuildContext);
+    useEffect(() => {
+        if (context) {
+            context.build();
+        }
+    }, [context]);
+
     const renderTabContent = (tab: ITab, index: number) => {
         const { id, type } = tab;
         const active = id === activeTab;
@@ -397,11 +484,11 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
                 >
                     <TabContext.Provider value={{ tab, index, active }}>
                         <Component />
-                        {type === "edit-screen" && (
+                        {type === "app-builder.edit-screen" && (
                             <RightDrawer
                                 open={
                                     rightDrawerOpen &&
-                                    "edit-screen" === activeTabType
+                                    "app-builder.edit-screen" === activeTabType
                                 }
                                 onDrawerClose={handleRightDrawerClose}
                                 activeTabBundle={activeTabBundle}
@@ -412,6 +499,11 @@ const AppBuilder: FunctionComponent = (): ReactElement => {
             )
         );
     };
+
+    /* Show the splash screen only when the app builder is being mounted. */
+    if (loading && !app) {
+        return <Splash />;
+    }
 
     return (
         <BuilderActionsContext.Provider value={builderActions}>

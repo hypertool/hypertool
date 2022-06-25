@@ -17,15 +17,15 @@ import { useConfirm } from "material-ui-confirm";
 
 const StyledListItemAvatar = styled(ListItemAvatar)({ minWidth: 28 });
 
-export interface IControllerProps {
+export interface ISourceFileProps {
     id: string;
     name: string;
     onEdit: (id: string, name: string) => void;
     onDelete: (id: string, name: string) => void;
 }
 
-const Controller: FunctionComponent<IControllerProps> = (
-    props: IControllerProps,
+const Controller: FunctionComponent<ISourceFileProps> = (
+    props: ISourceFileProps,
 ): ReactElement => {
     const { id, name, onEdit, onDelete } = props;
     const [anchor, setAnchor] = useState<HTMLElement | null>(null);

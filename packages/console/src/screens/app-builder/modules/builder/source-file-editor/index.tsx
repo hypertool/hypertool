@@ -4,18 +4,18 @@ import { useEffect } from "react";
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { gql, useMutation, useQuery } from "@apollo/client";
-
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Editor from "@monaco-editor/react";
 
 import {
+    useBuilderActions,
     useNotification,
+    useSourceFile,
     useTab,
     useTabBundle,
     useUpdateTabTitle,
-} from "../../hooks";
-import { IEditControllerBundle } from "../../types";
+} from "../../../../../hooks";
+import { IEditSourceFileBundle } from "../../../../../types";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -35,55 +35,23 @@ const Right = styled("div")(({ theme }) => ({
     justifyContent: "flex-start",
 }));
 
-const GET_CONTROLLER = gql`
-    query GetController($controllerId: ID!) {
-        getControllerById(controllerId: $controllerId) {
-            id
-            name
-            language
-            patched
-        }
-    }
-`;
-
-const UPDATE_CONTROLLER = gql`
-    mutation UpdateControllerWithSource($controllerId: ID!, $source: String!) {
-        updateControllerWithSource(
-            controllerId: $controllerId
-            source: $source
-        ) {
-            id
-        }
-    }
-`;
-
-const CodeEditor: FunctionComponent = (): ReactElement => {
+const SourceFileEditor: FunctionComponent = (): ReactElement => {
     const { tab } = useTab();
     const path = tab.id;
 
     const notification = useNotification();
+    const actions = useBuilderActions();
     const [editorRef, setEditorRef] = useState<
         monaco.editor.IStandaloneCodeEditor | undefined
     >();
-    const { controllerId } = useTabBundle<IEditControllerBundle>();
-    // TODO: Destructure `error`, check for non-null, send to sentry
-    const { data } = useQuery(GET_CONTROLLER, {
-        variables: {
-            controllerId,
-        },
-        notifyOnNetworkStatusChange: true,
-    });
-    const { name = "", patched = "" } = data?.getControllerById ?? {};
-
-    const [updateController] = useMutation(UPDATE_CONTROLLER, {
-        refetchQueries: ["GetController"],
-    });
+    const { sourceFileId } = useTabBundle<IEditSourceFileBundle>();
+    const { name, content, id } = useSourceFile(sourceFileId);
 
     useUpdateTabTitle(name);
 
     useEffect(() => {
-        editorRef?.setValue(patched);
-    }, [patched, editorRef]);
+        editorRef?.setValue(content);
+    }, [content, editorRef]);
 
     const handleSave = useCallback(async () => {
         if (!editorRef) {
@@ -91,16 +59,14 @@ const CodeEditor: FunctionComponent = (): ReactElement => {
         }
 
         try {
-            await updateController({
-                variables: {
-                    controllerId,
-                    source: editorRef.getValue(),
-                },
+            await actions.updateSourceFile({
+                id,
+                content: editorRef.getValue(),
             });
         } catch (error: any) {
             notification.notifyError(error);
         }
-    }, [editorRef]);
+    }, [actions, editorRef, id, notification]);
 
     const handleEditorMount = useCallback(
         (editor: monaco.editor.IStandaloneCodeEditor) => {
@@ -135,4 +101,4 @@ const CodeEditor: FunctionComponent = (): ReactElement => {
     );
 };
 
-export default CodeEditor;
+export default SourceFileEditor;

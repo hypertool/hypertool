@@ -2,7 +2,7 @@ import { constants } from "@hypertool/common";
 
 import { ApolloServer, gql } from "apollo-server-express";
 
-import { apps, controllers, queries, screens, users } from "../controllers";
+import { apps, queries, users } from "../controllers";
 
 import { types } from "./typeDefinitions";
 
@@ -80,14 +80,6 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
-    App: {
-        screens: async (parent, values, context) =>
-            screens.listByIds(context.request, parent.screens),
-    },
-    Screen: {
-        controller: async (parent, values, context) =>
-            controllers.getById(context.request, parent.controller),
-    },
     Query: {
         /* TODO: Fix critical bug that exposes resource credentials. */
         getAppByName: async (parent, values, context) =>

@@ -1,16 +1,17 @@
 // eslint-disable-next-line camelcase
 import { by639_1 } from "iso-language-codes";
 
-const tuple = <T extends string[]>(...values: T) => values;
+export const tuple = <T extends string[]>(...values: T) => values;
 
-const paginateMaxLimit = 250;
-const paginateMinLimit = 20;
+export const paginateMaxLimit = 250;
 
-const genders = tuple("male", "female", "other");
+export const paginateMinLimit = 20;
 
-const languageCodes = Object.keys(by639_1);
+export const genders = tuple("male", "female", "other");
 
-const httpStatuses = {
+export const languageCodes = Object.keys(by639_1);
+
+export const httpStatuses = {
     OK: 200,
     CREATED: 201,
     ACCEPTED: 202,
@@ -22,7 +23,7 @@ const httpStatuses = {
     INTERNAL_SERVER_ERROR: 500,
 };
 
-const countryCodes = tuple(
+export const countryCodes = tuple(
     "AFG", // Afghanistan
     "ALB", // Albania
     "DZA", // Algeria
@@ -274,21 +275,37 @@ const countryCodes = tuple(
     "ALA", // Åland Islands
 );
 
-const identifierPattern = /^[a-z0-9]{24}$/;
+export const identifierPattern = /^[a-z0-9]{24}$/;
 
-const namePattern = /^[a-zA-Z_][a-zA-Z_0-9-]+[a-zA-Z_0-9]{1,256}$/;
+export const namePattern = /^[a-zA-Z_][a-zA-Z_0-9-]+[a-zA-Z_0-9]{1,256}$/;
 
-const userStatuses = tuple("invited", "cancelled", "activated", "deleted");
+export const userStatuses = tuple(
+    "invited",
+    "cancelled",
+    "activated",
+    "deleted",
+);
 
-const userRoles = tuple("owner", "developer", "viewer");
+export const userRoles = tuple("owner", "developer", "viewer");
 
-const organizationStatuses = tuple("active", "deleted", "banned");
+export const organizationStatuses = tuple("active", "deleted", "banned");
 
-const appStatuses = tuple("private", "public", "deleted", "archived", "banned");
+export const appStatuses = tuple(
+    "private",
+    "public",
+    "deleted",
+    "archived",
+    "banned",
+);
 
-const resourceStatuses = tuple("enabled", "disabled", "deleted", "banned");
+export const resourceStatuses = tuple(
+    "enabled",
+    "disabled",
+    "deleted",
+    "banned",
+);
 
-const resourceTypes = tuple(
+export const resourceTypes = tuple(
     // Databases
     "mysql",
     "postgres",
@@ -335,15 +352,15 @@ const resourceTypes = tuple(
     "circleci",
 );
 
-const teamStatuses = tuple("active", "deleted");
+export const teamStatuses = tuple("active", "deleted");
 
-const queryStatuses = tuple("enabled", "disabled", "deleted", "banned");
+export const queryStatuses = tuple("enabled", "disabled", "deleted", "banned");
 
-const queryResultFormats = tuple("row", "column", "object");
+export const queryResultFormats = tuple("row", "column", "object");
 
-const googleClientTypes = tuple("web", "cli");
+export const googleClientTypes = tuple("web", "cli");
 
-const componentOrigins = tuple(
+export const componentOrigins = tuple(
     "query_engine",
     "authentication",
     "authorization",
@@ -353,48 +370,15 @@ const componentOrigins = tuple(
     "api",
 );
 
-const organizationRoles = tuple("owner", "member");
+export const organizationRoles = tuple("owner", "member");
 
-const teamRoles = tuple("maintainer", "member");
+export const teamRoles = tuple("maintainer", "member");
 
-const conversationStatuses = tuple("pending", "resolved", "banned", "deleted");
-
-const commentStatuses = tuple("created", "banned", "deleted");
-
-const controllerStatuses = tuple("created", "banned", "deleted");
-
-export const controllerLanguages = tuple("javascript", "typescript");
+export const sourceFileStatuses = tuple("created", "banned", "deleted");
 
 export const screenStatuses = tuple("created", "banned", "deleted");
 
 export const slugPattern = /^(\/:?[-_.a-zA-Z0-9]+)+$/;
-
-export {
-    paginateMaxLimit,
-    paginateMinLimit,
-    httpStatuses,
-    languageCodes,
-    genders,
-    countryCodes,
-    identifierPattern,
-    namePattern,
-    userStatuses,
-    userRoles,
-    organizationStatuses,
-    appStatuses,
-    resourceStatuses,
-    resourceTypes,
-    queryStatuses,
-    googleClientTypes,
-    componentOrigins,
-    queryResultFormats,
-    conversationStatuses,
-    commentStatuses,
-    controllerStatuses,
-    organizationRoles,
-    teamRoles,
-    teamStatuses,
-};
 
 export const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,128}$/;

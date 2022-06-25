@@ -3,11 +3,8 @@ import type { Model } from "mongoose";
 
 import {
     appStatuses,
-    commentStatuses,
     componentOrigins,
-    controllerLanguages,
-    controllerStatuses,
-    conversationStatuses,
+    sourceFileStatuses,
     countryCodes,
     genders,
     organizationRoles,
@@ -15,7 +12,6 @@ import {
     queryStatuses,
     resourceStatuses,
     resourceTypes,
-    screenStatuses,
     teamRoles,
     teamStatuses,
     userStatuses,
@@ -35,7 +31,7 @@ import {
  *   - Queries
  *   - Conversations
  *   - Comments
- *   - Controllers
+ *   - SourceFiles
  *   - Activity Logs
  *
  * ---
@@ -43,14 +39,14 @@ import {
  * Each model has three interfaces associated with it:
  *
  * 1. Interface that is used within the API. It does not have any prefix or suffix
- * in its name. An example of this is `IController`.
+ * in its name. An example of this is `ISourceFile`.
  *
  * 2. Interface that is used by the `toExternal` utility function. This interface
  * describes the data that is exposed from the API. It is prepended with the
- * `External` suffix. An example of this is `IExternalController`.
+ * `External` suffix. An example of this is `IExternalSourceFile`.
  *
  * 3. Interface that i used within the client. It is prepended with the `Client`
- * suffix. An example of this is `IClientController`. The declaration for such
+ * suffix. An example of this is `IClientSourceFile`. The declaration for such
  * interfaces are not included in the `@hypertool/common` module. Instead, it
  * should be declared in `@hypertool/console` or `@hypertool/frontend-common`.
  */
@@ -153,8 +149,7 @@ export interface IApp {
     resources: ObjectId[] | IResource[];
     queryTemplates: ObjectId[] | IQueryTemplate[];
     deployments: ObjectId[] | Deployment[];
-    screens: ObjectId[] | IScreen[];
-    controllers: ObjectId[] | IController[];
+    sourceFiles: ObjectId[] | ISourceFile[];
     creator: ObjectId | IUser;
     organization: ObjectId | IOrganization;
     status: typeof appStatuses[number];
@@ -171,8 +166,7 @@ export interface IExternalApp {
     root: boolean;
     queryTemplates: string[];
     deployments: string[];
-    screens: string[];
-    controllers: string[];
+    sourceFiles: string[];
     creator: string;
     organization: string;
     status: typeof appStatuses[number];
@@ -400,243 +394,41 @@ export interface ExternalDeployment {
     updatedAt: Date;
 }
 
-export interface Comment {
-    /* An identifier that uniquely identifies the comment across Hypertool. */
-    _id: string;
-
-    /* An identifier that points to the User whose created the comment. */
-    author: ObjectId | IUser;
-
-    /* A string that describes the contents of the comment. */
-    content: string;
-
-    /* A boolean value that describes if the comment is edited or not. */
-    edited: boolean;
-
-    /*
-     * An enumeration of string values that describes the status of the
-     * comment.
-     */
-    status: typeof commentStatuses[number];
-
-    /*
-     * An identifier that points to the Conversation where the comment was
-     * created.
-     */
-    conversation: ObjectId | Conversation;
-
-    /* Specifies the timestamp that indicates when the comment was created.  */
-    createdAt: Date;
-
-    /* Specifies the timestamp that indicates when the comment was last modified. */
-    updatedAt: Date;
-}
-
-export interface ExternalComment {
-    id: string;
-    author: string | IUser;
-    content: string;
-    edited: boolean;
-    status: typeof commentStatuses[number];
-    conversation: string | Conversation;
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export type CommentPage = IExternalListPage<ExternalComment>;
-
-export interface Coordinates {
-    x: number;
-    y: number;
-}
-
-export interface Conversation {
-    /* An identifier uniquely identifies the conversation across Hypertool. */
-    _id: string;
-
-    /* An identifier that points to the App where the comment was created. */
-    app: ObjectId | IApp;
-
-    /* The name of the Page where the comment was created. */
-    page: ObjectId | IScreen;
-
-    /*
-     * An object that describes the x and y coordinates of the conversation in
-     * the canvas.
-     */
-    coordinates: Coordinates;
-
-    /* A list of users who have participated in the conversation. */
-    taggedUsers: [ObjectId | IUser];
-
-    /*
-     * A list of comments in the conversation. The first member is the
-     * initiator’s comment.
-     */
-    comments: ObjectId[] | Comment[];
-
-    /*
-     * An enumeration of string values that describes the status of the
-     * conversation.
-     */
-    status: typeof conversationStatuses[number];
-
-    /* Specifies the timestamp that indicates when the conversation was created */
-    createdAt: Date;
-
-    /*
-     * Specifies the timestamp that indicates when the conversation was last
-     * modified
-     */
-    updatedAt: Date;
-}
-
-export interface IScreen {
-    _id: ObjectId;
-
-    /* An identifier that points to the App where the comment was created. */
-    app: ObjectId | IApp;
-
-    /**
-     * The name of the screen, that uniquely identifies the screen across the
-     * application.
-     */
-    name: string;
-
-    /**
-     * The title of the screen.
-     */
-    title: string;
-
-    /**
-     * Optional description of the screen.
-     */
-    description: string;
-
-    /**
-     * The slug of the screen.
-     */
-    slug: string;
-
-    /**
-     * The user interface implemented by the screen encoded in JSON.
-     */
-    content: string;
-
-    /**
-     * The controller associated with the screen.
-     */
-    controller: ObjectId | IController;
-
-    creator: ObjectId | IUser;
-
-    /**
-     * The status of the screen.
-     */
-    status: typeof screenStatuses[number];
-
-    /**
-     * Specifies the timestamp that indicates when the screen was created.
-     */
-    createdAt: Date;
-
-    /**
-     * Specifies the timestamp that indicates when the screen was last modified.
-     */
-    updatedAt: Date;
-}
-
-export interface IExternalScreen {
-    id: string;
-    app: string;
-    name: string;
-    title: string;
-    description: string;
-    slug: string;
-
-    /**
-     * The user interface implemented by the screen encoded in JSON.
-     */
-    content: string;
-
-    /**
-     * The controller associated with the screen.
-     */
-    controller: string;
-
-    creator: string;
-
-    status: typeof screenStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export type TScreenPage = IExternalListPage<IExternalScreen>;
-
-export interface ExternalConversation {
-    id: string;
-    app: string;
-    page: string;
-    coordinates: Coordinates;
-    taggedUsers: [string | IUser];
-    comments: [string | Comment];
-    status: typeof conversationStatuses[number];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export type ConversationPage = IExternalListPage<ExternalConversation>;
-
-export interface IControllerPatch {
-    author: ObjectId | IUser;
-    content: string;
-    createdAt: Date;
-}
-
-export interface IController {
+export interface ISourceFile {
     _id?: ObjectId;
     name: string;
-    description: string;
-    language: typeof controllerLanguages[number];
+    directory: boolean;
     creator: ObjectId | IUser;
-    patches: IControllerPatch[];
+    content: string;
     app: ObjectId | IApp;
-    status: typeof controllerStatuses[number];
+    status: typeof sourceFileStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
 
-export interface IExternalControllerPatch {
-    author: string;
-    content: string;
-    createdAt: Date;
-}
-
-export interface IExternalController {
+export interface IExternalSourceFile {
     id: string;
     name: string;
-    description: string;
-    language: typeof controllerLanguages[number];
+    directory: boolean;
     creator: string;
-    patches: IExternalControllerPatch[];
-    patched: string;
+    content: string;
     app: string;
-    status: typeof controllerStatuses[number];
+    status: typeof sourceFileStatuses[number];
     createdAt: Date;
     updatedAt: Date;
 }
 
-export type TControllerPage = IExternalListPage<IExternalController>;
+export type TSourceFilePage = IExternalListPage<IExternalSourceFile>;
 
 export type TToExternalFunction<T, E> = (internal: T) => E;
 
-export interface IControllerRequirements<T, E> {
+export interface ISourceFileRequirements<T, E> {
     entity: string;
     model: Model<T>;
     toExternal: TToExternalFunction<T, E>;
 }
 
-export interface IControllerHelper<E> {
+export interface ISourceFileHelper<E> {
     getById: (context: any, id: string) => Promise<E>;
     list: (
         context: any,

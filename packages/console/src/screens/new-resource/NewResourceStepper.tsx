@@ -370,14 +370,14 @@ const NewResourceStepper: FunctionComponent = (): ReactElement => {
                     `Created resource "${values.resourceName}" successfully`,
                 );
 
-                replaceTab(index, "edit-resource", {
+                replaceTab(index, "app-builder.edit-resource", {
                     resourceId: result.data.createResource.id,
                 });
             } catch (error: any) {
                 notification.notifyError(error);
             }
         },
-        [createResource, resourceType, appId, replaceTab, index],
+        [resourceType, notification, createResource, appId, replaceTab, index],
     );
 
     const handleNext = () => {

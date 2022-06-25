@@ -215,7 +215,7 @@ const NewQueryStepper: FunctionComponent = (): ReactElement => {
                     `Created query template "${values.name}" successfully`,
                 );
 
-                replaceTab(index, "edit-query", {
+                replaceTab(index, "app-builder.edit-query", {
                     queryTemplateId: result.data.createQueryTemplate.id,
                 });
             } catch (error: any) {

@@ -1,16 +1,14 @@
 import {
-    ControllerModel,
+    SourceFileModel,
     IApp,
-    IController,
+    ISourceFile,
     IExternalApp,
     IQueryTemplate,
     IResource,
-    IScreen,
     InternalServerError,
     OrganizationModel,
     QueryTemplateModel,
     ResourceModel,
-    ScreenModel,
     TAppPage,
     UserModel,
     runAsTransaction,
@@ -22,14 +20,12 @@ import {
     constants,
 } from "@hypertool/common";
 
-import { createTwoFilesPatch } from "diff";
 import joi from "joi";
 import { ClientSession, Types } from "mongoose";
 
 import {
     checkAccessToApps,
     hashPassword,
-    patchAll,
     sendVerificationEmail,
     validateAttributes,
 } from "../utils";
@@ -75,8 +71,7 @@ const toExternal = (app: IApp): IExternalApp => {
         resources,
         queryTemplates,
         deployments,
-        screens,
-        controllers,
+        sourceFiles,
         creator,
         organization,
         status,
@@ -95,8 +90,7 @@ const toExternal = (app: IApp): IExternalApp => {
             queryTemplate.toString(),
         ),
         deployments: deployments.map((deployment) => deployment.toString()),
-        screens: screens.map((screen) => screen.toString()),
-        controllers: controllers.map((controller) => controller.toString()),
+        sourceFiles: sourceFiles.map((sourceFile) => sourceFile.toString()),
         creator: creator.toString(),
         organization: organization?.toString() ?? null,
         status,
@@ -173,11 +167,10 @@ const createBaseApp = async (
     session: ClientSession,
     userId: Types.ObjectId,
     attributes: any,
+    newAppId: Types.ObjectId = new Types.ObjectId(),
 ) => {
     /* Check if the app name is already taken. */
     await checkDuplicate(attributes.name);
-
-    const newAppId = new Types.ObjectId();
 
     if (attributes.organization) {
         /*
@@ -276,86 +269,45 @@ const duplicateEntities = async (
         });
     }
 
-    const controllerMappings: Record<string, Types.ObjectId> = {};
-    const newControllers = [];
-    for (const controller of sourceApp.controllers) {
-        const controller0 = controller as IController;
-        const { name, description, language, patches, status } = controller0;
+    const sourceFileMappings: Record<string, Types.ObjectId> = {};
+    const newSourceFiles = [];
+    for (const sourceFile of sourceApp.sourceFiles) {
+        const sourceFile0 = sourceFile as ISourceFile;
+        const { name, directory, content, status } = sourceFile0;
 
-        const newControllerId = new Types.ObjectId();
-        controllerMappings[controller0._id.toString()] = newControllerId;
+        const newSourceFileId = new Types.ObjectId();
+        sourceFileMappings[sourceFile0._id.toString()] = newSourceFileId;
 
-        newControllers.push({
-            _id: newControllerId,
+        newSourceFiles.push({
+            _id: newSourceFileId,
             name,
-            description,
-            language,
+            directory,
             creator: userId,
-            patches:
-                patches.length === 0
-                    ? []
-                    : [
-                          {
-                              author: userId,
-                              content: createTwoFilesPatch(
-                                  `a/${controller0.name}`,
-                                  `b/${controller0.name}`,
-                                  "",
-                                  patchAll(patches),
-                                  "",
-                                  "",
-                              ),
-                          },
-                      ],
-            app: appId,
-            status,
-        });
-    }
-
-    const newScreens = [];
-    for (const screen of sourceApp.screens) {
-        const screen0 = screen as IScreen;
-        const { name, title, description, slug, content, controller, status } =
-            screen0;
-        newScreens.push({
-            _id: new Types.ObjectId(),
-            name,
-            title,
-            description,
-            slug,
             content,
-            controller:
-                controller && controllerMappings[controller?.toString()],
-            creator: userId,
             app: appId,
             status,
         });
     }
 
-    const [_resources, _queryTemplates, _controllers, _screens, app] =
-        await Promise.all([
-            ResourceModel.insertMany(newResources, { session }),
-            QueryTemplateModel.insertMany(newQueryTemplates, { session }),
-            ControllerModel.insertMany(newControllers, { session }),
-            ScreenModel.insertMany(newScreens, { session }),
-            AppModel.findOneAndUpdate(
-                {
-                    _id: appId,
-                    status: { $ne: "deleted" },
-                },
-                {
-                    resources: newResources.map((resource) => resource._id),
-                    queryTemplates: newQueryTemplates.map(
-                        (queryTemplate) => queryTemplate._id,
-                    ),
-                    controllers: newControllers.map(
-                        (controller) => controller._id,
-                    ),
-                    screens: newScreens.map((screen) => screen._id),
-                },
-                { new: true, lean: true, session },
-            ).exec(),
-        ]);
+    const [_resources, _queryTemplates, _sourceFiles, app] = await Promise.all([
+        ResourceModel.insertMany(newResources, { session }),
+        QueryTemplateModel.insertMany(newQueryTemplates, { session }),
+        SourceFileModel.insertMany(newSourceFiles, { session }),
+        AppModel.findOneAndUpdate(
+            {
+                _id: appId,
+                status: { $ne: "deleted" },
+            },
+            {
+                resources: newResources.map((resource) => resource._id),
+                queryTemplates: newQueryTemplates.map(
+                    (queryTemplate) => queryTemplate._id,
+                ),
+                sourceFiles: newSourceFiles.map((sourceFile) => sourceFile._id),
+            },
+            { new: true, lean: true, session },
+        ).exec(),
+    ]);
 
     if (!app) {
         throw new InternalServerError(
@@ -366,6 +318,91 @@ const duplicateEntities = async (
     return app;
 };
 
+const createEmptyTemplate = (
+    creator: Types.ObjectId,
+    appId: Types.ObjectId,
+    appName: string,
+) => [
+    {
+        _id: new Types.ObjectId(),
+        name: `/${appName}`,
+        directory: true,
+        creator,
+        content: "",
+        app: appId,
+        status: "created",
+    },
+    {
+        _id: new Types.ObjectId(),
+        name: `/${appName}/screens`,
+        directory: true,
+        creator,
+        content: "",
+        app: appId,
+        status: "created",
+    },
+    {
+        _id: new Types.ObjectId(),
+        name: `/${appName}/screens/home`,
+        directory: true,
+        creator,
+        content: "",
+        app: appId,
+        status: "created",
+    },
+    {
+        _id: new Types.ObjectId(),
+        name: `/${appName}/screens/home/home.htx`,
+        directory: false,
+        creator,
+        content: `<fragment id="default">
+    <meta>
+        <title>Home | Built with Hypertool</title>
+        <route path="/" weight=999 />
+    </meta>
+    <View id="root">
+        <Button id="counter" text="[PLACEHOLDER TEXT]" />
+    </View>
+</fragment>`,
+        app: appId,
+        status: "created",
+    },
+    {
+        _id: new Types.ObjectId(),
+        name: `/${appName}/screens/home/home.css`,
+        directory: false,
+        creator,
+        content: `#root {
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}`,
+        app: appId,
+        status: "created",
+    },
+    {
+        _id: new Types.ObjectId(),
+        name: `/${appName}/screens/home/home.js`,
+        directory: false,
+        creator,
+        content: `import { useState } from "react";
+
+const Home = () => {
+    const [count, setCount] = useState(0);
+
+    return {
+        counter: {
+            onClick: () => setCount(count => count + 1),
+            text: \`This button was clicked \${count} times.\`
+        }
+    };
+};
+`,
+        app: appId,
+        status: "created",
+    },
+];
+
 export const create = async (context, attributes): Promise<IExternalApp> => {
     const { error, value } = createSchema.validate(attributes, {
         stripUnknown: true,
@@ -374,10 +411,29 @@ export const create = async (context, attributes): Promise<IExternalApp> => {
         throw new BadRequestError(error.message);
     }
 
-    const newApp = await runAsTransaction(
-        async (session: ClientSession) =>
-            await createBaseApp(session, context.user._id, value),
-    );
+    const newApp = await runAsTransaction(async (session: ClientSession) => {
+        const appId = new Types.ObjectId();
+        const templateSourceFiles = createEmptyTemplate(
+            context.user._id,
+            appId,
+            value.name,
+        );
+        const [app] = await Promise.all([
+            createBaseApp(
+                session,
+                context.user._id,
+                {
+                    ...value,
+                    sourceFiles: templateSourceFiles.map(
+                        (template) => template._id,
+                    ),
+                },
+                appId,
+            ),
+            SourceFileModel.insertMany(templateSourceFiles, { session }),
+        ]);
+        return app;
+    });
 
     return toExternal(newApp);
 };
@@ -452,8 +508,7 @@ export const install = async (
             resources: [],
             queryTemplates: [],
             deployments: [],
-            screens: [],
-            controllers: [],
+            sourceFiles: [],
             creator: newUserId,
             organization: undefined,
             status: "private",
@@ -490,8 +545,7 @@ export const duplicate = async (context, attributes): Promise<IExternalApp> => {
             { lean: true },
         )
             .populate({ path: "resources", model: "Resource" })
-            .populate({ path: "screens", model: "Screen" })
-            .populate({ path: "controllers", model: "Controller" })
+            .populate({ path: "sourceFiles", model: "SourceFile" })
             .populate({ path: "queryTemplates", model: "QueryTemplate" })
             .exec();
         if (!sourceApp) {

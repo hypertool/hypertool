@@ -1,22 +1,20 @@
 const tuple = <T extends string[]>(...values: T) => values;
 
 export const tabTypes = tuple(
-    "edit-query",
-    "new-query",
-    "new-controller",
-    "edit-controller",
-    "new-screen",
-    "edit-screen",
-    "new-resource",
-    "edit-resource",
+    "app-builder.edit-query",
+    "app-builder.new-query",
+    "app-builder.new-source-file",
+    "app-builder.edit-source-file",
+    "app-builder.new-screen",
+    "app-builder.edit-screen",
+    "app-builder.new-resource",
+    "app-builder.edit-resource",
     "authentication.new-user",
     "authentication.edit-user",
     "authentication.view-users",
     "authentication.view-providers",
     "authentication.new-provider",
 );
-
-export const controllerLanguages = tuple("javascript", "typescript");
 
 export const slugPattern = /^(\/:?[-_.a-zA-Z0-9]+)+$/;
 

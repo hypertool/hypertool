@@ -1,16 +1,9 @@
 import { FunctionComponent, ReactElement, useMemo } from "react";
 import { useCallback } from "react";
 
-import {
-    Button,
-    CircularProgress,
-    Divider,
-    MenuItem,
-    Typography,
-} from "@mui/material";
+import { Button, CircularProgress, Divider, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import CheckCircle from "@mui/icons-material/CheckCircle";
 import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 
 import { gql, useMutation } from "@apollo/client";
@@ -19,7 +12,7 @@ import * as yup from "yup";
 import { createTwoFilesPatch } from "diff";
 import { Formik } from "formik";
 
-import { Select, TextField } from "../../components";
+import { TextField } from "../../components";
 import {
     useBuilderActions,
     useNotification,
@@ -27,7 +20,6 @@ import {
     useTab,
 } from "../../hooks";
 import { templates } from "../../utils";
-import { controllerLanguages } from "../../utils/constants";
 
 const Root = styled("div")(({ theme }) => ({
     display: "flex",
@@ -99,11 +91,6 @@ const FormRoot = styled("section")(({ theme }) => ({
     width: "100%",
 }));
 
-const LanguageSelect = styled("div")(({ theme }) => ({
-    width: 400,
-    marginTop: theme.spacing(3),
-}));
-
 const CREATE_CONTROLLER = gql`
     mutation CreateController(
         $name: String!
@@ -136,11 +123,6 @@ const initialValues: IFormValues = {
     language: "javascript",
 };
 
-const labelByLanguage: Record<string, string> = {
-    javascript: "JavaScript",
-    typescript: "TypeScript",
-};
-
 const validationSchema = yup.object({
     name: yup
         .string()
@@ -149,7 +131,6 @@ const validationSchema = yup.object({
     description: yup
         .string()
         .max(512, "Description should be 512 characters or less"),
-    language: yup.string().oneOf(controllerLanguages).required(),
 });
 
 const NewControllerForm: FunctionComponent = (): ReactElement => {
@@ -210,8 +191,8 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
                     `Created controller "${values.name}" successfully`,
                 );
 
-                replaceTab(index, "edit-controller", {
-                    controllerId: result.data.createController.id,
+                replaceTab(index, "app-builder.edit-source-file", {
+                    sourceFileId: result.data.createController.id,
                 });
             } catch (error: any) {
                 notification.notifyError(error);
@@ -268,35 +249,6 @@ const NewControllerForm: FunctionComponent = (): ReactElement => {
                                     multiline={true}
                                     rows={4}
                                 />
-
-                                <LanguageSelect>
-                                    <Select
-                                        id="language"
-                                        name="language"
-                                        label="Language"
-                                        variant="outlined"
-                                        size="small"
-                                        help=""
-                                        renderMenuItems={() =>
-                                            controllerLanguages.map(
-                                                (controllerLanguage) => (
-                                                    <MenuItem
-                                                        key={controllerLanguage}
-                                                        value={
-                                                            controllerLanguage
-                                                        }
-                                                    >
-                                                        {
-                                                            labelByLanguage[
-                                                                controllerLanguage
-                                                            ]
-                                                        }
-                                                    </MenuItem>
-                                                ),
-                                            )
-                                        }
-                                    />
-                                </LanguageSelect>
                             </FormRoot>
                             <ActionContainer>
                                 <CreateAction

@@ -4,15 +4,12 @@ import { GraphQLScalarType } from "graphql";
 import {
     activityLogs,
     apps,
-    comments,
-    controllers,
-    conversations,
+    sourceFiles,
     deployments,
     organizations,
     queries,
     queryTemplates,
     resources,
-    screens,
     teams,
     users,
 } from "../controllers";
@@ -166,73 +163,16 @@ const typeDefs = gql`
             component: ComponentOrigin!
         ): ActivityLog!
 
-        createComment(
-            author: ID!
-            content: String!
-            conversation: ID!
-        ): Comment!
-
-        updateComment(commentId: String!, content: String!): Comment!
-
-        deleteComment(commentId: String!): RemoveResult!
-
-        createConversation(
-            app: ID!
-            page: ID!
-            coordinates: CoordinatesInput!
-            user: ID!
-            comment: String!
-        ): Conversation!
-
-        updateConversation(
-            conversationId: String!
-            coordinates: CoordinatesInput!
-        ): Conversation!
-
-        deleteConversation(conversationId: String!): Conversation!
-
-        resolveConversation(conversationId: String!): Conversation!
-
-        unresolveConversation(conversationId: String!): Conversation!
-
-        createScreen(
-            app: ID!
+        createSourceFile(
             name: String!
-            title: String!
-            slug: String
-            content: String!
-            description: String
-        ): Screen!
-
-        updateScreen(
-            screenId: ID!
-            title: String
-            slug: String
+            directory: Boolean!
             content: String
-            description: String
-        ): Screen!
-
-        deleteScreen(screenId: ID!): RemoveResult!
-
-        createController(
-            name: String!
-            description: String!
-            language: ControllerLanguage!
-            patches: [ControllerPatchInput!]!
             app: ID!
-        ): Controller!
+        ): SourceFile!
 
-        updateController(
-            controllerId: ID!
-            patches: [ControllerPatchInput!]!
-        ): Controller!
+        updateSourceFile(id: ID!, name: String, content: String): SourceFile!
 
-        updateControllerWithSource(
-            controllerId: ID!
-            source: String!
-        ): Controller!
-
-        deleteController(controllerId: ID!): RemoveResult!
+        deleteSourceFile(sourceFileId: ID!): RemoveResult!
     }
 
     type Query {
@@ -267,21 +207,10 @@ const typeDefs = gql`
             format: QueryResultFormat!
         ): QueryResult!
 
-        listComments(page: Int, limit: Int): CommentPage!
-        listCommentsById(commentIds: [ID!]!): [Comment]!
-
-        listConversations(page: Int, limit: Int): ConversationPage!
-        getConversationsByIds(conversationIds: [ID!]!): [Conversation]!
-
-        getScreens(app: ID!, page: Int, limit: Int): ScreenPage!
-        getScreensByIds(appId: ID!, screenIds: [ID!]!): [Screen!]!
-        getScreenByName(name: String!): Screen!
-        getScreenById(screenId: ID!): Screen!
-
-        getControllers(app: ID!, page: Int, limit: Int): ControllerPage!
-        getControllersById(controllerIds: [ID!]): [Controller!]!
-        getControllerByName(name: String!): Controller!
-        getControllerById(controllerId: ID!): Controller!
+        getSourceFiles(app: ID!, page: Int, limit: Int): SourceFilePage!
+        getSourceFilesById(sourceFileIds: [ID!]): [SourceFile!]!
+        getSourceFileByName(name: String!): SourceFile!
+        getSourceFileById(sourceFileId: ID!): SourceFile!
     }
 `;
 
@@ -373,73 +302,14 @@ const resolvers = {
         createActivityLog: async (parent, values, context) =>
             activityLogs.create(context.request, values),
 
-        createComment: async (parent, values, context) =>
-            comments.create(context.request, values),
+        createSourceFile: (parent, values, context) =>
+            sourceFiles.create(context.request, values),
 
-        updateComment: async (parent, values, context) =>
-            comments.update(context.request, values.commentId, values),
+        updateSourceFile: (parent, values, context) =>
+            sourceFiles.update(context.request, values),
 
-        deleteComment: async (parent, values, context) =>
-            comments.remove(context.request, values.commentId),
-
-        createConversation: async (parent, values, context) =>
-            conversations.create(context.request, values),
-
-        updateConversation: async (parent, values, context) =>
-            conversations.update(
-                context.request,
-                values.conversationId,
-                values,
-            ),
-
-        deleteConversation: async (parent, values, context) =>
-            conversations.changeStatus(
-                context.request,
-                values.conversationId,
-                "deleted",
-                ["deleted"],
-            ),
-
-        resolveConversation: async (parent, values, context) =>
-            conversations.changeStatus(
-                context.request,
-                values.conversationId,
-                "resolved",
-                ["resolved", "deleted"],
-            ),
-
-        unresolveConversation: async (parent, values, context) =>
-            conversations.changeStatus(
-                context.request,
-                values.conversationId,
-                "pending",
-                ["pending", "deleted"],
-            ),
-
-        createScreen: async (parent, values, context) =>
-            screens.create(context.request, values),
-
-        updateScreen: async (parent, values, context) =>
-            screens.update(context.request, values.screenId, values),
-
-        deleteScreen: async (parent, values, context) =>
-            screens.remove(context.request, values.screenId),
-
-        createController: (parent, values, context) =>
-            controllers.create(context.request, values),
-
-        updateController: (parent, values, context) =>
-            controllers.update(context.request, values.controllerId, values),
-
-        updateControllerWithSource: (parent, values, context) =>
-            controllers.updateWithSource(
-                context.request,
-                values.controllerId,
-                values,
-            ),
-
-        deleteController: (parent, values, context) =>
-            controllers.remove(context.request, values.controllerId),
+        deleteSourceFile: (parent, values, context) =>
+            sourceFiles.remove(context.request, values.sourceFileId),
     },
     Query: {
         getOrganizations: async (parent, values, context) =>
@@ -499,45 +369,25 @@ const resolvers = {
         executeQuery: async (parent, values, context) =>
             queries.execute(context.request, values),
 
-        listComments: async (parent, values, context) =>
-            comments.list(context.request, values),
+        getSourceFiles: async (parent, values, context) =>
+            sourceFiles.list(context.request, values),
 
-        listCommentsById: async (parent, values, context) =>
-            comments.listByIds(context.request, values.commentIds),
+        getSourceFilesById: async (parent, values, context) =>
+            sourceFiles.listByIds(context.request, values.sourceFileIds),
 
-        listConversations: async (parent, values, context) =>
-            conversations.list(context.request, values),
+        getSourceFileByName: async (parent, values, context) =>
+            sourceFiles.getByName(context.request, values.name),
 
-        getConversationsByIds: async (parent, values, context) =>
-            conversations.listByIds(context.request, values.conversationIds),
-
-        getScreens: async (parent, values, context) =>
-            screens.list(context.request, values),
-
-        getScreensByIds: async (parent, values, context) =>
-            screens.listByIds(context.request, values.screenIds),
-
-        getScreenByName: async (parent, values, context) =>
-            screens.getByName(context.request, values.name),
-
-        getScreenById: async (parent, values, context) =>
-            screens.getById(context.request, values.screenId),
-
-        getControllers: async (parent, values, context) =>
-            controllers.list(context.request, values),
-
-        getControllersById: async (parent, values, context) =>
-            controllers.listByIds(context.request, values.controllerIds),
-
-        getControllerByName: async (parent, values, context) =>
-            controllers.getByName(context.request, values.name),
-
-        getControllerById: async (parent, values, context) =>
-            controllers.getById(context.request, values.controllerId),
+        getSourceFileById: async (parent, values, context) =>
+            sourceFiles.getById(context.request, values.sourceFileId),
     },
     App: {
         resources: async (parent, values, context) =>
-            resources.listByIds(context.request, values.resources),
+            resources.listByIds(context.request, parent.resources),
+        queryTemplates: async (parent, values, context) =>
+            queryTemplates.listByIds(context.request, parent.queryTemplates),
+        sourceFiles: async (parent, values, context) =>
+            sourceFiles.listByIds(context.request, parent.sourceFiles),
         creator: async (parent, values, context) =>
             users.getById(context.request, parent.creator),
         /*
@@ -553,25 +403,17 @@ const resolvers = {
         apps: async (parent, values, context) =>
             apps.listByIds(context.request, parent.apps),
     },
-    Comment: {
-        author: async (parent, values, context) =>
-            users.getById(context.request, parent.author),
-        /*
-         * conversation: async (parent, values, context) =>
-         *     conversations.getById(context.request, parent.conversation),
-         */
-    },
     QueryTemplate: {
         resource: async (parent, values, context) =>
             resources.getById(context.request, parent.resource),
         app: async (parent, values, context) =>
             apps.getById(context.request, parent.app),
     },
-    Controller: {
+    SourceFile: {
         creator: async (parent, values, context) =>
             users.getById(context.request, parent.creator),
     },
-    ControllerPatch: {
+    SourceFilePatch: {
         author: async (parent, values, context) =>
             users.getById(context.request, parent.author),
     },
@@ -586,14 +428,6 @@ const resolvers = {
             teams.listByIds(context.request, parent.teams),
     },
     Resource: {
-        creator: async (parent, values, context) =>
-            users.getById(context.request, parent.creator),
-    },
-    Screen: {
-        app: async (parent, values, context) =>
-            apps.getById(context.request, parent.app),
-        controller: async (parent, values, context) =>
-            controllers.getById(context.request, parent.controller),
         creator: async (parent, values, context) =>
             users.getById(context.request, parent.creator),
     },

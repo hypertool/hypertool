@@ -2,8 +2,10 @@
 import { createContext } from "react";
 
 import {
+    IApp,
     IBuilderActionsContext,
     ITab,
+    IUpdateSourceFileOptions,
     TBundleType,
     TPredicate,
     TTabType,
@@ -12,6 +14,10 @@ import {
 const BuilderActionsContext = createContext<IBuilderActionsContext>({
     tabs: [],
     activeTab: null,
+
+    getApp: (): IApp => {
+        throw new Error("Implementation for this operation is missing.");
+    },
 
     insertTab: (
         _index: number,
@@ -47,6 +53,12 @@ const BuilderActionsContext = createContext<IBuilderActionsContext>({
     },
 
     closeTabs: (_predicate: TPredicate<ITab>): void => {
+        throw new Error("Implementation for this operation is missing.");
+    },
+
+    updateSourceFile: async (
+        _options: IUpdateSourceFileOptions,
+    ): Promise<any> => {
         throw new Error("Implementation for this operation is missing.");
     },
 });

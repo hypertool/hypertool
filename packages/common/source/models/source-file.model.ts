@@ -1,26 +1,10 @@
 import { Schema, model } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
-import type { IController } from "../types";
-import { controllerLanguages, controllerStatuses } from "../utils/constants";
+import type { ISourceFile } from "../types";
+import { sourceFileStatuses } from "../utils/constants";
 
-const patchSchema = new Schema({
-    author: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-        immutable: true,
-    },
-    content: {
-        type: String,
-        required: true,
-        maxlength: 24 * 1024,
-        immutable: true,
-    },
-    createdAt: { type: Date, immutable: true, default: () => new Date() },
-});
-
-const controllerSchema = new Schema(
+const sourceFileSchema = new Schema(
     {
         name: {
             type: String,
@@ -29,15 +13,8 @@ const controllerSchema = new Schema(
             trim: true,
             required: true,
         },
-        description: {
-            type: String,
-            minlength: 0,
-            maxlength: 512,
-            default: "",
-        },
-        language: {
-            type: String,
-            enum: controllerLanguages,
+        directory: {
+            type: Boolean,
             required: true,
         },
         /* An identifier that points to the User who created the controller. */
@@ -61,9 +38,8 @@ const controllerSchema = new Schema(
          * 2. Autosave triggered every 1s (configurable by the user) -- data stored as patches
          * 3. Parallel writes to local storage as the user types -- data stored as plain text
          */
-        patches: {
-            type: [patchSchema],
-            default: [],
+        content: {
+            type: String,
         },
 
         /* An identifier that points to the app to which the controller belongs. */
@@ -79,7 +55,7 @@ const controllerSchema = new Schema(
          */
         status: {
             type: String,
-            enum: controllerStatuses,
+            enum: sourceFileStatuses,
             required: true,
         },
         createdAt: { type: Date, immutable: true },
@@ -87,5 +63,5 @@ const controllerSchema = new Schema(
     { timestamps: true },
 );
 
-controllerSchema.plugin(paginate);
-export default model<IController>("Controller", controllerSchema);
+sourceFileSchema.plugin(paginate);
+export default model<ISourceFile>("SourceFile", sourceFileSchema);
