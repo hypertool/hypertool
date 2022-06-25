@@ -14,8 +14,8 @@ import {
     useTab,
     useTabBundle,
     useUpdateTabTitle,
-} from "../../hooks";
-import { IEditSourceFileBundle } from "../../types";
+} from "../../../../../hooks";
+import { IEditSourceFileBundle } from "../../../../../types";
 
 const Root = styled("section")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -35,7 +35,7 @@ const Right = styled("div")(({ theme }) => ({
     justifyContent: "flex-start",
 }));
 
-const CodeEditor: FunctionComponent = (): ReactElement => {
+const SourceFileEditor: FunctionComponent = (): ReactElement => {
     const { tab } = useTab();
     const path = tab.id;
 
@@ -101,4 +101,4 @@ const CodeEditor: FunctionComponent = (): ReactElement => {
     );
 };
 
-export default CodeEditor;
+export default SourceFileEditor;

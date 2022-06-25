@@ -35,7 +35,6 @@ import NewResourceEditor from "../new-resource";
 import NewScreenEditor from "../new-screen";
 
 import CanvasEditor from "./CanvasEditor";
-import CodeEditor from "./CodeEditor";
 import { RenderNode } from "./RenderNode";
 import {
     NewProviderEditor,
@@ -43,7 +42,8 @@ import {
     UserEditor,
     ViewProviders,
     ViewUsers,
-} from "./modules/authentication";
+    SourceFileEditor,
+} from "./modules";
 import { AppBar, LeftDrawer, RightDrawer } from "./navigation";
 import ESBuildContext from "../../contexts/ESBuildContext";
 import { gql, useMutation, useQuery } from "@apollo/client";
@@ -96,8 +96,8 @@ const tabDetailsByType: Record<string, ITabTypeDetails> = {
     },
     "edit-source-file": {
         icon: "code",
-        title: "Edit Controller",
-        component: CodeEditor,
+        title: "Edit Source File",
+        component: SourceFileEditor,
     },
     "new-screen": {
         icon: "wysiwyg",

@@ -8,9 +8,9 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import * as yup from "yup";
 import { Formik } from "formik";
 
-import { TextField } from "../../../../components";
-import { useNotification } from "../../../../hooks";
-import { slugPattern } from "../../../../utils/constants";
+import { TextField } from "../../../../../components";
+import { useNotification } from "../../../../../hooks";
+import { slugPattern } from "../../../../../utils/constants";
 
 const Root = styled("div")(({ theme }) => ({
     padding: theme.spacing(2),
