@@ -3,7 +3,7 @@ import React from "react";
 import { useMethods } from "../../../../../craft-utils";
 import { LayerEventContextProvider } from "../events";
 import { LayerOptions } from "../interfaces";
-import { DefaultLayer } from "../layers";
+import { DefaultLayer } from "../layers/index";
 
 import { LayerMethods } from "./actions";
 import { LayerManagerContext, LayerStore } from "./context";

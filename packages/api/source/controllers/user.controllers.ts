@@ -470,7 +470,7 @@ const loginWithGoogle = async (
             emailVerified,
             birthday: null,
             status: "activated",
-        });
+        }) as any;
         await user.save();
     }
 
@@ -528,7 +528,7 @@ const signupWithEmail = async (
 
     await sendVerificationEmail(emailAddress);
 
-    return toExternal(user);
+    return toExternal(user as any);
 };
 
 const loginWithEmail = async (
@@ -631,7 +631,7 @@ const requestPasswordReset = async (
     const user = await UserModel.findOne({
         emailAddress,
         organizations: { $in: app.organization },
-    }).exec();
+    } as any).exec();
     if (!user) {
         throw new NotFoundError(
             "Cannot find a user with specified email address.",

@@ -6,7 +6,7 @@ import type { LayerOptions } from "./interfaces";
 import { LayerContextProvider } from "./layers/LayerContextProvider";
 import { LayerManagerProvider } from "./manager/LayerManagerProvider";
 
-export { useLayer } from "./layers";
+export { useLayer } from "./layers/index";
 
 const Layers: FunctionComponent<Partial<LayerOptions>> = (
     props: Partial<LayerOptions>,

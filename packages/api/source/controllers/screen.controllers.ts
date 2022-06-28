@@ -66,7 +66,8 @@ const toExternal = (screen: IScreen): IExternalScreen => {
         content,
         status,
         controller:
-            controller instanceof ControllerModel
+            controller instanceof ControllerModel &&
+            !(controller instanceof mongoose.Schema.Types.ObjectId)
                 ? controller._id.toString()
                 : controller.toString(),
         creator: creator.toString(),

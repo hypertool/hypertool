@@ -469,7 +469,7 @@ export const install = async (
         return newApp;
     });
 
-    return toExternal(newApp);
+    return toExternal(newApp as any);
 };
 
 export const duplicate = async (context, attributes): Promise<IExternalApp> => {
