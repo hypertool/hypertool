@@ -7,8 +7,8 @@ import {
     useState,
 } from "react";
 
-import { ROOT_NODE, useEditor } from "../../../../../craft";
-import { useLayerManager } from "../manager/useLayerManager";
+import { ROOT_NODE, useEditor } from "../craft";
+import { useLayerManager } from "../screens/app-builder/panels/explorer/manager/useLayerManager";
 
 import { LayerContextProvider } from "./LayerContextProvider";
 import { useLayer } from "./useLayer";
