@@ -76,12 +76,12 @@ export const createHelper = <T, E>(
             };
         },
 
-        listByIds: async (context, ids: string[]): Promise<E[]> => {
+        listByIds: async (context: any, ids: string[]): Promise<E[]> => {
             const items = await model
                 .find({
                     _id: { $in: ids },
                     status: { $ne: "deleted" },
-                })
+                } as any)
                 .exec();
             if (items.length !== ids.length) {
                 throw new NotFoundError(
@@ -146,7 +146,7 @@ export const createHelper = <T, E>(
                     {
                         _id: id,
                         status: { $ne: "deleted" },
-                    },
+                    } as any,
                     value,
                     {
                         new: true,
@@ -161,7 +161,7 @@ export const createHelper = <T, E>(
                 );
             }
 
-            return toExternal(document);
+            return toExternal(document as any);
         },
     };
 };

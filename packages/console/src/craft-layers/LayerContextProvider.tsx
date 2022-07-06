@@ -1,10 +1,10 @@
 import { FunctionComponent, ReactElement } from "react";
 import { useContext, useEffect, useMemo, useRef } from "react";
 
-import { useEditor } from "../../../../../craft";
-import { wrapConnectorHooks } from "../../../../../craft-utils";
-import { useLayerEventHandler } from "../events/LayerEventContext";
-import { LayerManagerContext } from "../manager";
+import { useEditor } from "../craft";
+import { wrapConnectorHooks } from "../craft-utils";
+import { useLayerEventHandler } from "../screens/app-builder/panels/explorer/events/LayerEventContext";
+import { LayerManagerContext } from "../screens/app-builder/panels/explorer/manager";
 
 import { LayerContext, TLayerContext } from "./LayerContext";
 import { LayerNode } from "./LayerNode";

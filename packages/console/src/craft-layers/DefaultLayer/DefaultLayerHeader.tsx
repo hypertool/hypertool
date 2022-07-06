@@ -4,7 +4,7 @@ import { Icon } from "@mui/material";
 
 import styled from "styled-components";
 
-import { useEditor } from "../../../../../../craft";
+import { useEditor } from "../../craft";
 import { useLayer } from "../useLayer";
 
 import { EditableLayerName } from "./EditableLayerName";

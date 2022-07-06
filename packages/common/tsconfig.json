@@ -8,7 +8,8 @@
         "outDir": "dist",
         "allowJs": true,
         "declaration": true,
-        "declarationMap": true
+        "declarationMap": true,
+        "skipLibCheck": true
     },
     "include": ["./source/**/*.ts"],
     "lib": ["es2015"]
